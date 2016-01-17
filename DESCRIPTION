@@ -7,7 +7,7 @@ Authors@R: c(
     person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"))
 Description: The 'survminer' package provides functions for facilitating survival analysis and
     visualization. The current version contains the function 'ggsurvplot()'
-    for easily drawing beautiful and 'ready-to-publish' survival curves using 'ggplot2'.
+    for drawing easily beautiful and 'ready-to-publish' survival curves using 'ggplot2'.
     'ggsurvplot()' includes also some options for displaying the p-value and
     the 'number at risk' table under the survival curves.
 License: GPL-2
