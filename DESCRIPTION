@@ -23,7 +23,6 @@ Imports:
     stats
 Suggests:
     knitr
-VignetteBuilder: knitr
 URL: http://www.sthda.com/english/wiki/survminer
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1
