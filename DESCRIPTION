@@ -1,0 +1,30 @@
+Package: survminer
+Type: Package
+Title: Survival Analysis and Visualization
+Version: 0.1.1
+Date: 2016-01-16
+Authors@R: c(
+    person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"))
+Description: The 'survminer' package provides functions for facilitating survival analysis and
+    visualization. The current version contains the function 'ggsurvplot()'
+    for easily drawing beautiful and 'ready-to-publish' survival curves using 'ggplot2'.
+    'ggsurvplot()' includes also some options for displaying the p-value and
+    the 'number at risk' table under the survival curves.
+License: GPL-2
+LazyData: TRUE
+Depends:
+    ggplot2
+Imports:
+    grid,
+    gridExtra,
+    scales,
+    survival
+Suggests:
+    knitr
+VignetteBuilder: knitr
+URL: http://www.sthda.com/english/wiki/survmier
+BugReports: https://github.com/kassambara/survminer/issues
+RoxygenNote: 5.0.1
+Collate:
+    'utilities.R'
+    'ggsurvplot.R'

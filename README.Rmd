@@ -1,0 +1,202 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-",
+  fig.cap="survminer: Drawing survival curves using ggplot2"
+)
+```
+    
+    
+  
+# survminer: Survival Analysis and Visualization
+    
+The **survminer** R package provides functions for facilitating **survival analysis** and **visualization**. The current version contains the function **ggsurvplot()** for easily drawing beautiful survival curves using **ggplot2**. **ggsurvplot()** includes also some options for displaying the **p-value** and the **'number at risk' table**,  under the survival curves.
+   
+Find out more at http://www.sthda.com/english/wiki/survminer.
+    
+     
+## Installation and loading
+    
+    
+Install the latest version from GitHub:  
+   
+   
+```{r, eval = FALSE}
+# Install
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("kassambara/survminer")
+```
+
+    
+```{r}
+# Loading
+library("survminer")
+```
+    
+    
+    
+## Getting started
+     
+     
+```{r ggplot2-survival-plot, fig.show = "asis",  fig.height = 6, fig.width = 6}
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Example 1: Survival curve with one group
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+require("survival")
+fit <- survfit(Surv(time, status) ~ 1, data = lung)
+ggsurvplot(fit, color = "#2E9FDF")
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Example 2: Survival curves with two groups
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Fit survival curves
+#++++++++++++++++++++++++++++++++++++
+require("survival")
+fit<- survfit(Surv(time, status) ~ sex, data = lung)
+
+# Drawing survival curves
+ggsurvplot(fit)
+
+# Legend: title, labels and position
+#++++++++++++++++++++++++++++++++++++
+
+# Change the legend title and labels
+ggsurvplot(fit, legend = "bottom", 
+           legend.title = "Sex",
+           legend.labs = c("Male", "Female"))
+
+# Specify legend position by its coordinates
+ggsurvplot(fit, legend = c(0.2, 0.2))
+
+
+# format
+#++++++++++++++++++++++++++++++++++++
+# change line size --> 1
+# Change line types by groups (i.e. "strata")
+# and change color palette
+ggsurvplot(fit,  size = 1,  # change line size
+           linetype = "strata", # change line type by groups
+           break.time.by = 250, # break time axis by 250
+           palette = c("#E7B800", "#2E9FDF"), # custom color palette
+           conf.int = TRUE, # Add confidence interval
+           pval = TRUE # Add p-value
+           )
+
+# Use brewer color palette "Dark2"
+ggsurvplot(fit, linetype = "strata", 
+           conf.int = TRUE, pval = TRUE,
+           palette = "Dark2")
+
+# Use grey palette
+ggsurvplot(fit, linetype = "strata", 
+           conf.int = TRUE, pval = TRUE,
+           palette = "grey")
+
+# Add risk table
+#++++++++++++++++++++++++++++++++++++
+
+# Add Risk table
+ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
+           risk.table = TRUE)
+
+# Change color, linetype by strata, risk.table color by strata
+ggsurvplot(fit, 
+           pval = TRUE, conf.int = TRUE,
+           risk.table = TRUE, # Add risk table
+           risk.table.col = "strata", # Change risk table color by groups
+           lienetype = "strata", # Change line type by groups
+           ggtheme = theme_bw(), # Change ggplot2 theme
+           palette = c("#E7B800", "#2E9FDF"))
+
+# Survival curve transformation
+#++++++++++++++++++++++++++++++++++++
+# Plot cumulative events
+ggsurvplot(fit, conf.int = TRUE,
+           palette = c("#FF9E29", "#86AA00"),
+           risk.table = TRUE, risk.table.col = "strata",
+           fun = "event")
+
+# Plot the cumulative hazard function
+ggsurvplot(fit, conf.int = TRUE, 
+           palette = c("#FF9E29", "#86AA00"),
+           risk.table = TRUE, risk.table.col = "strata",
+           fun = "cumhaz")
+
+# Arbitrary function
+ggsurvplot(fit, conf.int = TRUE, 
+          palette = c("#FF9E29", "#86AA00"),
+           risk.table = TRUE, risk.table.col = "strata",
+           pval = TRUE,
+           fun = function(y) y*100)
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Example 3: Survival curve with multiple group
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Fit (complexe) survival curves
+#++++++++++++++++++++++++++++++++++++
+
+require("survival")
+fit2 <- survfit( Surv(time, status) ~ rx + adhere,
+    data = colon )
+
+# Visualize
+#++++++++++++++++++++++++++++++++++++
+
+# Visualize: add p-value, chang y limits
+# change color using brewer palette
+ggsurvplot(fit2, pval = TRUE, 
+           break.time.by = 400,
+           risk.table = TRUE)
+
+# Adjust risk table and survival plot locations 
+# ++++++++++++++++++++++++++++++++++++
+# Adjust risk table location, shift to the left
+ggsurvplot(fit2, pval = TRUE,
+           break.time.by = 400, 
+           risk.table = TRUE,
+           risk.table.col = "strata",
+           risk.table.adj = -2, # risk table location adj
+           palette = "Dark2")
+
+# Adjust survival plot location, shift to the right
+ggsurvplot(fit2, pval = TRUE,
+           break.time.by = 400, 
+           risk.table = TRUE,
+           risk.table.col = "strata",
+           surv.plot.adj = 4.9, # surv plot location adj
+           palette = "Dark2")
+
+# Risk table height
+ggsurvplot(fit2, pval = TRUE,
+           break.time.by = 400, 
+           risk.table = TRUE,
+           risk.table.col = "strata",
+           risk.table.height = 0.5, # Useful when you have multiple groups
+           surv.plot.adj = 4.9, # surv plot location adj
+           palette = "Dark2")
+  
+# Change legend labels
+# ++++++++++++++++++++++++++++++++++++
+
+ggsurvplot(fit2, pval = TRUE, 
+           break.time.by = 400,
+           risk.table = TRUE,
+           risk.table.col = "strata",
+           ggtheme = theme_bw(),
+           legend.labs = c("A", "B", "C", "D", "E", "F"))
+```
+
