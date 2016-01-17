@@ -17,8 +17,10 @@ Depends:
 Imports:
     grid,
     gridExtra,
+    methods,
     scales,
-    survival
+    survival,
+    stats
 Suggests:
     knitr
 VignetteBuilder: knitr

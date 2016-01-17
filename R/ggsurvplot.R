@@ -1,4 +1,6 @@
 #' @include utilities.R
+#' @importFrom methods is
+#' @importFrom stats pchisq
   NULL
 #'Drawing survival curves using ggplot2
 #'@description Drawing survival curves using ggplot2
@@ -224,7 +226,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        ...
                        ){
 
-  if(!is(fit, "survfit"))
+  if(!methods::is(fit, "survfit"))
     stop("Can't handle an object of class ", class(fit))
   size <- ifelse(is.null(list(...)$size), 1, list(...)$size)
   if(is.null(xlim)) xlim <- c(0, max(fit$time))
@@ -389,7 +391,7 @@ ggsurvplot <- function(fit, fun = NULL,
   # One group
   if(length(levels(summary(fit)$strata)) == 0)  return(NULL)
     sdiff <- survival::survdiff(eval(fit$call$formula), data = eval(fit$call$data))
-    pvalue <- pchisq(sdiff$chisq, length(sdiff$n) - 1, lower.tail = FALSE)
+    pvalue <- stats::pchisq(sdiff$chisq, length(sdiff$n) - 1, lower.tail = FALSE)
     return (pvalue)
 }
 

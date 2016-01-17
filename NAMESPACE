@@ -2,3 +2,5 @@
 
 export(ggsurvplot)
 import(ggplot2)
+importFrom(methods,is)
+importFrom(stats,pchisq)
