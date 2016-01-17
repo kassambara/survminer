@@ -24,7 +24,7 @@ Imports:
 Suggests:
     knitr
 VignetteBuilder: knitr
-URL: http://www.sthda.com/english/wiki/survmier
+URL: http://www.sthda.com/english/wiki/survminer
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1
 Collate:
