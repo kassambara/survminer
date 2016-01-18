@@ -110,7 +110,7 @@ Drawing survival curves using ggplot2
 \examples{
 
 #\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
-# Example 2: Survival curves with two groups
+# Example 1: Survival curves with two groups
 #\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
 
 # Fit survival curves
@@ -151,10 +151,6 @@ ggsurvplot(fit, linetype = "strata",
           conf.int = TRUE, pval = TRUE,
           palette = "Dark2")
 
-# Use grey palette
-ggsurvplot(fit, linetype = "strata",
-          conf.int = TRUE, pval = TRUE,
-          palette = "grey")
 
 # Add risk table
 #++++++++++++++++++++++++++++++++++++
@@ -180,11 +176,6 @@ ggsurvplot(fit, conf.int = TRUE,
           risk.table = TRUE, risk.table.col = "strata",
           fun = "event")
 
-# Plot the cumulative hazard function
-ggsurvplot(fit, conf.int = TRUE,
-          palette = c("#FF9E29", "#86AA00"),
-          risk.table = TRUE, risk.table.col = "strata",
-          fun = "cumhaz")
 
 # Arbitrary function
 ggsurvplot(fit, conf.int = TRUE,
@@ -217,6 +208,7 @@ ggsurvplot(fit2, pval = TRUE,
 # Adjust risk table and survival plot locations
 # ++++++++++++++++++++++++++++++++++++
 # Adjust risk table location, shift to the left
+
 ggsurvplot(fit2, pval = TRUE,
           break.time.by = 400,
           risk.table = TRUE,
@@ -225,14 +217,7 @@ ggsurvplot(fit2, pval = TRUE,
           palette = "Dark2")
 
 # Adjust survival plot location, shift to the right
-ggsurvplot(fit2, pval = TRUE,
-          break.time.by = 400,
-          risk.table = TRUE,
-          risk.table.col = "strata",
-          surv.plot.adj = 4.9, # surv plot location adj
-          palette = "Dark2")
-
-# Risk table height
+# Change Risk table height
 ggsurvplot(fit2, pval = TRUE,
           break.time.by = 400,
           risk.table = TRUE,
@@ -241,15 +226,17 @@ ggsurvplot(fit2, pval = TRUE,
           surv.plot.adj = 4.9, # surv plot location adj
           palette = "Dark2")
 
+
 # Change legend labels
 # ++++++++++++++++++++++++++++++++++++
-
+\dontrun{
 ggsurvplot(fit2, pval = TRUE,
           break.time.by = 400,
           risk.table = TRUE,
           risk.table.col = "strata",
           ggtheme = theme_bw(),
           legend.labs = c("A", "B", "C", "D", "E", "F"))
+}
 
 }
 
