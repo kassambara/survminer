@@ -1,4 +1,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/survminer)](http://cran.r-project.org/package=survminer)
+
 survminer: Survival Analysis and Visualization
 ==============================================
 
@@ -9,7 +11,13 @@ Find out more at <http://www.sthda.com/english/wiki/survminer>.
 Installation and loading
 ------------------------
 
-Install the latest version from GitHub:
+Install from CRAN as follow:
+
+``` r
+install.packages("survminer")
+```
+
+Or, install the latest version from GitHub:
 
 ``` r
 # Install

@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 ```
     
     
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/survminer)](http://cran.r-project.org/package=survminer)
+    
   
 # survminer: Survival Analysis and Visualization
     
@@ -27,8 +29,15 @@ Find out more at http://www.sthda.com/english/wiki/survminer.
 ## Installation and loading
     
     
-Install the latest version from GitHub:  
+Install from CRAN as follow:
    
+```{r, eval = FALSE}
+install.packages("survminer")
+```
+    
+    
+Or, install the latest version from GitHub: 
+    
    
 ```{r, eval = FALSE}
 # Install
