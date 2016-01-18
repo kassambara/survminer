@@ -5,7 +5,7 @@ Version: 0.1.1
 Date: 2016-01-16
 Authors@R: c(
     person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"))
-Description: 'survminer' contains the function 'ggsurvplot()'
+Description: Contains the function 'ggsurvplot()'
     for drawing easily beautiful and 'ready-to-publish' survival curves using 'ggplot2'.
     It includes also some options for displaying the p-value and
     the 'number at risk' table under the survival curves.

@@ -13,4 +13,6 @@ This is a resubmission. In this version I have:
 
 * changed the title 
 * removed the part  "The 'survminer' package provides functions for"  in the DESCRIPTION file
+* removed package name 'survminer' in the description
+* reduced examples
 
