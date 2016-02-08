@@ -426,7 +426,7 @@ ggsurvplot <- function(fit, fun = NULL,
     risk.data <- data.frame(
       strata = factor(strata, levels = levels(strata)),
       time = summary(fit,times = times, extend = TRUE)$time,
-      n.risk = summary(fit,times = times,extend = TRUE)$n.risk
+      n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk)
     )
 
     .blank <- ggplot2::element_blank()
