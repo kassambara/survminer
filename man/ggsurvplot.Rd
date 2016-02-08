@@ -8,7 +8,8 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = NULL,
   break.time.by = NULL, surv.scale = c("default", "percent"),
   conf.int = FALSE, conf.int.fill = "gray", censor = TRUE, pval = FALSE,
   pval.size = 5, pval.coord = c(NULL, NULL), main = NULL, xlab = "Time",
-  ylab = "Survival probability", xlim = NULL, ylim = NULL,
+  ylab = "Survival probability", font.main = NULL, font.x = NULL,
+  font.y = NULL, font.tickslab = NULL, xlim = NULL, ylim = NULL,
   legend = c("top", "bottom", "left", "right", "none"),
   legend.title = "strata", legend.labs = NULL, risk.table = FALSE,
   risk.table.col = "black", risk.table.adj = NULL,
@@ -53,6 +54,11 @@ is NULL.}
 coordinates of the p-value. Default values are NULL.}
 
 \item{main, xlab, ylab}{main title and axis labels}
+
+\item{font.main, font.x, font.y, font.tickslab}{a vector of length 3 indicating respectively
+the size (e.g.: 14), the style (e.g.: "plain", "bold", "italic",
+"bold.italic") and the color (e.g.: "red") of main title, xlab and ylab and axis tick labels,
+respectively. For example \emph{font.x = c(14, "bold", "red")}.}
 
 \item{xlim, ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
 
@@ -120,6 +126,14 @@ fit<- survfit(Surv(time, status) ~ sex, data = lung)
 
 # Drawing survival curves
 ggsurvplot(fit)
+
+# Change font style, size and color
+#++++++++++++++++++++++++++++++++++++
+ggsurvplot(fit, main = "Survival curve",
+   font.main = c(16, "bold", "darkblue"),
+   font.x = c(14, "bold.italic", "red"),
+   font.y = c(14, "bold.italic", "darkred"),
+   font.tickslab = c(12, "plain", "darkgreen"))
 
 # Legend: title, labels and position
 #++++++++++++++++++++++++++++++++++++

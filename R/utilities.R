@@ -100,4 +100,87 @@
 }
 
 
+# Change title and labels
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+.labs <- function(p, main = NULL, xlab = NULL, ylab = NULL,
+                  font.main = NULL, font.x = NULL, font.y = NULL)
+{
+  if (!is.null(main)) {
+    if (main != FALSE)
+      p <- p + labs(title = main)
+  }
+
+  if (!is.null(xlab)) {
+    if (xlab == FALSE)
+      p <- p + theme(axis.title.x = element_blank())
+    else
+      p <- p + labs(x = xlab)
+  }
+
+  if (!is.null(ylab)) {
+    if (ylab == FALSE)
+      p <- p + theme(axis.title.y = element_blank())
+    else
+      p <- p + labs(y = ylab)
+  }
+
+  if (!is.null(font.main))
+    p <-
+      p + theme(
+        plot.title = element_text(
+          size = as.numeric(font.main[1]),
+          lineheight = 1.0, face = font.main[2], colour = font.main[3]
+        )
+      )
+  if (!is.null(font.x))
+    p <-
+      p + theme(axis.title.x = element_text(
+        size = as.numeric(font.x[1]),
+        face = font.x[2], colour = font.x[3]
+      ))
+  if (!is.null(font.y))
+    p <-
+      p + theme(axis.title.y = element_text(
+        size = as.numeric(font.y[1]),
+        face = font.y[2], colour = font.y[3]
+      ))
+  p
+}
+
+# ticks
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+.set_ticks <-
+  function(ticks = TRUE, tickslab = TRUE, font.tickslab = NULL,
+           xtickslab.rt = 0, ytickslab.rt = 0)
+  {
+    if (ticks)
+      ticks <-
+        element_line(colour = "black")
+    else
+      ticks <- element_blank()
+    if (is.null(font.tickslab))
+      font <- c(12, "bold", "black")
+    else
+      font <- font.tickslab
+    if (tickslab) {
+      xtickslab <-
+        element_text(
+          size = as.numeric(font[1]), face = font[2],
+          colour = font[3], angle = xtickslab.rt
+        )
+      ytickslab <-
+        element_text(
+          size = as.numeric(font[1]), face = font[2],
+          colour = font[3], angle = ytickslab.rt
+        )
+    }
+    else {
+      xtickslab <- element_blank()
+      ytickslab <- element_blank()
+    }
+    theme(
+      axis.ticks = ticks, axis.text.x = xtickslab, axis.text.y = ytickslab
+    )
+  }
+
 

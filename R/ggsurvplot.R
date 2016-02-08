@@ -29,6 +29,10 @@
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
 #'@param main,xlab,ylab main title and axis labels
+#'@param font.main,font.x,font.y,font.tickslab a vector of length 3 indicating respectively
+#'   the size (e.g.: 14), the style (e.g.: "plain", "bold", "italic",
+#'   "bold.italic") and the color (e.g.: "red") of main title, xlab and ylab and axis tick labels,
+#'   respectively. For example \emph{font.x = c(14, "bold", "red")}.
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
 #'@param legend character specifying legend position. Allowed values are one of
 #'  c("top", "bottom", "left", "right", "none"). Default is "top" side
@@ -77,6 +81,14 @@
 #'
 #'# Drawing survival curves
 #'ggsurvplot(fit)
+#'
+#'# Change font style, size and color
+#'#++++++++++++++++++++++++++++++++++++
+#' ggsurvplot(fit, main = "Survival curve",
+#'    font.main = c(16, "bold", "darkblue"),
+#'    font.x = c(14, "bold.italic", "red"),
+#'    font.y = c(14, "bold.italic", "darkred"),
+#'    font.tickslab = c(12, "plain", "darkgreen"))
 #'
 #'# Legend: title, labels and position
 #'#++++++++++++++++++++++++++++++++++++
@@ -203,6 +215,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        censor = TRUE,
                        pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
                        main = NULL, xlab = "Time", ylab = "Survival probability",
+                       font.main = NULL, font.x = NULL, font.y = NULL, font.tickslab = NULL,
                        xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "strata", legend.labs = NULL,
@@ -316,6 +329,9 @@ ggsurvplot <- function(fit, fun = NULL,
                          color = legend.title, fill = legend.title,
                          linetype = legend.title
                          )
+  p <-.labs(p = p, font.main = font.main, font.x = font.x, font.y = font.y) +
+  .set_ticks(font.tickslab = font.tickslab)
+
   p <- p + ggplot2::theme(legend.position = legend)
 
   # Add risk table
