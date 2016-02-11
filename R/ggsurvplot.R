@@ -235,10 +235,6 @@ ggsurvplot <- function(fit, fun = NULL,
 
   n.strata <- ifelse(is.null(fit$strata) == TRUE, 1, length(fit$strata))
 
-  break.time.by <- ifelse(is.null(break.time.by),
-                          round(max(fit$time)/10), break.time.by)
-  times <- seq(0, max(fit$time), by = break.time.by)
-
 
   # data for survival plot
   d <- data.frame(time = fit$time,
@@ -294,9 +290,16 @@ ggsurvplot <- function(fit, fun = NULL,
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
       .geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, ...) +
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
-       ggplot2::scale_x_continuous(breaks = times, limits = xlim) +
+       # ggplot2::scale_x_continuous(breaks = times, limits = xlim) +
        .ggcolor(palette) +
        .ggfill(palette) + ggtheme
+
+  if(is.null(break.time.by))
+    times <- ggplot_build(p)$panel$ranges[[1]]$x.major_source
+  else times <- seq(0, max(fit$time), by = break.time.by)
+
+  p <- p + ggplot2::scale_x_continuous(breaks = times, limits = xlim)
+
 
   # Add confidence interval
   if(conf.int){
@@ -306,7 +309,7 @@ ggsurvplot <- function(fit, fun = NULL,
                         fill = conf.int.fill, alpha = 0.3, na.rm = TRUE)
   }
   # Add cencored
-  if (censor) {
+  if (censor & any(d$n.censor >= 1)) {
     p <- p + .geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
                           colour = surv.color, size = size*4.5, shape = "+")
   }
@@ -334,13 +337,15 @@ ggsurvplot <- function(fit, fun = NULL,
 
   p <- p + ggplot2::theme(legend.position = legend)
 
+
   # Add risk table
    if(risk.table){
      blankp <- .blank_plot(d, "time", "strata")
      risktable <- .risk_table_plot(fit, times = times,
                                    legend.labs = legend.labs,
                                    xlim = xlim, ylim = ylim, risk.table.adj = risk.table.adj,
-                                   risk.table.col = risk.table.col, palette = palette)
+                                   risk.table.col = risk.table.col, palette = palette,
+                                   ggtheme = ggtheme)
      m <- max(nchar(legend.labs))
     if(is.null(surv.plot.adj)) surv.plot.adj <- ifelse(m < 10, 1.5, 2.5)
     p <- p + ggplot2::theme(legend.position = "top") +
@@ -348,13 +353,18 @@ ggsurvplot <- function(fit, fun = NULL,
     gridExtra::grid.arrange(p, blankp, risktable, clip = FALSE, nrow = 3,
                  ncol = 1, heights = grid::unit(c(surv.plot.height, .1, risk.table.height),
                                                 c("null", "null", "null")))
+    res <- list(table = risktable, plot = p)
 
    #  p <- gridExtra::arrangeGrob(p, blankp, risktable, clip = FALSE, nrow = 3,
    #                  ncol = 1, heights = unit(c(2, .1, .25), c("null", "null", "null")))
    #  invisible(p)
    }
-  else return(p)
+  else res <- list(plot = p)
+
+  class(res) <- c("ggsurvplot", "list")
+  return(res)
 }
+
 
 
 
@@ -404,7 +414,8 @@ ggsurvplot <- function(fit, fun = NULL,
 .risk_table_plot <- function(fit, times, legend.labs = NULL,
                         xlim = c(0, max(fit$time)), ylim = c(0,1),
                         risk.table.adj = NULL, risk.table.col = "black",
-                        palette = NULL){
+                        palette = NULL, ggtheme = ggplot2::theme_classic()
+                        ){
 
   ntimes <- length(summary(fit, times = times, extend = TRUE)$time)
 
@@ -433,25 +444,27 @@ ggsurvplot <- function(fit, fun = NULL,
     dtp <- ggplot2::ggplot(risk.data,
            ggplot2::aes_string(x = 'time', y = 'strata', label = "n.risk")) +
           .geom_exec(ggplot2::geom_text, data = risk.data, size = 3.5, color = risk.table.col) +
-           ggplot2::theme_bw() +
+           ggtheme +
            ggplot2::scale_y_discrete(breaks = levels(risk.data$strata),
                        labels = legend.labs, limits = rev(legend.labs)) +
-          ggplot2::scale_x_continuous("Numbers at risk", limits = xlim) +
-          .ggcolor(palette) +
-          ggplot2:: theme(axis.title.x = ggplot2::element_text(size = 10, vjust = 1),
-            panel.grid.major = .blank, panel.grid.minor = .blank,
-            panel.border = .blank, axis.text.x = .blank,
-            axis.ticks = .blank, axis.text.y = ggplot2::element_text(face = "bold", hjust = 1 ))+
-          ggplot2::theme(legend.position = "none") +
-          ggplot2::labs(x = NULL, y = NULL)
+          ggplot2::scale_x_continuous("Numbers at risk by time", limits = xlim, breaks = times) +
+          .ggcolor(palette)
 
-   # Adjust position for table at risk
-    m <- max(nchar(legend.labs))
-    if(is.null(risk.table.adj)) {
-      risk.table.adj <- ifelse(m < 10, 2.5, 3.5) - 0.15 * m
-    }
-    dtp <- dtp +
-      ggplot2::theme(plot.margin = grid::unit(c(-1.5, 1, 0.1, risk.table.adj), "lines"))
+#     dtp <- dtp +
+#           ggplot2:: theme(axis.title.x = ggplot2::element_text(size = 10, vjust = 1),
+#             panel.grid.major = .blank, panel.grid.minor = .blank,
+#             panel.border = .blank, axis.text.x = .blank,
+#             axis.ticks = .blank, axis.text.y = ggplot2::element_text(face = "bold", hjust = 1 ))+
+#           ggplot2::theme(legend.position = "none") +
+#           ggplot2::labs(x = NULL, y = NULL)
+#
+#    # Adjust position for table at risk
+#     m <- max(nchar(legend.labs))
+#     if(is.null(risk.table.adj)) {
+#       risk.table.adj <- ifelse(m < 10, 2.5, 3.5) - 0.15 * m
+#     }
+#     dtp <- dtp +
+#     ggplot2::theme(plot.margin = grid::unit(c(-1.5, 1, 0.1, risk.table.adj), "lines"))
     return(dtp)
 }
 
