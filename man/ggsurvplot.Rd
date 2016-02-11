@@ -3,6 +3,7 @@
 \name{ggsurvplot}
 \alias{ggsurv_arrange}
 \alias{ggsurvplot}
+\alias{print.ggsurvplot}
 \title{Drawing survival curves using ggplot2}
 \usage{
 ggsurvplot(fit, fun = NULL, color = NULL, palette = NULL,
@@ -17,7 +18,9 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = NULL,
   risk.table.height = 0.25, surv.plot.adj = NULL, surv.plot.height = 2,
   ggtheme = ggplot2::theme_classic(), ...)
 
-ggsurv_arrange(object, plot.height = 0.75, tab.height = 0.25)
+ggsurv_arrange(x, plot.height = 0.75, tab.height = 0.25)
+
+\method{print}{ggsurvplot}(x, ...)
 }
 \arguments{
 \item{fit}{an object of class survfit.}
@@ -102,7 +105,9 @@ theme_minimal(), theme_classic(), theme_void(), ....}
 \item{...}{other arguments to be passed to ggplot2 geom_*() functions such as
 linetype, size, ...}
 
-\item{object}{an object of class ggsurvplot}
+\item{x}{an object of class ggsurvplot}
+
+\item{...}{further arguments passed to other methods}
 }
 \value{
 return an object of class ggsurvplot which is list containing two ggplot objects, including:

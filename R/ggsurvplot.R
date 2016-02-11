@@ -373,14 +373,14 @@ ggsurvplot <- function(fit, fun = NULL,
 }
 
 #' @describeIn ggsurvplot arranges survival plot and risk table
-#' @param object an object of class ggsurvplot
+#' @param x an object of class ggsurvplot
 #' @export
-ggsurv_arrange <- function (object, plot.height = 0.75, tab.height = 0.25)
+ggsurv_arrange <- function (x, plot.height = 0.75, tab.height = 0.25)
 {
-  if(!inherits(object, "ggsurvplot"))
+  if(!inherits(x, "ggsurvplot"))
     stop("An object of class ggsurvminer is required.")
 
-  plots <- rev(object)
+  plots <- rev(x)
   grobs <- widths <- list()
   for (i in 1:length(plots)) {
     grobs[[i]] <- ggplotGrob(plots[[i]])
@@ -391,6 +391,14 @@ ggsurv_arrange <- function (object, plot.height = 0.75, tab.height = 0.25)
     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
   }
   do.call(gridExtra::grid.arrange, c(grobs, nrow = 2, heights = list(c(plot.height, tab.height))))
+}
+
+#' @param ... further arguments passed to other methods
+#' @method print ggsurvplot
+#' @rdname ggsurvplot
+#' @export
+print.ggsurvplot <- function(x, ...){
+  ggsurv_arrange(x)
 }
 
 
