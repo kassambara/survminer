@@ -150,37 +150,22 @@
 # ticks
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 .set_ticks <-
-  function(ticks = TRUE, tickslab = TRUE, font.tickslab = NULL,
-           xtickslab.rt = 0, ytickslab.rt = 0)
+  function(p, font.tickslab = NULL)
   {
-    if (ticks)
-      ticks <-
-        element_line(colour = "black")
-    else
-      ticks <- element_blank()
-    if (is.null(font.tickslab))
-      font <- c(12, "bold", "black")
-    else
-      font <- font.tickslab
-    if (tickslab) {
+    if(!is.null(font.tickslab)){
       xtickslab <-
         element_text(
           size = as.numeric(font[1]), face = font[2],
-          colour = font[3], angle = xtickslab.rt
+          colour = font[3]
         )
       ytickslab <-
         element_text(
           size = as.numeric(font[1]), face = font[2],
-          colour = font[3], angle = ytickslab.rt
+          colour = font[3]
         )
+      theme(axis.text.x = xtickslab, axis.text.y = ytickslab)
     }
-    else {
-      xtickslab <- element_blank()
-      ytickslab <- element_blank()
-    }
-    theme(
-      axis.ticks = ticks, axis.text.x = xtickslab, axis.text.y = ytickslab
-    )
+    p
   }
 
 
