@@ -373,16 +373,19 @@ ggsurvplot <- function(fit, fun = NULL,
   return(res)
 }
 
-#' @describeIn ggsurvplot arranges survival plot and risk table
-#' @param x an object of class ggsurvplot
+#' @param ... further arguments passed to other methods
+#' @method print ggsurvplot
+#' @rdname ggsurvplot
 #' @export
-ggsurv_arrange <- function (x, surv.plot.height = NULL, risk.table.height = NULL)
-{
+print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NULL, ...){
   if(!inherits(x, "ggsurvplot"))
     stop("An object of class ggsurvplot is required.")
-  surv.plot.height <- ifelse(is.null(surv.plot.height), 0.75, surv.plot.height)
-  risk.table.height <- ifelse(is.null(risk.table.height), 0.75, risk.table.height)
 
+  surv.plot.height <- ifelse(is.null(surv.plot.height), attr(x, "surv.plot.height"), surv.plot.height)
+  risk.table.height <- ifelse(is.null(risk.table.height), attr(x, "risk.table.height"), risk.table.height)
+  surv.plot.height <- ifelse(is.null(surv.plot.height), 0.75, surv.plot.height)
+  risk.table.height <- ifelse(is.null(risk.table.height), 0.25, risk.table.height)
+  x$table <- x$table + theme(legend.position = "none")
   plots <- rev(x)
   grobs <- widths <- list()
   for (i in 1:length(plots)) {
@@ -394,14 +397,6 @@ ggsurv_arrange <- function (x, surv.plot.height = NULL, risk.table.height = NULL
     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
   }
   do.call(gridExtra::grid.arrange, c(grobs, nrow = 2, heights = list(c(surv.plot.height, risk.table.height))))
-}
-
-#' @param ... further arguments passed to other methods
-#' @method print ggsurvplot
-#' @rdname ggsurvplot
-#' @export
-print.ggsurvplot <- function(x, ...){
-  ggsurv_arrange(x)
 }
 
 
