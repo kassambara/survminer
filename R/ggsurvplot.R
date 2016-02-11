@@ -51,8 +51,6 @@
 #'@param risk.table.height the height of the risk table on the grid. Increase
 #'  the value when you have many strata. Default is 0.25. Ignored when
 #'  risk.table = FALSE.
-#'@param surv.plot.adj numeric value, used to adjust survival plot (like
-#'  risk.table.adj). Ignored when risk.table = FALSE.
 #'@param surv.plot.height the height of the survival plot on the grid. Default
 #'  is 0.75. Ignored when risk.table = FALSE.
 #'@param ggtheme function, ggplot2 theme name. Default value is theme_classic().
@@ -190,15 +188,6 @@
 #'           risk.table.adj = -2, # risk table location adj
 #'           palette = "Dark2")
 #'
-#'# Adjust survival plot location, shift to the right
-#'# Change Risk table height
-#'ggsurvplot(fit2, pval = TRUE,
-#'           break.time.by = 400,
-#'           risk.table = TRUE,
-#'           risk.table.col = "strata",
-#'           risk.table.height = 0.5, # Useful when you have multiple groups
-#'           surv.plot.adj = 4.9, # surv plot location adj
-#'           palette = "Dark2")
 #'
 #'
 #'# Change legend labels
@@ -225,8 +214,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "strata", legend.labs = NULL,
                        risk.table = FALSE, risk.table.col = "black", risk.table.adj = NULL,
-                       risk.table.height = 0.25,
-                       surv.plot.adj = NULL, surv.plot.height = 0.75,
+                       risk.table.height = 0.25, surv.plot.height = 0.75,
                        ggtheme = ggplot2::theme_classic(),
                        ...
                        ){
