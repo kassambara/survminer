@@ -66,8 +66,13 @@
 #'  Their values should be between 0 and 1. c(0,0) corresponds to the "bottom
 #'  left" and c(1,1) corresponds to the "top right" position. For instance use
 #'  legend = c(0.8, 0.2).
-#'@return return a ggplot2 (when risk.table = FALSE).
-#'
+#'@return return an object of class ggsurvplot which is list containing two ggplot objects, including:
+#'\itemize{
+#'  \item plot: the survival plot
+#'  \item table: the number at risk table per time
+#'}
+#' \cr\cr
+#' The survival plot and the risk table can be arranged using the function ggsurv_arrange().
 #' @examples
 #'
 #'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -206,7 +211,7 @@
 #'           ggtheme = theme_bw(),
 #'           legend.labs = c("A", "B", "C", "D", "E", "F"))
 #' }
-#'
+#' @describeIn ggsurvplot Draws survival curves using ggplot2.
 #'@export
 ggsurvplot <- function(fit, fun = NULL,
                        color = NULL, palette = NULL, break.time.by = NULL,
@@ -332,9 +337,8 @@ ggsurvplot <- function(fit, fun = NULL,
                          color = legend.title, fill = legend.title,
                          linetype = legend.title
                          )
-  p <-.labs(p = p, font.main = font.main, font.x = font.x, font.y = font.y) +
-  .set_ticks(font.tickslab = font.tickslab)
-
+  p <-.labs(p = p, font.main = font.main, font.x = font.x, font.y = font.y)
+  p <- .set_ticks(p, font.tickslab = font.tickslab)
   p <- p + ggplot2::theme(legend.position = legend)
 
 
@@ -346,13 +350,16 @@ ggsurvplot <- function(fit, fun = NULL,
                                    xlim = xlim, ylim = ylim, risk.table.adj = risk.table.adj,
                                    risk.table.col = risk.table.col, palette = palette,
                                    ggtheme = ggtheme)
-     m <- max(nchar(legend.labs))
-    if(is.null(surv.plot.adj)) surv.plot.adj <- ifelse(m < 10, 1.5, 2.5)
-    p <- p + ggplot2::theme(legend.position = "top") +
-    ggplot2::theme(plot.margin = grid::unit(c(0, 1, .5, surv.plot.adj),"lines"))
-    gridExtra::grid.arrange(p, blankp, risktable, clip = FALSE, nrow = 3,
-                 ncol = 1, heights = grid::unit(c(surv.plot.height, .1, risk.table.height),
-                                                c("null", "null", "null")))
+     risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y)
+     risktable <- .set_ticks(risktable, font.tickslab = font.tickslab)
+#      m <- max(nchar(legend.labs))
+#     if(is.null(surv.plot.adj)) surv.plot.adj <- ifelse(m < 10, 1.5, 2.5)
+
+#     p <- p + ggplot2::theme(legend.position = "top") +
+#     ggplot2::theme(plot.margin = grid::unit(c(0, 1, .5, surv.plot.adj),"lines"))
+#     gridExtra::grid.arrange(p, blankp, risktable, clip = FALSE, nrow = 3,
+#                  ncol = 1, heights = grid::unit(c(surv.plot.height, .1, risk.table.height),
+#                                                 c("null", "null", "null")))
     res <- list(table = risktable, plot = p)
 
    #  p <- gridExtra::arrangeGrob(p, blankp, risktable, clip = FALSE, nrow = 3,
@@ -365,7 +372,7 @@ ggsurvplot <- function(fit, fun = NULL,
   return(res)
 }
 
-#' @describeIn ggsurvplot arrange survival plot and risk table
+#' @describeIn ggsurvplot arranges survival plot and risk table
 #' @param object an object of class ggsurvplot
 #' @export
 ggsurv_arrange <- function (object, plot.height = 0.75, tab.height = 0.25)
@@ -468,7 +475,8 @@ ggsurv_arrange <- function (object, plot.height = 0.75, tab.height = 0.25)
            ggplot2::scale_y_discrete(breaks = levels(risk.data$strata),
                        labels = legend.labs, limits = rev(legend.labs)) +
           ggplot2::scale_x_continuous("Numbers at risk by time", limits = xlim, breaks = times) +
-          .ggcolor(palette)
+          .ggcolor(palette)+
+          ggplot2::theme(legend.position = "none")
 
 #     dtp <- dtp +
 #           ggplot2:: theme(axis.title.x = ggplot2::element_text(size = 10, vjust = 1),

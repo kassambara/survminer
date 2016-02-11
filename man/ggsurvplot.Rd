@@ -105,7 +105,13 @@ linetype, size, ...}
 \item{object}{an object of class ggsurvplot}
 }
 \value{
-return a ggplot2 (when risk.table = FALSE).
+return an object of class ggsurvplot which is list containing two ggplot objects, including:
+\itemize{
+ \item plot: the survival plot
+ \item table: the number at risk table per time
+}
+\cr\cr
+The survival plot and the risk table can be arranged using the function ggsurv_arrange().
 }
 \description{
 Drawing survival curves using ggplot2
@@ -120,7 +126,9 @@ Drawing survival curves using ggplot2
 }
 \section{Functions}{
 \itemize{
-\item \code{ggsurv_arrange}: arrange survival plot and risk table
+\item \code{ggsurvplot}: Draws survival curves using ggplot2.
+
+\item \code{ggsurv_arrange}: arranges survival plot and risk table
 }}
 \examples{
 
@@ -260,6 +268,5 @@ ggsurvplot(fit2, pval = TRUE,
           ggtheme = theme_bw(),
           legend.labs = c("A", "B", "C", "D", "E", "F"))
 }
-
 }
 
