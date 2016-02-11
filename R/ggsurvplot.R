@@ -54,7 +54,7 @@
 #'@param surv.plot.adj numeric value, used to adjust survival plot (like
 #'  risk.table.adj). Ignored when risk.table = FALSE.
 #'@param surv.plot.height the height of the survival plot on the grid. Default
-#'  is 2. Ignored when risk.table = FALSE.
+#'  is 0.75. Ignored when risk.table = FALSE.
 #'@param ggtheme function, ggplot2 theme name. Default value is theme_classic().
 #'  Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
 #'  theme_minimal(), theme_classic(), theme_void(), ....
@@ -226,7 +226,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        legend.title = "strata", legend.labs = NULL,
                        risk.table = FALSE, risk.table.col = "black", risk.table.adj = NULL,
                        risk.table.height = 0.25,
-                       surv.plot.adj = NULL, surv.plot.height = 2,
+                       surv.plot.adj = NULL, surv.plot.height = 0.75,
                        ggtheme = ggplot2::theme_classic(),
                        ...
                        ){
@@ -367,18 +367,21 @@ ggsurvplot <- function(fit, fun = NULL,
    #  invisible(p)
    }
   else res <- list(plot = p)
-
   class(res) <- c("ggsurvplot", "list")
+  attr(res, "surv.plot.height") <- surv.plot.height
+  attr(res, "risk.table.height") <- risk.table.height
   return(res)
 }
 
 #' @describeIn ggsurvplot arranges survival plot and risk table
 #' @param x an object of class ggsurvplot
 #' @export
-ggsurv_arrange <- function (x, plot.height = 0.75, tab.height = 0.25)
+ggsurv_arrange <- function (x, surv.plot.height = NULL, risk.table.height = NULL)
 {
   if(!inherits(x, "ggsurvplot"))
-    stop("An object of class ggsurvminer is required.")
+    stop("An object of class ggsurvplot is required.")
+  surv.plot.height <- ifelse(is.null(surv.plot.height), 0.75, surv.plot.height)
+  risk.table.height <- ifelse(is.null(risk.table.height), 0.75, risk.table.height)
 
   plots <- rev(x)
   grobs <- widths <- list()
@@ -390,7 +393,7 @@ ggsurv_arrange <- function (x, plot.height = 0.75, tab.height = 0.25)
   for (i in 1:length(grobs)) {
     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
   }
-  do.call(gridExtra::grid.arrange, c(grobs, nrow = 2, heights = list(c(plot.height, tab.height))))
+  do.call(gridExtra::grid.arrange, c(grobs, nrow = 2, heights = list(c(surv.plot.height, risk.table.height))))
 }
 
 #' @param ... further arguments passed to other methods

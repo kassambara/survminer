@@ -15,10 +15,10 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = NULL,
   legend = c("top", "bottom", "left", "right", "none"),
   legend.title = "strata", legend.labs = NULL, risk.table = FALSE,
   risk.table.col = "black", risk.table.adj = NULL,
-  risk.table.height = 0.25, surv.plot.adj = NULL, surv.plot.height = 2,
+  risk.table.height = 0.25, surv.plot.adj = NULL, surv.plot.height = 0.75,
   ggtheme = ggplot2::theme_classic(), ...)
 
-ggsurv_arrange(x, plot.height = 0.75, tab.height = 0.25)
+ggsurv_arrange(x, surv.plot.height = NULL, risk.table.height = NULL)
 
 \method{print}{ggsurvplot}(x, ...)
 }
@@ -96,7 +96,7 @@ risk.table = FALSE.}
 risk.table.adj). Ignored when risk.table = FALSE.}
 
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
-is 2. Ignored when risk.table = FALSE.}
+is 0.75. Ignored when risk.table = FALSE.}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is theme_classic().
 Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
