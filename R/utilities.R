@@ -105,6 +105,10 @@
 .labs <- function(p, main = NULL, xlab = NULL, ylab = NULL,
                   font.main = NULL, font.x = NULL, font.y = NULL)
 {
+  font.main <- .parse_font(font.main)
+  font.x <- .parse_font(font.x)
+  font.y <- .parse_font(font.y)
+
   if (!is.null(main)) {
     if (main != FALSE)
       p <- p + labs(title = main)
@@ -128,21 +132,21 @@
     p <-
       p + theme(
         plot.title = element_text(
-          size = as.numeric(font.main[1]),
-          lineheight = 1.0, face = font.main[2], colour = font.main[3]
+          size = font.main$size,
+          lineheight = 1.0, face = font.main$face, colour = font.main$color
         )
       )
   if (!is.null(font.x))
     p <-
       p + theme(axis.title.x = element_text(
-        size = as.numeric(font.x[1]),
-        face = font.x[2], colour = font.x[3]
+        size = font.x$size,
+        face = font.x$face, colour = font.x$color
       ))
   if (!is.null(font.y))
     p <-
       p + theme(axis.title.y = element_text(
-        size = as.numeric(font.y[1]),
-        face = font.y[2], colour = font.y[3]
+        size = font.y$size,
+        face = font.y$face, colour = font.y$color
       ))
   p
 }
@@ -156,31 +160,51 @@
      font <- .parse_font(font.tickslab)
       xtickslab <-
         element_text(
-          size = as.numeric(font[1]), face = font[2],
-          colour = font[3]
+          size = font$size, face = font$face,
+          colour = font$color
         )
       ytickslab <-
         element_text(
-          size = as.numeric(font[1]), face = font[2],
-          colour = font[3]
+          size = font$size, face = font$face,
+          colour = font$color
         )
       p <- p+theme(axis.text.x = xtickslab, axis.text.y = ytickslab)
     }
     p
   }
 
+# Legends
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+.set_legend_font <- function(p, font.legend = NULL){
+
+  font <- .parse_font(font.legend)
+  if(!is.null(font)){
+    p <- p + theme(
+      legend.text = element_text(size = font$size,
+                                            face = font$face, colour = font$color),
+      legend.title = element_text(size = font$size,
+                                 face = font$face, colour = font$color)
+      )
+  }
+  p
+}
+
 
 # parse font
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 .parse_font <- function(font){
+  if(is.null(font)) res <- NULL
+  else{
    # matching size and face
   size <- grep("[0-9]+", font, perl = TRUE)
   face <- grep("plain|bold|italic|bold.italic", font, perl = TRUE)
-  if(length(size) == 0) size <- NULL else size <- font[size]
+  if(length(size) == 0) size <- NULL else size <- as.numeric(font[size])
   if(length(face) == 0) face <- NULL else face <- font[face]
   color <- setdiff(font, c(size, face))
   if(length(color) == 0) color <- NULL
-  c(size, face, color)
+  res <- list(size=size, face = face, color = color)
+  }
+  res
 }
 
 
