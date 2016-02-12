@@ -174,15 +174,13 @@
 #'           break.time.by = 400,
 #'           risk.table = TRUE)
 #'
-#'# Adjust risk table and survival plot locations
+#'# Adjust risk table and survival plot heights
 #'# ++++++++++++++++++++++++++++++++++++
-#'# Adjust risk table location, shift to the left
-#'
 #'ggsurvplot(fit2, pval = TRUE,
 #'           break.time.by = 400,
 #'           risk.table = TRUE,
 #'           risk.table.col = "strata",
-#'           risk.table.adj = -2, # risk table location adj
+#'           risk.table.height = 0.5, # Useful when you have multiple groups
 #'           palette = "Dark2")
 #'
 #'
@@ -210,7 +208,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "strata", legend.labs = NULL,
-                       risk.table = FALSE, risk.table.col = "black", risk.table.adj = NULL,
+                       risk.table = FALSE, risk.table.col = "black",
                        risk.table.height = 0.25, surv.plot.height = 0.75,
                        ggtheme = ggplot2::theme_classic(),
                        ...
@@ -332,7 +330,7 @@ ggsurvplot <- function(fit, fun = NULL,
      blankp <- .blank_plot(d, "time", "strata")
      risktable <- .risk_table_plot(fit, times = times,
                                    legend.labs = legend.labs,
-                                   xlim = xlim, ylim = ylim, risk.table.adj = risk.table.adj,
+                                   xlim = xlim, ylim = ylim,
                                    risk.table.col = risk.table.col, palette = palette,
                                    ggtheme = ggtheme)
      risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y)
@@ -427,11 +425,10 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 }
 
 # Draw risk table
-# risk.table.adj adjustement of risk table location. Used to shift the table on the right or
 # on the left
 .risk_table_plot <- function(fit, times, legend.labs = NULL,
                         xlim = c(0, max(fit$time)), ylim = c(0,1),
-                        risk.table.adj = NULL, risk.table.col = "black",
+                        risk.table.col = "black",
                         palette = NULL, ggtheme = ggplot2::theme_classic()
                         ){
 

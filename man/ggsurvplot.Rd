@@ -13,9 +13,8 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = NULL,
   font.y = NULL, font.tickslab = NULL, xlim = NULL, ylim = NULL,
   legend = c("top", "bottom", "left", "right", "none"),
   legend.title = "strata", legend.labs = NULL, risk.table = FALSE,
-  risk.table.col = "black", risk.table.adj = NULL,
-  risk.table.height = 0.25, surv.plot.height = 0.75,
-  ggtheme = ggplot2::theme_classic(), ...)
+  risk.table.col = "black", risk.table.height = 0.25,
+  surv.plot.height = 0.75, ggtheme = ggplot2::theme_classic(), ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
   risk.table.height = NULL, ...)
@@ -228,15 +227,13 @@ ggsurvplot(fit2, pval = TRUE,
           break.time.by = 400,
           risk.table = TRUE)
 
-# Adjust risk table and survival plot locations
+# Adjust risk table and survival plot heights
 # ++++++++++++++++++++++++++++++++++++
-# Adjust risk table location, shift to the left
-
 ggsurvplot(fit2, pval = TRUE,
           break.time.by = 400,
           risk.table = TRUE,
           risk.table.col = "strata",
-          risk.table.adj = -2, # risk table location adj
+          risk.table.height = 0.5, # Useful when you have multiple groups
           palette = "Dark2")
 
 
