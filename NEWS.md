@@ -2,7 +2,45 @@
 
 ## New features
    
-- New arguments for ggsurvplot() for changing font style, size and color of main title, axis labels and axis tick labels: font.main, font.x, font.y, font.tickslab 
+- New arguments in ggsurvplot for changing font style, size and color of main title, axis labels, axis tick labels and legend labels: *font.main, font.x, font.y, font.tickslab, font.legend*.
+- New arguments *risk.table.title, risk.table.fontsize* in ggsurvplot
+
+- *print.ggsurvplot* function added: S3 method for class 'ggsurvplot'. 
+  
+- ggsurvplot returns an object of class ggsurvplot which is list containing two ggplot objects: 
+    - *plot*: the survival plot
+    - *table*: the number at risk table per time
+    
+    
+- It's know possible to customize the output survival *plot* and the *risk table* returned by ggsurvplot, and to print again the final plot.  (@MarcinKosinski, [#2](https://github.com/kassambara/survminer/issues/2)):
+
+```{r}
+# Fit survival curves
+#++++++++++++++++++++++++++++++++++++
+require("survival")
+fit<- survfit(Surv(time, status) ~ sex, data = lung)
+
+# visualize
+#++++++++++++++++++++++++++++++++++++
+require(survminer)
+ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
+          risk.table = TRUE)
+
+# Customize the output and then print
+#++++++++++++++++++++++++++++++++++++
+res <- ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
+           risk.table = TRUE)
+res$table <- res$table + theme(axis.line = element_blank())
+res$plot <- res$plot + labs(title = "Survival Curves")
+print(res)
+```
+
+
+## Bug fixes
+  
+- ggtheme know affects risk.table (@MarcinKosinski, [#1](https://github.com/kassambara/survminer/issues/1))
+    
+
 
 # survminer 0.1.1
 
