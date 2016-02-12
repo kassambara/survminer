@@ -95,7 +95,7 @@ theme_minimal(), theme_classic(), theme_void(), ....}
 \item{...}{other arguments to be passed to ggplot2 geom_*() functions such as
 linetype, size, ...}
 
-\item{...}{further arguments passed to other methods}
+\item{x}{an object of class ggsurvplot}
 }
 \value{
 return an object of class ggsurvplot which is list containing two ggplot objects, including:
@@ -103,8 +103,6 @@ return an object of class ggsurvplot which is list containing two ggplot objects
  \item plot: the survival plot
  \item table: the number at risk table per time
 }
-\cr\cr
-The survival plot and the risk table can be arranged using the function ggsurv_arrange().
 }
 \description{
 Drawing survival curves using ggplot2

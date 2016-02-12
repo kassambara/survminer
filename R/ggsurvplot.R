@@ -66,8 +66,6 @@
 #'  \item plot: the survival plot
 #'  \item table: the number at risk table per time
 #'}
-#' \cr\cr
-#' The survival plot and the risk table can be arranged using the function ggsurv_arrange().
 #' @examples
 #'
 #'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -356,7 +354,7 @@ ggsurvplot <- function(fit, fun = NULL,
   return(res)
 }
 
-#' @param ... further arguments passed to other methods
+#' @param x an object of class ggsurvplot
 #' @method print ggsurvplot
 #' @rdname ggsurvplot
 #' @export
