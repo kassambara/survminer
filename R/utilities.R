@@ -177,10 +177,10 @@
    # matching size and face
   size <- grep("[0-9]+", font, perl = TRUE)
   face <- grep("plain|bold|italic|bold.italic", font, perl = TRUE)
-  size <- ifelse(length(size) == 0, NULL, font[size])
-  face <- ifelse(length(face) == 0, NULL, font[face])
+  if(length(size) == 0) size <- NULL else size <- font[size]
+  if(length(face) == 0) size <- NULL else size <- font[face]
   color <- setdiff(font, c(size, face))
-  color <- ifelse(length(color) == 0, NULL, color)
+  if(length(color) == 0) color <- NULL else color <- font[color]
   c(size, face, color)
 }
 
