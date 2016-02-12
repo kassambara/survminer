@@ -152,9 +152,8 @@
 .set_ticks <-
   function(p, font.tickslab = NULL)
   {
-    font <- .parse_font(font.tickslab)
-
     if(!is.null(font.tickslab)){
+     font <- .parse_font(font.tickslab)
       xtickslab <-
         element_text(
           size = as.numeric(font[1]), face = font[2],
@@ -165,7 +164,7 @@
           size = as.numeric(font[1]), face = font[2],
           colour = font[3]
         )
-      theme(axis.text.x = xtickslab, axis.text.y = ytickslab)
+      p <- p+theme(axis.text.x = xtickslab, axis.text.y = ytickslab)
     }
     p
   }
@@ -178,9 +177,9 @@
   size <- grep("[0-9]+", font, perl = TRUE)
   face <- grep("plain|bold|italic|bold.italic", font, perl = TRUE)
   if(length(size) == 0) size <- NULL else size <- font[size]
-  if(length(face) == 0) size <- NULL else size <- font[face]
+  if(length(face) == 0) face <- NULL else face <- font[face]
   color <- setdiff(font, c(size, face))
-  if(length(color) == 0) color <- NULL else color <- font[color]
+  if(length(color) == 0) color <- NULL
   c(size, face, color)
 }
 
