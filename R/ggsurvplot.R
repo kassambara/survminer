@@ -45,9 +45,6 @@
 #'@param risk.table.col color to be used for risk table. Default value is
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
 #'  "strata".
-#'@param risk.table.adj numeric value, used to adjust the location of the risk
-#'  table. Negative value will shift the table to the left and positive value
-#'  will shift the table to the right side. Ignored when risk.table = FALSE.
 #'@param risk.table.height the height of the risk table on the grid. Increase
 #'  the value when you have many strata. Default is 0.25. Ignored when
 #'  risk.table = FALSE.
