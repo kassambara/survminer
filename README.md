@@ -67,6 +67,32 @@ ggsurvplot(fit)
 
 ``` r
 
+# Change font style, size and color
+#++++++++++++++++++++++++++++++++++++
+# Change only font size
+ggsurvplot(fit, main = "Survival curve",
+   font.main = 18,
+   font.x =  16,
+   font.y = 16,
+   font.tickslab = 14)
+```
+
+![](README-ggplot2-survival-plot-3.png)
+
+``` r
+
+# Change font size, style and color at the same time
+ggsurvplot(fit, main = "Survival curve",
+   font.main = c(16, "bold", "darkblue"),
+   font.x = c(14, "bold.italic", "red"),
+   font.y = c(14, "bold.italic", "darkred"),
+   font.tickslab = c(12, "plain", "darkgreen"))
+```
+
+![](README-ggplot2-survival-plot-4.png)
+
+``` r
+
 # Legend: title, labels and position
 #++++++++++++++++++++++++++++++++++++
 
@@ -76,7 +102,7 @@ ggsurvplot(fit, legend = "bottom",
            legend.labs = c("Male", "Female"))
 ```
 
-![](README-ggplot2-survival-plot-3.png)
+![](README-ggplot2-survival-plot-5.png)
 
 ``` r
 
@@ -84,7 +110,7 @@ ggsurvplot(fit, legend = "bottom",
 ggsurvplot(fit, legend = c(0.2, 0.2))
 ```
 
-![](README-ggplot2-survival-plot-4.png)
+![](README-ggplot2-survival-plot-6.png)
 
 ``` r
 
@@ -103,7 +129,7 @@ ggsurvplot(fit,  size = 1,  # change line size
            )
 ```
 
-![](README-ggplot2-survival-plot-5.png)
+![](README-ggplot2-survival-plot-7.png)
 
 ``` r
 
@@ -113,7 +139,7 @@ ggsurvplot(fit, linetype = "strata",
            palette = "Dark2")
 ```
 
-![](README-ggplot2-survival-plot-6.png)
+![](README-ggplot2-survival-plot-8.png)
 
 ``` r
 
@@ -123,19 +149,31 @@ ggsurvplot(fit, linetype = "strata",
            palette = "grey")
 ```
 
-![](README-ggplot2-survival-plot-7.png)
+![](README-ggplot2-survival-plot-9.png)
 
 ``` r
 
 # Add risk table
 #++++++++++++++++++++++++++++++++++++
 
-# Add Risk table
+# Add risk table
 ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
            risk.table = TRUE)
 ```
 
-![](README-ggplot2-survival-plot-8.png)
+![](README-ggplot2-survival-plot-10.png)
+
+``` r
+
+# Customize the output and then print
+res <- ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
+           risk.table = TRUE)
+res$table <- res$table + theme(axis.line = element_blank())
+res$plot <- res$plot + labs(title = "Survival Curves")
+print(res)
+```
+
+![](README-ggplot2-survival-plot-11.png)
 
 ``` r
 
@@ -149,7 +187,7 @@ ggsurvplot(fit,
            palette = c("#E7B800", "#2E9FDF"))
 ```
 
-![](README-ggplot2-survival-plot-9.png)
+![](README-ggplot2-survival-plot-12.png)
 
 ``` r
 
@@ -162,7 +200,7 @@ ggsurvplot(fit, conf.int = TRUE,
            fun = "event")
 ```
 
-![](README-ggplot2-survival-plot-10.png)
+![](README-ggplot2-survival-plot-13.png)
 
 ``` r
 
@@ -173,7 +211,7 @@ ggsurvplot(fit, conf.int = TRUE,
            fun = "cumhaz")
 ```
 
-![](README-ggplot2-survival-plot-11.png)
+![](README-ggplot2-survival-plot-14.png)
 
 ``` r
 
@@ -185,7 +223,7 @@ ggsurvplot(fit, conf.int = TRUE,
            fun = function(y) y*100)
 ```
 
-![](README-ggplot2-survival-plot-12.png)
+![](README-ggplot2-survival-plot-15.png)
 
 ``` r
 
@@ -211,7 +249,7 @@ ggsurvplot(fit2, pval = TRUE,
            risk.table = TRUE)
 ```
 
-![](README-ggplot2-survival-plot-13.png)
+![](README-ggplot2-survival-plot-16.png)
 
 ``` r
 
@@ -226,7 +264,7 @@ ggsurvplot(fit2, pval = TRUE,
           palette = "Dark2")
 ```
 
-![](README-ggplot2-survival-plot-14.png)
+![](README-ggplot2-survival-plot-17.png)
 
 ``` r
   
@@ -241,4 +279,4 @@ ggsurvplot(fit2, pval = TRUE,
            legend.labs = c("A", "B", "C", "D", "E", "F"))
 ```
 
-![](README-ggplot2-survival-plot-15.png)
+![](README-ggplot2-survival-plot-18.png)

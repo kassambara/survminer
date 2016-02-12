@@ -78,6 +78,22 @@ fit<- survfit(Surv(time, status) ~ sex, data = lung)
 # Drawing survival curves
 ggsurvplot(fit)
 
+# Change font style, size and color
+#++++++++++++++++++++++++++++++++++++
+# Change only font size
+ggsurvplot(fit, main = "Survival curve",
+   font.main = 18,
+   font.x =  16,
+   font.y = 16,
+   font.tickslab = 14)
+
+# Change font size, style and color at the same time
+ggsurvplot(fit, main = "Survival curve",
+   font.main = c(16, "bold", "darkblue"),
+   font.x = c(14, "bold.italic", "red"),
+   font.y = c(14, "bold.italic", "darkred"),
+   font.tickslab = c(12, "plain", "darkgreen"))
+
 # Legend: title, labels and position
 #++++++++++++++++++++++++++++++++++++
 
@@ -116,9 +132,16 @@ ggsurvplot(fit, linetype = "strata",
 # Add risk table
 #++++++++++++++++++++++++++++++++++++
 
-# Add Risk table
+# Add risk table
 ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
            risk.table = TRUE)
+
+# Customize the output and then print
+res <- ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
+           risk.table = TRUE)
+res$table <- res$table + theme(axis.line = element_blank())
+res$plot <- res$plot + labs(title = "Survival Curves")
+print(res)
 
 # Change color, linetype by strata, risk.table color by strata
 ggsurvplot(fit, 
