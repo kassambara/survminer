@@ -361,7 +361,8 @@ ggsurvplot <- function(fit, fun = NULL,
 print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NULL, ...){
   if(!inherits(x, "ggsurvplot"))
     stop("An object of class ggsurvplot is required.")
-
+  if(is.null(x$table)) print(x$plot)
+  else{
   surv.plot.height <- ifelse(is.null(surv.plot.height), attr(x, "surv.plot.height"), surv.plot.height)
   risk.table.height <- ifelse(is.null(risk.table.height), attr(x, "risk.table.height"), risk.table.height)
   surv.plot.height <- ifelse(is.null(surv.plot.height), 0.75, surv.plot.height)
@@ -378,6 +379,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
   }
   do.call(gridExtra::grid.arrange, c(grobs, nrow = 2, heights = list(c(surv.plot.height, risk.table.height))))
+  }
 }
 
 
