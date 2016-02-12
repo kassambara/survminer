@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "README-",
-  fig.cap="survminer: Drawing survival curves using ggplot2"
+  fig.cap=""
 )
 ```
     
@@ -171,32 +171,15 @@ ggsurvplot(fit2, pval = TRUE,
            break.time.by = 400,
            risk.table = TRUE)
 
-# Adjust risk table and survival plot locations 
+# Adjust risk table and survival plot heights
 # ++++++++++++++++++++++++++++++++++++
-# Adjust risk table location, shift to the left
-ggsurvplot(fit2, pval = TRUE,
-           break.time.by = 400, 
-           risk.table = TRUE,
-           risk.table.col = "strata",
-           risk.table.adj = -2, # risk table location adj
-           palette = "Dark2")
-
-# Adjust survival plot location, shift to the right
-ggsurvplot(fit2, pval = TRUE,
-           break.time.by = 400, 
-           risk.table = TRUE,
-           risk.table.col = "strata",
-           surv.plot.adj = 4.9, # surv plot location adj
-           palette = "Dark2")
-
 # Risk table height
 ggsurvplot(fit2, pval = TRUE,
-           break.time.by = 400, 
-           risk.table = TRUE,
-           risk.table.col = "strata",
-           risk.table.height = 0.5, # Useful when you have multiple groups
-           surv.plot.adj = 4.9, # surv plot location adj
-           palette = "Dark2")
+          break.time.by = 400,
+          risk.table = TRUE,
+          risk.table.col = "strata",
+          risk.table.height = 0.5, # Useful when you have multiple groups
+          palette = "Dark2")
   
 # Change legend labels
 # ++++++++++++++++++++++++++++++++++++
