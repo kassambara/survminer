@@ -9,11 +9,14 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = NULL,
   break.time.by = NULL, surv.scale = c("default", "percent"),
   conf.int = FALSE, conf.int.fill = "gray", censor = TRUE, pval = FALSE,
   pval.size = 5, pval.coord = c(NULL, NULL), main = NULL, xlab = "Time",
-  ylab = "Survival probability", font.main = NULL, font.x = NULL,
-  font.y = NULL, font.tickslab = NULL, xlim = NULL, ylim = NULL,
+  ylab = "Survival probability", font.main = c(16, "plain", "black"),
+  font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
+  font.tickslab = c(12, "plain", "black"), xlim = NULL, ylim = NULL,
   legend = c("top", "bottom", "left", "right", "none"),
-  legend.title = "strata", legend.labs = NULL, risk.table = FALSE,
-  risk.table.col = "black", risk.table.height = 0.25,
+  legend.title = "Strata", legend.labs = NULL, font.legend = c(10,
+  "plain", "black"), risk.table = FALSE,
+  risk.table.title = "Number at risk by time", risk.table.col = "black",
+  risk.table.fontsize = 4.5, risk.table.height = 0.25,
   surv.plot.height = 0.75, ggtheme = ggplot2::theme_classic(), ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
@@ -22,10 +25,10 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = NULL,
 \arguments{
 \item{fit}{an object of class survfit.}
 
-\item{fun}{an arbitrary function defining a transformation of the
-survival curve. For example use function(y){y*100}. Often used transformations
-can be specified with a character argument instead: "event" plots cumulative
-events (f(y) = 1-y), "cumhaz" plots the cumulative hazard function (f(y) =
+\item{fun}{an arbitrary function defining a transformation of the survival
+curve. For example use function(y){y*100}. Often used transformations can be
+specified with a character argument instead: "event" plots cumulative events
+(f(y) = 1-y), "cumhaz" plots the cumulative hazard function (f(y) =
 -log(y)), and "cloglog" creates a complimentary log-log survival plot (f(y)
 = log(-log(y)) along with log scale for the x-axis).}
 
@@ -58,17 +61,19 @@ coordinates of the p-value. Default values are NULL.}
 
 \item{main, xlab, ylab}{main title and axis labels}
 
-\item{font.main, font.x, font.y, font.tickslab}{a vector of length 3 indicating respectively
-the size (e.g.: 14), the style (e.g.: "plain", "bold", "italic",
-"bold.italic") and the color (e.g.: "red") of main title, xlab and ylab and axis tick labels,
-respectively. For example \emph{font.x = c(14, "bold", "red")}.}
+\item{font.main, font.x, font.y, font.tickslab, font.legend}{a vector of length 3 indicating
+respectively the size (e.g.: 14), the style (e.g.: "plain", "bold",
+"italic", "bold.italic") and the color (e.g.: "red") of main title, xlab and
+ylab and axis tick labels, respectively. For example \emph{font.x = c(14,
+"bold", "red")}.  Use font.x = 14, to change only font size; or use font.x =
+"bold", to change only font face.}
 
 \item{xlim, ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
 
 \item{legend}{character specifying legend position. Allowed values are one of
-c("top", "bottom", "left", "right", "none"). Default is "top" side
-position. to remove the legend use legend = "none". Legend position can be
-also specified using a numeric vector c(x, y); see details section.}
+c("top", "bottom", "left", "right", "none"). Default is "top" side position.
+to remove the legend use legend = "none". Legend position can be also
+specified using a numeric vector c(x, y); see details section.}
 
 \item{legend.title}{legend title.}
 
@@ -77,9 +82,13 @@ also specified using a numeric vector c(x, y); see details section.}
 \item{risk.table}{logical value specifying whether to show risk table. Default
 is FALSE.}
 
+\item{risk.table.title}{Title to be used for risk table.}
+
 \item{risk.table.col}{color to be used for risk table. Default value is
 "black". If you want to color by strata (i.e. groups), use risk.table.col =
 "strata".}
+
+\item{risk.table.fontsize}{font size to be used for the risk table.}
 
 \item{risk.table.height}{the height of the risk table on the grid. Increase
 the value when you have many strata. Default is 0.25. Ignored when
@@ -98,11 +107,9 @@ linetype, size, ...}
 \item{x}{an object of class ggsurvplot}
 }
 \value{
-return an object of class ggsurvplot which is list containing two ggplot objects, including:
-\itemize{
- \item plot: the survival plot
- \item table: the number at risk table per time
-}
+return an object of class ggsurvplot which is list containing two
+ ggplot objects, including: \itemize{ \item plot: the survival plot \item
+ table: the number at risk table per time }
 }
 \description{
 Drawing survival curves using ggplot2
@@ -135,6 +142,14 @@ ggsurvplot(fit)
 
 # Change font style, size and color
 #++++++++++++++++++++++++++++++++++++
+# Change only font size
+ggsurvplot(fit, main = "Survival curve",
+   font.main = 18,
+   font.x =  16,
+   font.y = 16,
+   font.tickslab = 14)
+
+# Change font size, style and color at the same time
 ggsurvplot(fit, main = "Survival curve",
    font.main = c(16, "bold", "darkblue"),
    font.x = c(14, "bold.italic", "red"),
@@ -178,6 +193,7 @@ ggsurvplot(fit, linetype = "strata",
 # Add Risk table
 ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
           risk.table = TRUE)
+
 
 # Change color, linetype by strata, risk.table color by strata
 ggsurvplot(fit,

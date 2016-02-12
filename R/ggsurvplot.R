@@ -5,10 +5,10 @@
 #'Drawing survival curves using ggplot2
 #'@description Drawing survival curves using ggplot2
 #'@param fit an object of class survfit.
-#'@param fun an arbitrary function defining a transformation of the
-#'  survival curve. For example use function(y){y*100}. Often used transformations
-#'  can be specified with a character argument instead: "event" plots cumulative
-#'  events (f(y) = 1-y), "cumhaz" plots the cumulative hazard function (f(y) =
+#'@param fun an arbitrary function defining a transformation of the survival
+#'  curve. For example use function(y){y*100}. Often used transformations can be
+#'  specified with a character argument instead: "event" plots cumulative events
+#'  (f(y) = 1-y), "cumhaz" plots the cumulative hazard function (f(y) =
 #'  -log(y)), and "cloglog" creates a complimentary log-log survival plot (f(y)
 #'  = log(-log(y)) along with log scale for the x-axis).
 #'@param surv.scale scale transformation of survival curves. Allowed values are
@@ -29,22 +29,26 @@
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
 #'@param main,xlab,ylab main title and axis labels
-#'@param font.main,font.x,font.y,font.tickslab a vector of length 3 indicating respectively
-#'   the size (e.g.: 14), the style (e.g.: "plain", "bold", "italic",
-#'   "bold.italic") and the color (e.g.: "red") of main title, xlab and ylab and axis tick labels,
-#'   respectively. For example \emph{font.x = c(14, "bold", "red")}.
+#'@param font.main,font.x,font.y,font.tickslab,font.legend a vector of length 3 indicating
+#'  respectively the size (e.g.: 14), the style (e.g.: "plain", "bold",
+#'  "italic", "bold.italic") and the color (e.g.: "red") of main title, xlab and
+#'  ylab and axis tick labels, respectively. For example \emph{font.x = c(14,
+#'  "bold", "red")}.  Use font.x = 14, to change only font size; or use font.x =
+#'  "bold", to change only font face.
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
 #'@param legend character specifying legend position. Allowed values are one of
-#'  c("top", "bottom", "left", "right", "none"). Default is "top" side
-#'  position. to remove the legend use legend = "none". Legend position can be
-#'  also specified using a numeric vector c(x, y); see details section.
+#'  c("top", "bottom", "left", "right", "none"). Default is "top" side position.
+#'  to remove the legend use legend = "none". Legend position can be also
+#'  specified using a numeric vector c(x, y); see details section.
 #'@param legend.title legend title.
 #'@param legend.labs character vector specifying legend labels.
 #'@param risk.table logical value specifying whether to show risk table. Default
 #'  is FALSE.
+#'@param risk.table.title Title to be used for risk table.
 #'@param risk.table.col color to be used for risk table. Default value is
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
 #'  "strata".
+#' @param risk.table.fontsize font size to be used for the risk table.
 #'@param risk.table.height the height of the risk table on the grid. Increase
 #'  the value when you have many strata. Default is 0.25. Ignored when
 #'  risk.table = FALSE.
@@ -61,11 +65,9 @@
 #'  Their values should be between 0 and 1. c(0,0) corresponds to the "bottom
 #'  left" and c(1,1) corresponds to the "top right" position. For instance use
 #'  legend = c(0.8, 0.2).
-#'@return return an object of class ggsurvplot which is list containing two ggplot objects, including:
-#'\itemize{
-#'  \item plot: the survival plot
-#'  \item table: the number at risk table per time
-#'}
+#'@return return an object of class ggsurvplot which is list containing two
+#'  ggplot objects, including: \itemize{ \item plot: the survival plot \item
+#'  table: the number at risk table per time }
 #' @examples
 #'
 #'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,6 +84,14 @@
 #'
 #'# Change font style, size and color
 #'#++++++++++++++++++++++++++++++++++++
+#' # Change only font size
+#' ggsurvplot(fit, main = "Survival curve",
+#'    font.main = 18,
+#'    font.x =  16,
+#'    font.y = 16,
+#'    font.tickslab = 14)
+#'
+#' # Change font size, style and color at the same time
 #' ggsurvplot(fit, main = "Survival curve",
 #'    font.main = c(16, "bold", "darkblue"),
 #'    font.x = c(14, "bold.italic", "red"),
@@ -125,6 +135,7 @@
 #'# Add Risk table
 #'ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
 #'           risk.table = TRUE)
+#'
 #'
 #'# Change color, linetype by strata, risk.table color by strata
 #'ggsurvplot(fit,
@@ -193,7 +204,7 @@
 #'           ggtheme = theme_bw(),
 #'           legend.labs = c("A", "B", "C", "D", "E", "F"))
 #' }
-#' @describeIn ggsurvplot Draws survival curves using ggplot2.
+#'@describeIn ggsurvplot Draws survival curves using ggplot2.
 #'@export
 ggsurvplot <- function(fit, fun = NULL,
                        color = NULL, palette = NULL, break.time.by = NULL,
@@ -202,11 +213,15 @@ ggsurvplot <- function(fit, fun = NULL,
                        censor = TRUE,
                        pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
                        main = NULL, xlab = "Time", ylab = "Survival probability",
-                       font.main = NULL, font.x = NULL, font.y = NULL, font.tickslab = NULL,
+                       font.main = c(16, "plain", "black"),
+                       font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
+                       font.tickslab = c(12, "plain", "black"),
                        xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
-                       legend.title = "strata", legend.labs = NULL,
-                       risk.table = FALSE, risk.table.col = "black",
+                       legend.title = "Strata", legend.labs = NULL,
+                       font.legend = c(10, "plain", "black"),
+                       risk.table = FALSE, risk.table.title = "Number at risk by time",
+                       risk.table.col = "black", risk.table.fontsize = 4.5,
                        risk.table.height = 0.25, surv.plot.height = 0.75,
                        ggtheme = ggplot2::theme_classic(),
                        ...
@@ -321,6 +336,7 @@ ggsurvplot <- function(fit, fun = NULL,
   p <-.labs(p = p, font.main = font.main, font.x = font.x, font.y = font.y)
   p <- .set_ticks(p, font.tickslab = font.tickslab)
   p <- p + ggplot2::theme(legend.position = legend)
+  p <- .set_legend_font(p, font.legend)
 
 
   # Add risk table
@@ -330,8 +346,9 @@ ggsurvplot <- function(fit, fun = NULL,
                                    legend.labs = legend.labs,
                                    xlim = xlim, ylim = ylim,
                                    risk.table.col = risk.table.col, palette = palette,
-                                   ggtheme = ggtheme)
-     risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y)
+                                   ggtheme = ggtheme, risk.table.fontsize = risk.table.fontsize,
+                                   risk.table.title = risk.table.title)
+     risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y, xlab = xlab, ylab = legend.title)
      risktable <- .set_ticks(risktable, font.tickslab = font.tickslab)
 #      m <- max(nchar(legend.labs))
 #     if(is.null(surv.plot.adj)) surv.plot.adj <- ifelse(m < 10, 1.5, 2.5)
@@ -429,7 +446,8 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 .risk_table_plot <- function(fit, times, legend.labs = NULL,
                         xlim = c(0, max(fit$time)), ylim = c(0,1),
                         risk.table.col = "black",
-                        palette = NULL, ggtheme = ggplot2::theme_classic()
+                        palette = NULL, ggtheme = ggplot2::theme_classic(),
+                        risk.table.fontsize = 5, risk.table.title = "Number at risk by time"
                         ){
 
   ntimes <- length(summary(fit, times = times, extend = TRUE)$time)
@@ -458,12 +476,13 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     .blank <- ggplot2::element_blank()
     dtp <- ggplot2::ggplot(risk.data,
            ggplot2::aes_string(x = 'time', y = 'strata', label = "n.risk")) +
-          .geom_exec(ggplot2::geom_text, data = risk.data, size = 3.5, color = risk.table.col) +
+          .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
            ggtheme +
            ggplot2::scale_y_discrete(breaks = levels(risk.data$strata),
                        labels = legend.labs, limits = rev(legend.labs)) +
-          ggplot2::scale_x_continuous("Numbers at risk by time", limits = xlim, breaks = times) +
+          ggplot2::scale_x_continuous(limits = xlim, breaks = times) +
           .ggcolor(palette)+
+          labs(title = risk.table.title) +
           ggplot2::theme(legend.position = "none")
 
 #     dtp <- dtp +
