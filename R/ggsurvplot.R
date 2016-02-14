@@ -479,22 +479,9 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   else{
     .strata<- factor(summary(fit, times = times, extend = TRUE)$strata,
                     levels = sort(names(fit$strata)))
-
-    # if(!is.null(legend.labs)) strata <- factor(strata, labels = legend.labs)
     legend.labs <- names(fit$strata)
 
-
-#     if(is.null(legend.labs)) legend.labs <-  sort(names(fit$strata))
-#     else {
-#       if(length(levels(strata))!=length(legend.labs))
-#         stop("The length of legend.labs must be ", length(levels(strata)) )
-#        levels(strata) <- legend.labs
-#     }
-
   }
-
-
-    # if(is.null(ystrataname)) ystrataname <- "Strata"
 
     risk.data <- data.frame(
       strata = .strata,
@@ -514,22 +501,6 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
           .ggcolor(palette)+
           labs(title = risk.table.title) +
           ggplot2::theme(legend.position = "none")
-
-#     dtp <- dtp +
-#           ggplot2:: theme(axis.title.x = ggplot2::element_text(size = 10, vjust = 1),
-#             panel.grid.major = .blank, panel.grid.minor = .blank,
-#             panel.border = .blank, axis.text.x = .blank,
-#             axis.ticks = .blank, axis.text.y = ggplot2::element_text(face = "bold", hjust = 1 ))+
-#           ggplot2::theme(legend.position = "none") +
-#           ggplot2::labs(x = NULL, y = NULL)
-#
-#    # Adjust position for table at risk
-#     m <- max(nchar(legend.labs))
-#     if(is.null(risk.table.adj)) {
-#       risk.table.adj <- ifelse(m < 10, 2.5, 3.5) - 0.15 * m
-#     }
-#     dtp <- dtp +
-#     ggplot2::theme(plot.margin = grid::unit(c(-1.5, 1, 0.1, risk.table.adj), "lines"))
     return(dtp)
 }
 
