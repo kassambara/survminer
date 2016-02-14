@@ -12,8 +12,8 @@
     - *table*: the number at risk table per time
     
     
-- It's know possible to customize the output survival *plot* and the *risk table* returned by ggsurvplot, and to print again the final plot.  (@MarcinKosinski, [#2](https://github.com/kassambara/survminer/issues/2)):
-
+- It's know possible to customize the output survival *plot* and the *risk table* returned by ggsurvplot, and to print again the final plot.  ([@MarcinKosinski, #2](https://github.com/kassambara/survminer/issues/2)):
+  
 ```{r}
 # Fit survival curves
 #++++++++++++++++++++++++++++++++++++
@@ -38,7 +38,8 @@ print(res)
 
 ## Bug fixes
   
-- ggtheme know affects risk.table (@MarcinKosinski, [#1](https://github.com/kassambara/survminer/issues/1))
+- ggtheme know affects risk.table ([@MarcinKosinski, #1](https://github.com/kassambara/survminer/issues/1))
+- xlim changed to cartesian coordinates mode ([@MarcinKosinski, #4](https://github.com/kassambara/survminer/issues/4)).  The Cartesian coordinate system is the most common type of coordinate system. It will zoom the plot (like you’re looking at it with a magnifying glass), without clipping the data.
     
 
 

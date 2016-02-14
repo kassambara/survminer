@@ -291,6 +291,7 @@ ggsurvplot <- function(fit, fun = NULL,
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
       .geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, ...) +
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
+       ggplot2::coord_cartesian(xlim = xlim)+
        # ggplot2::scale_x_continuous(breaks = times, limits = xlim) +
        .ggcolor(palette) +
        .ggfill(palette) + ggtheme
@@ -299,7 +300,7 @@ ggsurvplot <- function(fit, fun = NULL,
     times <- ggplot_build(p)$panel$ranges[[1]]$x.major_source
   else times <- seq(0, max(fit$time), by = break.time.by)
 
-  p <- p + ggplot2::scale_x_continuous(breaks = times, limits = xlim)
+  p <- p + ggplot2::scale_x_continuous(breaks = times)
 
 
   # Add confidence interval
@@ -480,7 +481,8 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
            ggtheme +
            ggplot2::scale_y_discrete(breaks = levels(risk.data$strata),
                        labels = legend.labs, limits = rev(legend.labs)) +
-          ggplot2::scale_x_continuous(limits = xlim, breaks = times) +
+          ggplot2::coord_cartesian(xlim = xlim) +
+          ggplot2::scale_x_continuous(breaks = times) +
           .ggcolor(palette)+
           labs(title = risk.table.title) +
           ggplot2::theme(legend.position = "none")
