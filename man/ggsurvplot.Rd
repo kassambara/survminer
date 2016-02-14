@@ -61,12 +61,12 @@ coordinates of the p-value. Default values are NULL.}
 
 \item{main, xlab, ylab}{main title and axis labels}
 
-\item{font.main, font.x, font.y, font.tickslab, font.legend}{a vector of length 3 indicating
-respectively the size (e.g.: 14), the style (e.g.: "plain", "bold",
-"italic", "bold.italic") and the color (e.g.: "red") of main title, xlab and
-ylab and axis tick labels, respectively. For example \emph{font.x = c(14,
-"bold", "red")}.  Use font.x = 14, to change only font size; or use font.x =
-"bold", to change only font face.}
+\item{font.main, font.x, font.y, font.tickslab, font.legend}{a vector of length 3
+indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
+xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
+font.x = "bold", to change only font face.}
 
 \item{xlim, ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
 
@@ -77,7 +77,9 @@ specified using a numeric vector c(x, y); see details section.}
 
 \item{legend.title}{legend title.}
 
-\item{legend.labs}{character vector specifying legend labels.}
+\item{legend.labs}{character vector specifying legend labels. Used to replace
+the names of the strata from the fit. Should be given in the same order as
+those strata.}
 
 \item{risk.table}{logical value specifying whether to show risk table. Default
 is FALSE.}

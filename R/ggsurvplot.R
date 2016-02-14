@@ -29,26 +29,28 @@
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
 #'@param main,xlab,ylab main title and axis labels
-#'@param font.main,font.x,font.y,font.tickslab,font.legend a vector of length 3 indicating
-#'  respectively the size (e.g.: 14), the style (e.g.: "plain", "bold",
-#'  "italic", "bold.italic") and the color (e.g.: "red") of main title, xlab and
-#'  ylab and axis tick labels, respectively. For example \emph{font.x = c(14,
-#'  "bold", "red")}.  Use font.x = 14, to change only font size; or use font.x =
-#'  "bold", to change only font face.
+#'@param font.main,font.x,font.y,font.tickslab,font.legend a vector of length 3
+#'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
+#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
+#'  xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+#'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
+#'  font.x = "bold", to change only font face.
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
 #'@param legend character specifying legend position. Allowed values are one of
 #'  c("top", "bottom", "left", "right", "none"). Default is "top" side position.
 #'  to remove the legend use legend = "none". Legend position can be also
 #'  specified using a numeric vector c(x, y); see details section.
 #'@param legend.title legend title.
-#'@param legend.labs character vector specifying legend labels.
+#'@param legend.labs character vector specifying legend labels. Used to replace
+#'  the names of the strata from the fit. Should be given in the same order as
+#'  those strata.
 #'@param risk.table logical value specifying whether to show risk table. Default
 #'  is FALSE.
 #'@param risk.table.title Title to be used for risk table.
 #'@param risk.table.col color to be used for risk table. Default value is
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
 #'  "strata".
-#' @param risk.table.fontsize font size to be used for the risk table.
+#'@param risk.table.fontsize font size to be used for the risk table.
 #'@param risk.table.height the height of the risk table on the grid. Increase
 #'  the value when you have many strata. Default is 0.25. Ignored when
 #'  risk.table = FALSE.
