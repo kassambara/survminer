@@ -369,19 +369,7 @@ ggsurvplot <- function(fit, fun = NULL,
                                    risk.table.title = risk.table.title)
      risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y, xlab = xlab, ylab = legend.title)
      risktable <- .set_ticks(risktable, font.tickslab = font.tickslab)
-#      m <- max(nchar(legend.labs))
-#     if(is.null(surv.plot.adj)) surv.plot.adj <- ifelse(m < 10, 1.5, 2.5)
-
-#     p <- p + ggplot2::theme(legend.position = "top") +
-#     ggplot2::theme(plot.margin = grid::unit(c(0, 1, .5, surv.plot.adj),"lines"))
-#     gridExtra::grid.arrange(p, blankp, risktable, clip = FALSE, nrow = 3,
-#                  ncol = 1, heights = grid::unit(c(surv.plot.height, .1, risk.table.height),
-#                                                 c("null", "null", "null")))
     res <- list(table = risktable, plot = p)
-
-   #  p <- gridExtra::arrangeGrob(p, blankp, risktable, clip = FALSE, nrow = 3,
-   #                  ncol = 1, heights = unit(c(2, .1, .25), c("null", "null", "null")))
-   #  invisible(p)
    }
   else res <- list(plot = p)
   class(res) <- c("ggsurvplot", "list")
@@ -485,7 +473,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
       n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk)
     )
 
-    time <- strata <- label <- NULL
+    time <- strata <- label <- n.risk <- NULL
     dtp <- ggplot2::ggplot(risk.data,
            ggplot2::aes(x = time, y = rev(strata), label = n.risk)) +
           .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
