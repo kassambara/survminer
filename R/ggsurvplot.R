@@ -238,6 +238,39 @@ ggsurvplot <- function(fit, fun = NULL,
 
   n.strata <- ifelse(is.null(fit$strata) == TRUE, 1, length(fit$strata))
 
+  .strata <- NULL
+  # Multiple groups
+  if ('strata' %in% names(fit)){
+
+    if(!is.null(legend.labs)){
+      if(length(fit$strata) != length(legend.labs))
+        stop("The length of legend.labs must be ", length(fit$strata) )
+       names(fit$strata) <- legend.labs
+    }
+
+    legend.labs <- names(fit$strata)
+    .strata <- factor(rep(names(fit$strata), fit$strata),
+                      levels = sort(names(fit$strata)))
+    if(missing(color)) color <- "strata"
+  }
+
+  # One group
+  else{
+
+    if (is.null(legend.labs)){
+      .strata <- as.factor(rep("All", length(fit$time)))
+      legend.labs <- "All"
+    }else {
+      stopifnot(length(legend.labs) == 1)
+      .strata <- as.factor(rep(legend.labs, length(fit$time)))
+    }
+
+    if(missing(conf.int)) conf.int = TRUE
+    if(missing(color)) color <- "black"
+
+  }
+
+
 
   # data for survival plot
   d <- data.frame(time = fit$time,
@@ -247,24 +280,10 @@ ggsurvplot <- function(fit, fun = NULL,
                   surv = fit$surv,
                   std.err = fit$std.err,
                   upper = fit$upper,
-                  lower = fit$lower
+                  lower = fit$lower,
+                  strata = .strata
                   )
 
-  if ('strata' %in% names(fit)){
-    d <- cbind.data.frame(d, strata =  rep(names(fit$strata), fit$strata))
-    if(missing(color)) color <- "strata"
-    if(is.null(legend.labs)) legend.labs <-  sort(names(fit$strata))
-    else{
-      if(length(levels(d$strata))!=length(legend.labs))
-        stop("The length of legend.labs must be ", length(levels(d$strata)) )
-       levels(d$strata) <- legend.labs
-    }
-  }else{
-    d <- cbind.data.frame(d, strata =  factor(rep('All', nrow(d))))
-    if(missing(conf.int)) conf.int = TRUE
-    if(missing(color)) color <- "black"
-    if(is.null(legend.labs)) legend.labs <- "All"
-  }
 
   # connect to the origin for plotting
     base <- d[1, , drop = FALSE]
@@ -285,8 +304,8 @@ ggsurvplot <- function(fit, fun = NULL,
   # Scale transformation
   surv.scale <- match.arg(surv.scale)
   scale_labels <-  ggplot2::waiver()
-  if (surv.scale == "percent")
-    scale_labels <- scales::percent
+  if (surv.scale == "percent") scale_labels <- scales::percent
+
 
   # Drawing survival curves
   surv.color <- ifelse(n.strata > 1, "strata", color)
@@ -294,7 +313,6 @@ ggsurvplot <- function(fit, fun = NULL,
       .geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, ...) +
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
-       # ggplot2::scale_x_continuous(breaks = times, limits = xlim) +
        .ggcolor(palette) +
        .ggfill(palette) + ggtheme
 
@@ -317,7 +335,6 @@ ggsurvplot <- function(fit, fun = NULL,
     p <- p + .geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
                           colour = surv.color, size = size*4.5, shape = "+")
   }
-   # print(d[d$n.censor > 0, , drop = FALSE])
 
   # Add pvalue
   if(pval){
@@ -456,33 +473,42 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   ntimes <- length(summary(fit, times = times, extend = TRUE)$time)
 
   if (!('strata' %in% names(fit))){
-    strata <- factor(rep("All", ntimes))
+    .strata <- factor(rep("All", ntimes))
     if(is.null(legend.labs)) legend.labs <- "All"
-  } else{
-    strata<- factor(summary(fit, times = times, extend = TRUE)$strata)
-    if(is.null(legend.labs)) legend.labs <-  sort(names(fit$strata))
-    else {
-      if(length(levels(strata))!=length(legend.labs))
-        stop("The length of legend.labs must be ", length(levels(strata)) )
-       levels(strata) <- legend.labs
-    }
   }
+  else{
+    .strata<- factor(summary(fit, times = times, extend = TRUE)$strata,
+                    levels = sort(names(fit$strata)))
+
+    # if(!is.null(legend.labs)) strata <- factor(strata, labels = legend.labs)
+    legend.labs <- names(fit$strata)
+
+
+#     if(is.null(legend.labs)) legend.labs <-  sort(names(fit$strata))
+#     else {
+#       if(length(levels(strata))!=length(legend.labs))
+#         stop("The length of legend.labs must be ", length(levels(strata)) )
+#        levels(strata) <- legend.labs
+#     }
+
+  }
+
 
     # if(is.null(ystrataname)) ystrataname <- "Strata"
 
     risk.data <- data.frame(
-      strata = factor(strata, levels = levels(strata)),
+      strata = .strata,
       time = summary(fit,times = times, extend = TRUE)$time,
       n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk)
     )
 
-    .blank <- ggplot2::element_blank()
+    time <- strata <- label <- NULL
     dtp <- ggplot2::ggplot(risk.data,
-           ggplot2::aes_string(x = 'time', y = 'strata', label = "n.risk")) +
+           ggplot2::aes(x = time, y = rev(strata), label = n.risk)) +
           .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
            ggtheme +
-           ggplot2::scale_y_discrete(breaks = levels(risk.data$strata),
-                       labels = legend.labs, limits = rev(legend.labs)) +
+           ggplot2::scale_y_discrete(breaks = as.character(levels(risk.data$strata)),
+                      labels = rev(levels(risk.data$strata)), limits = rev(levels(risk.data$strata)) ) +
           ggplot2::coord_cartesian(xlim = xlim) +
           ggplot2::scale_x_continuous(breaks = times) +
           .ggcolor(palette)+
