@@ -363,7 +363,6 @@ ggsurvplot <- function(fit, fun = NULL,
    if(risk.table){
      blankp <- .blank_plot(d, "time", "strata")
      risktable <- .risk_table_plot(fit, times = times,
-                                   legend.labs = legend.labs,
                                    xlim = xlim, ylim = ylim,
                                    risk.table.col = risk.table.col, palette = palette,
                                    ggtheme = ggtheme, risk.table.fontsize = risk.table.fontsize,
@@ -463,7 +462,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
 # Draw risk table
 # on the left
-.risk_table_plot <- function(fit, times, legend.labs = NULL,
+.risk_table_plot <- function(fit, times,
                         xlim = c(0, max(fit$time)), ylim = c(0,1),
                         risk.table.col = "black",
                         palette = NULL, ggtheme = ggplot2::theme_classic(),
@@ -474,13 +473,10 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
   if (!('strata' %in% names(fit))){
     .strata <- factor(rep("All", ntimes))
-    if(is.null(legend.labs)) legend.labs <- "All"
   }
   else{
     .strata<- factor(summary(fit, times = times, extend = TRUE)$strata,
                     levels = sort(names(fit$strata)))
-    legend.labs <- names(fit$strata)
-
   }
 
     risk.data <- data.frame(
