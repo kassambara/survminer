@@ -311,11 +311,12 @@ ggsurvplot <- function(fit, fun = NULL,
       .geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, ...) +
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
-       .ggcolor(palette) +
-       .ggfill(palette) +
-       ggplot2::scale_color_discrete(breaks = strata_names, labels = legend.labs) + # change legend labels
-      ggplot2::scale_fill_discrete(breaks = strata_names, labels = legend.labs) + # change legend labels
+       .ggcolor(palette, breaks = strata_names, labels = legend.labs) +
+       .ggfill(palette, breaks = strata_names, labels = legend.labs) +
+     #   ggplot2::scale_color_discrete(breaks = strata_names, labels = legend.labs) + # change legend labels
+      # ggplot2::scale_fill_discrete(breaks = strata_names, labels = legend.labs) + # change legend labels
         ggtheme
+
 
   if(is.null(break.time.by))
     times <- ggplot_build(p)$panel$ranges[[1]]$x.major_source
