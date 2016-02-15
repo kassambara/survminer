@@ -5,7 +5,7 @@
 \alias{print.ggsurvplot}
 \title{Drawing survival curves using ggplot2}
 \usage{
-ggsurvplot(fit, fun = NULL, color = NULL, palette = NULL,
+ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue",
   break.time.by = NULL, surv.scale = c("default", "percent"),
   conf.int = FALSE, conf.int.fill = "gray", censor = TRUE, pval = FALSE,
   pval.size = 5, pval.coord = c(NULL, NULL), main = NULL, xlab = "Time",
@@ -37,9 +37,9 @@ specified with a character argument instead: "event" plots cumulative events
 ignored when the number of strata (groups > 1). In this case, use the
 argument palette.}
 
-\item{palette}{the color palette to be used. Allowed values include "grey" for
-grey color palettes; brewer palettes e.g. "RdBu", "Blues", ...; or custom
-color palette e.g. c("blue", "red").}
+\item{palette}{the color palette to be used. Allowed values include "hue" for
+the default hue color scale; "grey" for grey color palettes; brewer palettes
+e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").}
 
 \item{break.time.by}{numeric value controlling time axis breaks. Default value
 is NULL.}
