@@ -133,8 +133,9 @@ ggsurvplot(fit, linetype = "strata",
 #++++++++++++++++++++++++++++++++++++
 
 # Add risk table
+# and change risk table tick label colors by strata
 ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
-           risk.table = TRUE)
+           risk.table = TRUE, risk.table.ticks.col = TRUE)
 
 # Customize the output and then print
 res <- ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
