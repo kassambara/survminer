@@ -314,6 +314,7 @@ ggsurvplot <- function(fit, fun = NULL,
        .ggcolor(palette) +
        .ggfill(palette) +
        ggplot2::scale_color_discrete(breaks = strata_names, labels = legend.labs) + # change legend labels
+      ggplot2::scale_fill_discrete(breaks = strata_names, labels = legend.labs) + # change legend labels
         ggtheme
 
   if(is.null(break.time.by))
