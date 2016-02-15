@@ -236,6 +236,7 @@ ggsurvplot <- function(fit, fun = NULL,
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
   if(!is(legend, "numeric")) legend <- match.arg(legend)
 
+
   n.strata <- ifelse(is.null(fit$strata) == TRUE, 1, length(fit$strata))
 
   .strata <- NULL
@@ -361,9 +362,8 @@ ggsurvplot <- function(fit, fun = NULL,
 
   # Add risk table
    if(risk.table){
-     blankp <- .blank_plot(d, "time", "strata")
      risktable <- .risk_table_plot(fit, times = times,
-                                   xlim = xlim, ylim = ylim,
+                                   xlim = xlim, legend.labs = legend.labs,
                                    risk.table.col = risk.table.col, palette = palette,
                                    ggtheme = ggtheme, risk.table.fontsize = risk.table.fontsize,
                                    risk.table.title = risk.table.title)
@@ -450,42 +450,44 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
 # Draw risk table
 # on the left
-.risk_table_plot <- function(fit, times,
-                        xlim = c(0, max(fit$time)), ylim = c(0,1),
-                        risk.table.col = "black",
-                        palette = NULL, ggtheme = ggplot2::theme_classic(),
-                        risk.table.fontsize = 5, risk.table.title = "Number at risk by time"
-                        ){
+.risk_table_plot <- function(fit, times, legend.labs = NULL,
+                             xlim = c(0, max(fit$time)),
+                             risk.table.col = "black",
+                             palette = NULL, ggtheme = ggplot2::theme_classic(),
+                             risk.table.fontsize = 5, risk.table.title = "Number at risk by time"
+)
+  {
 
   ntimes <- length(summary(fit, times = times, extend = TRUE)$time)
 
-  if (!('strata' %in% names(fit))){
-    .strata <- factor(rep("All", ntimes))
+  if (is.null(fit$strata)) {
+    .strata <- factor(rep("All", length(times)))
   }
-  else{
-    .strata<- factor(summary(fit, times = times, extend = TRUE)$strata,
-                    levels = sort(names(fit$strata)))
+  else {
+    .strata <- factor(summary(fit, times = times, extend = TRUE)$strata)
   }
+  risk.data <- data.frame(
+    strata = .strata,
+    time = summary(fit, times = times, extend = TRUE)$time,
+    n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk)
+  )
 
-    risk.data <- data.frame(
-      strata = .strata,
-      time = summary(fit,times = times, extend = TRUE)$time,
-      n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk)
-    )
+  if (!is.null(legend.labs))
+    risk.data$strata <- factor(risk.data$strata, labels = legend.labs)
 
-    time <- strata <- label <- n.risk <- NULL
-    dtp <- ggplot2::ggplot(risk.data,
-           ggplot2::aes(x = time, y = rev(strata), label = n.risk)) +
-          .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
-           ggtheme +
-           ggplot2::scale_y_discrete(breaks = as.character(levels(risk.data$strata)),
-                      labels = rev(levels(risk.data$strata)), limits = rev(levels(risk.data$strata)) ) +
-          ggplot2::coord_cartesian(xlim = xlim) +
-          ggplot2::scale_x_continuous(breaks = times) +
-          .ggcolor(palette)+
-          labs(title = risk.table.title) +
-          ggplot2::theme(legend.position = "none")
-    return(dtp)
+  time <- strata <- label <- n.risk <- NULL
+  dtp <- ggplot2::ggplot(risk.data,
+                         ggplot2::aes(x = time, y = rev(strata), label = n.risk)) +
+    .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
+    ggtheme +
+    ggplot2::scale_y_discrete(breaks = as.character(levels(risk.data$strata)),
+                              labels = rev(levels(risk.data$strata)) ) +
+    ggplot2::coord_cartesian(xlim = xlim) +
+    ggplot2::scale_x_continuous(breaks = times) +
+    .ggcolor(palette)+
+    labs(title = risk.table.title) +
+    ggplot2::theme(legend.position = "none")
+  return(dtp)
 }
 
 
