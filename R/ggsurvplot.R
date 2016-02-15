@@ -492,19 +492,6 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
 
 
-# Draw a blank plot
-.blank_plot <- function(d, x, y){
-  .blank <- ggplot2::element_blank()
-  blank_plot <- ggplot2::ggplot(d, ggplot2::aes_string(x, y)) +
-    ggplot2::geom_blank() +  ggplot2::theme_bw() +
-    ggplot2::theme(axis.text.x = .blank ,axis.text.y = .blank ,
-          axis.title.x = .blank , axis.title.y = .blank ,
-          axis.ticks = .blank ,
-          panel.grid.major = .blank, panel.border = .blank)
-  blank_plot
-}
-
-
 
 
 
