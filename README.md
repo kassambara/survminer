@@ -1,4 +1,3 @@
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/survminer)](http://cran.r-project.org/package=survminer)
 
 survminer: Survival Analysis and Visualization
@@ -128,8 +127,6 @@ ggsurvplot(fit,  size = 1,  # change line size
            conf.int = TRUE, # Add confidence interval
            pval = TRUE # Add p-value
            )
-#> Scale for 'colour' is already present. Adding another scale for
-#> 'colour', which will replace the existing scale.
 ```
 
 ![](README-ggplot2-survival-plot-7.png)<!-- -->
@@ -140,8 +137,6 @@ ggsurvplot(fit,  size = 1,  # change line size
 ggsurvplot(fit, linetype = "strata", 
            conf.int = TRUE, pval = TRUE,
            palette = "Dark2")
-#> Scale for 'colour' is already present. Adding another scale for
-#> 'colour', which will replace the existing scale.
 ```
 
 ![](README-ggplot2-survival-plot-8.png)<!-- -->
@@ -152,8 +147,6 @@ ggsurvplot(fit, linetype = "strata",
 ggsurvplot(fit, linetype = "strata", 
            conf.int = TRUE, pval = TRUE,
            palette = "grey")
-#> Scale for 'colour' is already present. Adding another scale for
-#> 'colour', which will replace the existing scale.
 ```
 
 ![](README-ggplot2-survival-plot-9.png)<!-- -->
@@ -192,8 +185,6 @@ ggsurvplot(fit,
            linetype = "strata", # Change line type by groups
            ggtheme = theme_bw(), # Change ggplot2 theme
            palette = c("#E7B800", "#2E9FDF"))
-#> Scale for 'colour' is already present. Adding another scale for
-#> 'colour', which will replace the existing scale.
 ```
 
 ![](README-ggplot2-survival-plot-12.png)<!-- -->
@@ -212,8 +203,6 @@ ggsurvplot(fit,
            ggtheme = theme_bw(), # Change ggplot2 theme
            palette = "Dark2",
            xlim = c(0, 600))
-#> Scale for 'colour' is already present. Adding another scale for
-#> 'colour', which will replace the existing scale.
 ```
 
 ![](README-ggplot2-survival-plot-13.png)<!-- -->
@@ -228,8 +217,6 @@ ggsurvplot(fit, conf.int = TRUE,
            palette = c("#FF9E29", "#86AA00"),
            risk.table = TRUE, risk.table.col = "strata",
            fun = "event")
-#> Scale for 'colour' is already present. Adding another scale for
-#> 'colour', which will replace the existing scale.
 ```
 
 ![](README-ggplot2-survival-plot-14.png)<!-- -->
@@ -241,8 +228,6 @@ ggsurvplot(fit, conf.int = TRUE,
            palette = c("#FF9E29", "#86AA00"),
            risk.table = TRUE, risk.table.col = "strata",
            fun = "cumhaz")
-#> Scale for 'colour' is already present. Adding another scale for
-#> 'colour', which will replace the existing scale.
 ```
 
 ![](README-ggplot2-survival-plot-15.png)<!-- -->
@@ -255,8 +240,6 @@ ggsurvplot(fit, conf.int = TRUE,
            risk.table = TRUE, risk.table.col = "strata",
            pval = TRUE,
            fun = function(y) y*100)
-#> Scale for 'colour' is already present. Adding another scale for
-#> 'colour', which will replace the existing scale.
 ```
 
 ![](README-ggplot2-survival-plot-16.png)<!-- -->
@@ -298,8 +281,6 @@ ggsurvplot(fit2, pval = TRUE,
           risk.table.col = "strata",
           risk.table.height = 0.5, # Useful when you have multiple groups
           palette = "Dark2")
-#> Scale for 'colour' is already present. Adding another scale for
-#> 'colour', which will replace the existing scale.
 ```
 
 ![](README-ggplot2-survival-plot-18.png)<!-- -->
