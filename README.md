@@ -45,7 +45,7 @@ fit <- survfit(Surv(time, status) ~ 1, data = lung)
 ggsurvplot(fit, color = "#2E9FDF")
 ```
 
-![](README-ggplot2-survival-plot-1.png)
+![](README-ggplot2-survival-plot-1.png)<!-- -->
 
 ``` r
 
@@ -63,9 +63,10 @@ fit<- survfit(Surv(time, status) ~ sex, data = lung)
 ggsurvplot(fit)
 ```
 
-![](README-ggplot2-survival-plot-2.png)
+![](README-ggplot2-survival-plot-2.png)<!-- -->
 
 ``` r
+
 
 # Change font style, size and color
 #++++++++++++++++++++++++++++++++++++
@@ -77,7 +78,7 @@ ggsurvplot(fit, main = "Survival curve",
    font.tickslab = 14)
 ```
 
-![](README-ggplot2-survival-plot-3.png)
+![](README-ggplot2-survival-plot-3.png)<!-- -->
 
 ``` r
 
@@ -89,7 +90,7 @@ ggsurvplot(fit, main = "Survival curve",
    font.tickslab = c(12, "plain", "darkgreen"))
 ```
 
-![](README-ggplot2-survival-plot-4.png)
+![](README-ggplot2-survival-plot-4.png)<!-- -->
 
 ``` r
 
@@ -102,7 +103,7 @@ ggsurvplot(fit, legend = "bottom",
            legend.labs = c("Male", "Female"))
 ```
 
-![](README-ggplot2-survival-plot-5.png)
+![](README-ggplot2-survival-plot-5.png)<!-- -->
 
 ``` r
 
@@ -110,7 +111,7 @@ ggsurvplot(fit, legend = "bottom",
 ggsurvplot(fit, legend = c(0.2, 0.2))
 ```
 
-![](README-ggplot2-survival-plot-6.png)
+![](README-ggplot2-survival-plot-6.png)<!-- -->
 
 ``` r
 
@@ -127,9 +128,11 @@ ggsurvplot(fit,  size = 1,  # change line size
            conf.int = TRUE, # Add confidence interval
            pval = TRUE # Add p-value
            )
+#> Scale for 'colour' is already present. Adding another scale for
+#> 'colour', which will replace the existing scale.
 ```
 
-![](README-ggplot2-survival-plot-7.png)
+![](README-ggplot2-survival-plot-7.png)<!-- -->
 
 ``` r
 
@@ -137,9 +140,11 @@ ggsurvplot(fit,  size = 1,  # change line size
 ggsurvplot(fit, linetype = "strata", 
            conf.int = TRUE, pval = TRUE,
            palette = "Dark2")
+#> Scale for 'colour' is already present. Adding another scale for
+#> 'colour', which will replace the existing scale.
 ```
 
-![](README-ggplot2-survival-plot-8.png)
+![](README-ggplot2-survival-plot-8.png)<!-- -->
 
 ``` r
 
@@ -147,9 +152,11 @@ ggsurvplot(fit, linetype = "strata",
 ggsurvplot(fit, linetype = "strata", 
            conf.int = TRUE, pval = TRUE,
            palette = "grey")
+#> Scale for 'colour' is already present. Adding another scale for
+#> 'colour', which will replace the existing scale.
 ```
 
-![](README-ggplot2-survival-plot-9.png)
+![](README-ggplot2-survival-plot-9.png)<!-- -->
 
 ``` r
 
@@ -161,7 +168,7 @@ ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
            risk.table = TRUE)
 ```
 
-![](README-ggplot2-survival-plot-10.png)
+![](README-ggplot2-survival-plot-10.png)<!-- -->
 
 ``` r
 
@@ -173,7 +180,7 @@ res$plot <- res$plot + labs(title = "Survival Curves")
 print(res)
 ```
 
-![](README-ggplot2-survival-plot-11.png)
+![](README-ggplot2-survival-plot-11.png)<!-- -->
 
 ``` r
 
@@ -182,14 +189,37 @@ ggsurvplot(fit,
            pval = TRUE, conf.int = TRUE,
            risk.table = TRUE, # Add risk table
            risk.table.col = "strata", # Change risk table color by groups
-           lienetype = "strata", # Change line type by groups
+           linetype = "strata", # Change line type by groups
            ggtheme = theme_bw(), # Change ggplot2 theme
            palette = c("#E7B800", "#2E9FDF"))
+#> Scale for 'colour' is already present. Adding another scale for
+#> 'colour', which will replace the existing scale.
 ```
 
-![](README-ggplot2-survival-plot-12.png)
+![](README-ggplot2-survival-plot-12.png)<!-- -->
 
 ``` r
+
+
+# Change x axis limits (xlim)
+#++++++++++++++++++++++++++++++++++++
+# One would like to cut axes at a specific time point
+ggsurvplot(fit, 
+           pval = TRUE, conf.int = TRUE,
+           risk.table = TRUE, # Add risk table
+           risk.table.col = "strata", # Change risk table color by groups
+           linetype = "strata", # Change line type by groups
+           ggtheme = theme_bw(), # Change ggplot2 theme
+           palette = "Dark2",
+           xlim = c(0, 600))
+#> Scale for 'colour' is already present. Adding another scale for
+#> 'colour', which will replace the existing scale.
+```
+
+![](README-ggplot2-survival-plot-13.png)<!-- -->
+
+``` r
+
 
 # Survival curve transformation
 #++++++++++++++++++++++++++++++++++++
@@ -198,9 +228,11 @@ ggsurvplot(fit, conf.int = TRUE,
            palette = c("#FF9E29", "#86AA00"),
            risk.table = TRUE, risk.table.col = "strata",
            fun = "event")
+#> Scale for 'colour' is already present. Adding another scale for
+#> 'colour', which will replace the existing scale.
 ```
 
-![](README-ggplot2-survival-plot-13.png)
+![](README-ggplot2-survival-plot-14.png)<!-- -->
 
 ``` r
 
@@ -209,9 +241,11 @@ ggsurvplot(fit, conf.int = TRUE,
            palette = c("#FF9E29", "#86AA00"),
            risk.table = TRUE, risk.table.col = "strata",
            fun = "cumhaz")
+#> Scale for 'colour' is already present. Adding another scale for
+#> 'colour', which will replace the existing scale.
 ```
 
-![](README-ggplot2-survival-plot-14.png)
+![](README-ggplot2-survival-plot-15.png)<!-- -->
 
 ``` r
 
@@ -221,9 +255,11 @@ ggsurvplot(fit, conf.int = TRUE,
            risk.table = TRUE, risk.table.col = "strata",
            pval = TRUE,
            fun = function(y) y*100)
+#> Scale for 'colour' is already present. Adding another scale for
+#> 'colour', which will replace the existing scale.
 ```
 
-![](README-ggplot2-survival-plot-15.png)
+![](README-ggplot2-survival-plot-16.png)<!-- -->
 
 ``` r
 
@@ -249,7 +285,7 @@ ggsurvplot(fit2, pval = TRUE,
            risk.table = TRUE)
 ```
 
-![](README-ggplot2-survival-plot-16.png)
+![](README-ggplot2-survival-plot-17.png)<!-- -->
 
 ``` r
 
@@ -262,9 +298,11 @@ ggsurvplot(fit2, pval = TRUE,
           risk.table.col = "strata",
           risk.table.height = 0.5, # Useful when you have multiple groups
           palette = "Dark2")
+#> Scale for 'colour' is already present. Adding another scale for
+#> 'colour', which will replace the existing scale.
 ```
 
-![](README-ggplot2-survival-plot-17.png)
+![](README-ggplot2-survival-plot-18.png)<!-- -->
 
 ``` r
   
@@ -279,4 +317,4 @@ ggsurvplot(fit2, pval = TRUE,
            legend.labs = c("A", "B", "C", "D", "E", "F"))
 ```
 
-![](README-ggplot2-survival-plot-18.png)
+![](README-ggplot2-survival-plot-19.png)<!-- -->
