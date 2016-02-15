@@ -39,7 +39,10 @@ print(res)
 ## Bug fixes
   
 - ggtheme know affects risk.table ([@MarcinKosinski, #1](https://github.com/kassambara/survminer/issues/1))
+
 - xlim changed to cartesian coordinates mode ([@MarcinKosinski, #4](https://github.com/kassambara/survminer/issues/4)).  The Cartesian coordinate system is the most common type of coordinate system. It will zoom the plot (like you’re looking at it with a magnifying glass), without clipping the data.
+
+- Risk table and survival curves have know the same color and the same order
     
 
 
