@@ -337,13 +337,15 @@ ggsurvplot <- function(fit, fun = NULL,
   }
 
   # Add pvalue
-  if(pval){
+  if(pval & !is.null(fit$strata)){
     pval <- .get_pvalue(fit)
+    pvaltxt <- ifelse(pval < 1e-04, "p < 0.0001",
+                    paste("p =", signif(pval, 2)))
+
     pval.x <- ifelse(is.null(pval.coord[1]), 0.1*max(fit$time), pval.coord[1])
     pval.y <- ifelse(is.null(pval.coord[2]), 0.2, pval.coord[2])
     p <- p + ggplot2::annotate("text", x = pval.x, y = pval.y,
-                               label = paste0("p = ", signif(pval, 3)),
-                               size = pval.size)
+                               label = pvaltxt, size = pval.size)
   }
 
   # Axis limits

@@ -34,7 +34,10 @@ res$table <- res$table + theme(axis.line = element_blank())
 res$plot <- res$plot + labs(title = "Survival Curves")
 print(res)
 ```
-
+   
+## Minor changes
+   
+- p < 0.0001 is used (when pvalue < 0.0001).
 
 ## Bug fixes
   
