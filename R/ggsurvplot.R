@@ -235,41 +235,37 @@ ggsurvplot <- function(fit, fun = NULL,
   if(is.null(xlim)) xlim <- c(0, max(fit$time))
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
   if(!is(legend, "numeric")) legend <- match.arg(legend)
+
   .check_legend_labs(fit, legend.labs)
+
+  # Number of strata and strata names
   n.strata <- ifelse(is.null(fit$strata) == TRUE, 1, length(fit$strata))
 
   .strata <- NULL
   # Multiple groups
-  if ('strata' %in% names(fit)){
-
-    if(!is.null(legend.labs)){
-      if(length(fit$strata) != length(legend.labs))
-        stop("The length of legend.labs must be ", length(fit$strata) )
-       names(fit$strata) <- legend.labs
-    }
-
-    legend.labs <- names(fit$strata)
-    .strata <- factor(rep(names(fit$strata), fit$strata),
-                      levels = sort(names(fit$strata)))
+  if (!is.null(fit$strata)){
+    .strata <- rep(names(fit$strata), fit$strata)
+    strata_names <- names(fit$strata)
+    if(is.null(legend.labs)) legend.labs <- names(fit$strata)
     if(missing(color)) color <- "strata"
   }
 
   # One group
   else{
 
-    if (is.null(legend.labs)){
+    if (is.null(legend.labs)) {
       .strata <- as.factor(rep("All", length(fit$time)))
-      legend.labs <- "All"
-    }else {
-      stopifnot(length(legend.labs) == 1)
+      legend.labs <- strata_names <- "All"
+    }
+
+    else {
       .strata <- as.factor(rep(legend.labs, length(fit$time)))
+      strata_names <- legend.labs
     }
 
     if(missing(conf.int)) conf.int = TRUE
     if(missing(color)) color <- "black"
-
   }
-
 
 
   # data for survival plot
@@ -281,7 +277,7 @@ ggsurvplot <- function(fit, fun = NULL,
                   std.err = fit$std.err,
                   upper = fit$upper,
                   lower = fit$lower,
-                  strata = .strata
+                  strata = as.factor(.strata)
                   )
 
 
@@ -308,13 +304,17 @@ ggsurvplot <- function(fit, fun = NULL,
 
 
   # Drawing survival curves
+  d$strata <- factor(d$strata, levels = strata_names)
+  d <- d[order(d$strata), , drop = FALSE]
   surv.color <- ifelse(n.strata > 1, "strata", color)
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
       .geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, ...) +
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
        .ggcolor(palette) +
-       .ggfill(palette) + ggtheme
+       .ggfill(palette) +
+       ggplot2::scale_color_discrete(breaks = strata_names, labels = legend.labs) + # change legend labels
+        ggtheme
 
   if(is.null(break.time.by))
     times <- ggplot_build(p)$panel$ranges[[1]]$x.major_source
@@ -461,31 +461,37 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
   if (is.null(fit$strata)) {
     .strata <- factor(rep("All", length(times)))
+    strata_names <- "All"
   }
   else {
     .strata <- factor(summary(fit, times = times, extend = TRUE)$strata)
+    strata_names <- names(fit$strata)
   }
   risk.data <- data.frame(
-    strata = .strata,
+    strata = as.factor(.strata),
     time = summary(fit, times = times, extend = TRUE)$time,
     n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk)
   )
+
 
   if (!is.null(legend.labs))
     risk.data$strata <- factor(risk.data$strata, labels = legend.labs)
 
   time <- strata <- label <- n.risk <- NULL
+
   dtp <- ggplot2::ggplot(risk.data,
                          ggplot2::aes(x = time, y = rev(strata), label = n.risk)) +
     .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
     ggtheme +
     ggplot2::scale_y_discrete(breaks = as.character(levels(risk.data$strata)),
-                              labels = rev(levels(risk.data$strata)) ) +
+                              labels = rev(levels(risk.data$strata))) +
     ggplot2::coord_cartesian(xlim = xlim) +
     ggplot2::scale_x_continuous(breaks = times) +
     .ggcolor(palette)+
     labs(title = risk.table.title) +
     ggplot2::theme(legend.position = "none")
+
+
   return(dtp)
 }
 
