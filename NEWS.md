@@ -1,9 +1,11 @@
 # survminer 0.1.1.9000
 
+
 ## New features
    
 - New arguments in ggsurvplot for changing font style, size and color of main title, axis labels, axis tick labels and legend labels: *font.main, font.x, font.y, font.tickslab, font.legend*.
 - New arguments *risk.table.title, risk.table.fontsize* in ggsurvplot
+- New argument *risk.table.ticks.col*: logical value. Default value is FALSE. If TRUE, risk table tick labels will be colored by strata.
 
 - *print.ggsurvplot* function added: S3 method for class 'ggsurvplot'. 
   
@@ -34,6 +36,7 @@ res$table <- res$table + theme(axis.line = element_blank())
 res$plot <- res$plot + labs(title = "Survival Curves")
 print(res)
 ```
+ 
    
 ## Minor changes
    

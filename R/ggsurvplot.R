@@ -51,6 +51,8 @@
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
 #'  "strata".
 #'@param risk.table.fontsize font size to be used for the risk table.
+#'@param risk.table.ticks.col logical. Default value is FALSE. If TRUE, risk
+#'  table tick labels will be colored by strata.
 #'@param risk.table.height the height of the risk table on the grid. Increase
 #'  the value when you have many strata. Default is 0.25. Ignored when
 #'  risk.table = FALSE.
@@ -224,6 +226,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        font.legend = c(10, "plain", "black"),
                        risk.table = FALSE, risk.table.title = "Number at risk by time",
                        risk.table.col = "black", risk.table.fontsize = 4.5,
+                       risk.table.ticks.col = FALSE,
                        risk.table.height = 0.25, surv.plot.height = 0.75,
                        ggtheme = ggplot2::theme_classic(),
                        ...
@@ -372,6 +375,14 @@ ggsurvplot <- function(fit, fun = NULL,
                                    risk.table.title = risk.table.title)
      risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y, xlab = xlab, ylab = legend.title)
      risktable <- .set_ticks(risktable, font.tickslab = font.tickslab)
+     # color risk.table ticks by strata
+     if(risk.table.ticks.col){
+       g <- ggplot2::ggplot_build(p)
+       cols <- unlist(unique(g$data[[1]]["colour"]))
+       names(cols) <- legend.labs # Give every color an appropriate name
+       risktable <- risktable + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+     }
+
     res <- list(table = risktable, plot = p)
    }
   else res <- list(plot = p)
