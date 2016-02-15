@@ -16,9 +16,9 @@
 #'@param color color to be used for the survival curves. This argument is
 #'  ignored when the number of strata (groups > 1). In this case, use the
 #'  argument palette.
-#'@param palette the color palette to be used. Allowed values include "grey" for
-#'  grey color palettes; brewer palettes e.g. "RdBu", "Blues", ...; or custom
-#'  color palette e.g. c("blue", "red").
+#'@param palette the color palette to be used. Allowed values include "hue" for
+#'  the default hue color scale; "grey" for grey color palettes; brewer palettes
+#'  e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
 #'@param break.time.by numeric value controlling time axis breaks. Default value
 #'  is NULL.
 #'@param conf.int logical value. If TRUE, plots confidence interval.
@@ -211,7 +211,7 @@
 #'@describeIn ggsurvplot Draws survival curves using ggplot2.
 #'@export
 ggsurvplot <- function(fit, fun = NULL,
-                       color = NULL, palette = NULL, break.time.by = NULL,
+                       color = NULL, palette = "hue", break.time.by = NULL,
                        surv.scale = c("default", "percent"),
                        conf.int = FALSE, conf.int.fill = "gray",
                        censor = TRUE,
