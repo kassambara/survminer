@@ -235,8 +235,7 @@ ggsurvplot <- function(fit, fun = NULL,
   if(is.null(xlim)) xlim <- c(0, max(fit$time))
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
   if(!is(legend, "numeric")) legend <- match.arg(legend)
-
-
+  .check_legend_labs(fit, legend.labs)
   n.strata <- ifelse(is.null(fit$strata) == TRUE, 1, length(fit$strata))
 
   .strata <- NULL
@@ -490,6 +489,24 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   return(dtp)
 }
 
+
+# Check user defined legend labels
+.check_legend_labs <- function(fit, legend.labs = NULL){
+
+  if(!is.null(legend.labs)){
+
+    if(!is.null(fit$strata)){
+      if(length(fit$strata) != length(legend.labs))
+        stop("The length of legend.labs must should be ", length(fit$strata) )
+    }
+
+    else{
+      if(length(legend.labs) != 1)
+        stop("The length of legend.labs should be 1")
+    }
+
+  }
+}
 
 
 
