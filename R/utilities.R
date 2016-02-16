@@ -62,7 +62,7 @@
     if (palette %in% brewerpal)
       ggplot2::scale_color_brewer( ..., palette = palette)
     else if (palette == "grey")
-      ggplot2::scale_color_grey(...)
+      ggplot2::scale_color_grey(..., start = 0.8, end = 0.2)
     else if (palette == "hue")
       ggplot2::scale_color_hue(...)
   }
@@ -91,7 +91,7 @@
     if (palette %in% brewerpal)
       ggplot2::scale_fill_brewer( ..., palette = palette)
     else if (palette == "grey")
-      ggplot2::scale_fill_grey(...)
+      ggplot2::scale_fill_grey(..., start = 0.8, end = 0.2)
     else if (palette == "hue")
       ggplot2::scale_fill_hue(...)
   }
@@ -196,7 +196,7 @@
   if(is.null(font)) res <- NULL
   else{
    # matching size and face
-  size <- grep("[0-9]+", font, perl = TRUE)
+  size <- grep("^[0-9]+", font, perl = TRUE)
   face <- grep("plain|bold|italic|bold.italic", font, perl = TRUE)
   if(length(size) == 0) size <- NULL else size <- as.numeric(font[size])
   if(length(face) == 0) face <- NULL else face <- font[face]
