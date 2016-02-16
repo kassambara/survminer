@@ -375,9 +375,9 @@ ggsurvplot <- function(fit, fun = NULL,
                                    risk.table.title = risk.table.title)
      risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y, xlab = xlab, ylab = legend.title)
      risktable <- .set_ticks(risktable, font.tickslab = font.tickslab)
-     risktable <- risktable +
-       ggplot2::labs(color = legend.title, shape = legend.title) +
-       ggplot2::theme(legend.position = legend)
+     risktable <- risktable + ggplot2::labs(color = legend.title, shape = legend.title)
+     if("left" %in% legend) risktable <- risktable + ggplot2::theme(legend.position = legend)
+     else risktable <- risktable + ggplot2::theme(legend.position = "none")
      # color risk.table ticks by strata
      if(risk.table.y.text.col){
        g <- ggplot2::ggplot_build(p)
