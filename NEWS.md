@@ -5,7 +5,7 @@
    
 - New arguments in ggsurvplot for changing font style, size and color of main title, axis labels, axis tick labels and legend labels: *font.main, font.x, font.y, font.tickslab, font.legend*.
 - New arguments *risk.table.title, risk.table.fontsize* in ggsurvplot
-- New argument *risk.table.ticks.col*: logical value. Default value is FALSE. If TRUE, risk table tick labels will be colored by strata ([@MarcinKosinski, #8](https://github.com/kassambara/survminer/issues/8)).
+- New argument *risk.table.y.text.col*: logical value. Default value is FALSE. If TRUE, risk table tick labels will be colored by strata ([@MarcinKosinski, #8](https://github.com/kassambara/survminer/issues/8)).
 
 - *print.ggsurvplot* function added: S3 method for class 'ggsurvplot'. 
   

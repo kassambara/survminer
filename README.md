@@ -157,9 +157,9 @@ ggsurvplot(fit, linetype = "strata",
 #++++++++++++++++++++++++++++++++++++
 
 # Add risk table
-# and change risk table tick label colors by strata
+# and change risk table y text colors by strata
 ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
-           risk.table = TRUE, risk.table.ticks.col = TRUE)
+           risk.table = TRUE, risk.table.y.text.col = TRUE)
 ```
 
 ![](README-ggplot2-survival-plot-10.png)<!-- -->
