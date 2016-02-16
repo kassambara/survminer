@@ -375,6 +375,9 @@ ggsurvplot <- function(fit, fun = NULL,
                                    risk.table.title = risk.table.title)
      risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y, xlab = xlab, ylab = legend.title)
      risktable <- .set_ticks(risktable, font.tickslab = font.tickslab)
+     risktable <- risktable +
+       ggplot2::labs(color = legend.title, shape = legend.title) +
+       ggplot2::theme(legend.position = legend)
      # color risk.table ticks by strata
      if(risk.table.y.text.col){
        g <- ggplot2::ggplot_build(p)
@@ -405,7 +408,14 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   risk.table.height <- ifelse(is.null(risk.table.height), attr(x, "risk.table.height"), risk.table.height)
   surv.plot.height <- ifelse(is.null(surv.plot.height), 0.75, surv.plot.height)
   risk.table.height <- ifelse(is.null(risk.table.height), 0.25, risk.table.height)
-  x$table <- x$table + theme(legend.position = "none")
+  # Hide legende: don't use  theme(legend.position = "none") because awkward legend when position = "left"
+  # x$table <- x$table + theme(legend.position = "none")
+  x$table <- x$table + theme(legend.key.height = NULL, legend.key.width = NULL,
+                              legend.key = element_rect(colour = NA, fill = NA),
+                              legend.text = element_text(colour = NA),
+                              legend.title = element_text(colour = NA)) +
+    guides(color = FALSE)
+
   plots <- rev(x)
   grobs <- widths <- list()
   for (i in 1:length(plots)) {
@@ -495,7 +505,8 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   time <- strata <- label <- n.risk <- NULL
 
   dtp <- ggplot2::ggplot(risk.data,
-                         ggplot2::aes(x = time, y = rev(strata), label = n.risk)) +
+                         ggplot2::aes(x = time, y = rev(strata), label = n.risk, shape = rev(strata))) +
+    ggplot2::geom_point(size = 0)+
     .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
     ggtheme +
     ggplot2::scale_y_discrete(breaks = as.character(levels(risk.data$strata)),
