@@ -7,7 +7,7 @@
 - New arguments *risk.table.title, risk.table.fontsize* in ggsurvplot
 - New argument *risk.table.y.text.col*: logical value. Default value is FALSE. If TRUE, risk table tick labels will be colored by strata ([@MarcinKosinski, #8](https://github.com/kassambara/survminer/issues/8)).
 
-- *print.ggsurvplot* function added: S3 method for class 'ggsurvplot'. 
+- ```print.ggsurvplot()``` function added: S3 method for class 'ggsurvplot'. 
   
 - ggsurvplot returns an object of class ggsurvplot which is list containing two ggplot objects: 
     - *plot*: the survival plot
@@ -49,6 +49,8 @@ print(res)
 - xlim changed to cartesian coordinates mode ([@MarcinKosinski, #4](https://github.com/kassambara/survminer/issues/4)).  The Cartesian coordinate system is the most common type of coordinate system. It will zoom the plot (like you’re looking at it with a magnifying glass), without clipping the data.
 
 - Risk table and survival curves have now the same color and the same order
+
+- Plot width is no longer too small when legend position = "left" ([@MarcinKosinski, #7](https://github.com/kassambara/survminer/issues/7)).
     
 
 
