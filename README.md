@@ -27,7 +27,7 @@ devtools::install_github("kassambara/survminer")
 ``` r
 # Loading
 library("survminer")
-#> Loading required package: ggplot2
+# Loading required package: ggplot2
 ```
 
 Getting started
@@ -39,7 +39,7 @@ Getting started
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 require("survival")
-#> Loading required package: survival
+# Loading required package: survival
 fit <- survfit(Surv(time, status) ~ 1, data = lung)
 ggsurvplot(fit, color = "#2E9FDF")
 ```
