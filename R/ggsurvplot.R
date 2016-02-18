@@ -86,8 +86,9 @@
 #'# Drawing survival curves
 #'ggsurvplot(fit)
 #'
-#'# Change font style, size and color
+#'# Change font size, style and color
 #'#++++++++++++++++++++++++++++++++++++
+#'\dontrun{
 #' # Change only font size
 #' ggsurvplot(fit, main = "Survival curve",
 #'    font.main = 18,
@@ -101,6 +102,7 @@
 #'    font.x = c(14, "bold.italic", "red"),
 #'    font.y = c(14, "bold.italic", "darkred"),
 #'    font.tickslab = c(12, "plain", "darkgreen"))
+#'}
 #'
 #'# Legend: title, labels and position
 #'#++++++++++++++++++++++++++++++++++++
