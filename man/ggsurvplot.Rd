@@ -210,6 +210,19 @@ ggsurvplot(fit,
           ggtheme = theme_bw(), # Change ggplot2 theme
           palette = c("#E7B800", "#2E9FDF"))
 
+# Change x axis limits (xlim)
+#++++++++++++++++++++++++++++++++++++
+# One would like to cut axes at a specific time point
+\dontrun{
+ggsurvplot(fit,
+          pval = TRUE, conf.int = TRUE,
+          risk.table = TRUE, # Add risk table
+          risk.table.col = "strata", # Change risk table color by groups
+          ggtheme = theme_bw(), # Change ggplot2 theme
+          palette = "Dark2",
+          xlim = c(0, 600))
+}
+
 # Survival curve transformation
 #++++++++++++++++++++++++++++++++++++
 # Plot cumulative events
