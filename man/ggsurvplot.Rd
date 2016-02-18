@@ -149,13 +149,6 @@ ggsurvplot(fit)
 # Change font size, style and color
 #++++++++++++++++++++++++++++++++++++
 \dontrun{
-# Change only font size
-ggsurvplot(fit, main = "Survival curve",
-   font.main = 18,
-   font.x =  16,
-   font.y = 16,
-   font.tickslab = 14)
-
 # Change font size, style and color at the same time
 ggsurvplot(fit, main = "Survival curve",
    font.main = c(16, "bold", "darkblue"),
@@ -190,17 +183,10 @@ ggsurvplot(fit,  size = 1,  # change line size
 )
 
 # Use brewer color palette "Dark2"
+# Add risk table
 ggsurvplot(fit, linetype = "strata",
           conf.int = TRUE, pval = TRUE,
-          palette = "Dark2")
-
-
-# Add risk table
-#++++++++++++++++++++++++++++++++++++
-
-# Add Risk table
-ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
-          risk.table = TRUE)
+          palette = "Dark2", risk.table = TRUE)
 
 
 # Change color, linetype by strata, risk.table color by strata
@@ -212,35 +198,6 @@ ggsurvplot(fit,
           ggtheme = theme_bw(), # Change ggplot2 theme
           palette = c("#E7B800", "#2E9FDF"))
 
-# Change x axis limits (xlim)
-#++++++++++++++++++++++++++++++++++++
-# One would like to cut axes at a specific time point
-\dontrun{
-ggsurvplot(fit,
-          pval = TRUE, conf.int = TRUE,
-          risk.table = TRUE, # Add risk table
-          risk.table.col = "strata", # Change risk table color by groups
-          ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = "Dark2",
-          xlim = c(0, 600))
-}
-
-# Survival curve transformation
-#++++++++++++++++++++++++++++++++++++
-# Plot cumulative events
-ggsurvplot(fit, conf.int = TRUE,
-          palette = c("#FF9E29", "#86AA00"),
-          risk.table = TRUE, risk.table.col = "strata",
-          fun = "event")
-
-
-# Arbitrary function
-ggsurvplot(fit, conf.int = TRUE,
-          palette = c("#FF9E29", "#86AA00"),
-          risk.table = TRUE, risk.table.col = "strata",
-          pval = TRUE,
-          fun = function(y) y*100)
-
 
 #\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
 # Example 3: Survival curve with multiple group
@@ -248,7 +205,7 @@ ggsurvplot(fit, conf.int = TRUE,
 
 # Fit (complexe) survival curves
 #++++++++++++++++++++++++++++++++++++
-
+\dontrun{
 require("survival")
 fit2 <- survfit( Surv(time, status) ~ rx + adhere,
                 data = colon )
@@ -258,30 +215,14 @@ fit2 <- survfit( Surv(time, status) ~ rx + adhere,
 
 # Visualize: add p-value, chang y limits
 # change color using brewer palette
-ggsurvplot(fit2, pval = TRUE,
-          break.time.by = 400,
-          risk.table = TRUE)
-
 # Adjust risk table and survival plot heights
-# ++++++++++++++++++++++++++++++++++++
 ggsurvplot(fit2, pval = TRUE,
           break.time.by = 400,
           risk.table = TRUE,
           risk.table.col = "strata",
           risk.table.height = 0.5, # Useful when you have multiple groups
           palette = "Dark2")
-
-
-
-# Change legend labels
-# ++++++++++++++++++++++++++++++++++++
-\dontrun{
-ggsurvplot(fit2, pval = TRUE,
-          break.time.by = 400,
-          risk.table = TRUE,
-          risk.table.col = "strata",
-          ggtheme = theme_bw(),
-          legend.labs = c("A", "B", "C", "D", "E", "F"))
 }
+
 }
 
