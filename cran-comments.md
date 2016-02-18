@@ -9,7 +9,7 @@ There were no ERRORs, WARNINGs or NOTEs.
 There are currently no downstream dependencies for this package
 
 ## Update
-This is an update version 0.2.0
+This is an update version 0.2.0 (see NEWS.md)
 
 
 
