@@ -352,6 +352,9 @@ ggsurvplot <- function(fit, fun = NULL,
   class(res) <- c("ggsurvplot", "list")
   attr(res, "surv.plot.height") <- surv.plot.height
   attr(res, "risk.table.height") <- risk.table.height
+  attr(res, "risk.table.y.text.col") <- risk.table.y.text.col
+
+
   return(res)
 }
 
@@ -375,6 +378,18 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
                               legend.text = element_text(colour = NA),
                               legend.title = element_text(colour = NA)) +
     guides(color = FALSE)
+
+  # Make sure that risk.table.y.text.col will be the same as the plot legend colors
+  risk.table.y.text.col <- attr(x, 'risk.table.y.text.col')
+  if(risk.table.y.text.col){
+    g <- ggplot2::ggplot_build(x$plot)
+    cols <- unlist(unique(g$data[[1]]["colour"]))
+    legend.labs <- levels(g$plot$data$strata)
+    names(cols) <- legend.labs # Give every color an appropriate name
+    x$table <- x$table + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+  }
+
+
 
   plots <- rev(x)
   grobs <- widths <- list()
