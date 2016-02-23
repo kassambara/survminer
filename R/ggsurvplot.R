@@ -263,18 +263,22 @@ ggsurvplot <- function(fit, fun = NULL,
 
 
   # Drawing survival curves
-  d$strata <- factor(d$strata, levels = strata_names)
+  d$strata <- factor(d$strata, levels = strata_names, labels = legend.labs)
   d <- d[order(d$strata), , drop = FALSE]
   surv.color <- ifelse(n.strata > 1, "strata", color)
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
       .geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, ...) +
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
-       .ggcolor(palette, breaks = strata_names, labels = legend.labs) +
-       .ggfill(palette, breaks = strata_names, labels = legend.labs) +
-     #   ggplot2::scale_color_discrete(breaks = strata_names, labels = legend.labs) + # change legend labels
-      # ggplot2::scale_fill_discrete(breaks = strata_names, labels = legend.labs) + # change legend labels
+       #.ggcolor(palette, breaks = strata_names, labels = legend.labs) +
+       #.ggfill(palette, breaks = strata_names, labels = legend.labs) +
         ggtheme
+
+  # if palette != hue
+  if(!("hue" %in% palette)){
+    p <- p + .ggcolor(palette, breaks = strata_names, labels = legend.labs)+
+      .ggfill(palette, breaks = strata_names, labels = legend.labs)
+  }
 
 
   if(is.null(break.time.by))
@@ -469,9 +473,14 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
                               labels = rev(levels(risk.data$strata))) +
     ggplot2::coord_cartesian(xlim = xlim) +
     ggplot2::scale_x_continuous(breaks = times) +
-    .ggcolor(palette)+
+    # .ggcolor(palette)+
     labs(title = risk.table.title) +
     ggplot2::theme(legend.position = "none")
+
+  # if palette != hue
+  if(!("hue" %in% palette)){
+    dtp <- dtp + .ggcolor(palette, breaks = strata_names, labels = legend.labs)
+  }
 
 
   return(dtp)
