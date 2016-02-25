@@ -11,7 +11,6 @@
 #'@param nsmo	number of points used to plot the fitted spline.
 #'@param var the set of variables for which plots are desired. By default, plots
 #'  are produced in turn for each variable of a model.
-#'@param point.col,point.size,point.shape color, size and shape to be used for points.
 #'@param font.main,font.x,font.y,font.tickslab a vector of length 3
 #'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
 #'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
@@ -35,7 +34,7 @@
 #'@describeIn ggcoxzph Graphical Test of Proportional Hazards using ggplot2.
 #'@export
 ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
-                      point.col = "red", point.size = 1, point.shape = 19,
+                      point.col = "red", point.shape = 19,
                       font.main = c(16, "plain", "black"),
                       font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
                       font.tickslab = c(12, "plain", "black"),
@@ -124,7 +123,7 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
 
     if (resid)
       gplot <- gplot + geom_point(aes(x = xx, y =y),
-                                  col = point.col, shape = point.shape, size = point.size)
+                                  col = point.col, shape = point.shape)
 
     if (se) {
       gplot <- gplot + geom_line(aes(x=pred.x, y=yup), lty = "dashed") +
