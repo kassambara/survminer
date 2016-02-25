@@ -226,6 +226,6 @@ ggsurvplot(fit2, pval = TRUE,
 
 }
 \author{
-Alboukadel Kassambara , \email{alboukadel.kassambara@gmail.com}
+Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
 }
 
