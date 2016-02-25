@@ -6,8 +6,9 @@
 \title{Graphical Test of Proportional Hazards using ggplot2}
 \usage{
 ggcoxzph(fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
-  font.main = c(16, "plain", "black"), font.x = c(14, "plain", "black"),
-  font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain", "black"),
+  point.col = "red", point.size = 1, point.shape = 19, font.main = c(16,
+  "plain", "black"), font.x = c(14, "plain", "black"), font.y = c(14,
+  "plain", "black"), font.tickslab = c(12, "plain", "black"),
   ggtheme = ggplot2::theme_classic())
 
 \method{print}{ggcoxzph}(x, ...)
@@ -28,6 +29,8 @@ a linear fit.}
 
 \item{var}{the set of variables for which plots are desired. By default, plots
 are produced in turn for each variable of a model.}
+
+\item{point.col, point.size, point.shape}{color, size and shape to be used for points.}
 
 \item{font.main, font.x, font.y, font.tickslab}{a vector of length 3
 indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
