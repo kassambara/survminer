@@ -29,7 +29,7 @@ a linear fit.}
 \item{var}{the set of variables for which plots are desired. By default, plots
 are produced in turn for each variable of a model.}
 
-\item{font.main, font.x, font.y, font.tickslab, font.legend}{a vector of length 3
+\item{font.main, font.x, font.y, font.tickslab}{a vector of length 3
 indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
 "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
 xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
