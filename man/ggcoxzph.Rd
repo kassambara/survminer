@@ -6,6 +6,8 @@
 \title{Graphical Test of Proportional Hazards using ggplot2}
 \usage{
 ggcoxzph(fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
+  font.main = c(16, "plain", "black"), font.x = c(14, "plain", "black"),
+  font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain", "black"),
   ggtheme = ggplot2::theme_classic())
 
 \method{print}{ggcoxzph}(x, ...)
@@ -13,15 +15,47 @@ ggcoxzph(fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
 \arguments{
 \item{fit}{an object of class \link{cox.zph}.}
 
-\item{resid}{a logical value, if TRUE the residuals are included on the plot, as well as the smooth fit.}
+\item{resid}{a logical value, if TRUE the residuals are included on the plot,
+as well as the smooth fit.}
 
-\item{se}{a logical value, if TRUE, confidence bands at two standard errors will be added.}
+\item{se}{a logical value, if TRUE, confidence bands at two standard errors
+will be added.}
 
-\item{df}{the degrees of freedom for the fitted natural spline, df=2 leads to a linear fit.}
+\item{df}{the degrees of freedom for the fitted natural spline, df=2 leads to
+a linear fit.}
 
 \item{nsmo}{number of points used to plot the fitted spline.}
 
-\item{var}{the set of variables for which plots are desired. By default, plots are produced in turn for each variable of a model.}
+\item{var}{the set of variables for which plots are desired. By default, plots
+are produced in turn for each variable of a model.}
+
+\item{font.main}{a vector of length 3
+indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
+xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
+font.x = "bold", to change only font face.}
+
+\item{font.x}{a vector of length 3
+indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
+xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
+font.x = "bold", to change only font face.}
+
+\item{font.y}{a vector of length 3
+indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
+xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
+font.x = "bold", to change only font face.}
+
+\item{font.tickslab}{a vector of length 3
+indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
+xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
+font.x = "bold", to change only font face.}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is theme_classic().
 Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
@@ -35,7 +69,8 @@ theme_minimal(), theme_classic(), theme_void(), ....}
 Returns an object of class \code{ggcoxzph} which is a list of ggplots.
 }
 \description{
-Displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ggplot2. Wrapper around \link{plot.cox.zph}.
+Displays a graph of the scaled Schoenfeld residuals, along with a
+ smooth curve using ggplot2. Wrapper around \link{plot.cox.zph}.
 }
 \section{Functions}{
 \itemize{
