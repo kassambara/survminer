@@ -1,18 +1,29 @@
 #'Graphical Test of Proportional Hazards using ggplot2
-#'@description Displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ggplot2. Wrapper around \link{plot.cox.zph}.
+#'@description Displays a graph of the scaled Schoenfeld residuals, along with a
+#'  smooth curve using ggplot2. Wrapper around \link{plot.cox.zph}.
 #'@param fit an object of class \link{cox.zph}.
-#'@param resid	a logical value, if TRUE the residuals are included on the plot, as well as the smooth fit.
-#'@param se a logical value, if TRUE, confidence bands at two standard errors will be added.
-#'@param df	the degrees of freedom for the fitted natural spline, df=2 leads to a linear fit.
+#'@param resid	a logical value, if TRUE the residuals are included on the plot,
+#'  as well as the smooth fit.
+#'@param se a logical value, if TRUE, confidence bands at two standard errors
+#'  will be added.
+#'@param df	the degrees of freedom for the fitted natural spline, df=2 leads to
+#'  a linear fit.
 #'@param nsmo	number of points used to plot the fitted spline.
-#'@param var the set of variables for which plots are desired. By default, plots are produced in turn for each variable of a model.
+#'@param var the set of variables for which plots are desired. By default, plots
+#'  are produced in turn for each variable of a model.
+#'@param point.col,point.size,point.shape color, size and shape to be used for points.
+#'@param font.main,font.x,font.y,font.tickslab a vector of length 3
+#'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
+#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
+#'  xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+#'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
+#'  font.x = "bold", to change only font face.
 #'@param ggtheme function, ggplot2 theme name. Default value is theme_classic().
 #'  Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
 #'  theme_minimal(), theme_classic(), theme_void(), ....
 #'@return Returns an object of class \code{ggcoxzph} which is a list of ggplots.
 #'
-#' @author
-#' Marcin Kosinski , \email{m.p.kosinski@@gmail.com}
+#'@author Marcin Kosinski , \email{m.p.kosinski@@gmail.com}
 #'
 #'@examples
 #'
@@ -24,6 +35,10 @@
 #'@describeIn ggcoxzph Graphical Test of Proportional Hazards using ggplot2.
 #'@export
 ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
+                      point.col = "red", point.size = 1, point.shape = 19,
+                      font.main = c(16, "plain", "black"),
+                      font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
+                      font.tickslab = c(12, "plain", "black"),
                       ggtheme = ggplot2::theme_classic()){
 
   x <- fit
@@ -108,12 +123,17 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
     }
 
     if (resid)
-      gplot <- gplot + geom_point(aes(x = xx, y =y), col = "red")
+      gplot <- gplot + geom_point(aes(x = xx, y =y),
+                                  col = point.col, shape = point.shape, size = point.size)
 
     if (se) {
       gplot <- gplot + geom_line(aes(x=pred.x, y=yup), lty = "dashed") +
         geom_line(aes( x = pred.x, y = ylow), lty = "dashed")
     }
+
+    gplot <-.labs(p = gplot, font.main = font.main, font.x = font.x, font.y = font.y)
+    gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)
+
 
   }) -> plots
   names(plots) <- dimnames(yy)[[2]]

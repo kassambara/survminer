@@ -72,6 +72,9 @@
 #'@return return an object of class ggsurvplot which is list containing two
 #'  ggplot objects, including: \itemize{ \item plot: the survival plot \item
 #'  table: the number at risk table per time }
+#'
+#' @author
+#' Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @examples
 #'
 #'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

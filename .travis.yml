@@ -1,0 +1,13 @@
+language: r
+r_packages:
+ - ggplot2
+ - grid
+ - gridExtra
+ - methods
+ - scales
+ - survival
+ - stats
+ - rmarkdown
+ - knitr
+ - devtools
+sudo: required
