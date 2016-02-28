@@ -10,4 +10,5 @@ r_packages:
  - rmarkdown
  - knitr
  - devtools
+ - magrittr
 sudo: required
