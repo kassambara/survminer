@@ -1,7 +1,7 @@
 Package: survminer
 Type: Package
 Title: Drawing Survival Curves using 'ggplot2'
-Version: 0.2.0.9001
+Version: 0.2.0.9002
 Date: 2016-01-16
 Authors@R: c(
     person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"))
@@ -19,13 +19,15 @@ Imports:
     methods,
     scales,
     survival,
-    stats
+    stats,
+    magrittr
 Suggests:
     knitr
 URL: http://www.sthda.com/english/wiki/survminer
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1
 Collate:
-    'ggcoxzph.R'
     'utilities.R'
+    'ggcoxfunctional.R'
+    'ggcoxzph.R'
     'ggsurvplot.R'
