@@ -484,7 +484,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
   dtp <- ggplot2::ggplot(risk.data,
                          ggplot2::aes(x = time, y = rev(strata), label = n.risk, shape = rev(strata))) +
-    ggplot2::geom_point(size = 0)+
+    # ggplot2::geom_point(size = 0)+
     .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
     ggtheme +
     ggplot2::scale_y_discrete(breaks = as.character(levels(risk.data$strata)),
