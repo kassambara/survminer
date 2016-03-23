@@ -30,7 +30,11 @@ NULL
 #'
 #'@examples
 #'
-#'
+#' library(survival)
+#' data(mgus)
+#' ggcoxfunctional(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
+#'                   age + I(log(age)^2) + I(sqrt(age)), data = mgus,
+#'                 point.col = "blue", point.alpha = 0.5)
 #'
 #'
 #'@describeIn ggcoxfunctional Functional Form of Continuous Variable in Cox Proportional Hazards Model.
@@ -44,27 +48,16 @@ ggcoxfunctional <- function (formula, data, iter = 0, f = 0.6,
                              ylab = "Martingale Residuals \nof Null Cox Model",
                              ggtheme = ggplot2::theme_classic()){
 
-  eval(formula, parent.frame()) %>%
-    terms %>%
-    as.character() %>%
-    strsplit( split = "~") %>%
-    unlist -> termsFromFormula
+  attr(terms(formula), "term.labels") -> explanatory.variables.names
+  model.matrix(formula, data = data) -> explanatory.variables.values
+  SurvFormula <- deparse(formula[[2]])
 
-  termsFromFormula %>%
-    .[3] %>%
-    unlist %>%
-    strsplit(split = " ") %>%
-    unlist %>%
-    grep("+", x = ., value = TRUE, invert = TRUE, fixed= TRUE) %>%
-    grep("1", x = ., value = TRUE, invert = TRUE, fixed = TRUE) -> explanatory.variables
+  lapply(explanatory.variables.names, function(i){
+    which_col <- which(colnames(explanatory.variables.values) == i)
+    explanatory.variables.values[, which_col]-> explanatory
 
-  termsFromFormula[2] -> SurvFormula
-
-  lapply(explanatory.variables, function(i){
-
-    #eval(data[, i], parent.frame()) -> explanatory
-    data[, which(names(data) == i)] -> explanatory
-    cox.model <- coxph(as.formula(paste0(SurvFormula, " ~ ", i)), data = data)
+    cox.model <- coxph(as.formula(paste0(SurvFormula, " ~ ", i)),
+                       data = data)
     data2viz <- data.frame(explanatory = explanatory,
                            martingale_resid = resid(cox.model),
                            lowess_x = lowess(explanatory,
@@ -91,7 +84,7 @@ ggcoxfunctional <- function (formula, data, iter = 0, f = 0.6,
     gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)
   }) -> plots
 
-  names(plots) <- explanatory.variables
+  names(plots) <- explanatory.variables.names
   class(plots) <- c("ggcoxfunctional", "list")
   plots
 
