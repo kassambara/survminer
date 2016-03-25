@@ -185,7 +185,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        font.legend = c(10, "plain", "black"),
                        risk.table = FALSE, risk.table.title = "Number at risk by time",
                        risk.table.col = "black", risk.table.fontsize = 4.5,
-                       risk.table.y.text.col = FALSE,
+                       risk.table.y.text.col = TRUE,
                        risk.table.height = 0.25, surv.plot.height = 0.75,
                        ggtheme = ggplot2::theme_classic(),
                        ...
@@ -335,9 +335,12 @@ ggsurvplot <- function(fit, fun = NULL,
                                    xlim = xlim, legend.labs = legend.labs,
                                    risk.table.col = risk.table.col, palette = palette,
                                    ggtheme = ggtheme, risk.table.fontsize = risk.table.fontsize,
-                                   risk.table.title = risk.table.title)
+                                   risk.table.title = risk.table.title,
+                                   font.tickslab = font.tickslab
+                                   )
      risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y, xlab = xlab, ylab = legend.title)
-     risktable <- .set_ticks(risktable, font.tickslab = font.tickslab)
+
+     # risktable <- .set_ticks(risktable, font.tickslab = font.tickslab)
      risktable <- risktable + ggplot2::labs(color = legend.title, shape = legend.title)
      if("left" %in% legend) risktable <- risktable + ggplot2::theme(legend.position = legend)
      else risktable <- risktable + ggplot2::theme(legend.position = "none")
@@ -456,7 +459,8 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
                              xlim = c(0, max(fit$time)),
                              risk.table.col = "black",
                              palette = NULL, ggtheme = ggplot2::theme_classic(),
-                             risk.table.fontsize = 5, risk.table.title = "Number at risk by time"
+                             risk.table.fontsize = 5, risk.table.title = "Number at risk by time",
+                             font.tickslab = c(12, "plain", "black")
 )
   {
 
@@ -482,13 +486,20 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
   time <- strata <- label <- n.risk <- NULL
 
+  # Adjust risk table labels in case of long strata
+  risk.table.text.y <- rev(levels(risk.data$strata))
+  n_strata <- length(risk.table.text.y)
+  max_char <- max(nchar(risk.table.text.y))
+  is_long_strata <- max_char > 5
+  if(is_long_strata) risk.table.text.y <- rep("-", n_strata)
+
   dtp <- ggplot2::ggplot(risk.data,
                          ggplot2::aes(x = time, y = rev(strata), label = n.risk, shape = rev(strata))) +
     # ggplot2::geom_point(size = 0)+
     .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
     ggtheme +
     ggplot2::scale_y_discrete(breaks = as.character(levels(risk.data$strata)),
-                              labels = rev(levels(risk.data$strata))) +
+                              labels = risk.table.text.y ) +
     ggplot2::coord_cartesian(xlim = xlim) +
     ggplot2::scale_x_continuous(breaks = times) +
     # .ggcolor(palette)+
@@ -499,6 +510,12 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   if(!("hue" %in% palette)){
     dtp <- dtp + .ggcolor(palette, breaks = strata_names, labels = legend.labs)
   }
+
+  dtp <- .set_ticks(dtp, font.tickslab = font.tickslab)
+  if(is_long_strata )
+    dtp <- dtp + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
+                       axis.ticks.y = element_blank())
+
 
 
   return(dtp)

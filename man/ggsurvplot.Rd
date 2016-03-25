@@ -16,7 +16,7 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue",
   legend.title = "Strata", legend.labs = NULL, font.legend = c(10,
   "plain", "black"), risk.table = FALSE,
   risk.table.title = "Number at risk by time", risk.table.col = "black",
-  risk.table.fontsize = 4.5, risk.table.y.text.col = FALSE,
+  risk.table.fontsize = 4.5, risk.table.y.text.col = TRUE,
   risk.table.height = 0.25, surv.plot.height = 0.75,
   ggtheme = ggplot2::theme_classic(), ...)
 
