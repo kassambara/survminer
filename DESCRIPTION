@@ -15,7 +15,7 @@ Depends:
     ggplot2
 Imports:
     grid,
-    gridExtra,
+    gridExtra(>= 2.0),
     methods,
     scales,
     survival,
@@ -30,4 +30,5 @@ Collate:
     'utilities.R'
     'ggcoxfunctional.R'
     'ggcoxzph.R'
+    'theme_classic2.R'
     'ggsurvplot.R'

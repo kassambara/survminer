@@ -16,9 +16,9 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue",
   legend.title = "Strata", legend.labs = NULL, font.legend = c(10,
   "plain", "black"), risk.table = FALSE,
   risk.table.title = "Number at risk by time", risk.table.col = "black",
-  risk.table.fontsize = 4.5, risk.table.y.text.col = FALSE,
-  risk.table.height = 0.25, surv.plot.height = 0.75,
-  ggtheme = ggplot2::theme_classic(), ...)
+  risk.table.fontsize = 4.5, risk.table.y.text = TRUE,
+  risk.table.y.text.col = TRUE, risk.table.height = 0.25,
+  surv.plot.height = 0.75, ggtheme = theme_classic2(), ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
   risk.table.height = NULL, ...)
@@ -92,6 +92,8 @@ is FALSE.}
 "strata".}
 
 \item{risk.table.fontsize}{font size to be used for the risk table.}
+
+\item{risk.table.y.text}{logical. Default is TRUE. If FALSE, risk table y axis tick labels will be hidden.}
 
 \item{risk.table.y.text.col}{logical. Default value is FALSE. If TRUE, risk
 table tick labels will be colored by strata.}

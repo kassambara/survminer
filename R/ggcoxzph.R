@@ -138,6 +138,7 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
   }) -> plots
   names(plots) <- dimnames(yy)[[2]]
   class(plots) <- c("ggcoxzph", "list")
+  attr(plots, "global_pval") <- x$table["GLOBAL", 3]
   plots
 
 }
@@ -151,6 +152,7 @@ print.ggcoxzph <- function(x, ...){
   if(!inherits(x, "ggcoxzph"))
     stop("An object of class ggcoxzph is required.")
   plots <- x
+  pval <- attr(x, "global_pval")
   grobs <- widths <- list()
   for (i in 1:length(plots)) {
     grobs[[i]] <- ggplotGrob(plots[[i]])
@@ -160,6 +162,8 @@ print.ggcoxzph <- function(x, ...){
   for (i in 1:length(grobs)) {
     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
   }
-  do.call(gridExtra::grid.arrange, grobs)
+
+  main <- paste0("Global Schoenfeld Test p: ", signif(pval, 4), "\n")
+  do.call(gridExtra::grid.arrange, c(grobs, top = main))
 }
 
