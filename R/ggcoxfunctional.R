@@ -77,7 +77,7 @@ ggcoxfunctional <- function (formula, data, iter = 0, f = 0.6,
       geom_point(col = point.col, shape = point.shape, size = point.size, alpha = point.alpha) +
       geom_line(aes(lowess_x, lowess_y)) + ggtheme +
       xlab(i) +
-      ylab(ylab) +
+      ylab(NULL) +
       ggplot2::coord_cartesian(xlim = xlim, ylim = ylim) -> gplot
 
     gplot <-.labs(p = gplot, font.main = font.main, font.x = font.x, font.y = font.y)
@@ -86,6 +86,7 @@ ggcoxfunctional <- function (formula, data, iter = 0, f = 0.6,
 
   names(plots) <- explanatory.variables.names
   class(plots) <- c("ggcoxfunctional", "list")
+  attr(plots, "y.text") <- ylab
   plots
 
 }
@@ -108,6 +109,7 @@ print.ggcoxfunctional <- function(x, ...){
   for (i in 1:length(grobs)) {
     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
   }
-  do.call(gridExtra::grid.arrange, grobs)
+  y.text <- attr(plots, "y.text")
+  do.call(gridExtra::grid.arrange, c(grobs, left = y.text))
 }
 
