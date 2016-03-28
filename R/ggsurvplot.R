@@ -1,4 +1,4 @@
-#' @include utilities.R
+#' @include utilities.R theme_classic2.R
 #' @importFrom methods is
 #' @importFrom stats pchisq
   NULL
@@ -187,7 +187,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        risk.table.col = "black", risk.table.fontsize = 4.5,
                        risk.table.y.text.col = TRUE,
                        risk.table.height = 0.25, surv.plot.height = 0.75,
-                       ggtheme = ggplot2::theme_classic(),
+                       ggtheme = theme_classic2(),
                        ...
                        ){
 
