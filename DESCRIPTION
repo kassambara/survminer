@@ -30,4 +30,5 @@ Collate:
     'utilities.R'
     'ggcoxfunctional.R'
     'ggcoxzph.R'
+    'theme_classic2.R'
     'ggsurvplot.R'
