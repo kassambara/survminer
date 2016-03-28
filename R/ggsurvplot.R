@@ -51,6 +51,7 @@
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
 #'  "strata".
 #'@param risk.table.fontsize font size to be used for the risk table.
+#'@param risk.table.y.text logical. Default is TRUE. If FALSE, risk table y axis tick labels will be hidden.
 #'@param risk.table.y.text.col logical. Default value is FALSE. If TRUE, risk
 #'  table tick labels will be colored by strata.
 #'@param risk.table.height the height of the risk table on the grid. Increase
@@ -185,6 +186,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        font.legend = c(10, "plain", "black"),
                        risk.table = FALSE, risk.table.title = "Number at risk by time",
                        risk.table.col = "black", risk.table.fontsize = 4.5,
+                       risk.table.y.text = TRUE,
                        risk.table.y.text.col = TRUE,
                        risk.table.height = 0.25, surv.plot.height = 0.75,
                        ggtheme = theme_classic2(),
@@ -336,6 +338,7 @@ ggsurvplot <- function(fit, fun = NULL,
                                    risk.table.col = risk.table.col, palette = palette,
                                    ggtheme = ggtheme, risk.table.fontsize = risk.table.fontsize,
                                    risk.table.title = risk.table.title,
+                                   risk.table.y.text = risk.table.y.text,
                                    font.tickslab = font.tickslab
                                    )
      risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y, xlab = xlab, ylab = legend.title)
@@ -460,6 +463,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
                              risk.table.col = "black",
                              palette = NULL, ggtheme = ggplot2::theme_classic(),
                              risk.table.fontsize = 5, risk.table.title = "Number at risk by time",
+                             risk.table.y.text = TRUE,
                              font.tickslab = c(12, "plain", "black")
 )
   {
@@ -489,9 +493,11 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   # Adjust risk table labels in case of long strata
   risk.table.text.y <- rev(levels(risk.data$strata))
   n_strata <- length(risk.table.text.y)
-  max_char <- max(nchar(risk.table.text.y))
-  is_long_strata <- max_char > 5
-  if(is_long_strata) risk.table.text.y <- rep("-", n_strata)
+#   max_char <- max(nchar(risk.table.text.y))
+#   is_long_strata <- max_char > 5
+#   if(is_long_strata) risk.table.text.y <- rep("-", n_strata)
+   if(!risk.table.y.text) risk.table.text.y <- rep("-", n_strata)
+
 
   dtp <- ggplot2::ggplot(risk.data,
                          ggplot2::aes(x = time, y = rev(strata), label = n.risk, shape = rev(strata))) +
@@ -512,7 +518,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   }
 
   dtp <- .set_ticks(dtp, font.tickslab = font.tickslab)
-  if(is_long_strata )
+  if(!risk.table.y.text)
     dtp <- dtp + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
                        axis.ticks.y = element_blank())
 
