@@ -16,13 +16,13 @@ Find out more at <http://www.sthda.com/english/wiki/survminer>.
 Installation and loading
 ------------------------
 
-Install from CRAN as follow:
+Install from [CRAN](https://cran.rstudio.com/web/packages/survminer/index.html) as follow:
 
 ``` r
 install.packages("survminer")
 ```
 
-Or, install the latest version from GitHub:
+Or, install the latest version from [GitHub](https://github.com/kassambara/survminer):
 
 ``` r
 # Install
