@@ -4,7 +4,9 @@ Title: Drawing Survival Curves using 'ggplot2'
 Version: 0.2.1
 Date: 2016-01-16
 Authors@R: c(
-    person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"))
+    person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"),
+    person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@@gmail.com")
+    )
 Description: Contains the function 'ggsurvplot()' for drawing easily beautiful
     and 'ready-to-publish' survival curves with the 'number at risk' table.
     Other functions are also available for visual examinations of cox model assumptions.
