@@ -10,7 +10,7 @@ ggcoxfunctional(formula, data, iter = 0, f = 0.6, point.col = "red",
   "plain", "black"), font.x = c(14, "plain", "black"), font.y = c(14,
   "plain", "black"), font.tickslab = c(12, "plain", "black"), xlim = NULL,
   ylim = NULL, ylab = "Martingale Residuals \\nof Null Cox Model",
-  ggtheme = ggplot2::theme_classic())
+  ggtheme = theme_classic2())
 
 \method{print}{ggcoxfunctional}(x, ...)
 }
@@ -36,7 +36,7 @@ font.x = "bold", to change only font face.}
 
 \item{ylab}{y axis label.}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is theme_classic().
+\item{ggtheme}{function, ggplot2 theme name. Default value is survminer::theme_classic2().
 Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
 theme_minimal(), theme_classic(), theme_void(), ....}
 

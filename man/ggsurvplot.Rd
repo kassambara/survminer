@@ -105,7 +105,7 @@ risk.table = FALSE.}
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
 is 0.75. Ignored when risk.table = FALSE.}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is theme_classic().
+\item{ggtheme}{function, ggplot2 theme name. Default value is survminer::theme_classic2().
 Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
 theme_minimal(), theme_classic(), theme_void(), ....}
 

@@ -59,7 +59,7 @@
 #'  risk.table = FALSE.
 #'@param surv.plot.height the height of the survival plot on the grid. Default
 #'  is 0.75. Ignored when risk.table = FALSE.
-#'@param ggtheme function, ggplot2 theme name. Default value is theme_classic().
+#'@param ggtheme function, ggplot2 theme name. Default value is survminer::theme_classic2().
 #'  Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
 #'  theme_minimal(), theme_classic(), theme_void(), ....
 #'@param ... other arguments to be passed to ggplot2 geom_*() functions such as
