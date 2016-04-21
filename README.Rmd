@@ -83,7 +83,7 @@ fit <- survfit(Surv(time, status) ~ sex, data = lung)
 2. **Basic plots**
     
     
-```{r ggplot2-basic-survival-plot, fig.height = 4, fig.width = 4}
+```{r ggplot2-basic-survival-plot, fig.height = 5, fig.width = 5}
 ggsurvplot(fit)
 ```
     
@@ -92,7 +92,7 @@ ggsurvplot(fit)
     
     
   
-```{r ggplot2-customized-survival-plot, fig.height = 5, fig.width = 5}
+```{r ggplot2-customized-survival-plot, fig.height = 5.5, fig.width = 6}
 ggsurvplot(fit,  size = 1,  # change line size
            palette = c("#E7B800", "#2E9FDF"), # custom color palettes
            conf.int = TRUE, # Add confidence interval
