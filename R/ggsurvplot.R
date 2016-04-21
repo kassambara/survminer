@@ -281,8 +281,8 @@ ggsurvplot <- function(fit, fun = NULL,
 
   # if palette != hue
   if(!("hue" %in% palette)){
-    p <- p + .ggcolor(palette, breaks = strata_names, labels = legend.labs)+
-      .ggfill(palette, breaks = strata_names, labels = legend.labs)
+    p <- p + .ggcolor(palette)+
+      .ggfill(palette)
   }
 
 
