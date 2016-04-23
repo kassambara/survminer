@@ -1,4 +1,5 @@
 #' @include utilities.R
+#' @importFrom ("stats", "approx", "as.formula", "model.matrix", "resid","terms")
 #' @importFrom stats lowess
 #' @importFrom stats approx
 #' @importFrom stats resid
