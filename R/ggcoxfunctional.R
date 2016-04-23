@@ -1,5 +1,7 @@
 #' @include utilities.R
 #' @importFrom stats lowess
+#' @importFrom stats approx
+#' @importFrom stats resid
 #' @importFrom survival coxph
 #' @importFrom magrittr %>%
 NULL
@@ -48,15 +50,15 @@ ggcoxfunctional <- function (formula, data, iter = 0, f = 0.6,
                              ylab = "Martingale Residuals \nof Null Cox Model",
                              ggtheme = theme_classic2()){
 
-  attr(terms(formula), "term.labels") -> explanatory.variables.names
-  model.matrix(formula, data = data) -> explanatory.variables.values
+  attr(stats::terms(formula), "term.labels") -> explanatory.variables.names
+  stats::model.matrix(formula, data = data) -> explanatory.variables.values
   SurvFormula <- deparse(formula[[2]])
   martingale_resid <- lowess_x <- lowess_y <- NULL
   lapply(explanatory.variables.names, function(i){
     which_col <- which(colnames(explanatory.variables.values) == i)
     explanatory.variables.values[, which_col]-> explanatory
 
-    cox.model <- coxph(as.formula(paste0(SurvFormula, " ~ ", i)),
+    cox.model <- coxph(stats::as.formula(paste0(SurvFormula, " ~ ", i)),
                        data = data)
     data2viz <- data.frame(explanatory = explanatory,
                            martingale_resid = resid(cox.model),
