@@ -54,7 +54,7 @@ fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ggsurvplot(fit)
 ```
 
-![](README-ggplot2-basic-survival-plot-1.png)<!-- -->
+![](README-ggplot2-basic-survival-plot-1.png)
 
 1.  **Customized survival curves**
 
@@ -71,6 +71,13 @@ ggsurvplot(fit,  size = 1,  # change line size
            )
 ```
 
-![](README-ggplot2-customized-survival-plot-1.png)<!-- -->
+![](README-ggplot2-customized-survival-plot-1.png)
 
-Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table. Read more: <http://www.sthda.com/english/wiki/survminer>.
+Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table.
+
+Blog posts
+==========
+
+-   M. Kosiński. R-ADDICT May 2016. [Survival plots have never been so informative](http://r-addict.com/2016/05/23/Informative-Survival-Plots.html)
+
+-   A. Kassambara. STHDA January 2016. [survminer R package: Survival Data Analysis and Visualization](http://www.sthda.com/english/wiki/survminer-r-package-survival-data-analysis-and-visualization).
