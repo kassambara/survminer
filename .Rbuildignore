@@ -4,3 +4,4 @@
 ^README-.*\.png$
 ^cran-comments\.md$
 ^\.travis\.yml$
+^ISSUE_TEMPLATE\.md$
