@@ -59,7 +59,7 @@
 #'  risk.table = FALSE.
 #'@param surv.plot.height the height of the survival plot on the grid. Default
 #'  is 0.75. Ignored when risk.table = FALSE.
-#'@param ggtheme function, ggplot2 theme name. Default value is theme_classic().
+#'@param ggtheme function, ggplot2 theme name. Default value is survminer::theme_classic2().
 #'  Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
 #'  theme_minimal(), theme_classic(), theme_void(), ....
 #'@param ... other arguments to be passed to ggplot2 geom_*() functions such as
@@ -281,8 +281,8 @@ ggsurvplot <- function(fit, fun = NULL,
 
   # if palette != hue
   if(!("hue" %in% palette)){
-    p <- p + .ggcolor(palette, breaks = strata_names, labels = legend.labs)+
-      .ggfill(palette, breaks = strata_names, labels = legend.labs)
+    p <- p + .ggcolor(palette)+
+      .ggfill(palette)
   }
 
 

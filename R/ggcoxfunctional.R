@@ -1,5 +1,7 @@
 #' @include utilities.R
 #' @importFrom stats lowess
+#' @importFrom stats approx
+#' @importFrom stats resid
 #' @importFrom survival coxph
 #' @importFrom magrittr %>%
 NULL
@@ -21,7 +23,7 @@ NULL
 #'  xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
 #'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 #'  font.x = "bold", to change only font face.
-#'@param ggtheme function, ggplot2 theme name. Default value is theme_classic().
+#'@param ggtheme function, ggplot2 theme name. Default value is survminer::theme_classic2().
 #'  Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
 #'  theme_minimal(), theme_classic(), theme_void(), ....
 #'@return Returns an object of class \code{ggcoxfunctional} which is a list of ggplots.
@@ -46,17 +48,17 @@ ggcoxfunctional <- function (formula, data, iter = 0, f = 0.6,
                              font.tickslab = c(12, "plain", "black"),
                              xlim = NULL, ylim = NULL,
                              ylab = "Martingale Residuals \nof Null Cox Model",
-                             ggtheme = ggplot2::theme_classic()){
+                             ggtheme = theme_classic2()){
 
-  attr(terms(formula), "term.labels") -> explanatory.variables.names
-  model.matrix(formula, data = data) -> explanatory.variables.values
+  attr(stats::terms(formula), "term.labels") -> explanatory.variables.names
+  stats::model.matrix(formula, data = data) -> explanatory.variables.values
   SurvFormula <- deparse(formula[[2]])
-
+  martingale_resid <- lowess_x <- lowess_y <- NULL
   lapply(explanatory.variables.names, function(i){
     which_col <- which(colnames(explanatory.variables.values) == i)
     explanatory.variables.values[, which_col]-> explanatory
 
-    cox.model <- coxph(as.formula(paste0(SurvFormula, " ~ ", i)),
+    cox.model <- coxph(stats::as.formula(paste0(SurvFormula, " ~ ", i)),
                        data = data)
     data2viz <- data.frame(explanatory = explanatory,
                            martingale_resid = resid(cox.model),

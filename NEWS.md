@@ -1,3 +1,15 @@
+# survminer 0.2.1.900
+    
+    
+## New features
+   
+   
+## Minor changes
+   
+   
+## Bug fixes
+    
+    
 # survminer 0.2.1
 
 ## New features
@@ -39,20 +51,17 @@
     
 - It's now possible to customize the output survival *plot* and the *risk table* returned by ggsurvplot, and to print again the final plot.  ([@MarcinKosinski, #2](https://github.com/kassambara/survminer/issues/2)):
   
-```{r}
+```
 # Fit survival curves
-#++++++++++++++++++++++++++++++++++++
 require("survival")
 fit<- survfit(Surv(time, status) ~ sex, data = lung)
 
 # visualize
-#++++++++++++++++++++++++++++++++++++
 require(survminer)
 ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
           risk.table = TRUE)
 
 # Customize the output and then print
-#++++++++++++++++++++++++++++++++++++
 res <- ggsurvplot(fit, pval = TRUE, conf.int = TRUE,
            risk.table = TRUE)
 res$table <- res$table + theme(axis.line = element_blank())
