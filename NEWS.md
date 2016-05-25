@@ -3,6 +3,7 @@
     
 ## New features
    
+- Vignette added: `Survival plots have never been so informative` ([@MarcinKosinski, #39](https://github.com/kassambara/survminer/issues/39))
    
 ## Minor changes
    
