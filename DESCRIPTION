@@ -23,7 +23,9 @@ Imports:
     stats,
     magrittr
 Suggests:
-    knitr
+    knitr,
+    RTCGA.clinical,
+    survMisc
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1
