@@ -10,6 +10,7 @@
    
 ## Bug fixes
     
+- lienetype argument changed to linetype in `ggsurvplot()` documentation. ([@ViniciusBRodrigues, #43](https://github.com/kassambara/survminer/issues/43))
     
 # survminer 0.2.1
 
