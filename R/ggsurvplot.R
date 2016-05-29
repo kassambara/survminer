@@ -138,7 +138,7 @@
 #'           pval = TRUE, conf.int = TRUE,
 #'           risk.table = TRUE, # Add risk table
 #'           risk.table.col = "strata", # Change risk table color by groups
-#'           lienetype = "strata", # Change line type by groups
+#'           linetype = "strata", # Change line type by groups
 #'           ggtheme = theme_bw(), # Change ggplot2 theme
 #'           palette = c("#E7B800", "#2E9FDF"))
 #'
