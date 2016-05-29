@@ -36,9 +36,8 @@ font.x = "bold", to change only font face.}
 
 \item{ylab}{y axis label.}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is survminer::theme_classic2().
-Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
-theme_minimal(), theme_classic(), theme_void(), ....}
+\item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
+Allowed values include ggplot2 official themes: see \link{ggtheme}.}
 
 \item{x}{an object of class ggcoxfunctional}
 

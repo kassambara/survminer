@@ -8,8 +8,8 @@ Authors@R: c(
     person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@@gmail.com")
     )
 Description: Contains the function 'ggsurvplot()' for drawing easily beautiful
-    and 'ready-to-publish' survival curves with the 'number at risk' table.
-    Other functions are also available for visual examinations of cox model assumptions.
+    and 'ready-to-publish' survival curves with the 'number at risk' table. Other
+    functions are also available for visual examinations of cox model assumptions.
 License: GPL-2
 LazyData: TRUE
 Depends:
@@ -30,6 +30,7 @@ URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1
 Collate:
+    'ggcoxdiagnostics.R'
     'utilities.R'
     'ggcoxfunctional.R'
     'ggcoxzph.R'
