@@ -3,7 +3,7 @@
 \name{ggsurvplot}
 \alias{ggsurvplot}
 \alias{print.ggsurvplot}
-\title{Drawing survival curves using ggplot2}
+\title{Drawing Survival Curves Using \pkg{ggplot2}}
 \usage{
 ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue",
   break.time.by = NULL, surv.scale = c("default", "percent"),
@@ -105,9 +105,8 @@ risk.table = FALSE.}
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
 is 0.75. Ignored when risk.table = FALSE.}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is survminer::theme_classic2().
-Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
-theme_minimal(), theme_classic(), theme_void(), ....}
+\item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
+Allowed values include ggplot2 official themes: see \link{ggtheme}.}
 
 \item{...}{other arguments to be passed to ggplot2 geom_*() functions such as
 linetype, size, ...}

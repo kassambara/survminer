@@ -3,7 +3,7 @@
 \name{ggcoxzph}
 \alias{ggcoxzph}
 \alias{print.ggcoxzph}
-\title{Graphical Test of Proportional Hazards using ggplot2}
+\title{Graphical Test of Proportional Hazards with \pkg{ggplot2}}
 \usage{
 ggcoxzph(fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
   point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
@@ -39,9 +39,8 @@ xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
 c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 font.x = "bold", to change only font face.}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is survminer::theme_classic2().
-Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
-theme_minimal(), theme_classic(), theme_void(), ....}
+\item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
+Allowed values include ggplot2 official themes: see \link{ggtheme}.}
 
 \item{x}{an object of class ggcoxzph}
 
@@ -52,7 +51,7 @@ Returns an object of class \code{ggcoxzph} which is a list of ggplots.
 }
 \description{
 Displays a graph of the scaled Schoenfeld residuals, along with a
- smooth curve using ggplot2. Wrapper around \link{plot.cox.zph}.
+ smooth curve using \pkg{ggplot2}. Wrapper around \link{plot.cox.zph}.
 }
 \section{Functions}{
 \itemize{

@@ -2,7 +2,7 @@
 #' @importFrom methods is
 #' @importFrom stats pchisq
   NULL
-#'Drawing survival curves using ggplot2
+#'Drawing Survival Curves Using \pkg{ggplot2}
 #'@description Drawing survival curves using ggplot2
 #'@param fit an object of class survfit.
 #'@param fun an arbitrary function defining a transformation of the survival
@@ -59,9 +59,8 @@
 #'  risk.table = FALSE.
 #'@param surv.plot.height the height of the survival plot on the grid. Default
 #'  is 0.75. Ignored when risk.table = FALSE.
-#'@param ggtheme function, ggplot2 theme name. Default value is survminer::theme_classic2().
-#'  Allowed values include ggplot2 official themes: theme_gray(), theme_bw(),
-#'  theme_minimal(), theme_classic(), theme_void(), ....
+#'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
+#'  Allowed values include ggplot2 official themes: see \link{ggtheme}.
 #'@param ... other arguments to be passed to ggplot2 geom_*() functions such as
 #'  linetype, size, ...
 #'@details \strong{legend position}: The argument \strong{legend} can be also a
