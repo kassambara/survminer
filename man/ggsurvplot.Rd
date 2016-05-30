@@ -5,7 +5,7 @@
 \alias{print.ggsurvplot}
 \title{Drawing Survival Curves Using \pkg{ggplot2}}
 \usage{
-ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue",
+ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
   break.time.by = NULL, surv.scale = c("default", "percent"),
   conf.int = FALSE, conf.int.fill = "gray", censor = TRUE, pval = FALSE,
   pval.size = 5, pval.coord = c(NULL, NULL), main = NULL, xlab = "Time",
@@ -40,6 +40,10 @@ argument palette.}
 \item{palette}{the color palette to be used. Allowed values include "hue" for
 the default hue color scale; "grey" for grey color palettes; brewer palettes
 e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").}
+
+\item{linetype}{line types. Allowed values includes i) "strata" for changing
+linetype by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
+character vector c("solid", "dashed").}
 
 \item{break.time.by}{numeric value controlling time axis breaks. Default value
 is NULL.}
@@ -93,7 +97,8 @@ is FALSE.}
 
 \item{risk.table.fontsize}{font size to be used for the risk table.}
 
-\item{risk.table.y.text}{logical. Default is TRUE. If FALSE, risk table y axis tick labels will be hidden.}
+\item{risk.table.y.text}{logical. Default is TRUE. If FALSE, risk table y axis
+tick labels will be hidden.}
 
 \item{risk.table.y.text.col}{logical. Default value is FALSE. If TRUE, risk
 table tick labels will be colored by strata.}
@@ -105,8 +110,9 @@ risk.table = FALSE.}
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
 is 0.75. Ignored when risk.table = FALSE.}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
-Allowed values include ggplot2 official themes: see \link{ggtheme}.}
+\item{ggtheme}{function, ggplot2 theme name. Default value is
+\link{theme_classic2}. Allowed values include ggplot2 official themes: see
+\link{ggtheme}.}
 
 \item{...}{other arguments to be passed to ggplot2 geom_*() functions such as
 linetype, size, ...}

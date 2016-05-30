@@ -19,6 +19,9 @@
 #'@param palette the color palette to be used. Allowed values include "hue" for
 #'  the default hue color scale; "grey" for grey color palettes; brewer palettes
 #'  e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
+#'@param linetype line types. Allowed values includes i) "strata" for changing
+#'  linetype by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
+#'  character vector c("solid", "dashed").
 #'@param break.time.by numeric value controlling time axis breaks. Default value
 #'  is NULL.
 #'@param conf.int logical value. If TRUE, plots confidence interval.
@@ -51,7 +54,8 @@
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
 #'  "strata".
 #'@param risk.table.fontsize font size to be used for the risk table.
-#'@param risk.table.y.text logical. Default is TRUE. If FALSE, risk table y axis tick labels will be hidden.
+#'@param risk.table.y.text logical. Default is TRUE. If FALSE, risk table y axis
+#'  tick labels will be hidden.
 #'@param risk.table.y.text.col logical. Default value is FALSE. If TRUE, risk
 #'  table tick labels will be colored by strata.
 #'@param risk.table.height the height of the risk table on the grid. Increase
@@ -59,8 +63,9 @@
 #'  risk.table = FALSE.
 #'@param surv.plot.height the height of the survival plot on the grid. Default
 #'  is 0.75. Ignored when risk.table = FALSE.
-#'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
-#'  Allowed values include ggplot2 official themes: see \link{ggtheme}.
+#'@param ggtheme function, ggplot2 theme name. Default value is
+#'  \link{theme_classic2}. Allowed values include ggplot2 official themes: see
+#'  \link{ggtheme}.
 #'@param ... other arguments to be passed to ggplot2 geom_*() functions such as
 #'  linetype, size, ...
 #'@details \strong{legend position}: The argument \strong{legend} can be also a
@@ -73,8 +78,7 @@
 #'  ggplot objects, including: \itemize{ \item plot: the survival plot \item
 #'  table: the number at risk table per time }
 #'
-#' @author
-#' Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
+#'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @examples
 #'
 #'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -170,7 +174,7 @@
 #'@describeIn ggsurvplot Draws survival curves using ggplot2.
 #'@export
 ggsurvplot <- function(fit, fun = NULL,
-                       color = NULL, palette = "hue", break.time.by = NULL,
+                       color = NULL, palette = "hue", linetype = 1, break.time.by = NULL,
                        surv.scale = c("default", "percent"),
                        conf.int = FALSE, conf.int.fill = "gray",
                        censor = TRUE,
@@ -198,6 +202,15 @@ ggsurvplot <- function(fit, fun = NULL,
   if(is.null(xlim)) xlim <- c(0, max(fit$time))
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
   if(!is(legend, "numeric")) legend <- match.arg(legend)
+
+  # Set linetype manually
+  linetype.manual <- NULL
+  if(linetype[1] != "strata"){
+    if(length(linetype) > 1) {
+      linetype.manual <- linetype
+      linetype <- "strata"
+    }
+  }
 
   .check_legend_labs(fit, legend.labs)
 
@@ -271,7 +284,7 @@ ggsurvplot <- function(fit, fun = NULL,
   d <- d[order(d$strata), , drop = FALSE]
   surv.color <- ifelse(n.strata > 1, "strata", color)
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
-      .geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, ...) +
+      .geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
        #.ggcolor(palette, breaks = strata_names, labels = legend.labs) +
@@ -328,6 +341,8 @@ ggsurvplot <- function(fit, fun = NULL,
   p <- .set_ticks(p, font.tickslab = font.tickslab)
   p <- p + ggplot2::theme(legend.position = legend)
   p <- .set_legend_font(p, font.legend)
+  if(!is.null(linetype.manual)) p <- p + scale_linetype_manual(values = linetype.manual)
+
 
 
   # Add risk table
