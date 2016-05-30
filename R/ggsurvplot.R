@@ -20,7 +20,7 @@
 #'  the default hue color scale; "grey" for grey color palettes; brewer palettes
 #'  e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
 #'@param linetype line types. Allowed values includes i) "strata" for changing
-#'  linetype by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
+#'  linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
 #'  character vector c("solid", "dashed").
 #'@param break.time.by numeric value controlling time axis breaks. Default value
 #'  is NULL.
