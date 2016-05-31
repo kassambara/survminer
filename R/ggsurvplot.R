@@ -549,7 +549,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
     if(!is.null(fit$strata)){
       if(length(fit$strata) != length(legend.labs))
-        stop("The length of legend.labs must should be ", length(fit$strata) )
+        stop("The length of legend.labs should be ", length(fit$strata) )
     }
 
     else{
