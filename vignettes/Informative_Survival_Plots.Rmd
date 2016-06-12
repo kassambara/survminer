@@ -11,6 +11,7 @@ output:
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Survival plots have never been so informative}
+  \usepackage[utf8]{inputenc}
 ---
 ```{r include = FALSE}
 library(knitr)
