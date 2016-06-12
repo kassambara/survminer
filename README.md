@@ -27,7 +27,7 @@ Or, install the latest version from [GitHub](https://github.com/kassambara/survm
 ``` r
 # Install
 if(!require(devtools)) install.packages("devtools")
-devtools::install_github("kassambara/survminer")
+devtools::install_github("kassambara/survminer", build_vignettes = TRUE)
 ```
 
 Load survminer:
