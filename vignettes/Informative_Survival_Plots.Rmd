@@ -1,6 +1,6 @@
 ---
 title: Survival plots have never been so informative
-author: Marcin Kosiński
+author: Marcin Kosinski
 output:
   html_document:
     mathjax:  default
@@ -11,7 +11,6 @@ output:
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Survival plots have never been so informative}
-  \usepackage[utf8]{inputenc}
 ---
 ```{r include = FALSE}
 library(knitr)
