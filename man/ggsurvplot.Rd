@@ -3,7 +3,7 @@
 \name{ggsurvplot}
 \alias{ggsurvplot}
 \alias{print.ggsurvplot}
-\title{Drawing Survival Curves Using \pkg{ggplot2}}
+\title{Drawing Survival Curves Using ggplot2}
 \usage{
 ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
   break.time.by = NULL, surv.scale = c("default", "percent"),

@@ -2,7 +2,7 @@
 #' @importFrom methods is
 #' @importFrom stats pchisq
   NULL
-#'Drawing Survival Curves Using \pkg{ggplot2}
+#'Drawing Survival Curves Using ggplot2
 #'@description Drawing survival curves using ggplot2
 #'@param fit an object of class survfit.
 #'@param fun an arbitrary function defining a transformation of the survival
