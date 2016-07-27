@@ -74,6 +74,7 @@ ggcoxdiagnostics <- function (fit,
   model <- fit
   if(!methods::is(model, "coxph"))
     stop("Can't handle an object of class ", class(fit))
+  lp <- res <- index <- NULL
 
   if (linear.predictions) {
     data2plot <- data.frame(lp = predict(model, type="lp"),
