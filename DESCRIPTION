@@ -27,6 +27,7 @@ Suggests:
     RTCGA.clinical,
     survMisc
 VignetteBuilder: knitr
+biocViews:
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1
