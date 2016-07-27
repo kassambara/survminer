@@ -52,13 +52,14 @@ biocLite("RTCGA.clinical") # data for examples
 we can create simple estimates of survival curves just after we put `survfit` (survival package) object into `ggsurvplot()` function. Let's have a look at differences in survival times between patients suffering from Ovarian Cancer (*Ovarian serous cystadenocarcinoma*) and patients suffering from Breast Cancer (*Breast invasive carcinoma*), where data were collected by [The Cancer Genome Atlas Project](http://cancergenome.nih.gov/).
 
 ```{r, fig.width=10}
+library(survminer)
 library(RTCGA.clinical)
 survivalTCGA(BRCA.clinical, OV.clinical,
              extract.cols = "admin.disease_code") -> BRCAOV.survInfo
 library(survival)
 fit <- survfit(Surv(times, patient.vital_status) ~ admin.disease_code,
                data = BRCAOV.survInfo)
-library(survminer)
+# Visualize with survminer
 ggsurvplot(fit, risk.table = TRUE)
 ```
 
