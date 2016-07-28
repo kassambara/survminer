@@ -62,7 +62,7 @@ if(require(RTCGA.clinical)){
 # TCGA data exmaple (http://cancergenome.nih.gov/)
 # source("https://bioconductor.org/biocLite.R")
 # biocLite("RTCGA.clinical") # data for examples
-library(RTCGA.clinical) # also loads 'RTCGA' package
+# library(RTCGA.clinical) # also loads 'RTCGA' package
 survivalTCGA(BRCA.clinical, OV.clinical,
             extract.cols = c("admin.disease_code", "patient.days_to_birth")) -> BRCAOV.survInfo
 BRCAOV.survInfo$age  <- round((-as.numeric(BRCAOV.survInfo$patient.days_to_birth))/365,2)
