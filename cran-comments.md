@@ -8,7 +8,7 @@ There were no ERRORs, WARNINGs or NOTEs.
 
 ## win-builder check results
 
-There was 1 warning.
+There was 1 warning affecting particularly the vignette files: Informative_Survival_Plots.Rmd.
 
 Before submitting the update version (v0.2.2) of survminer, I did a
 check on winbulder that generated the following error:
