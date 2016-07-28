@@ -58,6 +58,7 @@ can be calculated with \link{coxph} function.
 }}
 \examples{
 
+if(require(RTCGA.clinical)){
 # TCGA data exmaple (http://cancergenome.nih.gov/)
 # source("https://bioconductor.org/biocLite.R")
 # biocLite("RTCGA.clinical") # data for examples
@@ -75,10 +76,10 @@ ggcoxdiagnostics(coxph.fit, ggtheme = theme_RTCGA(), # library(RTCGA.clinical)
  type = "deviance") + ylab('Deviance Residuals')
 ggcoxdiagnostics(coxph.fit, ggtheme = theme_light(), linear.predictions = FALSE)
 ggcoxdiagnostics(coxph.fit, ggtheme = theme_void(), type = "deviance", linear.predictions = FALSE)
-
-
+}
 
 # traditional example
+library(survival)
 coxph.fit2 <- coxph(Surv(futime, fustat) ~ age + ecog.ps, data=ovarian)
 ggcoxdiagnostics(coxph.fit2, type = "deviance")
 
