@@ -365,6 +365,7 @@ ggsurvplot <- function(fit, fun = NULL,
      if(risk.table.y.text.col){
        g <- ggplot2::ggplot_build(p)
        cols <- unlist(unique(g$data[[1]]["colour"]))
+       if(length(cols)==1) cols <- rep(cols, length(legend.labs))
        names(cols) <- legend.labs # Give every color an appropriate name
        risktable <- risktable + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
      }
@@ -408,6 +409,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     g <- ggplot2::ggplot_build(x$plot)
     cols <- unlist(unique(g$data[[1]]["colour"]))
     legend.labs <- levels(g$plot$data$strata)
+    if(length(cols)==1) cols <- rep(cols, length(legend.labs))
     names(cols) <- legend.labs # Give every color an appropriate name
     x$table <- x$table + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
   }
