@@ -300,7 +300,7 @@ ggsurvplot <- function(fit, fun = NULL,
 
   if(is.null(break.time.by))
     times <- ggplot_build(p)$panel$ranges[[1]]$x.major_source
-  else times <- seq(0, max(fit$time), by = break.time.by)
+  else times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
 
   p <- p + ggplot2::scale_x_continuous(breaks = times)
 
