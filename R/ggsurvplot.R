@@ -444,7 +444,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
       fun <- switch(fun, log = function(y) log(y),
                     event = function(y) 1 - y,
                     cumhaz = function(y) -log(y),
-                    cloglog = function(y) log(-log(y)),
+                    # cloglog = function(y) log(-log(y)),
                     pct = function(y) y * 100,
                     logpct = function(y) 100 * y,
                     identity = function(y) y,
