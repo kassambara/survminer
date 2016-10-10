@@ -446,7 +446,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
                     cumhaz = function(y) -log(y),
                     # cloglog = function(y) log(-log(y)),
                     pct = function(y) y * 100,
-                    logpct = function(y) 100 * y,
+                    # logpct = function(y) 100 * y,
                     identity = function(y) y,
                     stop("Unrecognized survival function argument"))
     }
