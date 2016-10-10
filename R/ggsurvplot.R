@@ -202,6 +202,8 @@ ggsurvplot <- function(fit, fun = NULL,
   if(is.null(xlim)) xlim <- c(0, max(fit$time))
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
   if(!is(legend, "numeric")) legend <- match.arg(legend)
+  # Adapt ylab value according to the value of the argument fun
+  ylab <- .check_ylab(ylab, fun)
 
   # Set linetype manually
   linetype.manual <- NULL
@@ -458,6 +460,19 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     d$lower <- fun(d$lower)
   }
   return(d)
+}
+
+# Adapt ylab according to the value of the argument fun
+.check_ylab <- function(ylab, fun){
+  if(ylab == "Survival probability"){
+    ylab <- switch(fun, log = "log(Survival probability)",
+                  event = "Cumulative event",
+                  cumhaz = "Cumulative hazard",
+                  pct = "Survival probability (%)",
+                  identity = "Survival probability",
+                  "Survival probability")
+  }
+  ylab
 }
 
 
