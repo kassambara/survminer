@@ -463,13 +463,15 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
 # Adapt ylab according to the value of the argument fun
 .check_ylab <- function(ylab, fun){
-  if(ylab == "Survival probability"){
-    ylab <- switch(fun, log = "log(Survival probability)",
-                  event = "Cumulative event",
-                  cumhaz = "Cumulative hazard",
-                  pct = "Survival probability (%)",
-                  identity = "Survival probability",
-                  "Survival probability")
+  if(!is.null(fun)){
+    if(ylab == "Survival probability"){
+      ylab <- switch(fun, log = "log(Survival probability)",
+                    event = "Cumulative event",
+                    cumhaz = "Cumulative hazard",
+                    pct = "Survival probability (%)",
+                    identity = "Survival probability",
+                    "Survival probability")
+    }
   }
   ylab
 }
