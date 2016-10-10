@@ -30,7 +30,7 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
 curve.  Often used transformations can be
 specified with a character argument: "event" plots cumulative events
 (f(y) = 1-y), "cumhaz" plots the cumulative hazard function (f(y) =
--log(y)), and "pct" for survival probability in %.}
+-log(y)), and "pct" for survival probability in percentage.}
 
 \item{color}{color to be used for the survival curves. This argument is
 ignored when the number of strata (groups > 1). In this case, use the

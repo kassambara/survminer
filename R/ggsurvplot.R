@@ -9,7 +9,7 @@
 #'  curve.  Often used transformations can be
 #'  specified with a character argument: "event" plots cumulative events
 #'  (f(y) = 1-y), "cumhaz" plots the cumulative hazard function (f(y) =
-#'  -log(y)), and "pct" for survival probability in %.
+#'  -log(y)), and "pct" for survival probability in percentage.
 #'@param surv.scale scale transformation of survival curves. Allowed values are
 #'  "default" or "percent".
 #'@param color color to be used for the survival curves. This argument is
