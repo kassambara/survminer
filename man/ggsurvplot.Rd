@@ -27,11 +27,10 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
 \item{fit}{an object of class survfit.}
 
 \item{fun}{an arbitrary function defining a transformation of the survival
-curve. For example use function(y){y*100}. Often used transformations can be
-specified with a character argument instead: "event" plots cumulative events
+curve.  Often used transformations can be
+specified with a character argument: "event" plots cumulative events
 (f(y) = 1-y), "cumhaz" plots the cumulative hazard function (f(y) =
--log(y)), and "cloglog" creates a complimentary log-log survival plot (f(y)
-= log(-log(y)) along with log scale for the x-axis).}
+-log(y)), and "pct" for survival probability in %.}
 
 \item{color}{color to be used for the survival curves. This argument is
 ignored when the number of strata (groups > 1). In this case, use the

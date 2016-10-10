@@ -6,11 +6,10 @@
 #'@description Drawing survival curves using ggplot2
 #'@param fit an object of class survfit.
 #'@param fun an arbitrary function defining a transformation of the survival
-#'  curve. For example use function(y){y*100}. Often used transformations can be
-#'  specified with a character argument instead: "event" plots cumulative events
+#'  curve.  Often used transformations can be
+#'  specified with a character argument: "event" plots cumulative events
 #'  (f(y) = 1-y), "cumhaz" plots the cumulative hazard function (f(y) =
-#'  -log(y)), and "cloglog" creates a complimentary log-log survival plot (f(y)
-#'  = log(-log(y)) along with log scale for the x-axis).
+#'  -log(y)), and "pct" for survival probability in %.
 #'@param surv.scale scale transformation of survival curves. Allowed values are
 #'  "default" or "percent".
 #'@param color color to be used for the survival curves. This argument is
