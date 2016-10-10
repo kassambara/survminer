@@ -6,6 +6,7 @@
    
 ## Minor changes
    
+- ylab is now automatically adapted according to the value of the function `fun`. For example, if fun = "event", then ylab will be "Cumulative event".
    
 ## Bug fixes
     
