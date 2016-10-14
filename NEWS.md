@@ -7,11 +7,11 @@
 ## Minor changes
    
 - ylab is now automatically adapted according to the value of the function `fun`. For example, if fun = "event", then ylab will be "Cumulative event".
-- `ggcoxdiagnostics()` can now handle a multivariate Cox model ([@kassambara, #61](https://github.com/kassambara/survminer/issues/61))
    
    
 ## Bug fixes
     
+- `ggcoxdiagnostics()` can now handle a multivariate Cox model ([@kassambara, #61](https://github.com/kassambara/survminer/issues/61))
    
 # survminer 0.2.2
     
