@@ -7,6 +7,7 @@
 ## Minor changes
    
 - ylab is now automatically adapted according to the value of the function `fun`. For example, if fun = "event", then ylab will be "Cumulative event".
+- Now, default theme of ggcoxdiagnostics() is ggplot2::theme_bw().
    
    
 ## Bug fixes

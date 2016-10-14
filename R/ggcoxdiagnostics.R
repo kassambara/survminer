@@ -15,7 +15,7 @@
 #'@param hline.col,hline.size,hline.lty,hline.alpha,hline.yintercept color, size, linetype, visibility and Y-axis coordinate to be used for \link{geom_hline}.
 #'Used only when \code{hline = TRUE}.
 #'@param hline a logical - should the horizontal line be added to highlight the \code{Y=0} level.
-#'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
+#'@param ggtheme function, ggplot2 theme name. Default value is ggplot2::theme_bw().
 #'  Allowed values include ggplot2 official themes: see \link{ggtheme}.
 #'@param font.main,font.x,font.y,font.tickslab a vector of length 3
 #'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
@@ -70,7 +70,7 @@ ggcoxdiagnostics <- function (fit,
                       font.main = c(16, "plain", "black"),
                       font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
                       font.tickslab = c(12, "plain", "black"),
-                      ggtheme = theme_classic2()){
+                      ggtheme = ggplot2::theme_bw()){
 
   model <- fit
   if(!methods::is(model, "coxph"))
@@ -104,7 +104,7 @@ ggcoxdiagnostics <- function (fit,
   if (hline) gplot <- gplot + geom_hline(yintercept=hline.yintercept, col = hline.col,
                                 size = hline.size, lty = hline.lty, alpha = hline.alpha)
 
-  gplot <- gplot + labs(x = xlabel, y = ylabel)
+  gplot <- gplot + labs(x = xlabel, y = ylabel) + ggtheme
   # customization
   gplot <-.labs(p = gplot, font.main = font.main, font.x = font.x, font.y = font.y)
   gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)

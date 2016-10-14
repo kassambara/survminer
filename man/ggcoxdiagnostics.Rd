@@ -11,7 +11,7 @@ ggcoxdiagnostics(fit, type = c("martingale", "deviance", "score",
   hline.lty = "dashed", point.col = "black", point.size = 1,
   point.shape = 19, point.alpha = 1, font.main = c(16, "plain", "black"),
   font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-  font.tickslab = c(12, "plain", "black"), ggtheme = theme_classic2())
+  font.tickslab = c(12, "plain", "black"), ggtheme = ggplot2::theme_bw())
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
@@ -42,7 +42,7 @@ xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
 c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 font.x = "bold", to change only font face.}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
+\item{ggtheme}{function, ggplot2 theme name. Default value is ggplot2::theme_bw().
 Allowed values include ggplot2 official themes: see \link{ggtheme}.}
 }
 \value{
