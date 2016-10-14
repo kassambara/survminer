@@ -17,11 +17,12 @@ Depends:
 Imports:
     grid,
     gridExtra(>= 2.0),
+    magrittr,
     methods,
     scales,
     survival,
     stats,
-    magrittr
+    tidyr
 Suggests:
     knitr,
     RTCGA.clinical,

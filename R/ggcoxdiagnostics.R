@@ -65,7 +65,7 @@ ggcoxdiagnostics <- function (fit,
                       ...,
                       linear.predictions = TRUE,
                       hline = TRUE,
-                      hline.col = "black", hline.size = 3, hline.alpha = 1, hline.yintercept = 0, hline.lty = 'solid',
+                      hline.col = "red", hline.size = 1, hline.alpha = 1, hline.yintercept = 0, hline.lty = 'dashed',
                       point.col = "black", point.size = 1, point.shape = 19, point.alpha = 1,
                       font.main = c(16, "plain", "black"),
                       font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
@@ -75,31 +75,41 @@ ggcoxdiagnostics <- function (fit,
   model <- fit
   if(!methods::is(model, "coxph"))
     stop("Can't handle an object of class ", class(fit))
-  lp <- res <- index <- NULL
+  type <- match.arg(type)
 
-  if (linear.predictions) {
-    data2plot <- data.frame(lp = predict(model, type="lp"),
-                            res = residuals(model, type = type))
-    gplot <- ggplot(aes(lp, res), data = data2plot) +
-      xlab("Linear Predictions") + ggtheme
-  } else {
-    data2plot <- data.frame(index = 1:model$n,
-                            res = residuals(model, type = type))
-    gplot <- ggplot(aes(index, res), data = data2plot) +
-      xlab("The index number of observations") + ggtheme
-  }
+  res <- as.data.frame(resid(fit, type = type))
+  .facet <- FALSE
 
-  if (hline)
-    gplot <- gplot + geom_hline(yintercept=hline.yintercept, col = hline.col,
-                                size = hline.size, lty = hline.lty,
-                                alpha = hline.alpha)
+  xlabel <- "The index number of observations"
+  ylabel <- paste0("Residuals (type = ", type, ")" )
 
+  if(linear.predictions){
+    xval <- predict(fit, type="lp")
+    xlabel <- "Linear Predictions"
+  }else xval <- 1:fit$n
+
+  # Case of multivariate Cox model
+  if(type %in% c("martingale", "deviance")) col_names <- "residuals"
+  else col_names <- names(coef(fit))
+  colnames(res) <- col_names
+  res$xval <- xval
+  data2plot <- tidyr::gather_(res,
+                              key_col = "covariate", value_col = "res",
+                              gather_col = col_names)
+
+  gplot <- ggplot(aes(xval, res), data = data2plot) +
+           geom_point(col = point.col, shape = point.shape,
+                       size = point.size, alpha = point.alpha)
+
+  if (hline) gplot <- gplot + geom_hline(yintercept=hline.yintercept, col = hline.col,
+                                size = hline.size, lty = hline.lty, alpha = hline.alpha)
+
+  gplot <- gplot + labs(x = xlabel, y = ylabel)
   # customization
-  gplot <- gplot + geom_point(col = point.col, shape = point.shape,
-                              size = point.size, alpha = point.alpha)
   gplot <-.labs(p = gplot, font.main = font.main, font.x = font.x, font.y = font.y)
   gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)
 
+  gplot <- gplot + facet_wrap(~covariate, scales = "free", ncol = 1)
   gplot
 }
 

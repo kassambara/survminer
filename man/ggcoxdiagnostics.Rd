@@ -6,9 +6,9 @@
 \usage{
 ggcoxdiagnostics(fit, type = c("martingale", "deviance", "score",
   "schoenfeld", "dfbeta", "dfbetas", "scaledsch", "partial"), ...,
-  linear.predictions = TRUE, hline = TRUE, hline.col = "black",
-  hline.size = 3, hline.alpha = 1, hline.yintercept = 0,
-  hline.lty = "solid", point.col = "black", point.size = 1,
+  linear.predictions = TRUE, hline = TRUE, hline.col = "red",
+  hline.size = 1, hline.alpha = 1, hline.yintercept = 0,
+  hline.lty = "dashed", point.col = "black", point.size = 1,
   point.shape = 19, point.alpha = 1, font.main = c(16, "plain", "black"),
   font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
   font.tickslab = c(12, "plain", "black"), ggtheme = theme_classic2())
