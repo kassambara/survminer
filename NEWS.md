@@ -11,7 +11,7 @@
    
 ## Bug fixes
     
-- `ggcoxdiagnostics()` can now handle a multivariate Cox model ([@kassambara, #61](https://github.com/kassambara/survminer/issues/61))
+- `ggcoxdiagnostics()` can now handle a multivariate Cox model ([@kassambara, #62](https://github.com/kassambara/survminer/issues/62))
    
 # survminer 0.2.2
     
