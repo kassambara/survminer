@@ -57,7 +57,7 @@ ggcoxfunctional <- function (formula, data, iter = 0, f = 0.6,
     which_col <- which(colnames(explanatory.variables.values) == i)
     explanatory.variables.values[, which_col]-> explanatory
 
-    cox.model <- coxph(stats::as.formula(paste0(SurvFormula, " ~ ", i)),
+    cox.model <- coxph(stats::as.formula(paste0(SurvFormula, " ~ ", 1)),
                        data = data)
     data2viz <- data.frame(explanatory = explanatory,
                            martingale_resid = resid(cox.model),
