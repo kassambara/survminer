@@ -273,7 +273,6 @@ ggsurvplot <- function(fit, fun = NULL,
   #  transformation of the survival curve
   d <- .apply_surv_func(d, fun = fun)
 
-
   # Scale transformation
   surv.scale <- match.arg(surv.scale)
   scale_labels <-  ggplot2::waiver()
@@ -445,9 +444,9 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
       fun <- switch(fun, log = function(y) log(y),
                     event = function(y) 1 - y,
                     cumhaz = function(y) -log(y),
-                    # cloglog = function(y) log(-log(y)),
+                    cloglog = function(y) log(-log(y)),
                     pct = function(y) y * 100,
-                    # logpct = function(y) 100 * y,
+                    logpct = function(y) 100 * y,
                     identity = function(y) y,
                     stop("Unrecognized survival function argument"))
     }
@@ -470,6 +469,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
                     cumhaz = "Cumulative hazard",
                     pct = "Survival probability (%)",
                     identity = "Survival probability",
+                    cloglog = "log(-log(S(t)))",
                     "Survival probability")
     }
   }
