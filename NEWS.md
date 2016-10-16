@@ -6,13 +6,15 @@
    
 ## Minor changes
    
+- New argument 'conf.int.style' added in `ggsurvplot()` for changing the style of confidence interval bands.
 - ylab is now automatically adapted according to the value of the function `fun`. For example, if fun = "event", then ylab will be "Cumulative event".
 - Now, default theme of ggcoxdiagnostics() is ggplot2::theme_bw().
    
    
 ## Bug fixes
     
-- `ggcoxdiagnostics()` can now handle a multivariate Cox model ([@kassambara, #62](https://github.com/kassambara/survminer/issues/62))
+- `ggcoxdiagnostics()` can now handle a multivariate Cox model ([#62](https://github.com/kassambara/survminer/issues/62))
+- `ggcoxfunctional()` now displays graphs of continuous variable against martingale residuals of null cox proportional hazards model ([#63](https://github.com/kassambara/survminer/issues/63)).
    
 # survminer 0.2.2
     

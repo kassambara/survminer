@@ -7,14 +7,14 @@
 \usage{
 ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
   break.time.by = NULL, surv.scale = c("default", "percent"),
-  conf.int = FALSE, conf.int.fill = "gray", censor = TRUE, pval = FALSE,
-  pval.size = 5, pval.coord = c(NULL, NULL), main = NULL, xlab = "Time",
-  ylab = "Survival probability", font.main = c(16, "plain", "black"),
-  font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-  font.tickslab = c(12, "plain", "black"), xlim = NULL, ylim = NULL,
-  legend = c("top", "bottom", "left", "right", "none"),
-  legend.title = "Strata", legend.labs = NULL, font.legend = c(10,
-  "plain", "black"), risk.table = FALSE,
+  conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
+  censor = TRUE, pval = FALSE, pval.size = 5, pval.coord = c(NULL,
+  NULL), main = NULL, xlab = "Time", ylab = "Survival probability",
+  font.main = c(16, "plain", "black"), font.x = c(14, "plain", "black"),
+  font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain", "black"),
+  xlim = NULL, ylim = NULL, legend = c("top", "bottom", "left", "right",
+  "none"), legend.title = "Strata", legend.labs = NULL,
+  font.legend = c(10, "plain", "black"), risk.table = FALSE,
   risk.table.title = "Number at risk by time", risk.table.col = "black",
   risk.table.fontsize = 4.5, risk.table.y.text = TRUE,
   risk.table.y.text.col = TRUE, risk.table.height = 0.25,
@@ -53,6 +53,8 @@ is NULL.}
 \item{conf.int}{logical value. If TRUE, plots confidence interval.}
 
 \item{conf.int.fill}{fill color to be used for confidence interval.}
+
+\item{conf.int.style}{confidence interval style. Allowed values include c("ribbon", "step").}
 
 \item{censor}{logical value. If TRUE, censors will be drawn.}
 

@@ -25,6 +25,7 @@
 #'  is NULL.
 #'@param conf.int logical value. If TRUE, plots confidence interval.
 #'@param conf.int.fill fill color to be used for confidence interval.
+#'@param conf.int.style confidence interval style. Allowed values include c("ribbon", "step").
 #'@param censor logical value. If TRUE, censors will be drawn.
 #'@param pval logical value. If TRUE, the p-value is added on the plot.
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
@@ -175,7 +176,7 @@
 ggsurvplot <- function(fit, fun = NULL,
                        color = NULL, palette = "hue", linetype = 1, break.time.by = NULL,
                        surv.scale = c("default", "percent"),
-                       conf.int = FALSE, conf.int.fill = "gray",
+                       conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                        censor = TRUE,
                        pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
                        main = NULL, xlab = "Time", ylab = "Survival probability",
@@ -262,6 +263,8 @@ ggsurvplot <- function(fit, fun = NULL,
     base <- d[1, , drop = FALSE]
     base[intersect(c('time', 'n.censor', 'std.err'), colnames(base))] <- 0
     base[c('surv', 'upper', 'lower')] <- 1.0
+    if(conf.int.style == "ribbon") base[c('upper', 'lower')] <- NA
+    else if(conf.int.style == "step") base[c('upper', 'lower')] <- 1.0
     if ('strata' %in% names(fit)) {
       strata <- levels(d$strata)
       base <- as.data.frame(sapply(base, rep.int, times = length(strata)))
@@ -308,9 +311,20 @@ ggsurvplot <- function(fit, fun = NULL,
   # Add confidence interval
   if(conf.int){
     if(missing(conf.int.fill)) conf.int.fill <- surv.color
-    p <- p + .geom_exec(ggplot2::geom_ribbon, data = d,
-                        ymin = "lower", ymax = "upper",
-                        fill = conf.int.fill, alpha = 0.3, na.rm = TRUE)
+    if(conf.int.style == "ribbon"){
+      p <- p + .geom_exec(ggplot2::geom_ribbon, data = d,
+                          ymin = "lower", ymax = "upper",
+                          fill = conf.int.fill, alpha = 0.3, na.rm = TRUE)
+    }
+    else if(conf.int.style == "step"){
+      p <- p + .geom_exec(ggplot2::geom_step, data = d,
+                          y = "lower", linetype = "dashed",
+                          color = surv.color, na.rm = TRUE)+
+        .geom_exec(ggplot2::geom_step, data = d,
+                   y = "upper", linetype = "dashed",
+                   color = surv.color, na.rm = TRUE)
+
+    }
   }
   # Add cencored
   if (censor & any(d$n.censor >= 1)) {
