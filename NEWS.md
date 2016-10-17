@@ -7,6 +7,7 @@
 ## Minor changes
    
 - New argument 'conf.int.style' added in `ggsurvplot()` for changing the style of confidence interval bands.
+- Now, `ggsurvplot()` plots a stepped confidence interval when conf.int = TRUE.
 - ylab is now automatically adapted according to the value of the function `fun`. For example, if fun = "event", then ylab will be "Cumulative event".
 - Now, default theme of ggcoxdiagnostics() is ggplot2::theme_bw().
    
