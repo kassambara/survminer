@@ -1,4 +1,4 @@
-#' @include utilities.R theme_classic2.R
+#' @include utilities.R theme_classic2.R surv_summary.R
 #' @importFrom methods is
 #' @importFrom stats pchisq
   NULL
@@ -171,6 +171,26 @@
 #'           palette = "Dark2")
 #'}
 #'
+#'#'
+#'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#'# Example 4: Facet ggsurvplot() output by
+#' # a combination of factors
+#'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#'
+#'# Fit (complexe) survival curves
+#'#++++++++++++++++++++++++++++++++++++
+#' \dontrun{
+#'require("survival")
+#'fit3 <- survfit( Surv(time, status) ~ sex + rx + adhere,
+#'                 data = colon )
+#'
+#'# Visualize
+#'#++++++++++++++++++++++++++++++++++++
+#' ggsurv <- ggsurvplot(fit3, fun = "cumhaz", conf.int = TRUE)
+#' ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
+#'
+#'}
+#'
 #'@describeIn ggsurvplot Draws survival curves using ggplot2.
 #'@export
 ggsurvplot <- function(fit, fun = NULL,
@@ -216,72 +236,55 @@ ggsurvplot <- function(fit, fun = NULL,
 
   .check_legend_labs(fit, legend.labs)
 
-  # Number of strata and strata names
-  n.strata <- ifelse(is.null(fit$strata) == TRUE, 1, length(fit$strata))
+  # data for survival plot
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  d <- surv_summary(fit)
 
-  .strata <- NULL
+  # Number of strata and strata names
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  .strata <- d$strata
   # Multiple groups
-  if (!is.null(fit$strata)){
-    .strata <- rep(names(fit$strata), fit$strata)
-    strata_names <- names(fit$strata)
-    if(is.null(legend.labs)) legend.labs <- names(fit$strata)
+  if (!is.null(.strata)){
+    strata_names <- levels(.strata)
+    n.strata <- length(strata_names)
+    if(is.null(legend.labs)) legend.labs <- strata_names
     if(missing(color)) color <- "strata"
   }
-
   # One group
   else{
-
+    n.strata <- 1
     if (is.null(legend.labs)) {
-      .strata <- as.factor(rep("All", length(fit$time)))
+      .strata <- as.factor(rep("All", nrow(d)))
       legend.labs <- strata_names <- "All"
     }
-
     else {
-      .strata <- as.factor(rep(legend.labs, length(fit$time)))
-      strata_names <- legend.labs
+    .strata <- as.factor(rep(legend.labs, nrow(d)))
+     strata_names <- legend.labs
     }
 
     if(missing(conf.int)) conf.int = TRUE
     if(missing(color)) color <- "black"
   }
+  d$strata <- .strata
 
+  # Connect surv data to the origin for plotting
+  # time = 0, surv = 1
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  d <- .connect2origin(d)
 
-  # data for survival plot
-  d <- data.frame(time = fit$time,
-                  n.risk = fit$n.risk,
-                  n.event = fit$n.event,
-                  n.censor = fit$n.censor,
-                  surv = fit$surv,
-                  std.err = fit$std.err,
-                  upper = fit$upper,
-                  lower = fit$lower,
-                  strata = as.factor(.strata)
-                  )
-
-
-  # connect to the origin for plotting
-    base <- d[1, , drop = FALSE]
-    base[intersect(c('time', 'n.censor', 'std.err'), colnames(base))] <- 0
-    base[c('surv', 'upper', 'lower')] <- 1.0
-    #if(conf.int.style == "ribbon") base[c('upper', 'lower')] <- NA
-    if ('strata' %in% names(fit)) {
-      strata <- levels(d$strata)
-      base <- as.data.frame(sapply(base, rep.int, times = length(strata)))
-      base$strata <- strata
-      base$strata <- as.factor(base$strata)
-    }
-    d <- rbind(base, d)
-
-  #  transformation of the survival curve
+  #  Transformation of the survival curve
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   d <- .apply_surv_func(d, fun = fun)
 
   # Scale transformation
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   surv.scale <- match.arg(surv.scale)
   scale_labels <-  ggplot2::waiver()
   if (surv.scale == "percent") scale_labels <- scales::percent
 
 
   # Drawing survival curves
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   d$strata <- factor(d$strata, levels = strata_names, labels = legend.labs)
   d <- d[order(d$strata), , drop = FALSE]
   surv.color <- ifelse(n.strata > 1, "strata", color)
@@ -589,6 +592,29 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     }
 
   }
+}
+
+# Connect survival data to the origine
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+.connect2origin <- function(d){
+  base <- d[1, , drop = FALSE]
+  base[intersect(c('time', 'n.censor', 'std.err', "n.event"), colnames(base))] <- 0
+  base[c('surv', 'upper', 'lower')] <- 1.0
+  n.strata <- length(levels(d$strata))
+
+  # Connect each group to the origin
+  if (n.strata > 1) {
+    strata <- levels(d$strata)
+    base <- base[rep(1, n.strata),, drop = FALSE]
+    row.names(base) <- 1:nrow(base)
+    base$strata <- strata
+    base$strata <- factor(strata, levels = strata)
+    # update variable values
+    variables <- .get_variables(base$strata)
+    for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata)
+  }
+  d <- rbind(base, d)
+  d
 }
 
 

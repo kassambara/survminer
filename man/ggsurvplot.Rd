@@ -232,6 +232,26 @@ ggsurvplot(fit2, pval = TRUE,
           palette = "Dark2")
 }
 
+#'
+#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
+# Example 4: Facet ggsurvplot() output by
+# a combination of factors
+#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
+
+# Fit (complexe) survival curves
+#++++++++++++++++++++++++++++++++++++
+\dontrun{
+require("survival")
+fit3 <- survfit( Surv(time, status) ~ sex + rx + adhere,
+                data = colon )
+
+# Visualize
+#++++++++++++++++++++++++++++++++++++
+ggsurv <- ggsurvplot(fit3, fun = "cumhaz", conf.int = TRUE)
+ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
+
+}
+
 }
 \author{
 Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}

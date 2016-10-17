@@ -3,7 +3,20 @@
     
 ## New features
    
-- New function `surv_summary()` for creating data frame containing a nice summary of a survival curve.
+- New function `surv_summary()` for creating data frame containing a nice summary of a survival curve ([#64](https://github.com/kassambara/survminer/issues/64)).
+- It's possible now to facet the output of `ggsurvplot()` by one or more factors ([#64](https://github.com/kassambara/survminer/issues/64)):
+
+```
+# Fit complexe survival curves
+require("survival")
+fit3 <- survfit( Surv(time, status) ~ sex + rx + adhere,
+                data = colon )
+                
+# Visualize by faceting
+# Plots are survival curves by sex faceted by rx and adhere factors.
+require("survminer")
+ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
+```
    
 ## Minor changes
    
