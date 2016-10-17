@@ -3,6 +3,7 @@
     
 ## New features
    
+- New function `surv_summary()` for creating data frame containing a nice summary of a survival curve.
    
 ## Minor changes
    

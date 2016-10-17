@@ -247,3 +247,7 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
 )
 
 
+# Remove NULL items in a vector or list
+#
+# x a vector or list
+.compact <- function(x) Filter(Negate(is.null), x)
