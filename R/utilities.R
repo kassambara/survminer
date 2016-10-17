@@ -210,14 +210,14 @@
 
 # Connect observations by stairs.
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#' Connect observations by stairs.
-#'
-#' mapping the aesthetic mapping
-#' data a layer specific dataset
-#' stat the statistical transformation to use on the data for this layer
-#' position the position adjustment to use for overlapping points on this layer
-#' @param na.rm logical frag whether silently remove missing values
-#'  ... other arguments passed to methods
+# Connect observations by stairs.
+#
+# mapping the aesthetic mapping
+# data a layer specific dataset
+# stat the statistical transformation to use on the data for this layer
+# position the position adjustment to use for overlapping points on this layer
+# na.rm logical frag whether silently remove missing values
+#  ... other arguments passed to methods
 .geom_confint <- function (mapping = NULL, data = NULL, stat = "identity",
                           position = "identity", na.rm = FALSE, ...) {
   ggplot2::layer(mapping = mapping,
