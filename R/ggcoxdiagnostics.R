@@ -90,7 +90,7 @@ ggcoxdiagnostics <- function (fit,
 
   # Case of multivariate Cox model
   if(type %in% c("martingale", "deviance")) col_names <- "residuals"
-  else col_names <- names(coef(fit))
+  else col_names <- names(stats::coef(fit))
   colnames(res) <- col_names
   res$xval <- xval
   data2plot <- tidyr::gather_(res,
