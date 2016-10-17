@@ -263,8 +263,7 @@ ggsurvplot <- function(fit, fun = NULL,
     base <- d[1, , drop = FALSE]
     base[intersect(c('time', 'n.censor', 'std.err'), colnames(base))] <- 0
     base[c('surv', 'upper', 'lower')] <- 1.0
-    if(conf.int.style == "ribbon") base[c('upper', 'lower')] <- NA
-    else if(conf.int.style == "step") base[c('upper', 'lower')] <- 1.0
+    #if(conf.int.style == "ribbon") base[c('upper', 'lower')] <- NA
     if ('strata' %in% names(fit)) {
       strata <- levels(d$strata)
       base <- as.data.frame(sapply(base, rep.int, times = length(strata)))
@@ -312,7 +311,7 @@ ggsurvplot <- function(fit, fun = NULL,
   if(conf.int){
     if(missing(conf.int.fill)) conf.int.fill <- surv.color
     if(conf.int.style == "ribbon"){
-      p <- p + .geom_exec(ggplot2::geom_ribbon, data = d,
+      p <- p + .geom_exec(.geom_confint, data = d,
                           ymin = "lower", ymax = "upper",
                           fill = conf.int.fill, alpha = 0.3, na.rm = TRUE)
     }
