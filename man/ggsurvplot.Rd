@@ -232,7 +232,7 @@ ggsurvplot(fit2, pval = TRUE,
           palette = "Dark2")
 }
 
-#'
+
 #\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
 # Example 4: Facet ggsurvplot() output by
 # a combination of factors

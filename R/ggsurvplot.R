@@ -171,7 +171,7 @@
 #'           palette = "Dark2")
 #'}
 #'
-#'#'
+#'
 #'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #'# Example 4: Facet ggsurvplot() output by
 #' # a combination of factors
@@ -224,20 +224,14 @@ ggsurvplot <- function(fit, fun = NULL,
   if(!is(legend, "numeric")) legend <- match.arg(legend)
   # Adapt ylab value according to the value of the argument fun
   ylab <- .check_ylab(ylab, fun)
-
-  # Set linetype manually
-  linetype.manual <- NULL
-  if(linetype[1] != "strata"){
-    if(length(linetype) > 1) {
-      linetype.manual <- linetype
-      linetype <- "strata"
-    }
-  }
-
+  # Check and get linetypes
+  lty <- .get_lty(linetype)
+  linetype <- lty$lty
+  linetype.manual <- lty$lty.manual
+  # Check legend
   .check_legend_labs(fit, legend.labs)
 
-  # data for survival plot
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # Data for survival plot
   d <- surv_summary(fit)
 
   # Number of strata and strata names
@@ -350,7 +344,7 @@ ggsurvplot <- function(fit, fun = NULL,
   # Label
   p <- p + ggplot2::labs(x = xlab, y = ylab, title = main,
                          color = legend.title, fill = legend.title,
-                         linetype = legend.title
+                         linetype = linetype
                          )
   p <-.labs(p = p, font.main = font.main, font.x = font.x, font.y = font.y)
   p <- .set_ticks(p, font.tickslab = font.tickslab)
@@ -476,6 +470,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 }
 
 # Adapt ylab according to the value of the argument fun
+#%%%%%%%%%%%%%%%%%%%%%%%%%
 .check_ylab <- function(ylab, fun){
   if(!is.null(fun)){
     if(ylab == "Survival probability"){
@@ -617,6 +612,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 }
 
 # Ge x axis major breaks
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%
 .get_x_major_breaks <- function(p){
   vv <- as.character(utils::packageVersion("ggplot2"))
   cc <- compareVersion(vv, "2.1.0") > 0
@@ -628,6 +624,30 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   else breaks <- ggplot_build(p)$panel$ranges[[1]]$x.major_source
   breaks
 }
+
+# Adjust linetype manually
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%
+.get_lty <- function(linetype){
+  linetype.manual = NULL
+  nlty <- length(linetype)
+  if(is.numeric(linetype)){
+    if(nlty > 1) {
+      linetype.manual <-linetype
+      linetype <- "strata"
+    }
+  }
+  else (is.character(linetype))
+  {
+  base_lty <- c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash")
+  is_base_lty <- all(linetype %in% base_lty)
+  if(is_base_lty & nlty > 1){
+    linetype.manual <-linetype
+    linetype <- "strata"
+  }
+  }
+  list(lty = linetype, lty.manual = linetype.manual)
+}
+
 
 
 
