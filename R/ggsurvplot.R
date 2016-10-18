@@ -341,10 +341,11 @@ ggsurvplot <- function(fit, fun = NULL,
 
   # Axis limits
   p <- p + ggplot2::expand_limits(x = 0, y = 0)
-  # Label
+  # Axis label and legend title
+  lty.leg.title <- ifelse(linetype == "strata", legend.title, linetype)
   p <- p + ggplot2::labs(x = xlab, y = ylab, title = main,
                          color = legend.title, fill = legend.title,
-                         linetype = linetype
+                         linetype = lty.leg.title
                          )
   p <-.labs(p = p, font.main = font.main, font.x = font.x, font.y = font.y)
   p <- .set_ticks(p, font.tickslab = font.tickslab)
