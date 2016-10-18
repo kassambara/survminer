@@ -22,6 +22,7 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
    
 - New argument 'conf.int.style' added in `ggsurvplot()` for changing the style of confidence interval bands.
 - Now, `ggsurvplot()` plots a stepped confidence interval when conf.int = TRUE ([#65](https://github.com/kassambara/survminer/issues/65)).
+- `ggsurvplot()` updated for compatibility with the futur version of ggplot2 (v2.2.0) ([#68](https://github.com/kassambara/survminer/issues/68))
 - ylab is now automatically adapted according to the value of the function `fun`. For example, if fun = "event", then ylab will be "Cumulative event".
 - Now, default theme of ggcoxdiagnostics() is ggplot2::theme_bw().
    
@@ -30,6 +31,7 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
     
 - `ggcoxdiagnostics()` can now handle a multivariate Cox model ([#62](https://github.com/kassambara/survminer/issues/62))
 - `ggcoxfunctional()` now displays graphs of continuous variable against martingale residuals of null cox proportional hazards model ([#63](https://github.com/kassambara/survminer/issues/63)).
+   
    
 # survminer 0.2.2
     
