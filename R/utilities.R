@@ -161,12 +161,12 @@
       xtickslab <-
         element_text(
           size = font$size, face = font$face,
-          colour = font$color
+          colour = font$color, angle = 0
         )
       ytickslab <-
         element_text(
           size = font$size, face = font$face,
-          colour = font$color
+          colour = font$color, angle = 0
         )
       p <- p+theme(axis.text.x = xtickslab, axis.text.y = ytickslab)
     }
