@@ -303,8 +303,7 @@ ggsurvplot <- function(fit, fun = NULL,
   }
 
 
-  if(is.null(break.time.by))
-    times <- ggplot_build(p)$panel$ranges[[1]]$x.major_source
+  if(is.null(break.time.by)) times <- .get_x_major_breaks(p)
   else times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
 
   p <- p + ggplot2::scale_x_continuous(breaks = times)
@@ -617,7 +616,18 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   d
 }
 
-
+# Ge x axis major breaks
+.get_x_major_breaks <- function(p){
+  vv <- as.character(utils::packageVersion("ggplot2"))
+  cc <- compareVersion(vv, "2.1.0") > 0
+  if(cc){
+    # "v>2.1.0"
+    breaks <- ggplot_build(p)$layout$panel_ranges[[1]]$x.major_source
+  }
+  # v<=2.1.0
+  else breaks <- ggplot_build(p)$panel$ranges[[1]]$x.major_source
+  breaks
+}
 
 
 
