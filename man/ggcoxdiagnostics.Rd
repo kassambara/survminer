@@ -75,7 +75,7 @@ ggcoxdiagnostics(coxph.fit, ggtheme = theme_dark(), point.col = "white", point.a
 ggcoxdiagnostics(coxph.fit, ggtheme = theme_RTCGA(), # library(RTCGA.clinical)
  type = "deviance") + ylab('Deviance Residuals')
 ggcoxdiagnostics(coxph.fit, ggtheme = theme_light(), linear.predictions = FALSE)
-ggcoxdiagnostics(coxph.fit, ggtheme = theme_void(), type = "deviance", linear.predictions = FALSE)
+# ggcoxdiagnostics(coxph.fit, ggtheme = theme_void(), type = "deviance", linear.predictions = FALSE)
 }
 
 # traditional example
