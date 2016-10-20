@@ -14,7 +14,7 @@ fit3 <- survfit( Surv(time, status) ~ sex + rx + adhere,
                 
 # Visualize by faceting
 # Plots are survival curves by sex faceted by rx and adhere factors.
-require("survminer")
+require("survminer")  
 ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
 ```
    
