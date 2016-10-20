@@ -335,7 +335,7 @@ ggsurvplot <- function(fit, fun = NULL,
     if(conf.int.style == "ribbon"){
       p <- p + .geom_exec(.geom_confint, data = d,
                           ymin = "lower", ymax = "upper",
-                          fill = conf.int.fill, alpha = 0.3, na.rm = TRUE)
+                          fill = conf.int.fill,  alpha = 0.3, na.rm = TRUE)
     }
     else if(conf.int.style == "step"){
       p <- p + .geom_exec(ggplot2::geom_step, data = d,
