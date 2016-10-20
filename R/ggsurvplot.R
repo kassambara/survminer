@@ -186,8 +186,34 @@
 #'
 #'# Visualize
 #'#++++++++++++++++++++++++++++++++++++
-#' ggsurv <- ggsurvplot(fit3, fun = "cumhaz", conf.int = TRUE)
-#' ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
+#' ggsurv <- ggsurvplot(fit3, fun = "cumhaz", conf.int = TRUE,
+#'   risk.table = TRUE, risk.table.col="strata",
+#'   ggtheme = theme_bw())
+#'
+#' # Faceting survival curves
+#' curv_facet <- ggsurv$plot + facet_grid(rx ~ adhere)
+#' curv_facet
+#'
+#' # Faceting risk tables:
+#' # Generate risk table for each facet plot item
+#' ggsurv$table + facet_grid(rx ~ adhere, scales = "free")+
+#'  theme(legend.position = "none")
+#'
+#'  # Generate risk table for each facet columns
+#' tbl_facet <- ggsurv$table + facet_grid(.~ adhere, scales = "free")
+#' tbl_facet + theme(legend.position = "none")
+#'
+#' # Arrange faceted survival curves and risk tables
+#' g2 <- ggplotGrob(curv_facet)
+#' g3 <- ggplotGrob(tbl_facet)
+#' min_ncol <- min(ncol(g2), ncol(g3))
+#' g <- gridExtra::rbind.gtable(g2[, 1:min_ncol], g3[, 1:min_ncol], size="last")
+#' g$widths <- grid::unit.pmax(g2$widths, g3$widths)
+#' grid::grid.newpage()
+#' grid::grid.draw(g)
+#'
+#'
+#'
 #'
 #'}
 #'
@@ -527,6 +553,11 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk)
   )
 
+  if(!is.null(fit$strata)){
+    variables <- .get_variables(risk.data$strata)
+    for(variable in variables) risk.data[[variable]] <- .get_variable_value(variable, risk.data$strata)
+  }
+
 
   if (!is.null(legend.labs))
     risk.data$strata <- factor(risk.data$strata, labels = legend.labs)
@@ -544,6 +575,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
   dtp <- ggplot2::ggplot(risk.data,
                          ggplot2::aes(x = time, y = rev(strata), label = n.risk, shape = rev(strata))) +
+    scale_shape_manual(values = 1:length(levels(risk.data$strata)))+
     # ggplot2::geom_point(size = 0)+
     .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
     ggtheme +
