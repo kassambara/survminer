@@ -259,3 +259,6 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
 #
 # x a vector or list
 .compact <- function(x) Filter(Negate(is.null), x)
+
+# remove white space at the head and the tail of a string
+.trim <- function(x){gsub("^\\s+|\\s+$", "", x)}
