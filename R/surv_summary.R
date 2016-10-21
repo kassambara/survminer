@@ -86,7 +86,7 @@ surv_summary <- function (x){
   res <- sapply(as.vector(strata), function(x){
           x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
           index <- grep(variable, x)
-          x[index+1]
+          .trim(x[index+1])
         })
   res <- as.vector(res)
   var_levels <- levels(eval(fit$call$data)[, variable])
