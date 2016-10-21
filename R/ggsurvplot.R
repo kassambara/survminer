@@ -555,7 +555,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
   if(!is.null(fit$strata)){
     variables <- .get_variables(risk.data$strata)
-    for(variable in variables) risk.data[[variable]] <- .get_variable_value(variable, risk.data$strata)
+    for(variable in variables) risk.data[[variable]] <- .get_variable_value(variable, risk.data$strata, fit)
   }
 
 
@@ -638,7 +638,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     base$strata <- factor(strata, levels = strata)
     # update variable values
     variables <- .get_variables(base$strata)
-    for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata)
+    for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata, fit)
   }
   d <- rbind(base, d)
   d
