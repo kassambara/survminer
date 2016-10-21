@@ -15,7 +15,7 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
   xlim = NULL, ylim = NULL, legend = c("top", "bottom", "left", "right",
   "none"), legend.title = "Strata", legend.labs = NULL,
   font.legend = c(10, "plain", "black"), risk.table = FALSE,
-  risk.table.title = "Number at risk by time", risk.table.col = "black",
+  risk.table.title = NULL, risk.table.col = "black",
   risk.table.fontsize = 4.5, risk.table.y.text = TRUE,
   risk.table.y.text.col = TRUE, risk.table.height = 0.25,
   surv.plot.height = 0.75, ggtheme = theme_classic2(), ...)
@@ -27,10 +27,10 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
 \item{fit}{an object of class survfit.}
 
 \item{fun}{an arbitrary function defining a transformation of the survival
-curve.  Often used transformations can be
-specified with a character argument: "event" plots cumulative events
-(f(y) = 1-y), "cumhaz" plots the cumulative hazard function (f(y) =
--log(y)), and "pct" for survival probability in percentage.}
+curve.  Often used transformations can be specified with a character
+argument: "event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the
+cumulative hazard function (f(y) = -log(y)), and "pct" for survival
+probability in percentage.}
 
 \item{color}{color to be used for the survival curves. This argument is
 ignored when the number of strata (groups > 1). In this case, use the
@@ -54,7 +54,8 @@ is NULL.}
 
 \item{conf.int.fill}{fill color to be used for confidence interval.}
 
-\item{conf.int.style}{confidence interval style. Allowed values include c("ribbon", "step").}
+\item{conf.int.style}{confidence interval style. Allowed values include
+c("ribbon", "step").}
 
 \item{censor}{logical value. If TRUE, censors will be drawn.}
 
@@ -87,8 +88,10 @@ specified using a numeric vector c(x, y); see details section.}
 the names of the strata from the fit. Should be given in the same order as
 those strata.}
 
-\item{risk.table}{logical value specifying whether to show risk table. Default
-is FALSE.}
+\item{risk.table}{Allowed values include: \itemize{ \item TRUE
+or FALSE specifying whether to show or not the risk table. Default is
+FALSE. \item "absolute" or "percentage": to show the \bold{absolute number} or
+the \bold{percentage} of subjects at risk by time, respectively.}}
 
 \item{risk.table.title}{Title to be used for risk table.}
 

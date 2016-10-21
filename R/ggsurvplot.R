@@ -6,10 +6,10 @@
 #'@description Drawing survival curves using ggplot2
 #'@param fit an object of class survfit.
 #'@param fun an arbitrary function defining a transformation of the survival
-#'  curve.  Often used transformations can be
-#'  specified with a character argument: "event" plots cumulative events
-#'  (f(y) = 1-y), "cumhaz" plots the cumulative hazard function (f(y) =
-#'  -log(y)), and "pct" for survival probability in percentage.
+#'  curve.  Often used transformations can be specified with a character
+#'  argument: "event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the
+#'  cumulative hazard function (f(y) = -log(y)), and "pct" for survival
+#'  probability in percentage.
 #'@param surv.scale scale transformation of survival curves. Allowed values are
 #'  "default" or "percent".
 #'@param color color to be used for the survival curves. This argument is
@@ -25,7 +25,8 @@
 #'  is NULL.
 #'@param conf.int logical value. If TRUE, plots confidence interval.
 #'@param conf.int.fill fill color to be used for confidence interval.
-#'@param conf.int.style confidence interval style. Allowed values include c("ribbon", "step").
+#'@param conf.int.style confidence interval style. Allowed values include
+#'  c("ribbon", "step").
 #'@param censor logical value. If TRUE, censors will be drawn.
 #'@param pval logical value. If TRUE, the p-value is added on the plot.
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
@@ -47,8 +48,11 @@
 #'@param legend.labs character vector specifying legend labels. Used to replace
 #'  the names of the strata from the fit. Should be given in the same order as
 #'  those strata.
-#'@param risk.table logical value specifying whether to show risk table. Default
-#'  is FALSE.
+#'@param risk.table Allowed values include: \itemize{ \item TRUE
+#'  or FALSE specifying whether to show or not the risk table. Default is
+#'  FALSE. \item "absolute" or "percentage": to show the \bold{absolute number} or
+#'  the \bold{percentage} of subjects at risk by time, respectively.}
+#'
 #'@param risk.table.title Title to be used for risk table.
 #'@param risk.table.col color to be used for risk table. Default value is
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
@@ -233,7 +237,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
                        font.legend = c(10, "plain", "black"),
-                       risk.table = FALSE, risk.table.title = "Number at risk by time",
+                       risk.table = FALSE, risk.table.title = NULL,
                        risk.table.col = "black", risk.table.fontsize = 4.5,
                        risk.table.y.text = TRUE,
                        risk.table.y.text.col = TRUE,
@@ -256,6 +260,14 @@ ggsurvplot <- function(fit, fun = NULL,
   linetype.manual <- lty$lty.manual
   # Check legend
   .check_legend_labs(fit, legend.labs)
+  # risk.table argument
+  risktable <- .parse_risk_table_arg(risk.table)
+  risk.table <- risktable$display
+  risk.table.type <- risktable$type
+  if(is.null(risk.table.title)){
+  if(risk.table.type == "percentage") risk.table.title = "Percentage at risk by time"
+  else risk.table.title = "Number at risk by time"
+  }
 
   # Data for survival plot
   d <- surv_summary(fit)
@@ -389,7 +401,7 @@ ggsurvplot <- function(fit, fun = NULL,
                                    ggtheme = ggtheme, risk.table.fontsize = risk.table.fontsize,
                                    risk.table.title = risk.table.title,
                                    risk.table.y.text = risk.table.y.text,
-                                   font.tickslab = font.tickslab
+                                   font.tickslab = font.tickslab, type = risk.table.type
                                    )
      risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y, xlab = xlab, ylab = legend.title)
 
@@ -533,7 +545,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
                              palette = NULL, ggtheme = ggplot2::theme_classic(),
                              risk.table.fontsize = 5, risk.table.title = "Number at risk by time",
                              risk.table.y.text = TRUE,
-                             font.tickslab = c(12, "plain", "black")
+                             font.tickslab = c(12, "plain", "black"), type = "absolute"
 )
   {
 
@@ -542,16 +554,21 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   if (is.null(fit$strata)) {
     .strata <- factor(rep("All", length(times)))
     strata_names <- "All"
+    strata_size <- rep(fit$n, length(.strata))
   }
   else {
     .strata <- factor(summary(fit, times = times, extend = TRUE)$strata)
     strata_names <- names(fit$strata)
+    nstrata = length(strata_names)
+    strata_size <- rep(fit$n, each = length(.strata)/nstrata)
   }
   risk.data <- data.frame(
     strata = as.factor(.strata),
     time = summary(fit, times = times, extend = TRUE)$time,
-    n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk)
+    n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk),
+    strata_size = strata_size
   )
+  risk.data$pct.risk <- round(risk.data$n.risk*100/risk.data$strata_size,1)
 
   if(!is.null(fit$strata)){
     variables <- .get_variables(risk.data$strata)
@@ -562,7 +579,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   if (!is.null(legend.labs))
     risk.data$strata <- factor(risk.data$strata, labels = legend.labs)
 
-  time <- strata <- label <- n.risk <- NULL
+  time <- strata <- label <- n.risk <- pct.risk <- NULL
 
   # Adjust risk table labels in case of long strata
   risk.table.text.y <- rev(levels(risk.data$strata))
@@ -572,10 +589,16 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 #   if(is_long_strata) risk.table.text.y <- rep("-", n_strata)
    if(!risk.table.y.text) risk.table.text.y <- rep("-", n_strata)
 
-
+  if(type == "percentage")
+    dtp <- ggplot2::ggplot(risk.data,
+                           aes(x = time, y = rev(strata), label = pct.risk, shape = rev(strata)))+
+    scale_shape_manual(values = 1:length(levels(risk.data$strata)))
+  else
   dtp <- ggplot2::ggplot(risk.data,
                          ggplot2::aes(x = time, y = rev(strata), label = n.risk, shape = rev(strata))) +
-    scale_shape_manual(values = 1:length(levels(risk.data$strata)))+
+    scale_shape_manual(values = 1:length(levels(risk.data$strata)))
+
+  dtp <- dtp +
     # ggplot2::geom_point(size = 0)+
     .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
     ggtheme +
@@ -681,6 +704,19 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   list(lty = linetype, lty.manual = linetype.manual)
 }
 
+
+# Parse risk.table argument
+#%%%%%%%%%%%%%%%%%%%%%%%
+# risk.table a logical value (TRUE/FALSE) or a string ("absolute", "percentage")
+.parse_risk_table_arg <- function(risk.table){
+  res <- list(display = risk.table, type = "absolute")
+  if(inherits(risk.table, "character") ){
+    if(risk.table %in% c("absolute", "percentage") )
+      res <- list(display = TRUE, type = risk.table)
+    else stop("Allowed values for risk.table are: TRUE, FALSE, 'absolute', 'percentage'")
+  }
+  res
+}
 
 
 
