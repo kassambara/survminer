@@ -89,6 +89,9 @@ surv_summary <- function (x){
           x[index+1]
         })
   res <- as.vector(res)
-  factor(res, levels = levels(eval(fit$call$data)[, variable]))
+  var_levels <- levels(eval(fit$call$data)[, variable])
+  if(!is.null(var_levels)) res <- factor(res, levels = var_levels)
+  else res <- as.factor(res)
+  res
 }
 
