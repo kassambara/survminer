@@ -58,7 +58,7 @@ surv_summary <- function (x){
     res$strata <- rep(names(x$strata), x$strata)
     # Add column for each variable in survival fit
     variables <- .get_variables(res$strata)
-    for(variable in variables) res[[variable]] <- .get_variable_value(variable, res$strata, fit)
+    for(variable in variables) res[[variable]] <- .get_variable_value(variable, res$strata, x)
     res$strata <- factor(res$strata, levels = names(x$strata))
   }
   structure(res, class = c("data.frame", "surv_summary"))

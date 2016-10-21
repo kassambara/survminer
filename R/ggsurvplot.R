@@ -290,7 +290,7 @@ ggsurvplot <- function(fit, fun = NULL,
   # Connect surv data to the origin for plotting
   # time = 0, surv = 1
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  d <- .connect2origin(d)
+  d <- .connect2origin(d, fit)
 
   #  Transformation of the survival curve
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -623,7 +623,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
 # Connect survival data to the origine
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-.connect2origin <- function(d){
+.connect2origin <- function(d, fit){
   base <- d[1, , drop = FALSE]
   base[intersect(c('time', 'n.censor', 'std.err', "n.event"), colnames(base))] <- 0
   base[c('surv', 'upper', 'lower')] <- 1.0
