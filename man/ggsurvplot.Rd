@@ -91,8 +91,9 @@ those strata.}
 
 \item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
 specifying whether to show or not the risk table. Default is FALSE. \item
-"absolute" or "percentage": to show the \bold{absolute number} or the
-\bold{percentage} of subjects at risk by time, respectively.}}
+"absolute" or "percentage": to show the \bold{absolute number} and the
+\bold{percentage} of subjects at risk by time, respectively. Use "abs_pct"
+to show both absolute number and percentage.}}
 
 \item{risk.table.title}{Title to be used for risk table.}
 

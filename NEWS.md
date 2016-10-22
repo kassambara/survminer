@@ -25,7 +25,7 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
 - `ggsurvplot()` updated for compatibility with the future version of ggplot2 (v2.2.0) ([#68](https://github.com/kassambara/survminer/issues/68))
 - ylab is now automatically adapted according to the value of the argument `fun`. For example, if fun = "event", then ylab will be "Cumulative event".
 - In `ggsurvplot()`, linetypes can now be adjusted by variables used to fit survival curves ([#46](https://github.com/kassambara/survminer/issues/46))
-- In `ggsurvplot()`, the argument risk.table can be either a logical value (TRUE|FALSE) or a string ("absolute", "percentage"). If risk.table = "absolute", `ggsurvplot()` displays the absolute number of subjects at risk. If risk.table = "percentage", the percentage at risk is displayed. ([#70](https://github.com/kassambara/survminer/issues/70)).
+- In `ggsurvplot()`, the argument risk.table can be either a logical value (TRUE|FALSE) or a string ("absolute", "percentage"). If risk.table = "absolute", `ggsurvplot()` displays the absolute number of subjects at risk. If risk.table = "percentage", the percentage at risk is displayed. Use "abs_pct" to show both the absolute number and the percentage of subjects at risk. ([#70](https://github.com/kassambara/survminer/issues/70)).
 - New argument surv.median.line in `ggsurvplot()`: character vector for drawing a horizontal/vertical line at median (50%) survival. Allowed values include one of c("none", "hv", "h", "v"). v: vertical, h:horizontal ([#61](https://github.com/kassambara/survminer/issues/61)).
 - Now, default theme of ggcoxdiagnostics() is ggplot2::theme_bw().
    

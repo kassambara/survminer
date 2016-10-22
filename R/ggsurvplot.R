@@ -50,8 +50,9 @@
 #'  those strata.
 #'@param risk.table Allowed values include: \itemize{ \item TRUE or FALSE
 #'  specifying whether to show or not the risk table. Default is FALSE. \item
-#'  "absolute" or "percentage": to show the \bold{absolute number} or the
-#'  \bold{percentage} of subjects at risk by time, respectively.}
+#'  "absolute" or "percentage": to show the \bold{absolute number} and the
+#'  \bold{percentage} of subjects at risk by time, respectively. Use "abs_pct"
+#'  to show both absolute number and percentage.}
 #'
 #'@param risk.table.title Title to be used for risk table.
 #'@param risk.table.col color to be used for risk table. Default value is
@@ -271,6 +272,7 @@ ggsurvplot <- function(fit, fun = NULL,
   risk.table.type <- risktable$type
   if(is.null(risk.table.title)){
   if(risk.table.type == "percentage") risk.table.title = "Percentage at risk by time"
+  else if(risk.table.type == "abs_pct") risk.table.title = "Number at risk by time: n (%)"
   else risk.table.title = "Number at risk by time"
   }
 
@@ -577,7 +579,8 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk),
     strata_size = strata_size
   )
-  risk.data$pct.risk <- round(risk.data$n.risk*100/risk.data$strata_size,1)
+  risk.data$pct.risk <- round(risk.data$n.risk*100/risk.data$strata_size)
+  risk.data$abs_pct.risk <- paste0(risk.data$n.risk, " (", risk.data$pct.risk, ")")
 
   if(!is.null(fit$strata)){
     variables <- .get_variables(risk.data$strata)
@@ -588,7 +591,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   if (!is.null(legend.labs))
     risk.data$strata <- factor(risk.data$strata, labels = legend.labs)
 
-  time <- strata <- label <- n.risk <- pct.risk <- NULL
+  time <- strata <- label <- n.risk <- pct.risk <- abs_pct.risk <- NULL
 
   # Adjust risk table labels in case of long strata
   risk.table.text.y <- rev(levels(risk.data$strata))
@@ -600,14 +603,15 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
   if(type == "percentage")
     dtp <- ggplot2::ggplot(risk.data,
-                           aes(x = time, y = rev(strata), label = pct.risk, shape = rev(strata)))+
-    scale_shape_manual(values = 1:length(levels(risk.data$strata)))
+                           aes(x = time, y = rev(strata), label = pct.risk, shape = rev(strata)))
+  else if(type == "abs_pct")
+    dtp <- ggplot2::ggplot(risk.data,
+                           aes(x = time, y = rev(strata), label = abs_pct.risk, shape = rev(strata)))
   else
   dtp <- ggplot2::ggplot(risk.data,
-                         ggplot2::aes(x = time, y = rev(strata), label = n.risk, shape = rev(strata))) +
-    scale_shape_manual(values = 1:length(levels(risk.data$strata)))
+                         ggplot2::aes(x = time, y = rev(strata), label = n.risk, shape = rev(strata)))
 
-  dtp <- dtp +
+  dtp <- dtp + scale_shape_manual(values = 1:length(levels(risk.data$strata)))+
     # ggplot2::geom_point(size = 0)+
     .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
     ggtheme +
@@ -716,11 +720,11 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
 # Parse risk.table argument
 #%%%%%%%%%%%%%%%%%%%%%%%
-# risk.table a logical value (TRUE/FALSE) or a string ("absolute", "percentage")
+# risk.table a logical value (TRUE/FALSE) or a string ("absolute", "percentage", "abs_pct")
 .parse_risk_table_arg <- function(risk.table){
   res <- list(display = risk.table, type = "absolute")
   if(inherits(risk.table, "character") ){
-    if(risk.table %in% c("absolute", "percentage") )
+    if(risk.table %in% c("absolute", "percentage", "abs_pct") )
       res <- list(display = TRUE, type = risk.table)
     else stop("Allowed values for risk.table are: TRUE, FALSE, 'absolute', 'percentage'")
   }
