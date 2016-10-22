@@ -15,9 +15,11 @@ LazyData: TRUE
 Depends:
     ggplot2
 Imports:
+    ggpubr,
     grid,
     gridExtra(>= 2.0),
     magrittr,
+    maxstat,
     methods,
     scales,
     survival,
@@ -28,7 +30,7 @@ Suggests:
     RTCGA.clinical,
     survMisc
 VignetteBuilder: knitr
-biocViews:
+biocViews: 
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1
@@ -40,3 +42,5 @@ Collate:
     'surv_summary.R'
     'theme_classic2.R'
     'ggsurvplot.R'
+    'myeloma.R'
+    'surv_cutpoint.R'
