@@ -48,10 +48,10 @@
 #'@param legend.labs character vector specifying legend labels. Used to replace
 #'  the names of the strata from the fit. Should be given in the same order as
 #'  those strata.
-#'@param risk.table Allowed values include: \itemize{ \item TRUE
-#'  or FALSE specifying whether to show or not the risk table. Default is
-#'  FALSE. \item "absolute" or "percentage": to show the \bold{absolute number} or
-#'  the \bold{percentage} of subjects at risk by time, respectively.}
+#'@param risk.table Allowed values include: \itemize{ \item TRUE or FALSE
+#'  specifying whether to show or not the risk table. Default is FALSE. \item
+#'  "absolute" or "percentage": to show the \bold{absolute number} or the
+#'  \bold{percentage} of subjects at risk by time, respectively.}
 #'
 #'@param risk.table.title Title to be used for risk table.
 #'@param risk.table.col color to be used for risk table. Default value is
@@ -67,6 +67,9 @@
 #'  risk.table = FALSE.
 #'@param surv.plot.height the height of the survival plot on the grid. Default
 #'  is 0.75. Ignored when risk.table = FALSE.
+#'@param surv.median.line character vector for drawing a horizontal/vertical
+#'  line at median survival. Allowed values include one of c("none", "hv", "h",
+#'  "v"). v: vertical, h:horizontal.
 #'@param ggtheme function, ggplot2 theme name. Default value is
 #'  \link{theme_classic2}. Allowed values include ggplot2 official themes: see
 #'  \link{ggtheme}.
@@ -242,6 +245,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        risk.table.y.text = TRUE,
                        risk.table.y.text.col = TRUE,
                        risk.table.height = 0.25, surv.plot.height = 0.75,
+                       surv.median.line = c("none", "hv", "h", "v"),
                        ggtheme = theme_classic2(),
                        ...
                        ){
@@ -252,6 +256,7 @@ ggsurvplot <- function(fit, fun = NULL,
   if(is.null(xlim)) xlim <- c(0, max(fit$time))
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
   if(!is(legend, "numeric")) legend <- match.arg(legend)
+  surv.median.line <- match.arg(surv.median.line)
   # Adapt ylab value according to the value of the argument fun
   ylab <- .check_ylab(ylab, fun)
   # Check and get linetypes
@@ -376,6 +381,10 @@ ggsurvplot <- function(fit, fun = NULL,
     p <- p + ggplot2::annotate("text", x = pval.x, y = pval.y,
                                label = pvaltxt, size = pval.size)
   }
+
+  # Drawing a horizontal line at 50% survival
+  if(surv.median.line %in% c("hv", "h", "v"))
+    p <- .add_surv_median(p, fit, type = surv.median.line)
 
   # Axis limits
   p <- p + ggplot2::expand_limits(x = 0, y = 0)
@@ -718,6 +727,37 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   res
 }
 
+# Drawing horizontal line at 50% median survival
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+.add_surv_median <-function(p, fit, type = "hv"){
+  x1 <- x2 <- y1 <- y2 <- NULL
 
+  if(!is.null(fit$strata)) .table <- as.data.frame(summary(fit)$table)
+  else{
+    .table <- t(as.data.frame(summary(fit)$table))
+    rownames(.table) <- "All"
+  }
+  surv_median <- as.vector(.table[,"median"])
+  df <- data.frame(x1 = surv_median, x2 = surv_median,
+                   y1 = rep(0, length(surv_median)),
+                   y2 = rep(0.5, length(surv_median)),
+                   strata = rownames(.table))
+  if(!is.null(fit$strata)){
+    variables <- .get_variables(df$strata)
+    for(variable in variables) df[[variable]] <- .get_variable_value(variable, df$strata, fit)
+  }
+  df <- stats::na.omit(df)
+
+  if(type %in% c("hv", "h"))
+    p <- p +
+    geom_segment(aes(x = 0, y = 0.5, xend = max(x1), yend = 0.5),
+                 data = df, linetype = "dashed", size = 0.5) # horizontal segment
+
+  if(type %in% c("hv", "v"))
+    p <- p + geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2), data = df,
+                          linetype = "dashed", size = 0.5) # vertical segments
+
+  p
+}
 
 

@@ -18,7 +18,8 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
   risk.table.title = NULL, risk.table.col = "black",
   risk.table.fontsize = 4.5, risk.table.y.text = TRUE,
   risk.table.y.text.col = TRUE, risk.table.height = 0.25,
-  surv.plot.height = 0.75, ggtheme = theme_classic2(), ...)
+  surv.plot.height = 0.75, surv.median.line = c("none", "hv", "h", "v"),
+  ggtheme = theme_classic2(), ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
   risk.table.height = NULL, ...)
@@ -88,10 +89,10 @@ specified using a numeric vector c(x, y); see details section.}
 the names of the strata from the fit. Should be given in the same order as
 those strata.}
 
-\item{risk.table}{Allowed values include: \itemize{ \item TRUE
-or FALSE specifying whether to show or not the risk table. Default is
-FALSE. \item "absolute" or "percentage": to show the \bold{absolute number} or
-the \bold{percentage} of subjects at risk by time, respectively.}}
+\item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
+specifying whether to show or not the risk table. Default is FALSE. \item
+"absolute" or "percentage": to show the \bold{absolute number} or the
+\bold{percentage} of subjects at risk by time, respectively.}}
 
 \item{risk.table.title}{Title to be used for risk table.}
 
@@ -113,6 +114,10 @@ risk.table = FALSE.}
 
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
 is 0.75. Ignored when risk.table = FALSE.}
+
+\item{surv.median.line}{character vector for drawing a horizontal/vertical
+line at median survival. Allowed values include one of c("none", "hv", "h",
+"v"). v: vertical, h:horizontal.}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is
 \link{theme_classic2}. Allowed values include ggplot2 official themes: see
