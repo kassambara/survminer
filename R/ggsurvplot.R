@@ -752,14 +752,17 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   }
   df <- stats::na.omit(df)
 
-  if(type %in% c("hv", "h"))
-    p <- p +
-    geom_segment(aes(x = 0, y = 0.5, xend = max(x1), yend = 0.5),
-                 data = df, linetype = "dashed", size = 0.5) # horizontal segment
+  if(nrow(df)>0){
+    if(type %in% c("hv", "h"))
+      p <- p +
+      geom_segment(aes(x = 0, y = 0.5, xend = max(x1), yend = 0.5),
+                   data = df, linetype = "dashed", size = 0.5) # horizontal segment
 
-  if(type %in% c("hv", "v"))
-    p <- p + geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2), data = df,
-                          linetype = "dashed", size = 0.5) # vertical segments
+    if(type %in% c("hv", "v"))
+      p <- p + geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2), data = df,
+                            linetype = "dashed", size = 0.5) # vertical segments
+  }
+  else warning("Median survival not reached.")
 
   p
 }
