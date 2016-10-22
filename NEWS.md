@@ -19,7 +19,11 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
 ```
    
 - New 'myeloma' data sets added.
-
+- New functions added for determining and visualizing the optimal cutpoint of continuous variables for survival analyses:   
+   - `surv_cutpoint()`: Determine the optimal cutpoint for each variable using 'maxstat'. Methods defined for surv_cutpoint object are summary(), print() and plot().
+   - `surv_categorize()`: Divide each variable values based on the cutpoint returned by `surv_cutpoint()` ([#41](https://github.com/kassambara/survminer/issues/41)).
+  
+  
 ## Minor changes
    
 - New argument 'conf.int.style' added in `ggsurvplot()` for changing the style of confidence interval bands.
