@@ -18,6 +18,8 @@ require("survminer")
 ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
 ```
    
+- New 'myeloma' data sets added.
+
 ## Minor changes
    
 - New argument 'conf.int.style' added in `ggsurvplot()` for changing the style of confidence interval bands.
