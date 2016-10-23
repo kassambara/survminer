@@ -385,8 +385,9 @@ ggsurvplot <- function(fit, fun = NULL,
   }
 
   # Drawing a horizontal line at 50% survival
+  #if(surv.scale == "percent") fun <- "pct"
   if(surv.median.line %in% c("hv", "h", "v"))
-    p <- .add_surv_median(p, fit, type = surv.median.line)
+    p <- .add_surv_median(p, fit, type = surv.median.line, fun = fun)
 
   # Axis limits
   p <- p + ggplot2::expand_limits(x = 0, y = 0)
@@ -733,36 +734,48 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
 # Drawing horizontal line at 50% median survival
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-.add_surv_median <-function(p, fit, type = "hv"){
+.add_surv_median <-function(p, fit, type = "hv", fun = NULL){
   x1 <- x2 <- y1 <- y2 <- NULL
 
-  if(!is.null(fit$strata)) .table <- as.data.frame(summary(fit)$table)
-  else{
-    .table <- t(as.data.frame(summary(fit)$table))
-    rownames(.table) <- "All"
-  }
-  surv_median <- as.vector(.table[,"median"])
-  df <- data.frame(x1 = surv_median, x2 = surv_median,
-                   y1 = rep(0, length(surv_median)),
-                   y2 = rep(0.5, length(surv_median)),
-                   strata = rownames(.table))
-  if(!is.null(fit$strata)){
-    variables <- .get_variables(df$strata)
-    for(variable in variables) df[[variable]] <- .get_variable_value(variable, df$strata, fit)
-  }
-  df <- stats::na.omit(df)
+  draw_lines <- TRUE
+  med_y = 0.5
 
-  if(nrow(df)>0){
-    if(type %in% c("hv", "h"))
-      p <- p +
-      geom_segment(aes(x = 0, y = 0.5, xend = max(x1), yend = 0.5),
-                   data = df, linetype = "dashed", size = 0.5) # horizontal segment
-
-    if(type %in% c("hv", "v"))
-      p <- p + geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2), data = df,
-                            linetype = "dashed", size = 0.5) # vertical segments
+  if(is.null(fun)) draw_lines <- TRUE
+  else if(fun %in% c("cumhaz", "cloglog")){
+    warning("Adding survival median lines is not allowed when fun is: ", fun)
+    draw_lines <- FALSE
   }
-  else warning("Median survival not reached.")
+  else if(fun == "pct") med_y <- 50
+
+  if(draw_lines){
+      if(!is.null(fit$strata)) .table <- as.data.frame(summary(fit)$table)
+      else{
+        .table <- t(as.data.frame(summary(fit)$table))
+        rownames(.table) <- "All"
+      }
+      surv_median <- as.vector(.table[,"median"])
+      df <- data.frame(x1 = surv_median, x2 = surv_median,
+                       y1 = rep(0, length(surv_median)),
+                       y2 = rep(med_y, length(surv_median)),
+                       strata = rownames(.table))
+      if(!is.null(fit$strata)){
+        variables <- .get_variables(df$strata)
+        for(variable in variables) df[[variable]] <- .get_variable_value(variable, df$strata, fit)
+      }
+      df <- stats::na.omit(df)
+
+      if(nrow(df)>0){
+        if(type %in% c("hv", "h"))
+          p <- p +
+          geom_segment(aes(x = 0, y = max(y2), xend = max(x1), yend = max(y2)),
+                       data = df, linetype = "dashed", size = 0.5) # horizontal segment
+
+        if(type %in% c("hv", "v"))
+          p <- p + geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2), data = df,
+                                linetype = "dashed", size = 0.5) # vertical segments
+      }
+      else warning("Median survival not reached.")
+  }
 
   p
 }
