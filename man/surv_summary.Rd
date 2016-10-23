@@ -14,9 +14,9 @@ An object of class \bold{'surv_summary'}, which is a data frame with
  the following columns: \itemize{ \item time: the time points at which the
  curve has a step. \item n.risk: the number of subjects at risk at t. \item
  n.event: the number of events that occur at time t. \item  n.censor: number
- of censored events. \item surv: estimate of survival . \item std.err:
- standard error of survival \item upper: upper end of confidence interval
- \item lower: lower end of confidence interval }
+ of censored events. \item surv: estimate of survival. \item std.err:
+ standard error of survival. \item upper: upper end of confidence interval.
+ \item lower: lower end of confidence interval. \item strata: stratification of survival curves.}
  In a situation, where survival curves have been fitted with one or more
  variables, surv_summary object contains \bold{extra columns} representing the
  variables. This makes it possible to facet the output of
