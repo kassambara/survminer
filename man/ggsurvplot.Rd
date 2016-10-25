@@ -18,8 +18,9 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
   risk.table.title = NULL, risk.table.col = "black",
   risk.table.fontsize = 4.5, risk.table.y.text = TRUE,
   risk.table.y.text.col = TRUE, risk.table.height = 0.25,
-  surv.plot.height = 0.75, surv.median.line = c("none", "hv", "h", "v"),
-  ggtheme = theme_classic2(), ...)
+  surv.plot.height = 0.75, ncensor.plot = FALSE,
+  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_classic2(),
+  ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
   risk.table.height = NULL, ...)
@@ -115,6 +116,9 @@ risk.table = FALSE.}
 
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
 is 0.75. Ignored when risk.table = FALSE.}
+
+\item{ncensor.plot}{logical value. If TRUE, the number of censored subjects at
+time t is plotted. Default is FALSE.}
 
 \item{surv.median.line}{character vector for drawing a horizontal/vertical
 line at median survival. Allowed values include one of c("none", "hv", "h",

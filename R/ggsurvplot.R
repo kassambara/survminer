@@ -68,6 +68,8 @@
 #'  risk.table = FALSE.
 #'@param surv.plot.height the height of the survival plot on the grid. Default
 #'  is 0.75. Ignored when risk.table = FALSE.
+#'@param ncensor.plot logical value. If TRUE, the number of censored subjects at
+#'  time t is plotted. Default is FALSE.
 #'@param surv.median.line character vector for drawing a horizontal/vertical
 #'  line at median survival. Allowed values include one of c("none", "hv", "h",
 #'  "v"). v: vertical, h:horizontal.
@@ -246,6 +248,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        risk.table.y.text = TRUE,
                        risk.table.y.text.col = TRUE,
                        risk.table.height = 0.25, surv.plot.height = 0.75,
+                       ncensor.plot = FALSE,
                        surv.median.line = c("none", "hv", "h", "v"),
                        ggtheme = theme_classic2(),
                        ...
@@ -430,9 +433,34 @@ ggsurvplot <- function(fit, fun = NULL,
        risktable <- risktable + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
      }
 
-    res <- list(table = risktable, plot = p)
+    res <- list(plot = p, table = risktable)
    }
   else res <- list(plot = p)
+
+  # Plot of censored subjects
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if(ncensor.plot){
+    ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
+      geom_bar(aes_string(color = surv.color, fill = surv.color), stat = "identity", position = "dodge") +
+      coord_cartesian(xlim = xlim)+
+      scale_x_continuous(breaks = times)+
+      ggtheme
+    # if palette != hue
+    if(!("hue" %in% palette)){
+      ncensor_plot <- ncensor_plot +
+        .ggcolor(palette, breaks = strata_names, labels = legend.labs)+
+        .ggfill(palette, breaks = strata_names, labels = legend.labs)
+    }
+
+    ncensor_plot <-.labs(ncensor_plot, font.main = font.main,
+                         font.x = font.x, font.y = font.y, xlab = xlab, ylab = "n.censor")
+    ncensor_plot <- .set_ticks(ncensor_plot, font.tickslab = font.tickslab)
+    ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title)
+    if("left" %in% legend) ncensor_plot <- ncensor_plot + ggplot2::theme(legend.position = legend)
+    else ncensor_plot <- ncensor_plot + ggplot2::theme(legend.position = "none")
+    res$ncensor.plot <- ncensor_plot
+  }
+
   class(res) <- c("ggsurvplot", "list")
   attr(res, "surv.plot.height") <- surv.plot.height
   attr(res, "risk.table.height") <- risk.table.height
@@ -449,47 +477,63 @@ ggsurvplot <- function(fit, fun = NULL,
 print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NULL, ...){
   if(!inherits(x, "ggsurvplot"))
     stop("An object of class ggsurvplot is required.")
-  if(is.null(x$table)) print(x$plot)
-  else{
+
   surv.plot.height <- ifelse(is.null(surv.plot.height), attr(x, "surv.plot.height"), surv.plot.height)
   risk.table.height <- ifelse(is.null(risk.table.height), attr(x, "risk.table.height"), risk.table.height)
-  surv.plot.height <- ifelse(is.null(surv.plot.height), 0.75, surv.plot.height)
-  risk.table.height <- ifelse(is.null(risk.table.height), 0.25, risk.table.height)
-  # Hide legende: don't use  theme(legend.position = "none") because awkward legend when position = "left"
-  # x$table <- x$table + theme(legend.position = "none")
-  x$table <- x$table + theme(legend.key.height = NULL, legend.key.width = NULL,
-                              legend.key = element_rect(colour = NA, fill = NA),
-                              legend.text = element_text(colour = NA),
-                              legend.title = element_text(colour = NA)) +
-    guides(color = FALSE)
 
-  # Make sure that risk.table.y.text.col will be the same as the plot legend colors
-  risk.table.y.text.col <- attr(x, 'risk.table.y.text.col')
-  if(risk.table.y.text.col){
-    g <- ggplot2::ggplot_build(x$plot)
-    cols <- unlist(unique(g$data[[1]]["colour"]))
-    legend.labs <- levels(g$plot$data$strata)
-    if(length(cols)==1) cols <- rep(cols, length(legend.labs))
-    names(cols) <- legend.labs # Give every color an appropriate name
-    x$table <- x$table + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+  if(is.null(risk.table.height)) risk.table.height <- 0.25
+  ncensor.plot.height <- ifelse(is.null(x$ncensor.plot), 0, 0.25)
+  if(is.null(surv.plot.height)) surv.plot.height <- 1-risk.table.height-ncensor.plot.height
+
+  if(!is.null(x$table)){
+    # Hide legende: don't use  theme(legend.position = "none") because awkward legend when position = "left"
+    x$table <- .hide_legend(x$table)
+    # Make sure that risk.table.y.text.col will be the same as the plot legend colors
+    risk.table.y.text.col <- attr(x, 'risk.table.y.text.col')
+    if(risk.table.y.text.col){
+      g <- ggplot2::ggplot_build(x$plot)
+      cols <- unlist(unique(g$data[[1]]["colour"]))
+      legend.labs <- levels(g$plot$data$strata)
+      if(length(cols)==1) cols <- rep(cols, length(legend.labs))
+      names(cols) <- legend.labs # Give every color an appropriate name
+      x$table <- x$table + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+    }
   }
 
+  if(is.null(x$table) & is.null(x$ncensor.plot)) print(x$plot)
+  else{
+    if(is.null(x$ncensor.plot))
+      heights = list(c(surv.plot.height, risk.table.height))
+    else if(is.null(x$table)){
+      heights = list(c(surv.plot.height, ncensor.plot.height))
+    }
+    else  heights = list(c(surv.plot.height, risk.table.height, ncensor.plot.height))
 
+    nplot <- length(heights[[1]])
 
-  plots <- rev(x)
-  grobs <- widths <- list()
-  for (i in 1:length(plots)) {
-    grobs[[i]] <- ggplotGrob(plots[[i]])
-    widths[[i]] <- grobs[[i]]$widths[2:5]
-  }
-  maxwidth <- do.call(grid::unit.pmax, widths)
-  for (i in 1:length(grobs)) {
-    grobs[[i]]$widths[2:5] <- as.list(maxwidth)
-  }
-  do.call(gridExtra::grid.arrange, c(grobs, nrow = 2, heights = list(c(surv.plot.height, risk.table.height))))
+    plots <- x
+    grobs <- widths <- list()
+    for (i in 1:length(plots)) {
+      grobs[[i]] <- ggplotGrob(plots[[i]])
+      widths[[i]] <- grobs[[i]]$widths[2:5]
+    }
+    maxwidth <- do.call(grid::unit.pmax, widths)
+    for (i in 1:length(grobs)) {
+      grobs[[i]]$widths[2:5] <- as.list(maxwidth)
+    }
+    do.call(gridExtra::grid.arrange, c(grobs, nrow = nplot, heights = heights ))
   }
 }
 
+
+
+.hide_legend <- function(p){
+p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
+                           legend.key = element_rect(colour = NA, fill = NA),
+                           legend.text = element_text(colour = NA),
+                           legend.title = element_text(colour = NA)) +
+  guides(color = FALSE)
+}
 
 
 # Function defining a transformation of the survival curve
