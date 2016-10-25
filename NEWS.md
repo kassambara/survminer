@@ -22,6 +22,7 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
 - New functions added for determining and visualizing the optimal cutpoint of continuous variables for survival analyses:   
    - `surv_cutpoint()`: Determine the optimal cutpoint for each variable using 'maxstat'. Methods defined for surv_cutpoint object are summary(), print() and plot().
    - `surv_categorize()`: Divide each variable values based on the cutpoint returned by `surv_cutpoint()` ([#41](https://github.com/kassambara/survminer/issues/41)).
+- New argument 'ncensor.plot' added to `ggsurvplot()`. A logical value. If TRUE, the number of censored subjects at time t is plotted. Default is FALSE.
   
   
 ## Minor changes
