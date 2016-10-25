@@ -258,7 +258,7 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
 # Remove NULL items in a vector or list
 #
 # x a vector or list
-.compact <- function(x) Filter(Negate(is.null), x)
+.compact <- function(x){Filter(Negate(is.null), x)}
 
 # remove white space at the head and the tail of a string
 .trim <- function(x){gsub("^\\s+|\\s+$", "", x)}
