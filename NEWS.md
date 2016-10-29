@@ -41,6 +41,7 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
     
 - `ggcoxdiagnostics()` can now handle a multivariate Cox model ([#62](https://github.com/kassambara/survminer/issues/62))
 - `ggcoxfunctional()` now displays graphs of continuous variable against martingale residuals of null cox proportional hazards model ([#63](https://github.com/kassambara/survminer/issues/63)).
+- When subset is specified in the survfit() model, it's now considered in `ggsurvplot()` to report the right p-value on the subset of the data but not on the whole data sets ([@jseoane, #71](https://github.com/kassambara/survminer/issues/71)).
    
    
 # survminer 0.2.2
