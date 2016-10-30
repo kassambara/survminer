@@ -51,8 +51,18 @@ surv_summary <- function (x){
     res$state <- rep(x$states, each = nrow(surv))
   }
   else {
-    res <- cbind(res, surv = x$surv, std.err = x$std.err,
-                 upper = x$upper, lower = x$lower)
+    # Case of survfit(res.cox, newdata)
+    if(is.matrix(x$surv)){
+      ncurve <- ncol(x$surv)
+      res <- data.frame(time = rep(x$time, ncurve), n.risk = rep(x$n.risk, ncurve),
+                        n.event = rep(x$n.event, ncurve), n.censor = rep(x$n.censor, ncurve))
+      res <- cbind(res, surv = .flat(x$surv), std.err = .flat(x$std.err),
+                   upper = .flat(x$upper), lower = .flat(x$lower))
+      res$strata <- as.factor(rep(colnames(x$surv), each = nrow(x$surv)))
+    }
+    # case of standard survfit() or survfit(res.cox)
+    else res <- cbind(res, surv = x$surv, std.err = x$std.err,
+                      upper = x$upper, lower = x$lower)
   }
   if (!is.null(x$strata)) {
     res$strata <- rep(names(x$strata), x$strata)

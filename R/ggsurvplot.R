@@ -410,6 +410,10 @@ ggsurvplot <- function(fit, fun = NULL,
 
   # Add risk table
    if(risk.table){
+     if(inherits(fit, "survfit.cox")) {
+       legend.labs <- "All"
+       risk.table.y.text.col <- FALSE
+     }
      risktable <- .risk_table_plot(fit, times = times,
                                    xlim = xlim, legend.labs = legend.labs,
                                    risk.table.col = risk.table.col, palette = palette,
@@ -440,8 +444,17 @@ ggsurvplot <- function(fit, fun = NULL,
   # Plot of censored subjects
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if(ncensor.plot){
+    ncensor_data <- d
+    if(inherits(fit, "survfit.cox")){
+      ncensor_data <- data.frame(time = fit$time, n.censor = fit$n.censor,
+                                 strata = rep("All", length(fit$n.censor)))
+      surv.color <- "black"
+      strata_names <- legend.labs <- "All"
+    }
+
     ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
-      geom_bar(aes_string(color = surv.color, fill = surv.color), stat = "identity", position = "dodge") +
+      .geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
+                 stat = "identity", position = "dodge")+
       coord_cartesian(xlim = xlim)+
       scale_x_continuous(breaks = times)+
       ggtheme
@@ -688,7 +701,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 # Check user defined legend labels
 .check_legend_labs <- function(fit, legend.labs = NULL){
 
-  if(!is.null(legend.labs)){
+  if(!is.null(legend.labs) & !inherits(fit, "survfit.cox")){
 
     if(!is.null(fit$strata)){
       if(length(fit$strata) != length(legend.labs))
@@ -719,8 +732,10 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
     base$strata <- strata
     base$strata <- factor(strata, levels = strata)
     # update variable values
+    if(!inherits(fit, "survfit.cox")){
     variables <- .get_variables(base$strata)
     for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata, fit)
+    }
   }
   d <- rbind(base, d)
   d
@@ -793,7 +808,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
   else if(fun == "pct") med_y <- 50
 
   if(draw_lines){
-      if(!is.null(fit$strata)) .table <- as.data.frame(summary(fit)$table)
+      if(!is.null(fit$strata) | is.matrix(fit$surv)) .table <- as.data.frame(summary(fit)$table)
       else{
         .table <- t(as.data.frame(summary(fit)$table))
         rownames(.table) <- "All"

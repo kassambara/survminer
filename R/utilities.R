@@ -18,7 +18,8 @@
     # general
     "color", "colour", "linetype", "fill", "size", "shape",
     "alpha", "na.rm",
-    "lwd", "pch", "cex"
+    "lwd", "pch", "cex",
+    "stat", "position"
   )
 
   columns <- colnames(data)
@@ -262,3 +263,14 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
 
 # remove white space at the head and the tail of a string
 .trim <- function(x){gsub("^\\s+|\\s+$", "", x)}
+
+# Take a data frame and return a flatten value
+.flat <- function(x){
+  x <- as.data.frame(x)
+  x <- tidyr::gather_(x,
+                      key_col = "key", value_col = "value",
+                      gather_cols = colnames(x))
+  x$value
+}
+
+
