@@ -601,7 +601,11 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 .get_pvalue <- function(fit){
   # One group
   if(length(levels(summary(fit)$strata)) == 0)  return(NULL)
-    sdiff <- survival::survdiff(eval(fit$call$formula), data = eval(fit$call$data),
+    ssubset <- fit$call$subset
+    if(is.null(ssubset))
+      sdiff <- survival::survdiff(eval(fit$call$formula), data = eval(fit$call$data))
+    else
+      sdiff <- survival::survdiff(eval(fit$call$formula), data = eval(fit$call$data),
                                      subset = eval(fit$call$subset))
     pvalue <- stats::pchisq(sdiff$chisq, length(sdiff$n) - 1, lower.tail = FALSE)
     return (pvalue)
