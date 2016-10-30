@@ -18,6 +18,7 @@ require("survminer")
 ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
 ```
    
+- Now, `ggsurvplot()` can be used to plot cox model ([#67](https://github.com/kassambara/survminer/issues/67)).
 - New 'myeloma' data sets added.
 - New functions added for determining and visualizing the optimal cutpoint of continuous variables for survival analyses:   
    - `surv_cutpoint()`: Determine the optimal cutpoint for each variable using 'maxstat'. Methods defined for surv_cutpoint object are summary(), print() and plot().
