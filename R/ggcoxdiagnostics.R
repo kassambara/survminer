@@ -16,7 +16,7 @@
 #'Used only when \code{hline = TRUE}.
 #'@param hline a logical - should the horizontal line be added to highlight the \code{Y=0} level.
 #'@param ggtheme function, ggplot2 theme name. Default value is ggplot2::theme_bw().
-#'  Allowed values include ggplot2 official themes: see \link{ggtheme}.
+#'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{ggtheme}}.
 #'@param font.main,font.x,font.y,font.tickslab a vector of length 3
 #'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
 #'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
