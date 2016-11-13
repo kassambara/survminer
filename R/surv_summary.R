@@ -66,10 +66,10 @@ surv_summary <- function (x){
   }
   if (!is.null(x$strata)) {
     res$strata <- rep(names(x$strata), x$strata)
+    res$strata <- .clean_strata(res$strata, x)
     # Add column for each variable in survival fit
     variables <- .get_variables(res$strata)
     for(variable in variables) res[[variable]] <- .get_variable_value(variable, res$strata, x)
-    res$strata <- factor(res$strata, levels = names(x$strata))
   }
   structure(res, class = c("data.frame", "surv_summary"))
   attr(res, "table") <-  as.data.frame(summary(x)$table)
@@ -115,3 +115,16 @@ surv_summary <- function (x){
   x$value
 }
 
+# remove dollar sign ($) in strata, in the situation, where
+# the user uses data$variable to fit survival curves
+.clean_strata <- function(strata, fit){
+  strata <- as.character(strata)
+  is_dollar_sign <- grepl("$", strata[1], perl=FALSE)
+  if(is_dollar_sign) {
+    data_name <- unlist(strsplit(strata[1], "$", fixed =TRUE))[1]
+    strata <- gsub(paste0(data_name, "$"), "", strata, fixed=TRUE)
+    strata <- as.factor(strata)
+  }
+  else if(!missing(fit)) strata <- factor(strata, levels = names(fit$strata))
+  return(strata)
+}

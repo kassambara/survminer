@@ -75,7 +75,7 @@
 #'  "v"). v: vertical, h:horizontal.
 #'@param ggtheme function, ggplot2 theme name. Default value is
 #'  \link{theme_classic2}. Allowed values include ggplot2 official themes: see
-#'  \link{ggtheme}.
+#'  \code{\link[ggplot2]{ggtheme}}.
 #'@param ... other arguments to be passed to ggplot2 geom_*() functions such as
 #'  linetype, size, ...
 #'@details \strong{legend position}: The argument \strong{legend} can be also a
@@ -637,7 +637,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
     strata_size <- rep(fit$n, each = length(.strata)/nstrata)
   }
   risk.data <- data.frame(
-    strata = as.factor(.strata),
+    strata = .clean_strata(as.factor(.strata)),
     time = summary(fit, times = times, extend = TRUE)$time,
     n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk),
     strata_size = strata_size
@@ -821,7 +821,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
       df <- data.frame(x1 = surv_median, x2 = surv_median,
                        y1 = rep(0, length(surv_median)),
                        y2 = rep(med_y, length(surv_median)),
-                       strata = rownames(.table))
+                       strata = .clean_strata(rownames(.table)))
       if(!is.null(fit$strata)){
         variables <- .get_variables(df$strata)
         for(variable in variables) df[[variable]] <- .get_variable_value(variable, df$strata, fit)
