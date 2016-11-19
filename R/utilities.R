@@ -18,7 +18,8 @@
     # general
     "color", "colour", "linetype", "fill", "size", "shape",
     "alpha", "na.rm",
-    "lwd", "pch", "cex"
+    "lwd", "pch", "cex",
+    "stat", "position"
   )
 
   columns <- colnames(data)
@@ -161,12 +162,12 @@
       xtickslab <-
         element_text(
           size = font$size, face = font$face,
-          colour = font$color
+          colour = font$color, angle = 0
         )
       ytickslab <-
         element_text(
           size = font$size, face = font$face,
-          colour = font$color
+          colour = font$color, angle = 0
         )
       p <- p+theme(axis.text.x = xtickslab, axis.text.y = ytickslab)
     }
@@ -205,6 +206,71 @@
   res <- list(size=size, face = face, color = color)
   }
   res
+}
+
+
+# Connect observations by stairs.
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Connect observations by stairs.
+#
+# mapping the aesthetic mapping
+# data a layer specific dataset
+# stat the statistical transformation to use on the data for this layer
+# position the position adjustment to use for overlapping points on this layer
+# na.rm logical frag whether silently remove missing values
+#  ... other arguments passed to methods
+.geom_confint <- function (mapping = NULL, data = NULL, stat = "identity",
+                          position = "identity", na.rm = FALSE, ...) {
+  ggplot2::layer(mapping = mapping,
+                 data = data,
+                 stat = stat,
+                 geom = GeomConfint,
+                 position = position,
+                 params = list(na.rm = na.rm, ...))
+}
+
+GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
+                                required_aes = c("x", "ymin", "ymax"),
+                                draw_group = function(data, panel_scales, coord, na.rm = FALSE) {
+                                  if (na.rm) data <- data[complete.cases(data[c("x", "ymin", "ymax")]), ]
+                                  data <- rbind(data, data)
+                                  data <- data[order(data$x), ]
+                                  data$x <- c(data$x[2:nrow(data)], NA)
+                                  data <- data[complete.cases(data["x"]), ]
+                                  GeomRibbon$draw_group(data, panel_scales, coord, na.rm = FALSE)
+                                }
+#                                 draw_group = function(self, data, panel_scales, coord, na.rm = FALSE) {
+#                                   if (na.rm) data <- data[stats::complete.cases(self$required_aes), ]
+#                                   data <- data[order(data$group, data$x), ]
+#                                   data <- self$stairstep_confint(data)
+#                                   ggplot2:::GeomRibbon$draw_group(data, panel_scales, coord, na.rm = FALSE)
+#                                 },
+#                                 stairstep_confint = function (data) {
+#                                   data <- as.data.frame(data)[order(data$x), ]
+#                                   n <- nrow(data)
+#                                   ys <- rep(1:n, each = 2)[-2 * n]
+#                                   xs <- c(1, rep(2:n, each = 2))
+#                                   data.frame(x = data$x[xs], ymin = data$ymin[ys], ymax = data$ymax[ys],
+#                                              data[xs, setdiff(names(data), c("x", "ymin", "ymax"))])
+#                                 }
+)
+
+
+# Remove NULL items in a vector or list
+#
+# x a vector or list
+.compact <- function(x){Filter(Negate(is.null), x)}
+
+# remove white space at the head and the tail of a string
+.trim <- function(x){gsub("^\\s+|\\s+$", "", x)}
+
+# Take a data frame and return a flatten value
+.flat <- function(x){
+  x <- as.data.frame(x)
+  x <- tidyr::gather_(x,
+                      key_col = "key", value_col = "value",
+                      gather_cols = colnames(x))
+  x$value
 }
 
 

@@ -1,12 +1,58 @@
-# survminer 0.2.1.900
+# survminer 0.2.2.999
+    
+    
+## New features
+   
+- New function `surv_summary()` for creating data frame containing a nice summary of a survival curve ([#64](https://github.com/kassambara/survminer/issues/64)).
+- It's possible now to facet the output of `ggsurvplot()` by one or more factors ([#64](https://github.com/kassambara/survminer/issues/64)):
+
+```
+# Fit complexe survival curves
+require("survival")
+fit3 <- survfit( Surv(time, status) ~ sex + rx + adhere,
+                data = colon )
+                
+# Visualize by faceting
+# Plots are survival curves by sex faceted by rx and adhere factors.
+require("survminer")  
+ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
+```
+   
+- Now, `ggsurvplot()` can be used to plot cox model ([#67](https://github.com/kassambara/survminer/issues/67)).
+- New 'myeloma' data sets added.
+- New functions added for determining and visualizing the optimal cutpoint of continuous variables for survival analyses:   
+   - `surv_cutpoint()`: Determine the optimal cutpoint for each variable using 'maxstat'. Methods defined for surv_cutpoint object are summary(), print() and plot().
+   - `surv_categorize()`: Divide each variable values based on the cutpoint returned by `surv_cutpoint()` ([#41](https://github.com/kassambara/survminer/issues/41)).
+- New argument 'ncensor.plot' added to `ggsurvplot()`. A logical value. If TRUE, the number of censored subjects at time t is plotted. Default is FALSE ([#18](https://github.com/kassambara/survminer/issues/18)).
+  
+  
+## Minor changes
+   
+- New argument 'conf.int.style' added in `ggsurvplot()` for changing the style of confidence interval bands.
+- Now, `ggsurvplot()` plots a stepped confidence interval when conf.int = TRUE ([#65](https://github.com/kassambara/survminer/issues/65)).
+- `ggsurvplot()` updated for compatibility with the future version of ggplot2 (v2.2.0) ([#68](https://github.com/kassambara/survminer/issues/68))
+- ylab is now automatically adapted according to the value of the argument `fun`. For example, if fun = "event", then ylab will be "Cumulative event".
+- In `ggsurvplot()`, linetypes can now be adjusted by variables used to fit survival curves ([#46](https://github.com/kassambara/survminer/issues/46))
+- In `ggsurvplot()`, the argument risk.table can be either a logical value (TRUE|FALSE) or a string ("absolute", "percentage"). If risk.table = "absolute", `ggsurvplot()` displays the absolute number of subjects at risk. If risk.table = "percentage", the percentage at risk is displayed. Use "abs_pct" to show both the absolute number and the percentage of subjects at risk. ([#70](https://github.com/kassambara/survminer/issues/70)).
+- New argument surv.median.line in `ggsurvplot()`: character vector for drawing a horizontal/vertical line at median (50%) survival. Allowed values include one of c("none", "hv", "h", "v"). v: vertical, h:horizontal ([#61](https://github.com/kassambara/survminer/issues/61)).
+- Now, default theme of ggcoxdiagnostics() is ggplot2::theme_bw().
+   
+   
+## Bug fixes
+    
+- `ggcoxdiagnostics()` can now handle a multivariate Cox model ([#62](https://github.com/kassambara/survminer/issues/62))
+- `ggcoxfunctional()` now displays graphs of continuous variable against martingale residuals of null cox proportional hazards model ([#63](https://github.com/kassambara/survminer/issues/63)).
+- When subset is specified in the survfit() model, it's now considered in `ggsurvplot()` to report the right p-value on the subset of the data and not on the whole data sets ([@jseoane, #71](https://github.com/kassambara/survminer/issues/71)).
+   
+   
+# survminer 0.2.2
     
     
 ## New features
    
 - New `ggcoxdiagnostics` function that plots diagnostic graphs for Cox Proportional Hazards model ([@MarcinKosinski, #16](https://github.com/kassambara/survminer/issues/16)).
 - Vignette added: `Survival plots have never been so informative` ([@MarcinKosinski, #39](https://github.com/kassambara/survminer/issues/39))
-   
-## Minor changes
+- New argument linetype in 'ggsurvplot' ([@MarcinKosinski, #45](https://github.com/kassambara/survminer/issues/45)). Allowed values includes i) "strata" for changing linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a character vector c("solid", "dashed").
    
 ## Bug fixes
     

@@ -1,31 +1,36 @@
 Package: survminer
 Type: Package
 Title: Drawing Survival Curves using 'ggplot2'
-Version: 0.2.1.900
-Date: 2016-04-23
+Version: 0.2.2.999
+Date: 2016-07-27
 Authors@R: c(
     person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"),
     person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@@gmail.com")
     )
 Description: Contains the function 'ggsurvplot()' for drawing easily beautiful
     and 'ready-to-publish' survival curves with the 'number at risk' table. Other
-    functions are also available for visual examinations of cox model assumptions.
+    functions are also available for visual examinations of 'cox' model assumptions.
 License: GPL-2
 LazyData: TRUE
 Depends:
     ggplot2
 Imports:
+    ggpubr,
     grid,
     gridExtra(>= 2.0),
+    magrittr,
+    maxstat,
     methods,
     scales,
     survival,
     stats,
-    magrittr
+    tidyr
 Suggests:
     knitr,
     RTCGA.clinical,
     survMisc
+VignetteBuilder: knitr
+biocViews: 
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1
@@ -34,5 +39,8 @@ Collate:
     'utilities.R'
     'ggcoxfunctional.R'
     'ggcoxzph.R'
+    'surv_summary.R'
     'theme_classic2.R'
     'ggsurvplot.R'
+    'myeloma.R'
+    'surv_cutpoint.R'

@@ -3,22 +3,24 @@
 \name{ggsurvplot}
 \alias{ggsurvplot}
 \alias{print.ggsurvplot}
-\title{Drawing Survival Curves Using \pkg{ggplot2}}
+\title{Drawing Survival Curves Using ggplot2}
 \usage{
-ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue",
+ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
   break.time.by = NULL, surv.scale = c("default", "percent"),
-  conf.int = FALSE, conf.int.fill = "gray", censor = TRUE, pval = FALSE,
-  pval.size = 5, pval.coord = c(NULL, NULL), main = NULL, xlab = "Time",
-  ylab = "Survival probability", font.main = c(16, "plain", "black"),
-  font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-  font.tickslab = c(12, "plain", "black"), xlim = NULL, ylim = NULL,
-  legend = c("top", "bottom", "left", "right", "none"),
-  legend.title = "Strata", legend.labs = NULL, font.legend = c(10,
-  "plain", "black"), risk.table = FALSE,
-  risk.table.title = "Number at risk by time", risk.table.col = "black",
+  conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
+  censor = TRUE, pval = FALSE, pval.size = 5, pval.coord = c(NULL,
+  NULL), main = NULL, xlab = "Time", ylab = "Survival probability",
+  font.main = c(16, "plain", "black"), font.x = c(14, "plain", "black"),
+  font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain", "black"),
+  xlim = NULL, ylim = NULL, legend = c("top", "bottom", "left", "right",
+  "none"), legend.title = "Strata", legend.labs = NULL,
+  font.legend = c(10, "plain", "black"), risk.table = FALSE,
+  risk.table.title = NULL, risk.table.col = "black",
   risk.table.fontsize = 4.5, risk.table.y.text = TRUE,
   risk.table.y.text.col = TRUE, risk.table.height = 0.25,
-  surv.plot.height = 0.75, ggtheme = theme_classic2(), ...)
+  surv.plot.height = 0.75, ncensor.plot = FALSE,
+  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_classic2(),
+  ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
   risk.table.height = NULL, ...)
@@ -27,11 +29,10 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue",
 \item{fit}{an object of class survfit.}
 
 \item{fun}{an arbitrary function defining a transformation of the survival
-curve. For example use function(y){y*100}. Often used transformations can be
-specified with a character argument instead: "event" plots cumulative events
-(f(y) = 1-y), "cumhaz" plots the cumulative hazard function (f(y) =
--log(y)), and "cloglog" creates a complimentary log-log survival plot (f(y)
-= log(-log(y)) along with log scale for the x-axis).}
+curve.  Often used transformations can be specified with a character
+argument: "event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the
+cumulative hazard function (f(y) = -log(y)), and "pct" for survival
+probability in percentage.}
 
 \item{color}{color to be used for the survival curves. This argument is
 ignored when the number of strata (groups > 1). In this case, use the
@@ -40,6 +41,10 @@ argument palette.}
 \item{palette}{the color palette to be used. Allowed values include "hue" for
 the default hue color scale; "grey" for grey color palettes; brewer palettes
 e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").}
+
+\item{linetype}{line types. Allowed values includes i) "strata" for changing
+linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
+character vector c("solid", "dashed").}
 
 \item{break.time.by}{numeric value controlling time axis breaks. Default value
 is NULL.}
@@ -50,6 +55,9 @@ is NULL.}
 \item{conf.int}{logical value. If TRUE, plots confidence interval.}
 
 \item{conf.int.fill}{fill color to be used for confidence interval.}
+
+\item{conf.int.style}{confidence interval style. Allowed values include
+c("ribbon", "step").}
 
 \item{censor}{logical value. If TRUE, censors will be drawn.}
 
@@ -82,8 +90,11 @@ specified using a numeric vector c(x, y); see details section.}
 the names of the strata from the fit. Should be given in the same order as
 those strata.}
 
-\item{risk.table}{logical value specifying whether to show risk table. Default
-is FALSE.}
+\item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
+specifying whether to show or not the risk table. Default is FALSE. \item
+"absolute" or "percentage": to show the \bold{absolute number} and the
+\bold{percentage} of subjects at risk by time, respectively. Use "abs_pct"
+to show both absolute number and percentage.}}
 
 \item{risk.table.title}{Title to be used for risk table.}
 
@@ -93,7 +104,8 @@ is FALSE.}
 
 \item{risk.table.fontsize}{font size to be used for the risk table.}
 
-\item{risk.table.y.text}{logical. Default is TRUE. If FALSE, risk table y axis tick labels will be hidden.}
+\item{risk.table.y.text}{logical. Default is TRUE. If FALSE, risk table y axis
+tick labels will be hidden.}
 
 \item{risk.table.y.text.col}{logical. Default value is FALSE. If TRUE, risk
 table tick labels will be colored by strata.}
@@ -105,8 +117,16 @@ risk.table = FALSE.}
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
 is 0.75. Ignored when risk.table = FALSE.}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
-Allowed values include ggplot2 official themes: see \link{ggtheme}.}
+\item{ncensor.plot}{logical value. If TRUE, the number of censored subjects at
+time t is plotted. Default is FALSE.}
+
+\item{surv.median.line}{character vector for drawing a horizontal/vertical
+line at median survival. Allowed values include one of c("none", "hv", "h",
+"v"). v: vertical, h:horizontal.}
+
+\item{ggtheme}{function, ggplot2 theme name. Default value is
+\link{theme_classic2}. Allowed values include ggplot2 official themes: see
+\code{\link[ggplot2]{ggtheme}}.}
 
 \item{...}{other arguments to be passed to ggplot2 geom_*() functions such as
 linetype, size, ...}
@@ -223,6 +243,52 @@ ggsurvplot(fit2, pval = TRUE,
           risk.table.col = "strata",
           risk.table.height = 0.5, # Useful when you have multiple groups
           palette = "Dark2")
+}
+
+
+#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
+# Example 4: Facet ggsurvplot() output by
+# a combination of factors
+#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
+
+# Fit (complexe) survival curves
+#++++++++++++++++++++++++++++++++++++
+\dontrun{
+require("survival")
+fit3 <- survfit( Surv(time, status) ~ sex + rx + adhere,
+                data = colon )
+
+# Visualize
+#++++++++++++++++++++++++++++++++++++
+ggsurv <- ggsurvplot(fit3, fun = "cumhaz", conf.int = TRUE,
+  risk.table = TRUE, risk.table.col="strata",
+  ggtheme = theme_bw())
+
+# Faceting survival curves
+curv_facet <- ggsurv$plot + facet_grid(rx ~ adhere)
+curv_facet
+
+# Faceting risk tables:
+# Generate risk table for each facet plot item
+ggsurv$table + facet_grid(rx ~ adhere, scales = "free")+
+ theme(legend.position = "none")
+
+ # Generate risk table for each facet columns
+tbl_facet <- ggsurv$table + facet_grid(.~ adhere, scales = "free")
+tbl_facet + theme(legend.position = "none")
+
+# Arrange faceted survival curves and risk tables
+g2 <- ggplotGrob(curv_facet)
+g3 <- ggplotGrob(tbl_facet)
+min_ncol <- min(ncol(g2), ncol(g3))
+g <- gridExtra::rbind.gtable(g2[, 1:min_ncol], g3[, 1:min_ncol], size="last")
+g$widths <- grid::unit.pmax(g2$widths, g3$widths)
+grid::grid.newpage()
+grid::grid.draw(g)
+
+
+
+
 }
 
 }

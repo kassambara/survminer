@@ -24,7 +24,7 @@ NULL
 #'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 #'  font.x = "bold", to change only font face.
 #'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
-#'  Allowed values include ggplot2 official themes: see \link{ggtheme}.
+#'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{ggtheme}}.
 #'@return Returns an object of class \code{ggcoxfunctional} which is a list of ggplots.
 #'
 #'@author Marcin Kosinski , \email{m.p.kosinski@@gmail.com}
@@ -57,7 +57,7 @@ ggcoxfunctional <- function (formula, data, iter = 0, f = 0.6,
     which_col <- which(colnames(explanatory.variables.values) == i)
     explanatory.variables.values[, which_col]-> explanatory
 
-    cox.model <- coxph(stats::as.formula(paste0(SurvFormula, " ~ ", i)),
+    cox.model <- coxph(stats::as.formula(paste0(SurvFormula, " ~ ", 1)),
                        data = data)
     data2viz <- data.frame(explanatory = explanatory,
                            martingale_resid = resid(cox.model),

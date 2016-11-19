@@ -1,21 +1,29 @@
 ## Test environments
 * local OS X install, R 3.2.4
 * win-builder 
+* Travis
 
 ## R CMD check results
 There were no ERRORs, WARNINGs or NOTEs. 
+
+## win-builder check results
+
+There was 1 warning affecting particularly the vignette files: Informative_Survival_Plots.Rmd.
+
+Before submitting the update version (v0.2.2) of survminer, I did a
+check on winbulder that generated the following error:
+"there is no package called 'RTCGA.clinical". (RTCGA.clinical is a bioconductor package.)
+Could you, please, make sure that RTCGA.clinical is installed on winbulder.
+
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package
 
 ## Update
-This is an update version 0.2.1 (see NEWS.md)
+This is an update version 0.2.2 (see NEWS.md)
 
-## Resubmission
-This is a resubmission 0.2.1. In this version I have:
 
-* changed the README.md: https://cran.rstudio.com/web/packages/survminer/index.html changed to CRAN master URL:
-https://cran.r-project.org/package=survminer
+
 
 
 

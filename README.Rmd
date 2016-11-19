@@ -53,7 +53,7 @@ Or, install the latest version from [GitHub](https://github.com/kassambara/survm
 ```{r, eval = FALSE}
 # Install
 if(!require(devtools)) install.packages("devtools")
-devtools::install_github("kassambara/survminer")
+devtools::install_github("kassambara/survminer", build_vignettes = TRUE)
 ```
 
     
@@ -108,7 +108,7 @@ ggsurvplot(fit,  size = 1,  # change line size
 Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table. 
     
     
-# Blog posts
+## Blog posts
    
 - M. Kosiński. R-ADDICT May 2016. [Survival plots have never been so informative](http://r-addict.com/2016/05/23/Informative-Survival-Plots.html)
 

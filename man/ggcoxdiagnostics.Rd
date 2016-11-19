@@ -6,12 +6,12 @@
 \usage{
 ggcoxdiagnostics(fit, type = c("martingale", "deviance", "score",
   "schoenfeld", "dfbeta", "dfbetas", "scaledsch", "partial"), ...,
-  linear.predictions = TRUE, hline = TRUE, hline.col = "black",
-  hline.size = 3, hline.alpha = 1, hline.yintercept = 0,
-  hline.lty = "solid", point.col = "black", point.size = 1,
+  linear.predictions = TRUE, hline = TRUE, hline.col = "red",
+  hline.size = 1, hline.alpha = 1, hline.yintercept = 0,
+  hline.lty = "dashed", point.col = "black", point.size = 1,
   point.shape = 19, point.alpha = 1, font.main = c(16, "plain", "black"),
   font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-  font.tickslab = c(12, "plain", "black"), ggtheme = theme_classic2())
+  font.tickslab = c(12, "plain", "black"), ggtheme = ggplot2::theme_bw())
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
@@ -42,8 +42,8 @@ xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
 c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 font.x = "bold", to change only font face.}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
-Allowed values include ggplot2 official themes: see \link{ggtheme}.}
+\item{ggtheme}{function, ggplot2 theme name. Default value is ggplot2::theme_bw().
+Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{ggtheme}}.}
 }
 \value{
 Returns an object of class \code{ggplot}.
@@ -58,10 +58,11 @@ can be calculated with \link{coxph} function.
 }}
 \examples{
 
+if(require(RTCGA.clinical)){
 # TCGA data exmaple (http://cancergenome.nih.gov/)
 # source("https://bioconductor.org/biocLite.R")
 # biocLite("RTCGA.clinical") # data for examples
-library(RTCGA.clinical) # also loads 'RTCGA' package
+# library(RTCGA.clinical) # also loads 'RTCGA' package
 survivalTCGA(BRCA.clinical, OV.clinical,
             extract.cols = c("admin.disease_code", "patient.days_to_birth")) -> BRCAOV.survInfo
 BRCAOV.survInfo$age  <- round((-as.numeric(BRCAOV.survInfo$patient.days_to_birth))/365,2)
@@ -74,11 +75,11 @@ ggcoxdiagnostics(coxph.fit, ggtheme = theme_dark(), point.col = "white", point.a
 ggcoxdiagnostics(coxph.fit, ggtheme = theme_RTCGA(), # library(RTCGA.clinical)
  type = "deviance") + ylab('Deviance Residuals')
 ggcoxdiagnostics(coxph.fit, ggtheme = theme_light(), linear.predictions = FALSE)
-ggcoxdiagnostics(coxph.fit, ggtheme = theme_void(), type = "deviance", linear.predictions = FALSE)
-
-
+# ggcoxdiagnostics(coxph.fit, ggtheme = theme_void(), type = "deviance", linear.predictions = FALSE)
+}
 
 # traditional example
+library(survival)
 coxph.fit2 <- coxph(Surv(futime, fustat) ~ age + ecog.ps, data=ovarian)
 ggcoxdiagnostics(coxph.fit2, type = "deviance")
 
