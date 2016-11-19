@@ -135,7 +135,7 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
 
 
   }) -> plots
-  names(plots) <- dimnames(yy)[[2]]
+  names(plots) <- var
   class(plots) <- c("ggcoxzph", "list")
   attr(plots, "global_pval") <- x$table["GLOBAL", 3]
   plots
