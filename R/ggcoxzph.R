@@ -27,9 +27,14 @@
 #'@examples
 #'
 #' library(survival)
-#' fit <- coxph(Surv(futime, fustat) ~ age + ecog.ps, data=ovarian)
+#' fit <- coxph(Surv(futime, fustat) ~ age + ecog.ps + rx, data=ovarian)
 #' cox.zph.fit <- cox.zph(fit)
+#' # plot all variables
 #' ggcoxzph(cox.zph.fit)
+#' # plot all variables in specified order
+#' ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx", "age"))
+#' # plot specified variables in specified order
+#' ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx"))
 #'
 #'@describeIn ggcoxzph Graphical Test of Proportional Hazards using ggplot2.
 #'@export
@@ -135,7 +140,7 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
 
 
   }) -> plots
-  names(plots) <- dimnames(yy)[[2]]
+  names(plots) <- var
   class(plots) <- c("ggcoxzph", "list")
   attr(plots, "global_pval") <- x$table["GLOBAL", 3]
   plots
