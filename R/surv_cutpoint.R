@@ -114,10 +114,15 @@ surv_categorize <- function(x,  variables = NULL, labels = c("low", "high")){
   data <- data[, variables, drop = FALSE]
   cutpoints <- x$cutpoint[variables,"cutpoint"]
   nvar <- length(variables)
-
-  res <- apply(t(data), 2, .dichotomize, cutpoints, labels)
-  res <- as.data.frame(t(res))
-  colnames(res) <- variables
+  if(nvar >=2){
+    res <- apply(t(data), 2, .dichotomize, cutpoints, labels)
+    res <- as.data.frame(t(res))
+    colnames(res) <- variables
+  }
+  else {
+    res <- data
+    res[, 1] <- .dichotomize(res[, 1], cutpoints, labels)
+  }
   res <- cbind.data.frame(surv_data, res)
   attr(res, "labels") <- labels
   structure(res, class = c("data.frame", "surv_categorize"))
