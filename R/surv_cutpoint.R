@@ -26,8 +26,11 @@
 #'  frame containing the optimal cutpoint of each variable. Rows are variable
 #'  names and columns are c("cutpoint", "statistic"). \item data: a data frame
 #'  containing the survival data and the original data for the specified
-#'  variables. \item minprop: the minimal proportion of observations per group.} }
-#'  Methods defined for surv_cutpoint object are summary, print and plot.
+#'  variables. \item minprop: the minimal proportion of observations per group.
+#'  \item not_numeric: contains data for non-numeric variables, in the context
+#'  where the user provided categorical variable names in the argument
+#'  variables.} } Methods defined for surv_cutpoint object are summary, print
+#'  and plot.
 #'
 #'  \item \bold{surv_categorize()}: returns an object of class
 #'  'surv_categorize', which is a data frame containing the survival data and
@@ -75,6 +78,10 @@ surv_cutpoint <- function(data, time, event, variables,
     stop("Some variables are not found in the data: ",
          paste(setdiff(variables, colnames(data)), collapse =", "))
 
+  not_numeric_vars <- .get_not_numeric_vars(data[, variables, drop = FALSE])
+  variables <- setdiff(variables, not_numeric_vars) # keep only numeric variables
+  if(length(variables)==0) stop("At least, one numeric variables required.")
+
   nvar <- length(variables)
   if(nvar <= 5) progressbar <- FALSE
   if(progressbar) pb <- utils::txtProgressBar(min = 0, max = nvar, style = 3)
@@ -92,6 +99,7 @@ surv_cutpoint <- function(data, time, event, variables,
   }
   res$data <- cbind.data.frame(surv_data[, 1:2, drop = FALSE], data[, variables, drop = FALSE])
   res$minprop <- minprop
+  if(!is.null(not_numeric_vars)) res$not_numeric <- data[, not_numeric_vars, drop = FALSE]
   res <- structure(res, class = c("list", "surv_cutpoint"))
   res$cutpoint <- summary(res)
   res
@@ -109,6 +117,7 @@ surv_categorize <- function(x,  variables = NULL, labels = c("low", "high")){
   data <- x$data
   surv_data <- x$data[, 1:2]
   data <- x$data[, -1*c(1:2), drop = FALSE]
+  not_numeric <- x$not_numeric
 
   if(is.null(variables)) variables <- colnames(data)
   data <- data[, variables, drop = FALSE]
@@ -124,6 +133,7 @@ surv_categorize <- function(x,  variables = NULL, labels = c("low", "high")){
     res[, 1] <- .dichotomize(res[, 1], cutpoints, labels)
   }
   res <- cbind.data.frame(surv_data, res)
+  if(!is.null(not_numeric)) res <- cbind.data.frame(res, not_numeric)
   attr(res, "labels") <- labels
   structure(res, class = c("data.frame", "surv_categorize"))
 }
@@ -275,4 +285,14 @@ print.plot_surv_cutpoint <- function(x, ...){
 
   grps
 }
+
+# Get not numeric columns in a data.frame
+.get_not_numeric_vars <- function(data_frame){
+  is_numeric <- sapply(data_frame, is.numeric)
+  if(sum(!is_numeric) == 0) res = NULL
+  else res <- colnames(data_frame[, !is_numeric, drop = FALSE])
+  res
+}
+
+
 
