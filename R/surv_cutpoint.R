@@ -69,11 +69,13 @@
 #'@describeIn surv_cutpoint Determine the optimal cutpoint for each variable
 #'  using 'maxstat'
 #'@export
-surv_cutpoint <- function(data, time, event, variables,
+surv_cutpoint <- function(data, time = "time", event = "event", variables,
                     minprop = 0.1, progressbar = TRUE)
   {
   if(!inherits(data, "data.frame"))
     stop("data should be an object of class data.frame")
+  if(!all(c(time, event) %in% colnames(data)))
+    stop("Specify correct column names containing time and event values.")
   if(!all(variables %in% colnames(data)))
     stop("Some variables are not found in the data: ",
          paste(setdiff(variables, colnames(data)), collapse =", "))

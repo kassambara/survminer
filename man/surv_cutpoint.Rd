@@ -9,8 +9,8 @@
 \alias{surv_cutpoint}
 \title{Determine the Optimal Cutpoint for Continuous Variables}
 \usage{
-surv_cutpoint(data, time, event, variables, minprop = 0.1,
-  progressbar = TRUE)
+surv_cutpoint(data, time = "time", event = "event", variables,
+  minprop = 0.1, progressbar = TRUE)
 
 surv_categorize(x, variables = NULL, labels = c("low", "high"))
 
