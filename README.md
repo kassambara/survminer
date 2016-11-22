@@ -27,7 +27,7 @@ Or, install the latest version from [GitHub](https://github.com/kassambara/survm
 ``` r
 # Install
 if(!require(devtools)) install.packages("devtools")
-devtools::install_github("kassambara/survminer", build_vignettes = TRUE)
+devtools::install_github("kassambara/survminer", build_vignettes = FALSE)
 ```
 
 Load survminer:
@@ -35,6 +35,7 @@ Load survminer:
 ``` r
 library("survminer")
 # Loading required package: ggplot2
+# Warning: package 'ggplot2' was built under R version 3.2.5
 ```
 
 ggsurvplot: Drawing survival curves
@@ -45,6 +46,7 @@ ggsurvplot: Drawing survival curves
 ``` r
 require("survival")
 # Loading required package: survival
+# Warning: package 'survival' was built under R version 3.2.5
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
 
