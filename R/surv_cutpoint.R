@@ -99,6 +99,7 @@ surv_cutpoint <- function(data, time = "time", event = "event", variables,
     res[[var_i]] <- max_stat_i
     if(progressbar) utils::setTxtProgressBar(pb, i)
   }
+  colnames(surv_data) <- c(time, event)
   res$data <- cbind.data.frame(surv_data[, 1:2, drop = FALSE], data[, variables, drop = FALSE])
   res$minprop <- minprop
   if(!is.null(not_numeric_vars)) res$not_numeric <- data[, not_numeric_vars, drop = FALSE]
