@@ -89,8 +89,7 @@ ggsurvplot(fit)
     
 3. **Customized survival curves**
     
-    
-  
+
 ```{r ggplot2-customized-survival-plot, fig.height = 5.5, fig.width = 6}
 ggsurvplot(fit,  size = 1,  # change line size
            palette = c("#E7B800", "#2E9FDF"), # custom color palettes
@@ -107,7 +106,57 @@ ggsurvplot(fit,  size = 1,  # change line size
      
 Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table. 
     
-    
+4. **More customized survival curves**
+
+Focus on `xlim` and `break.by.time` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
+
+```{r ggplot2-more-customized-survival-plot, fig.height = 5.5, fig.width = 6}
+ggsurvplot(
+   fit,                     # survfit object with calculated statistics.
+   risk.table = TRUE,       # show risk table.
+   pval = TRUE,             # show p-value of log-rank test.
+   conf.int = TRUE,         # show confidence intervals for 
+                            # point estimaes of survival curves.
+   xlim = c(0,500),         # present narrower X axis, but not affect
+                            # survival estimates.
+   xlab = "Time in days",   # customize X axis label.
+   break.time.by = 100,     # break X axis in time intervals by 500.
+   ggtheme = theme_light(), # customize plot and risk table with a theme.
+ risk.table.y.text.col = T, # colour risk table text annotations.
+  risk.table.y.text = FALSE # show bars instead of names in text annotations
+                            # in legend of risk table
+)
+```
+
+
+5. **Uber customized survival curves**
+
+```{r ggplot2-uber-customized-survival-plot, fig.height = 7.5, fig.width = 6}
+ggsurvplot(
+   fit,                     # survfit object with calculated statistics.
+   risk.table = TRUE,       # show risk table.
+   pval = TRUE,             # show p-value of log-rank test.
+   conf.int = TRUE,         # show confidence intervals for 
+                            # point estimaes of survival curves.
+   xlim = c(0,500),         # present narrower X axis, but not affect
+                            # survival estimates.
+   xlab = "Time in days",   # customize X axis label.
+   break.time.by = 100,     # break X axis in time intervals by 500.
+   ggtheme = theme_light(), # customize plot and risk table with a theme.
+  risk.table.y.text.col = T,# colour risk table text annotations.
+  risk.table.y.text = FALSE,# show bars instead of names in text annotations
+                            # in legend of risk table.
+  ncensor.plot = TRUE,      # plot the number of censored subjects at time t
+  conf.int.style = "step",  # customize style of confidence intervals
+  surv.median.line = "hv",  # add the median survival pointer.
+  legend.labs = 
+    c("Male", "Female"),    # change legend labels.
+  palette = 
+    c("#E7B800", "#2E9FDF") # custom color palettes.
+)
+```
+
+
 ## Blog posts
    
 - M. Kosiński. R-ADDICT November 2016. [Determine optimal cutpoints for numerical variables in survival plots](http://r-addict.com/2016/11/21/Optimal-Cutpoint-maxstat.html)
