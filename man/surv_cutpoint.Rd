@@ -9,8 +9,8 @@
 \alias{surv_cutpoint}
 \title{Determine the Optimal Cutpoint for Continuous Variables}
 \usage{
-surv_cutpoint(data, time, event, variables, minprop = 0.1,
-  progressbar = TRUE)
+surv_cutpoint(data, time = "time", event = "event", variables,
+  minprop = 0.1, progressbar = TRUE)
 
 surv_categorize(x, variables = NULL, labels = c("low", "high"))
 
@@ -59,8 +59,11 @@ shown only, when the number of variables > 5.}
  frame containing the optimal cutpoint of each variable. Rows are variable
  names and columns are c("cutpoint", "statistic"). \item data: a data frame
  containing the survival data and the original data for the specified
- variables. \item minprop: the minimal proportion of observations per group.} }
- Methods defined for surv_cutpoint object are summary, print and plot.
+ variables. \item minprop: the minimal proportion of observations per group.
+ \item not_numeric: contains data for non-numeric variables, in the context
+ where the user provided categorical variable names in the argument
+ variables.} } Methods defined for surv_cutpoint object are summary, print
+ and plot.
 
  \item \bold{surv_categorize()}: returns an object of class
  'surv_categorize', which is a data frame containing the survival data and

@@ -60,9 +60,14 @@ Displays a graph of the scaled Schoenfeld residuals, along with a
 \examples{
 
 library(survival)
-fit <- coxph(Surv(futime, fustat) ~ age + ecog.ps, data=ovarian)
+fit <- coxph(Surv(futime, fustat) ~ age + ecog.ps + rx, data=ovarian)
 cox.zph.fit <- cox.zph(fit)
+# plot all variables
 ggcoxzph(cox.zph.fit)
+# plot all variables in specified order
+ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx", "age"))
+# plot specified variables in specified order
+ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx"))
 
 }
 \author{
