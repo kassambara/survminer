@@ -35,12 +35,13 @@ Load survminer:
 ``` r
 library("survminer")
 # Loading required package: ggplot2
+# Warning: package 'ggplot2' was built under R version 3.3.2
 ```
 
 ggsurvplot: Drawing survival curves
 -----------------------------------
 
-1.  **Fitting survival curves**
+-   **Fitting survival curves**
 
 ``` r
 require("survival")
@@ -48,7 +49,7 @@ require("survival")
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
 
-1.  **Basic plots**
+-   **Basic plots**
 
 ``` r
 ggsurvplot(fit)
@@ -56,7 +57,7 @@ ggsurvplot(fit)
 
 ![](README-ggplot2-basic-survival-plot-1.png)
 
-1.  **Customized survival curves**
+-   **Customized survival curves**
 
 ``` r
 ggsurvplot(fit,  size = 1,  # change line size
@@ -75,7 +76,7 @@ ggsurvplot(fit,  size = 1,  # change line size
 
 Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table.
 
-1.  **More customized survival curves**
+-   **More customized survival curves**
 
 Focus on `xlim` and `break.by.time` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
 
@@ -99,7 +100,7 @@ ggsurvplot(
 
 ![](README-ggplot2-more-customized-survival-plot-1.png)
 
-1.  **Uber customized survival curves**
+-   **Uber customized survival curves**
 
 ``` r
 ggsurvplot(
