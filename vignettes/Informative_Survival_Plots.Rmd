@@ -111,7 +111,7 @@ I haven't seen examples with risk table and adding legend isn't so quick as in s
 
 ### survMisc package
 
-```{r, fig.width=10, eval = FALSE}
+```{r, fig.width=10}
 # install.packages('survMisc')
 library(survMisc)
 survMisc:::autoplot.survfit(fit) # no customization
@@ -120,7 +120,7 @@ survMisc:::autoplot.survfit(fit) # no customization
 
 Why colours are not asigned to any group? Where is the legend? Why there is so much white space to the right?
 
-```{r, fig.width=10, eval = FALSE}
+```{r, fig.width=10}
 survMisc:::autoplot.survfit( # with some hard customization
    fit,
    type = "fill",
