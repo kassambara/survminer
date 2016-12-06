@@ -75,7 +75,7 @@
 #'  "v"). v: vertical, h:horizontal.
 #'@param ggtheme function, ggplot2 theme name. Default value is
 #'  \link{theme_classic2}. Allowed values include ggplot2 official themes: see
-#'  \code{\link[ggplot2]{ggtheme}}.
+#'  \code{\link[ggplot2]{theme}}.
 #'@param ... other arguments to be passed to ggplot2 geom_*() functions such as
 #'  linetype, size, ...
 #'@details \strong{legend position}: The argument \strong{legend} can be also a

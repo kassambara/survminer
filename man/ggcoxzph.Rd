@@ -40,7 +40,7 @@ c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 font.x = "bold", to change only font face.}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
-Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{ggtheme}}.}
+Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
 
 \item{x}{an object of class ggcoxzph}
 
