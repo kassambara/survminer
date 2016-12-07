@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/kassambara/survminer.png)](https://travis-ci.org/kassambara/survminer) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/survminer)](http://cran.r-project.org/package=survminer) [![Downloads](http://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer) [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](http://cranlogs.r-pkg.org/badges/grand-total/survminer) [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Pending Pull-Requests](http://githubbadges.herokuapp.com/kassambara/survminer/pulls.svg?style=flat)](https://github.com/kassambara/survminer/pulls) [![Github Issues](http://githubbadges.herokuapp.com/kassambara/survminer/issues.svg)](https://github.com/kassambara/survminer/issues)
+[![Build Status](https://api.travis-ci.org/kassambara/survminer.png)](https://travis-ci.org/kassambara/survminer) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer) [![Downloads](http://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer) [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](http://cranlogs.r-pkg.org/badges/grand-total/survminer) [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Pending Pull-Requests](http://githubbadges.herokuapp.com/kassambara/survminer/pulls.svg?style=flat)](https://github.com/kassambara/survminer/pulls) [![Github Issues](http://githubbadges.herokuapp.com/kassambara/survminer/issues.svg)](https://github.com/kassambara/survminer/issues)
 
 survminer: Survival Analysis and Visualization
 ==============================================
@@ -34,21 +34,19 @@ Load survminer:
 
 ``` r
 library("survminer")
-# Loading required package: ggplot2
 ```
 
 ggsurvplot: Drawing survival curves
 -----------------------------------
 
-1.  **Fitting survival curves**
+-   **Fitting survival curves**
 
 ``` r
 require("survival")
-# Loading required package: survival
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
 
-1.  **Basic plots**
+-   **Basic plots**
 
 ``` r
 ggsurvplot(fit)
@@ -56,7 +54,7 @@ ggsurvplot(fit)
 
 ![](README-ggplot2-basic-survival-plot-1.png)
 
-1.  **Customized survival curves**
+-   **Customized survival curves**
 
 ``` r
 ggsurvplot(fit,  size = 1,  # change line size
@@ -75,7 +73,7 @@ ggsurvplot(fit,  size = 1,  # change line size
 
 Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table.
 
-1.  **More customized survival curves**
+-   **More customized survival curves**
 
 Focus on `xlim` and `break.by.time` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
 
@@ -99,7 +97,7 @@ ggsurvplot(
 
 ![](README-ggplot2-more-customized-survival-plot-1.png)
 
-1.  **Uber customized survival curves**
+-   **Uber customized survival curves**
 
 ``` r
 ggsurvplot(

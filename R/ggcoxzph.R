@@ -1,4 +1,4 @@
-#'Graphical Test of Proportional Hazards with \pkg{ggplot2}
+#'Graphical Test of Proportional Hazards with ggplot2
 #'@description Displays a graph of the scaled Schoenfeld residuals, along with a
 #'  smooth curve using \pkg{ggplot2}. Wrapper around \link{plot.cox.zph}.
 #'@param fit an object of class \link{cox.zph}.
@@ -19,7 +19,7 @@
 #'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 #'  font.x = "bold", to change only font face.
 #'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
-#'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{ggtheme}}.
+#'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@return Returns an object of class \code{ggcoxzph} which is a list of ggplots.
 #'
 #'@author Marcin Kosinski , \email{m.p.kosinski@@gmail.com}

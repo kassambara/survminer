@@ -1,4 +1,4 @@
-#'Diagnostic Plots for Cox Proportional Hazards Model with \pkg{ggplot2}
+#'Diagnostic Plots for Cox Proportional Hazards Model with ggplot2
 #'@description Displays diagnostics graphs presenting goodness of Cox Proportional Hazards Model fit, that
 #'can be calculated with \link{coxph} function.
 #'@param fit an object of class \link{coxph.object} - created with \link{coxph} function.
@@ -16,7 +16,7 @@
 #'Used only when \code{hline = TRUE}.
 #'@param hline a logical - should the horizontal line be added to highlight the \code{Y=0} level.
 #'@param ggtheme function, ggplot2 theme name. Default value is ggplot2::theme_bw().
-#'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{ggtheme}}.
+#'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@param font.main,font.x,font.y,font.tickslab a vector of length 3
 #'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
 #'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,

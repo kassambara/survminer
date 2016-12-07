@@ -1,8 +1,8 @@
 Package: survminer
 Type: Package
 Title: Drawing Survival Curves using 'ggplot2'
-Version: 0.2.2.999
-Date: 2016-07-27
+Version: 0.2.3.999
+Date: 2016-12-06
 Authors@R: c(
     person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"),
     person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@@gmail.com")
@@ -30,7 +30,7 @@ Suggests:
     RTCGA.clinical,
     survMisc
 VignetteBuilder: knitr
-biocViews: 
+biocViews:
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1

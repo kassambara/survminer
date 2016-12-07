@@ -126,7 +126,7 @@ line at median survival. Allowed values include one of c("none", "hv", "h",
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is
 \link{theme_classic2}. Allowed values include ggplot2 official themes: see
-\code{\link[ggplot2]{ggtheme}}.}
+\code{\link[ggplot2]{theme}}.}
 
 \item{...}{other arguments to be passed to ggplot2 geom_*() functions such as
 linetype, size, ...}

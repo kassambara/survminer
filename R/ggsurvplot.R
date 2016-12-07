@@ -75,7 +75,7 @@
 #'  "v"). v: vertical, h:horizontal.
 #'@param ggtheme function, ggplot2 theme name. Default value is
 #'  \link{theme_classic2}. Allowed values include ggplot2 official themes: see
-#'  \code{\link[ggplot2]{ggtheme}}.
+#'  \code{\link[ggplot2]{theme}}.
 #'@param ... other arguments to be passed to ggplot2 geom_*() functions such as
 #'  linetype, size, ...
 #'@details \strong{legend position}: The argument \strong{legend} can be also a
@@ -749,7 +749,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%
 .get_x_major_breaks <- function(p){
   vv <- as.character(utils::packageVersion("ggplot2"))
-  cc <- compareVersion(vv, "2.1.0") > 0
+  cc <- utils::compareVersion(vv, "2.1.0") > 0
   if(cc){
     # "v>2.1.0"
     breaks <- ggplot_build(p)$layout$panel_ranges[[1]]$x.major_source
