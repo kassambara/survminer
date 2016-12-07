@@ -6,3 +6,5 @@
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^ISSUE_TEMPLATE\.md$
+^docs$
+^_pkgdown\.yml$

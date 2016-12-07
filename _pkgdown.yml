@@ -1,0 +1,24 @@
+templates:
+  params:
+    bootswatch: flatly
+
+reference:
+  - title: Survival Curves
+    desc:  Summarize and visualize survival curves.
+    contents:
+      - ggsurvplot
+      - surv_summary
+      - surv_cutpoint
+  - title: Visual Examinations of Cox Model Assumptions
+    contents:
+      - ggcoxdiagnostics
+      - ggcoxfunctional
+      - ggcoxzph
+  - title: Data
+    contents: myeloma
+  - title: Others
+    contents: theme_classic2
+
+
+
+
