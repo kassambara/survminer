@@ -95,7 +95,7 @@ surv_summary <- function (x){
 .get_variable_value <- function(variable, strata, fit){
   res <- sapply(as.vector(strata), function(x){
           x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
-          index <- grep(variable, x)
+          index <- grep(paste0("^", variable, "$"), x)
           .trim(x[index+1])
         })
   res <- as.vector(res)
