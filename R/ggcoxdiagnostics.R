@@ -1,4 +1,4 @@
-#'Diagnostic Plots for Cox Proportional Hazards Model with \pkg{ggplot2}
+#'Diagnostic Plots for Cox Proportional Hazards Model with ggplot2
 #'@description Displays diagnostics graphs presenting goodness of Cox Proportional Hazards Model fit, that
 #'can be calculated with \link{coxph} function.
 #'@param fit an object of class \link{coxph.object} - created with \link{coxph} function.

@@ -1,4 +1,4 @@
-#'Graphical Test of Proportional Hazards with \pkg{ggplot2}
+#'Graphical Test of Proportional Hazards with ggplot2
 #'@description Displays a graph of the scaled Schoenfeld residuals, along with a
 #'  smooth curve using \pkg{ggplot2}. Wrapper around \link{plot.cox.zph}.
 #'@param fit an object of class \link{cox.zph}.

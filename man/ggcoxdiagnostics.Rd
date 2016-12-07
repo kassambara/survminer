@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggcoxdiagnostics.R
 \name{ggcoxdiagnostics}
 \alias{ggcoxdiagnostics}
-\title{Diagnostic Plots for Cox Proportional Hazards Model with \pkg{ggplot2}}
+\title{Diagnostic Plots for Cox Proportional Hazards Model with ggplot2}
 \usage{
 ggcoxdiagnostics(fit, type = c("martingale", "deviance", "score",
   "schoenfeld", "dfbeta", "dfbetas", "scaledsch", "partial"), ...,

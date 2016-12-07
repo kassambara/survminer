@@ -3,7 +3,7 @@
 \name{ggcoxzph}
 \alias{ggcoxzph}
 \alias{print.ggcoxzph}
-\title{Graphical Test of Proportional Hazards with \pkg{ggplot2}}
+\title{Graphical Test of Proportional Hazards with ggplot2}
 \usage{
 ggcoxzph(fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
   point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
