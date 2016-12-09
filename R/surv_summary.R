@@ -88,7 +88,7 @@ surv_summary <- function (x){
                         x <- unlist(strsplit(x, "=|,\\s+", perl=TRUE))
                         x[seq(1, length(x), 2)]
                         })
-  unique(as.vector(variables))
+  unique(as.vector(variables))[[1]][1]
 }
 
 # level of a given variable
