@@ -51,7 +51,7 @@ library("survminer")
 ggsurvplot: Drawing survival curves
 -----------------------------------
 
-&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD \#\#\# Fitting survival curves ======= - **Fitting survival curves** &gt;&gt;&gt;&gt;&gt;&gt;&gt; ded03315d49c6cc4b3fbe316ebafd9066f282e14
+### Fitting survival curves
 
 ``` r
 require("survival")
@@ -59,7 +59,7 @@ require("survival")
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
 
-&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD \#\#\# Basic plots ======= - **Basic plots** &gt;&gt;&gt;&gt;&gt;&gt;&gt; ded03315d49c6cc4b3fbe316ebafd9066f282e14
+### Basic plots
 
 ``` r
 ggsurvplot(fit)
@@ -67,7 +67,7 @@ ggsurvplot(fit)
 
 ![](README-ggplot2-basic-survival-plot-1.png)
 
-&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD \#\#\# Customized survival curves ======= - **Customized survival curves** &gt;&gt;&gt;&gt;&gt;&gt;&gt; ded03315d49c6cc4b3fbe316ebafd9066f282e14
+### Customized survival curves
 
 ``` r
 ggsurvplot(fit,  size = 1,  # change line size
@@ -86,7 +86,7 @@ ggsurvplot(fit,  size = 1,  # change line size
 
 Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table.
 
-&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD \#\#\# More customized survival curves ======= - **More customized survival curves** &gt;&gt;&gt;&gt;&gt;&gt;&gt; ded03315d49c6cc4b3fbe316ebafd9066f282e14
+### More customized survival curves
 
 Focus on `xlim` and `break.by.time` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
 
@@ -110,7 +110,7 @@ ggsurvplot(
 
 ![](README-ggplot2-more-customized-survival-plot-1.png)
 
-&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD \#\#\# Uber customized survival curves ======= - **Uber customized survival curves** &gt;&gt;&gt;&gt;&gt;&gt;&gt; ded03315d49c6cc4b3fbe316ebafd9066f282e14
+### Uber customized survival curves
 
 ``` r
 ggsurvplot(
