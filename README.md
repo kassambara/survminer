@@ -1,4 +1,15 @@
+
 [![Build Status](https://api.travis-ci.org/kassambara/survminer.png)](https://travis-ci.org/kassambara/survminer) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer) [![Downloads](http://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer) [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](http://cranlogs.r-pkg.org/badges/grand-total/survminer) [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Pending Pull-Requests](http://githubbadges.herokuapp.com/kassambara/survminer/pulls.svg?style=flat)](https://github.com/kassambara/survminer/pulls) [![Github Issues](http://githubbadges.herokuapp.com/kassambara/survminer/issues.svg)](https://github.com/kassambara/survminer/issues)
+
+-   [survminer: Survival Analysis and Visualization](#survminer-survival-analysis-and-visualization)
+    -   [Installation and loading](#installation-and-loading)
+    -   [ggsurvplot: Drawing survival curves](#ggsurvplot-drawing-survival-curves)
+        -   [Fitting survival curves](#fitting-survival-curves)
+        -   [Basic plots](#basic-plots)
+        -   [Customized survival curves](#customized-survival-curves)
+        -   [More customized survival curves](#more-customized-survival-curves)
+        -   [Uber customized survival curves](#uber-customized-survival-curves)
+    -   [Blog posts](#blog-posts)
 
 survminer: Survival Analysis and Visualization
 ==============================================
@@ -34,19 +45,21 @@ Load survminer:
 
 ``` r
 library("survminer")
+# Loading required package: ggplot2
 ```
 
 ggsurvplot: Drawing survival curves
 -----------------------------------
 
--   **Fitting survival curves**
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD \#\#\# Fitting survival curves ======= - **Fitting survival curves** &gt;&gt;&gt;&gt;&gt;&gt;&gt; ded03315d49c6cc4b3fbe316ebafd9066f282e14
 
 ``` r
 require("survival")
+# Loading required package: survival
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
 
--   **Basic plots**
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD \#\#\# Basic plots ======= - **Basic plots** &gt;&gt;&gt;&gt;&gt;&gt;&gt; ded03315d49c6cc4b3fbe316ebafd9066f282e14
 
 ``` r
 ggsurvplot(fit)
@@ -54,7 +67,7 @@ ggsurvplot(fit)
 
 ![](README-ggplot2-basic-survival-plot-1.png)
 
--   **Customized survival curves**
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD \#\#\# Customized survival curves ======= - **Customized survival curves** &gt;&gt;&gt;&gt;&gt;&gt;&gt; ded03315d49c6cc4b3fbe316ebafd9066f282e14
 
 ``` r
 ggsurvplot(fit,  size = 1,  # change line size
@@ -73,7 +86,7 @@ ggsurvplot(fit,  size = 1,  # change line size
 
 Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table.
 
--   **More customized survival curves**
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD \#\#\# More customized survival curves ======= - **More customized survival curves** &gt;&gt;&gt;&gt;&gt;&gt;&gt; ded03315d49c6cc4b3fbe316ebafd9066f282e14
 
 Focus on `xlim` and `break.by.time` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
 
@@ -97,7 +110,7 @@ ggsurvplot(
 
 ![](README-ggplot2-more-customized-survival-plot-1.png)
 
--   **Uber customized survival curves**
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD \#\#\# Uber customized survival curves ======= - **Uber customized survival curves** &gt;&gt;&gt;&gt;&gt;&gt;&gt; ded03315d49c6cc4b3fbe316ebafd9066f282e14
 
 ``` r
 ggsurvplot(
