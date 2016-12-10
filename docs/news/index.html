@@ -91,7 +91,9 @@
 <div id="bug-fixed" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixed" class="anchor"> </a>Bug fixed</h2>
-</div>
+<ul><li><p><code><a href="../reference/surv_summary.html">surv_summary()</a></code> (v0.2.3) generated an error when the name of the variable used in <code>survfit()</code> can be found multiple times in the levels of the same variable. For example, variable = therapy; levels(therapy) –&gt; “therapy” and “hormone therapy” (<a href="https://github.com/kassambara/survminer/issues/86">#86</a>). This has been now fixed.</p></li>
+<li><p>To extract variable names used in <code>survival::survfit()</code>, the R code <code>strsplit(strata, "=|,\\s+", perl=TRUE)</code> was used in the <code><a href="../reference/surv_summary.html">surv_summary()</a></code> function [survminer v0.2.3]. The splitting was done at any “=” symbol in the string, causing an error when special characters (=, &lt;=, &gt;=) are used for the levels of a categorical variable (<a href="https://github.com/kassambara/survminer/issues/91">#91</a>). This has been now fixed.</p></li>
+</ul></div>
 </div>
     <div id="survminer-0-2-3" class="section level1">
 <h1 class="hasAnchor">

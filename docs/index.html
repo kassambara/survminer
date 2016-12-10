@@ -37,7 +37,18 @@
     
 <div class="contents">
 
-<div id="survminer-survival-analysis-and-visualization" class="section level1">
+<ul><li><a href="#survminer-survival-analysis-and-visualization">survminer: Survival Analysis and Visualization</a>
+<ul><li><a href="#installation-and-loading">Installation and loading</a></li>
+<li><a href="#ggsurvplot-drawing-survival-curves">ggsurvplot: Drawing survival curves</a>
+<ul><li><a href="#fitting-survival-curves">Fitting survival curves</a></li>
+<li><a href="#basic-plots">Basic plots</a></li>
+<li><a href="#customized-survival-curves">Customized survival curves</a></li>
+<li><a href="#more-customized-survival-curves">More customized survival curves</a></li>
+<li><a href="#uber-customized-survival-curves">Uber customized survival curves</a></li>
+</ul></li>
+<li><a href="#blog-posts">Blog posts</a></li>
+</ul></li>
+</ul><div id="survminer-survival-analysis-and-visualization" class="section level1">
 <div class="page-header"><h1 class="hasAnchor"><a href="#survminer-survival-analysis-and-visualization" class="anchor"> </a>survminer: Survival Analysis and Visualization</h1></div>
 <p>The <strong>survminer</strong> R package provides functions for facilitating <strong>survival analysis</strong> and <strong>visualization</strong>. The current version contains three main functions including:</p>
 <ul><li><p><strong>ggsurvplot</strong>(): Draws survival curves with the &lsquo;number at risk&rsquo; table.</p></li>
@@ -57,14 +68,19 @@ devtools::<span class="kw">install_github</span>(<span class="st">"kassambara/su
 </div>
 <div id="ggsurvplot-drawing-survival-curves" class="section level2">
 <h2 class="hasAnchor"><a href="#ggsurvplot-drawing-survival-curves" class="anchor"> </a>ggsurvplot: Drawing survival curves</h2>
-<ul><li><strong>Fitting survival curves</strong></li>
-</ul><div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(<span class="st">"survival"</span>)
+<div id="fitting-survival-curves" class="section level3">
+<h3 class="hasAnchor"><a href="#fitting-survival-curves" class="anchor"> </a>Fitting survival curves</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(<span class="st">"survival"</span>)
 fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw">Surv</span>(time, status) ~<span class="st"> </span>sex, <span class="dt">data =</span> lung)</code></pre></div>
-<ul><li><strong>Basic plots</strong></li>
-</ul><div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(fit)</code></pre></div>
+</div>
+<div id="basic-plots" class="section level3">
+<h3 class="hasAnchor"><a href="#basic-plots" class="anchor"> </a>Basic plots</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(fit)</code></pre></div>
 <p><img src="README-ggplot2-basic-survival-plot-1.png" width="480"></p>
-<ul><li><strong>Customized survival curves</strong></li>
-</ul><div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(fit,  <span class="dt">size =</span> <span class="dv">1</span>,  <span class="co"># change line size</span>
+</div>
+<div id="customized-survival-curves" class="section level3">
+<h3 class="hasAnchor"><a href="#customized-survival-curves" class="anchor"> </a>Customized survival curves</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(fit,  <span class="dt">size =</span> <span class="dv">1</span>,  <span class="co"># change line size</span>
            <span class="dt">palette =</span> <span class="kw">c</span>(<span class="st">"#E7B800"</span>, <span class="st">"#2E9FDF"</span>), <span class="co"># custom color palettes</span>
            <span class="dt">conf.int =</span> <span class="ot">TRUE</span>, <span class="co"># Add confidence interval</span>
            <span class="dt">pval =</span> <span class="ot">TRUE</span>, <span class="co"># Add p-value</span>
@@ -76,8 +92,10 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
            )</code></pre></div>
 <p><img src="README-ggplot2-customized-survival-plot-1.png" width="576"></p>
 <p>Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table.</p>
-<ul><li><strong>More customized survival curves</strong></li>
-</ul><p>Focus on <code>xlim</code> and <code>break.by.time</code> parameters which do not change the calculations of estimates of survival surves. Also note <code>risk.table.y.text.col = TRUE</code> and <code>risk.table.y.text = FALSE</code> that provide bars instead of names in text annotations of the legend of risk table.</p>
+</div>
+<div id="more-customized-survival-curves" class="section level3">
+<h3 class="hasAnchor"><a href="#more-customized-survival-curves" class="anchor"> </a>More customized survival curves</h3>
+<p>Focus on <code>xlim</code> and <code>break.by.time</code> parameters which do not change the calculations of estimates of survival surves. Also note <code>risk.table.y.text.col = TRUE</code> and <code>risk.table.y.text = FALSE</code> that provide bars instead of names in text annotations of the legend of risk table.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(
    fit,                     <span class="co"># survfit object with calculated statistics.</span>
    <span class="dt">risk.table =</span> <span class="ot">TRUE</span>,       <span class="co"># show risk table.</span>
@@ -94,8 +112,10 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
                             <span class="co"># in legend of risk table</span>
 )</code></pre></div>
 <p><img src="README-ggplot2-more-customized-survival-plot-1.png" width="576"></p>
-<ul><li><strong>Uber customized survival curves</strong></li>
-</ul><div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(
+</div>
+<div id="uber-customized-survival-curves" class="section level3">
+<h3 class="hasAnchor"><a href="#uber-customized-survival-curves" class="anchor"> </a>Uber customized survival curves</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(
    fit,                     <span class="co"># survfit object with calculated statistics.</span>
    <span class="dt">risk.table =</span> <span class="ot">TRUE</span>,       <span class="co"># show risk table.</span>
    <span class="dt">pval =</span> <span class="ot">TRUE</span>,             <span class="co"># show p-value of log-rank test.</span>
@@ -118,6 +138,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
     <span class="kw">c</span>(<span class="st">"#E7B800"</span>, <span class="st">"#2E9FDF"</span>) <span class="co"># custom color palettes.</span>
 )</code></pre></div>
 <p><img src="README-ggplot2-uber-customized-survival-plot-1.png" width="576"></p>
+</div>
 </div>
 <div id="blog-posts" class="section level2">
 <h2 class="hasAnchor"><a href="#blog-posts" class="anchor"> </a>Blog posts</h2>
