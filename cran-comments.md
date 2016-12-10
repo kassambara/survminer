@@ -10,7 +10,7 @@ There were no ERRORs, WARNINGs or NOTEs.
 
 There was 1 warning affecting particularly the vignette files: Informative_Survival_Plots.Rmd.
 
-Before submitting the update version (v0.2.3) of survminer, I did a
+Before submitting the update version (v0.2.4) of survminer, I did a
 check on winbulder that generated the following error:
 "there is no package called 'RTCGA.clinical". (RTCGA.clinical is a bioconductor package.)
 Could you, please, make sure that RTCGA.clinical is installed on winbulder.
