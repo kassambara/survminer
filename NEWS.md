@@ -1,11 +1,4 @@
-# survminer 0.2.3.999
-    
-    
-## New features
-    
-    
-## Minor changes
-     
+# survminer 0.2.4
      
 ## Bug fixes
      
@@ -14,7 +7,8 @@
 - To extract variable names used in `survival::survfit()`, the R code `strsplit(strata, "=|,\\s+", perl=TRUE)` was used in the `surv_summary()` function [survminer v0.2.3]. The splitting was done at any "=" symbol in the string, causing an error when special characters (=, <=, >=) are used for the levels of a categorical variable ([#91](https://github.com/kassambara/survminer/issues/91)). This has been now fixed.
 
 - Now, `ggsurvplot()` draws correctly the risk.table ([#93](https://github.com/kassambara/survminer/issues/93)).
- 
+   
+   
 # survminer 0.2.3
     
     
