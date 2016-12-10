@@ -120,9 +120,9 @@ surv_summary <- function (x){
 # remove dollar sign ($) in strata, in the situation, where
 # the user uses data$variable to fit survival curves
 .clean_strata <- function(strata, fit){
-  strata <- as.character(strata)
-  is_dollar_sign <- grepl("$", strata[1], fixed=TRUE)
+  is_dollar_sign <- grepl("$", as.character(strata)[1], fixed=TRUE)
   if(is_dollar_sign) {
+    strata <- as.character(strata)
     data_name <- unlist(strsplit(strata[1], "$", fixed =TRUE))[1]
     strata <- gsub(paste0(data_name, "$"), "", strata, fixed=TRUE)
     strata <- as.factor(strata)
