@@ -85,7 +85,10 @@ surv_summary <- function (x){
 .get_variables <- function(strata){
   variables <- sapply(as.vector(strata),
                       function(x){
-                        x <- unlist(strsplit(x, "=|,\\s+", perl=TRUE))
+                        # strsplit on first instance of "=".
+                        # Replace the first "=" by a magic number (xx01xx) and apply strsplit on that
+                        x <- sub("=", "xx01xx", x)
+                        x <- unlist(strsplit(x, "xx01xx|,\\s+", perl=TRUE))
                         x[seq(1, length(x), 2)]
                         })
   unique(as.vector(variables))
@@ -94,7 +97,8 @@ surv_summary <- function (x){
 # level of a given variable
 .get_variable_value <- function(variable, strata, fit){
   res <- sapply(as.vector(strata), function(x){
-          x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
+          x <- sub("=", "xx01xx", x)
+          x <- unlist(strsplit(x, "xx01xx|(\\s+)?,\\s+", perl=TRUE))
           index <- grep(paste0("^", variable, "$"), x)
           .trim(x[index+1])
         })
