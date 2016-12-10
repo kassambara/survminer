@@ -68,7 +68,7 @@ surv_summary <- function (x){
     res$strata <- rep(names(x$strata), x$strata)
     res$strata <- .clean_strata(res$strata, x)
     # Add column for each variable in survival fit
-    variables <- .get_variables(res$strata)
+    variables <- .get_variables(res$strata, x)
     for(variable in variables) res[[variable]] <- .get_variable_value(variable, res$strata, x)
   }
   structure(res, class = c("data.frame", "surv_summary"))
@@ -82,7 +82,7 @@ surv_summary <- function (x){
 # ++++++++++++++++++
 # Get variable names in strata
 # strata is a vector
-.get_variables <- function(strata){
+.get_variables <- function(strata, fit){
   variables <- sapply(as.vector(strata),
                       function(x){
                         x <- unlist(strsplit(x, "=|,\\s+", perl=TRUE))

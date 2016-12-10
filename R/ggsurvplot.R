@@ -646,7 +646,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
   risk.data$abs_pct.risk <- paste0(risk.data$n.risk, " (", risk.data$pct.risk, ")")
 
   if(!is.null(fit$strata)){
-    variables <- .get_variables(risk.data$strata)
+    variables <- .get_variables(risk.data$strata, fit)
     for(variable in variables) risk.data[[variable]] <- .get_variable_value(variable, risk.data$strata, fit)
   }
 
@@ -737,7 +737,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
     base$strata <- factor(strata, levels = strata)
     # update variable values
     if(!inherits(fit, "survfit.cox")){
-    variables <- .get_variables(base$strata)
+    variables <- .get_variables(base$strata,  fit)
     for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata, fit)
     }
   }
@@ -823,7 +823,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
                        y2 = rep(med_y, length(surv_median)),
                        strata = .clean_strata(rownames(.table)))
       if(!is.null(fit$strata)){
-        variables <- .get_variables(df$strata)
+        variables <- .get_variables(df$strata, fit)
         for(variable in variables) df[[variable]] <- .get_variable_value(variable, df$strata, fit)
       }
       df <- stats::na.omit(df)
