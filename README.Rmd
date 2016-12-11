@@ -21,7 +21,9 @@ knitr::opts_chunk$set(
 [![Github Issues](http://githubbadges.herokuapp.com/kassambara/survminer/issues.svg)](https://github.com/kassambara/survminer/issues)
       
       
-      
+<br/>  
+     
+
 -   [survminer: Survival Analysis and Visualization](#survminer-survival-analysis-and-visualization)
     -   [Installation and loading](#installation-and-loading)
     -   [ggsurvplot: Drawing survival curves](#ggsurvplot-drawing-survival-curves)
