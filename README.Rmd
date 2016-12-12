@@ -118,7 +118,7 @@ Note that, additional arguments are available to customize the main title, axis 
     
 ### More customized survival curves
 
-Focus on `xlim` and `break.by.time` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
+Focus on `xlim` and `break.time.by` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
 
 ```{r ggplot2-more-customized-survival-plot, fig.height = 5.5, fig.width = 6}
 ggsurvplot(
