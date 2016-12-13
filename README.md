@@ -1,6 +1,8 @@
 
 [![Build Status](https://api.travis-ci.org/kassambara/survminer.png)](https://travis-ci.org/kassambara/survminer) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer) [![Downloads](http://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer) [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](http://cranlogs.r-pkg.org/badges/grand-total/survminer) [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Pending Pull-Requests](http://githubbadges.herokuapp.com/kassambara/survminer/pulls.svg?style=flat)](https://github.com/kassambara/survminer/pulls) [![Github Issues](http://githubbadges.herokuapp.com/kassambara/survminer/issues.svg)](https://github.com/kassambara/survminer/issues)
 
+<br/>
+
 -   [survminer: Survival Analysis and Visualization](#survminer-survival-analysis-and-visualization)
     -   [Installation and loading](#installation-and-loading)
     -   [ggsurvplot: Drawing survival curves](#ggsurvplot-drawing-survival-curves)
@@ -88,7 +90,7 @@ Note that, additional arguments are available to customize the main title, axis 
 
 ### More customized survival curves
 
-Focus on `xlim` and `break.by.time` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
+Focus on `xlim` and `break.time.by` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
 
 ``` r
 ggsurvplot(
@@ -141,6 +143,12 @@ ggsurvplot(
 
 Blog posts
 ----------
+
+-   A. Kassambara. STHDA December 2016. [Survival Analysis Basics: Curves and Logrank Tests](http://www.sthda.com/english/wiki/survival-analysis-basics)
+
+-   A. Kassambara. STHDA December 2016. [Cox Proportional Hazards Model](http://www.sthda.com/english/wiki/cox-proportional-hazards-model)
+
+-   A. Kassambara. STHDA December 2016. [Cox Model Assumptions](http://www.sthda.com/english/wiki/cox-model-assumptions)
 
 -   M. Kosiński. R-ADDICT November 2016. [Determine optimal cutpoints for numerical variables in survival plots](http://r-addict.com/2016/11/21/Optimal-Cutpoint-maxstat.html)
 

@@ -1,5 +1,6 @@
 ---
-output:github_document
+output:
+  md_document: github_document
 ---
 
 
