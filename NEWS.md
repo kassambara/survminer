@@ -3,6 +3,8 @@
 ## New features
      
 ## Minor changes
+
+In `ggsurvplot()`, more information, about color palettes, have been added in the details section of the documentation ([#100](https://github.com/kassambara/survminer/issues/100)).
     
 ## Bug fixes
     
