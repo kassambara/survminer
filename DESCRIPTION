@@ -27,7 +27,7 @@ Imports:
     tidyr
 Suggests:
     knitr,
-    RTCGA.clinical,
+    RTCGA.clinical(>= 1.4.0),
     survMisc
 VignetteBuilder: knitr
 biocViews:
