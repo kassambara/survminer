@@ -8,6 +8,8 @@ In `ggsurvplot()`, more information, about color palettes, have been added in th
     
 ## Bug fixes
     
+- Now, `gggcoxzph()` works for univariate Cox analysis ([#103](https://github.com/kassambara/survminer/issues/103)). 
+
 # survminer 0.2.4
      
 ## Bug fixes
