@@ -103,16 +103,29 @@
 
 # Change title and labels
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-.labs <- function(p, main = NULL, xlab = NULL, ylab = NULL,
+.labs <- function(p, main = NULL, submain = NULL, caption = NULL, xlab = NULL, ylab = NULL,
+                  font.submain = NULL, font.caption = NULL,
                   font.main = NULL, font.x = NULL, font.y = NULL)
 {
   font.main <- .parse_font(font.main)
   font.x <- .parse_font(font.x)
   font.y <- .parse_font(font.y)
+  font.submain <- .parse_font(font.submain)
+  font.caption <- .parse_font(font.caption)
 
   if (!is.null(main)) {
     if (main != FALSE)
       p <- p + labs(title = main)
+  }
+
+  if (!is.null(submain)) {
+    if (submain != FALSE)
+      p <- p + labs(subtitle = submain)
+  }
+
+  if (!is.null(caption)) {
+    if (caption != FALSE)
+      p <- p + labs(caption = caption)
   }
 
   if (!is.null(xlab)) {
@@ -137,6 +150,22 @@
           lineheight = 1.0, face = font.main$face, colour = font.main$color
         )
       )
+  if (!is.null(font.submain))
+    p <-
+      p + theme(
+        plot.subtitle = element_text(
+          size = font.submain$size,
+          lineheight = 1.0, face = font.submain$face, colour = font.submain$color
+        )
+  )
+  if (!is.null(font.caption))
+    p <-
+      p + theme(
+        plot.caption = element_text(
+          size = font.caption$size,
+          lineheight = 1.0, face = font.caption$face, colour = font.caption$color
+        )
+  )
   if (!is.null(font.x))
     p <-
       p + theme(axis.title.x = element_text(
