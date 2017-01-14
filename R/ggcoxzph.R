@@ -142,7 +142,11 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
   }) -> plots
   names(plots) <- var
   class(plots) <- c("ggcoxzph", "list")
-  attr(plots, "global_pval") <- x$table["GLOBAL", 3]
+
+  if("GLOBAL" %in% rownames(x$table)) # case of multivariate Cox
+    global_p <- x$table["GLOBAL", 3]
+  else global_p <- NULL # Univariate Cox
+  attr(plots, "global_pval") <- global_p
   plots
 
 }
@@ -167,7 +171,8 @@ print.ggcoxzph <- function(x, ...){
     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
   }
 
-  main <- paste0("Global Schoenfeld Test p: ", signif(pval, 4), "\n")
+  if(!is.null(pval)) main <- paste0("Global Schoenfeld Test p: ", signif(pval, 4), "\n")
+  else main <- NULL
   do.call(gridExtra::grid.arrange, c(grobs, top = main))
 }
 

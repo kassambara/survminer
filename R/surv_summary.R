@@ -68,7 +68,7 @@ surv_summary <- function (x){
     res$strata <- rep(names(x$strata), x$strata)
     res$strata <- .clean_strata(res$strata, x)
     # Add column for each variable in survival fit
-    variables <- .get_variables(res$strata)
+    variables <- .get_variables(res$strata, x)
     for(variable in variables) res[[variable]] <- .get_variable_value(variable, res$strata, x)
   }
   structure(res, class = c("data.frame", "surv_summary"))
@@ -82,20 +82,22 @@ surv_summary <- function (x){
 # ++++++++++++++++++
 # Get variable names in strata
 # strata is a vector
-.get_variables <- function(strata){
+.get_variables <- function(strata, fit){
   variables <- sapply(as.vector(strata),
                       function(x){
                         x <- unlist(strsplit(x, "=|,\\s+", perl=TRUE))
                         x[seq(1, length(x), 2)]
                         })
-  unique(as.vector(variables))
+  variables <- unique(as.vector(variables))
+  variables <- intersect(variables, colnames(eval(fit$call$data) ))
+  variables
 }
 
 # level of a given variable
 .get_variable_value <- function(variable, strata, fit){
   res <- sapply(as.vector(strata), function(x){
           x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
-          index <- grep(variable, x)
+          index <- grep(paste0("^", variable, "$"), x)
           .trim(x[index+1])
         })
   res <- as.vector(res)
@@ -118,9 +120,9 @@ surv_summary <- function (x){
 # remove dollar sign ($) in strata, in the situation, where
 # the user uses data$variable to fit survival curves
 .clean_strata <- function(strata, fit){
-  strata <- as.character(strata)
-  is_dollar_sign <- grepl("$", strata[1], fixed=TRUE)
+  is_dollar_sign <- grepl("$", as.character(strata)[1], fixed=TRUE)
   if(is_dollar_sign) {
+    strata <- as.character(strata)
     data_name <- unlist(strsplit(strata[1], "$", fixed =TRUE))[1]
     strata <- gsub(paste0(data_name, "$"), "", strata, fixed=TRUE)
     strata <- as.factor(strata)

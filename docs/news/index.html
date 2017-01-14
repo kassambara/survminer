@@ -77,28 +77,23 @@
     </div>
 
     <div class="contents">
-    <div id="survminer-0-2-3-999" class="section level1">
+    <div id="survminer-0-2-4" class="section level1">
 <h1 class="hasAnchor">
-<a href="#survminer-0-2-3-999" class="anchor"> </a>survminer 0.2.3.999</h1>
-<div id="new-features" class="section level2">
+<a href="#survminer-0-2-4" class="anchor"> </a>survminer 0.2.4</h1>
+<div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features" class="anchor"> </a>New features</h2>
-</div>
-<div id="minor-changes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#minor-changes" class="anchor"> </a>Minor changes</h2>
-</div>
-<div id="bug-fixed" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bug-fixed" class="anchor"> </a>Bug fixed</h2>
-</div>
+<a href="#bug-fixes" class="anchor"> </a>Bug fixes</h2>
+<ul><li><p><code><a href="../reference/surv_summary.html">surv_summary()</a></code> (v0.2.3) generated an error when the name of the variable used in <code>survfit()</code> can be found multiple times in the levels of the same variable. For example, variable = therapy; levels(therapy) –&gt; “therapy” and “hormone therapy” (<a href="https://github.com/kassambara/survminer/issues/86">#86</a>). This has been now fixed.</p></li>
+<li><p>To extract variable names used in <code>survival::survfit()</code>, the R code <code>strsplit(strata, "=|,\\s+", perl=TRUE)</code> was used in the <code><a href="../reference/surv_summary.html">surv_summary()</a></code> function [survminer v0.2.3]. The splitting was done at any “=” symbol in the string, causing an error when special characters (=, &lt;=, &gt;=) are used for the levels of a categorical variable (<a href="https://github.com/kassambara/survminer/issues/91">#91</a>). This has been now fixed.</p></li>
+<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> draws correctly the risk.table (<a href="https://github.com/kassambara/survminer/issues/93">#93</a>).</p></li>
+</ul></div>
 </div>
     <div id="survminer-0-2-3" class="section level1">
 <h1 class="hasAnchor">
 <a href="#survminer-0-2-3" class="anchor"> </a>survminer 0.2.3</h1>
-<div id="new-features-1" class="section level2">
+<div id="new-features" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-1" class="anchor"> </a>New features</h2>
+<a href="#new-features" class="anchor"> </a>New features</h2>
 <ul><li>New function <code><a href="../reference/surv_summary.html">surv_summary()</a></code> for creating data frame containing a nice summary of a survival curve (<a href="https://github.com/kassambara/survminer/issues/64">#64</a>).</li>
 <li>It’s possible now to facet the output of <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> by one or more factors (<a href="https://github.com/kassambara/survminer/issues/64">#64</a>):</li>
 </ul><pre><code># Fit complexe survival curves
@@ -119,9 +114,9 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)</code></pre>
 <code><a href="../reference/surv_cutpoint.html">surv_categorize()</a></code>: Divide each variable values based on the cutpoint returned by <code><a href="../reference/surv_cutpoint.html">surv_cutpoint()</a></code> (<a href="https://github.com/kassambara/survminer/issues/41">#41</a>).</li>
 <li>New argument ‘ncensor.plot’ added to <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>. A logical value. If TRUE, the number of censored subjects at time t is plotted. Default is FALSE (<a href="https://github.com/kassambara/survminer/issues/18">#18</a>).</li>
 </ul></div>
-<div id="minor-changes-1" class="section level2">
+<div id="minor-changes" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-1" class="anchor"> </a>Minor changes</h2>
+<a href="#minor-changes" class="anchor"> </a>Minor changes</h2>
 <ul><li>New argument ‘conf.int.style’ added in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> for changing the style of confidence interval bands.</li>
 <li>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> plots a stepped confidence interval when conf.int = TRUE (<a href="https://github.com/kassambara/survminer/issues/65">#65</a>).</li>
 <li>
@@ -132,9 +127,9 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)</code></pre>
 <li>New argument surv.median.line in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>: character vector for drawing a horizontal/vertical line at median (50%) survival. Allowed values include one of c(“none”, “hv”, “h”, “v”). v: vertical, h:horizontal (<a href="https://github.com/kassambara/survminer/issues/61">#61</a>).</li>
 <li>Now, default theme of ggcoxdiagnostics() is ggplot2::theme_bw().</li>
 </ul></div>
-<div id="bug-fixes" class="section level2">
+<div id="bug-fixes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"> </a>Bug fixes</h2>
+<a href="#bug-fixes-1" class="anchor"> </a>Bug fixes</h2>
 <ul><li>
 <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> can now handle a multivariate Cox model (<a href="https://github.com/kassambara/survminer/issues/62">#62</a>)</li>
 <li>
@@ -147,49 +142,49 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)</code></pre>
     <div id="survminer-0-2-2" class="section level1">
 <h1 class="hasAnchor">
 <a href="#survminer-0-2-2" class="anchor"> </a>survminer 0.2.2</h1>
-<div id="new-features-2" class="section level2">
+<div id="new-features-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-2" class="anchor"> </a>New features</h2>
+<a href="#new-features-1" class="anchor"> </a>New features</h2>
 <ul><li>New <code>ggcoxdiagnostics</code> function that plots diagnostic graphs for Cox Proportional Hazards model (<a href="https://github.com/kassambara/survminer/issues/16">@MarcinKosinski, #16</a>).</li>
 <li>Vignette added: <code>Survival plots have never been so informative</code> (<a href="https://github.com/kassambara/survminer/issues/39">@MarcinKosinski, #39</a>)</li>
 <li>New argument linetype in ‘ggsurvplot’ (<a href="https://github.com/kassambara/survminer/issues/45">@MarcinKosinski, #45</a>). Allowed values includes i) “strata” for changing linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a character vector c(“solid”, “dashed”).</li>
 </ul></div>
-<div id="bug-fixes-1" class="section level2">
+<div id="bug-fixes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"> </a>Bug fixes</h2>
+<a href="#bug-fixes-2" class="anchor"> </a>Bug fixes</h2>
 <ul><li>lienetype argument changed to linetype in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> documentation. (<a href="https://github.com/kassambara/survminer/issues/43">@ViniciusBRodrigues, #43</a>)</li>
 </ul></div>
 </div>
     <div id="survminer-0-2-1" class="section level1">
 <h1 class="hasAnchor">
 <a href="#survminer-0-2-1" class="anchor"> </a>survminer 0.2.1</h1>
-<div id="new-features-3" class="section level2">
+<div id="new-features-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-3" class="anchor"> </a>New features</h2>
+<a href="#new-features-2" class="anchor"> </a>New features</h2>
 <ul><li><p>New <code>ggcoxzph</code> function that displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ‘ggplot2’. Wrapper around \link{plot.cox.zph}. (<a href="https://github.com/kassambara/survminer/issues/13">@MarcinKosinski, #13</a>)</p></li>
 <li><p>New <code>ggcoxfunctional</code> function that displays graphs of continuous explanatory variable against martingale residuals of null cox proportional hazards model, for each term in of the right side of input formula. This might help to properly choose the functional form of continuous variable in cox model, since fitted lines with <code>lowess</code> function should be linear to satisfy cox proportional hazards model assumptions. (<a href="https://github.com/kassambara/survminer/issues/14">@MarcinKosinski, #14</a>)</p></li>
 <li><p>New function <code>theme_classic2</code>: ggplot2 classic theme with axis line. This function replaces ggplot2::theme_classic, which does no longer display axis lines (since ggplot2 v2.1.0)</p></li>
 </ul></div>
-<div id="minor-changes-2" class="section level2">
+<div id="minor-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-2" class="anchor"> </a>Minor changes</h2>
+<a href="#minor-changes-1" class="anchor"> </a>Minor changes</h2>
 <ul><li>post-customization of color and fill no longer shows warnings like “Scale for ‘fill’ is already present. Adding another scale for ‘fill’, which will replace the existing scale” (<a href="https://github.com/kassambara/survminer/issues/11">@MarcinKosinski, #11</a>).</li>
 <li>now, post-customization of survival curve colors will automatically affect the risk table y axis text colors (<a href="https://github.com/kassambara/survminer/issues/12">@MarcinKosinski, #11</a>).</li>
 <li>Default value for the argument <code>risk.table.y.text.col</code> is now TRUE.</li>
 <li>New argument risk.table.y.text for the function <code>ggsurvplot</code>. logical argument. Default is TRUE. If FALSE, risk table y axis tick labels will be hidden (<a href="https://github.com/kassambara/survminer/issues/28">@MarcinKosinski, #28</a>).</li>
 </ul></div>
-<div id="bug-fixes-2" class="section level2">
+<div id="bug-fixes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"> </a>Bug fixes</h2>
+<a href="#bug-fixes-3" class="anchor"> </a>Bug fixes</h2>
 <ul><li>Black dots removed from risk table (<a href="https://github.com/kassambara/survminer/issues/25">@Feli-Anna, #25</a>)</li>
 </ul></div>
 </div>
     <div id="survminer-0-2-0" class="section level1">
 <h1 class="hasAnchor">
 <a href="#survminer-0-2-0" class="anchor"> </a>survminer 0.2.0</h1>
-<div id="new-features-4" class="section level2">
+<div id="new-features-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-4" class="anchor"> </a>New features</h2>
+<a href="#new-features-3" class="anchor"> </a>New features</h2>
 <ul><li>New arguments in ggsurvplot for changing font style, size and color of main title, axis labels, axis tick labels and legend labels: <em>font.main, font.x, font.y, font.tickslab, font.legend</em>.</li>
 <li>New arguments <em>risk.table.title, risk.table.fontsize</em> in ggsurvplot</li>
 <li><p>New argument <em>risk.table.y.text.col</em>: logical value. Default value is FALSE. If TRUE, risk table tick labels will be colored by strata (<a href="https://github.com/kassambara/survminer/issues/8">@MarcinKosinski, #8</a>).</p></li>
@@ -217,14 +212,14 @@ res$table &lt;- res$table + theme(axis.line = element_blank())
 res$plot &lt;- res$plot + labs(title = "Survival Curves")
 print(res)</code></pre>
 </div>
-<div id="minor-changes-3" class="section level2">
+<div id="minor-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-3" class="anchor"> </a>Minor changes</h2>
+<a href="#minor-changes-2" class="anchor"> </a>Minor changes</h2>
 <ul><li>p &lt; 0.0001 is used (when pvalue &lt; 0.0001).</li>
 </ul></div>
-<div id="bug-fixes-3" class="section level2">
+<div id="bug-fixes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"> </a>Bug fixes</h2>
+<a href="#bug-fixes-4" class="anchor"> </a>Bug fixes</h2>
 <ul><li><p>ggtheme now affects risk.table (<a href="https://github.com/kassambara/survminer/issues/1">@MarcinKosinski, #1</a>)</p></li>
 <li><p>xlim changed to cartesian coordinates mode (<a href="https://github.com/kassambara/survminer/issues/4">@MarcinKosinski, #4</a>). The Cartesian coordinate system is the most common type of coordinate system. It will zoom the plot (like you’re looking at it with a magnifying glass), without clipping the data.</p></li>
 <li><p>Risk table and survival curves have now the same color and the same order</p></li>
@@ -234,9 +229,9 @@ print(res)</code></pre>
     <div id="survminer-0-1-1" class="section level1">
 <h1 class="hasAnchor">
 <a href="#survminer-0-1-1" class="anchor"> </a>survminer 0.1.1</h1>
-<div id="new-features-5" class="section level2">
+<div id="new-features-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-5" class="anchor"> </a>New features</h2>
+<a href="#new-features-4" class="anchor"> </a>New features</h2>
 <ul><li>
 <strong>ggsurvplot()</strong>: Drawing survival curves using ggplot2</li>
 </ul></div>
@@ -248,7 +243,7 @@ print(res)</code></pre>
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#survminer-0-2-3-999">0.2.3.999</a></li>
+        <li><a href="#survminer-0-2-4">0.2.4</a></li>
         <li><a href="#survminer-0-2-3">0.2.3</a></li>
         <li><a href="#survminer-0-2-2">0.2.2</a></li>
         <li><a href="#survminer-0-2-1">0.2.1</a></li>

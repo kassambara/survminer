@@ -1,5 +1,6 @@
 ---
-output: github_document
+output:
+  md_document: github_document
 ---
 
 
@@ -19,6 +20,10 @@ knitr::opts_chunk$set(
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![Pending Pull-Requests](http://githubbadges.herokuapp.com/kassambara/survminer/pulls.svg?style=flat)](https://github.com/kassambara/survminer/pulls)
 [![Github Issues](http://githubbadges.herokuapp.com/kassambara/survminer/issues.svg)](https://github.com/kassambara/survminer/issues)
+      
+      
+<br/>  
+     
 
 -   [survminer: Survival Analysis and Visualization](#survminer-survival-analysis-and-visualization)
     -   [Installation and loading](#installation-and-loading)
@@ -76,11 +81,7 @@ library("survminer")
 ## ggsurvplot: Drawing survival curves
      
      
-<<<<<<< HEAD
 ### Fitting survival curves
-=======
-- **Fitting survival curves**
->>>>>>> ded03315d49c6cc4b3fbe316ebafd9066f282e14
     
     
 ```{r}
@@ -89,11 +90,7 @@ fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
    
    
-<<<<<<< HEAD
 ### Basic plots
-=======
-- **Basic plots**
->>>>>>> ded03315d49c6cc4b3fbe316ebafd9066f282e14
     
     
 ```{r ggplot2-basic-survival-plot, fig.height = 4, fig.width = 5}
@@ -101,11 +98,7 @@ ggsurvplot(fit)
 ```
     
     
-<<<<<<< HEAD
 ### Customized survival curves
-=======
-- **Customized survival curves**
->>>>>>> ded03315d49c6cc4b3fbe316ebafd9066f282e14
     
 
 ```{r ggplot2-customized-survival-plot, fig.height = 5.5, fig.width = 6}
@@ -124,13 +117,9 @@ ggsurvplot(fit,  size = 1,  # change line size
      
 Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table. 
     
-<<<<<<< HEAD
 ### More customized survival curves
-=======
-- **More customized survival curves**
->>>>>>> ded03315d49c6cc4b3fbe316ebafd9066f282e14
 
-Focus on `xlim` and `break.by.time` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
+Focus on `xlim` and `break.time.by` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
 
 ```{r ggplot2-more-customized-survival-plot, fig.height = 5.5, fig.width = 6}
 ggsurvplot(
@@ -149,13 +138,9 @@ ggsurvplot(
                             # in legend of risk table
 )
 ```
-
-
-<<<<<<< HEAD
+    
+    
 ### Uber customized survival curves
-=======
-- **Uber customized survival curves**
->>>>>>> ded03315d49c6cc4b3fbe316ebafd9066f282e14
 
 ```{r ggplot2-uber-customized-survival-plot, fig.height = 7.5, fig.width = 6}
 ggsurvplot(
@@ -185,6 +170,12 @@ ggsurvplot(
 
 ## Blog posts
    
+- A. Kassambara. STHDA December 2016. [Survival Analysis Basics: Curves and Logrank Tests](http://www.sthda.com/english/wiki/survival-analysis-basics)
+   
+- A. Kassambara. STHDA December 2016. [Cox Proportional Hazards Model](http://www.sthda.com/english/wiki/cox-proportional-hazards-model)
+     
+- A. Kassambara. STHDA December 2016. [Cox Model Assumptions](http://www.sthda.com/english/wiki/cox-model-assumptions)
+  
 - M. Kosiński. R-ADDICT November 2016. [Determine optimal cutpoints for numerical variables in survival plots](http://r-addict.com/2016/11/21/Optimal-Cutpoint-maxstat.html)
    
 - M. Kosiński. R-ADDICT May 2016. [Survival plots have never been so informative](http://r-addict.com/2016/05/23/Informative-Survival-Plots.html)
