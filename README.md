@@ -11,7 +11,7 @@
         -   [Customized survival curves](#customized-survival-curves)
         -   [More customized survival curves](#more-customized-survival-curves)
         -   [Uber customized survival curves](#uber-customized-survival-curves)
-        -   [Uber platinium customized survival curves](#uber-platinium-customized-survival-curves)
+        -   [Uber platinum customized survival curves](#uber-platinum-customized-survival-curves)
     -   [Blog posts](#blog-posts)
 
 survminer: Survival Analysis and Visualization
@@ -141,7 +141,7 @@ ggsurvplot(
 
 ![](README-ggplot2-uber-customized-survival-plot-1.png)
 
-### Uber platinium customized survival curves
+### Uber platinum customized survival curves
 
 ``` r
 ggsurvplot(
@@ -191,6 +191,8 @@ ggsurvplot(
 
 Blog posts
 ----------
+
+-   M. Kosiński. R-ADDICT January 2017. [When You Went too Far with Survival Plots During the survminer 1st Anniversary](http://r-addict.com/2017/01/15/Too-Far-With-Survival-Plots.html)
 
 -   A. Kassambara. STHDA December 2016. [Survival Analysis Basics: Curves and Logrank Tests](http://www.sthda.com/english/wiki/survival-analysis-basics)
 
