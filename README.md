@@ -39,7 +39,6 @@ install.packages("survminer")
 Or, install the latest version from [GitHub](https://github.com/kassambara/survminer):
 
 ``` r
-# Install
 if(!require(devtools)) install.packages("devtools")
 devtools::install_github("kassambara/survminer", build_vignettes = FALSE)
 ```
