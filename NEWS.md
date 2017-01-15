@@ -1,6 +1,16 @@
 # survminer 0.2.4.999
    
 ## New features
+
+## Major changes
+
+- New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105))
+    - It is possible to specify subtitle (param `submain`) and caption (param `caption`) for the `curve` part of the `ggsurvplot`.
+    - It is possible to specify subtitle (param `risk.table.subtitle`) and caption (param `risk.table.caption`) for the `table` part of the `ggsurvplot`.
+    - It is possible to specify title (param `ncens.plot.title`), subtitle (param `ncens.plot.subtitle`) and caption (param `ncens.plot.caption`) for the `ncens` part of the `ggsurvplot`.
+    - ncens.plot part of the `ggsurvplot` has no integer values on y axis (not real as before), as it only can take integer values.
+    - A new vignette and a `ggsurvplot` example was added to present new functionalities of possible texts and fonts customizations. 
+    - README was extended with `uber platinium customization` example. 
      
 ## Minor changes
 

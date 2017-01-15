@@ -9,21 +9,25 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
   break.time.by = NULL, surv.scale = c("default", "percent"),
   conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
   censor = TRUE, pval = FALSE, pval.size = 5, pval.coord = c(NULL,
-  NULL), main = NULL, xlab = "Time", ylab = "Survival probability",
-  font.main = c(16, "plain", "black"), font.x = c(14, "plain", "black"),
-  font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain", "black"),
-  xlim = NULL, ylim = NULL, legend = c("top", "bottom", "left", "right",
-  "none"), legend.title = "Strata", legend.labs = NULL,
-  font.legend = c(10, "plain", "black"), risk.table = FALSE,
-  risk.table.title = NULL, risk.table.col = "black",
-  risk.table.fontsize = 4.5, risk.table.y.text = TRUE,
-  risk.table.y.text.col = TRUE, risk.table.height = 0.25,
-  surv.plot.height = 0.75, ncensor.plot = FALSE,
-  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_classic2(),
-  ...)
+  NULL), main = NULL, submain = NULL, caption = NULL, xlab = "Time",
+  ylab = "Survival probability", font.main = c(16, "plain", "black"),
+  font.submain = c(15, "plain", "black"), font.caption = c(15, "plain",
+  "black"), font.x = c(14, "plain", "black"), font.y = c(14, "plain",
+  "black"), font.tickslab = c(12, "plain", "black"), xlim = NULL,
+  ylim = NULL, legend = c("top", "bottom", "left", "right", "none"),
+  legend.title = "Strata", legend.labs = NULL, font.legend = c(10,
+  "plain", "black"), risk.table = FALSE, risk.table.title = NULL,
+  risk.table.subtitle = NULL, risk.table.caption = NULL,
+  risk.table.col = "black", risk.table.fontsize = 4.5,
+  risk.table.y.text = TRUE, risk.table.y.text.col = TRUE,
+  risk.table.height = 0.25, surv.plot.height = 0.75,
+  ncensor.plot.height = 0.25, ncensor.plot = FALSE,
+  ncensor.plot.title = NULL, ncensor.plot.subtitle = NULL,
+  ncensor.plot.caption = NULL, surv.median.line = c("none", "hv", "h", "v"),
+  ggtheme = theme_classic2(), ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
-  risk.table.height = NULL, ...)
+  risk.table.height = NULL, ncensor.plot.height = NULL, ...)
 }
 \arguments{
 \item{fit}{an object of class survfit.}
@@ -69,11 +73,11 @@ c("ribbon", "step").}
 \item{pval.coord}{numeric vector, of length 2, specifying the x and y
 coordinates of the p-value. Default values are NULL.}
 
-\item{main, xlab, ylab}{main title and axis labels}
+\item{main, submain, caption, xlab, ylab}{main title, subtitle, caption and axis labels}
 
-\item{font.main, font.x, font.y, font.tickslab, font.legend}{a vector of length 3
+\item{font.main, font.submain, font.caption, font.x, font.y, font.tickslab, font.legend}{a vector of length 3
 indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
 xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
 c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 font.x = "bold", to change only font face.}
@@ -97,7 +101,11 @@ specifying whether to show or not the risk table. Default is FALSE. \item
 \bold{percentage} of subjects at risk by time, respectively. Use "abs_pct"
 to show both absolute number and percentage.}}
 
-\item{risk.table.title}{Title to be used for risk table.}
+\item{risk.table.title}{The title to be used for the risk table.}
+
+\item{risk.table.subtitle}{The subtitle to be used for the risk table.}
+
+\item{risk.table.caption}{The caption to be used for the risk table.}
 
 \item{risk.table.col}{color to be used for risk table. Default value is
 "black". If you want to color by strata (i.e. groups), use risk.table.col =
@@ -116,10 +124,18 @@ the value when you have many strata. Default is 0.25. Ignored when
 risk.table = FALSE.}
 
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
-is 0.75. Ignored when risk.table = FALSE.}
+is 0.75. Ignored when risk.table = FALSE. \code{1-risk.table.height - ncensor.plot.height} when \code{risk.table = TRUE} and \code{ncensor.plot = TRUE}}
+
+\item{ncensor.plot.height}{The height of the censor plot. Used when \code{ncensor.plot = TRUE}.}
 
 \item{ncensor.plot}{logical value. If TRUE, the number of censored subjects at
 time t is plotted. Default is FALSE.}
+
+\item{ncensor.plot.title}{The title to be used for the censor plot. Used when \code{ncensor.plot = TRUE}.}
+
+\item{ncensor.plot.subtitle}{The subtitle to be used for the censor plot. Used when \code{ncensor.plot = TRUE}.}
+
+\item{ncensor.plot.caption}{The caption to be used for the censor plot. Used when \code{ncensor.plot = TRUE}.}
 
 \item{surv.median.line}{character vector for drawing a horizontal/vertical
 line at median survival. Allowed values include one of c("none", "hv", "h",
@@ -296,6 +312,32 @@ grid::grid.draw(g)
 
 
 }
+
+#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
+# Example 5: Playing with fonts and texts
+#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
+
+ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+  caption = "created with survminer",
+  font.main = c(16, "bold", "darkblue"),
+  font.submain = c(15, "bold.italic", "purple"),
+  font.caption = c(14, "plain", "orange"),
+  font.x = c(14, "bold.italic", "red"),
+  font.y = c(14, "bold.italic", "darkred"),
+  font.tickslab = c(12, "plain", "darkgreen"),
+  ########## risk table #########,
+  risk.table = TRUE,
+  risk.table.title = "Note the risk set sizes",
+  risk.table.subtitle = "and remember about censoring.",
+  risk.table.caption = "source code: website.com",
+  risk.table.height = 0.35,
+  ncensor.plot.title = "Number of censorings",
+  ncensor.plot.subtitle = "over the time.",
+  ncensor.plot.caption = "data available at data.com",
+  ncensor.plot.height = 0.35)
+
+
+
 
 }
 \author{

@@ -1,0 +1,145 @@
+---
+title: Playing with fonts and texts
+author: Marcin Kosinski
+output:
+  html_document:
+    mathjax:  default
+    fig_caption:  true
+    toc: true
+    section_numbering: true
+    css: ggsci.css
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Playing with fonts and texts}
+---
+```{r include = FALSE}
+library(knitr)
+opts_chunk$set(
+	comment = "",
+	fig.width = 12, 
+	message = FALSE,
+	warning = FALSE,
+	tidy.opts = list(
+		keep.blank.line = TRUE,
+		width.cutoff = 150
+		),
+	options(width = 150),
+	eval = TRUE
+)
+```
+
+```{r}
+library("survminer")
+```
+
+
+> This vignette covers changes between versions 0.2.4 and 0.2.5 for additional texts and fonts customization enabled for subtitles and captions.
+
+# Survival plot 
+
+## Basic
+
+Compare the basic plot
+
+```{r}
+library("survival")
+fit<- survfit(Surv(time, status) ~ sex, data = lung)
+
+# Drawing survival curves
+ggsurvplot(fit)
+```
+
+## Customized
+
+with the plot where every possible text on a `plot` is specified
+
+```{r}
+ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+   caption = "created with survminer",
+   font.main = c(16, "bold", "darkblue"),
+   font.submain = c(15, "bold.italic", "purple"),
+   font.caption = c(14, "plain", "orange"),
+   font.x = c(14, "bold.italic", "red"),
+   font.y = c(14, "bold.italic", "darkred"),
+   font.tickslab = c(12, "plain", "darkgreen"))
+```
+
+# Risk table
+
+Now allow `risk.table` to be displayed. 
+
+## Basic
+
+Please compare basic plot with a risk table
+
+```{r}
+ggsurvplot(fit, risk.table = TRUE)
+```
+
+## Customized
+
+with the plot where every possible text on a `plot` and `table` is specified
+
+```{r}
+ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+   caption = "created with survminer",
+   font.main = c(16, "bold", "darkblue"),
+   font.submain = c(15, "bold.italic", "purple"),
+   font.caption = c(14, "plain", "orange"),
+   font.x = c(14, "bold.italic", "red"),
+   font.y = c(14, "bold.italic", "darkred"),
+   font.tickslab = c(12, "plain", "darkgreen"),
+   ########## risk table #########,
+   risk.table = TRUE,
+   risk.table.title = "Note the risk set sizes",
+   risk.table.subtitle = "and remember about censoring.",
+   risk.table.caption = "source code: website.com",
+   risk.table.height = 0.45)
+```
+
+
+# ncens plot
+
+Finally, allow `ncens.plot` to be displayed.
+
+## Basic
+
+Please compare basic plot with a risk table and a `ncens` plot
+
+```{r, fig.height = 7.5, fig.width = 6}
+ggsurvplot(fit, risk.table = TRUE, ncensor.plot = TRUE)
+```
+
+## Customized
+
+with the full customization
+
+```{r, fig.height = 7.5, fig.width = 6}
+ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+   caption = "created with survminer",
+   font.main = c(16, "bold", "darkblue"),
+   font.submain = c(15, "bold.italic", "purple"),
+   font.caption = c(14, "plain", "orange"),
+   font.x = c(14, "bold.italic", "red"),
+   font.y = c(14, "bold.italic", "darkred"),
+   font.tickslab = c(12, "plain", "darkgreen"),
+   ########## risk table #########,
+   risk.table = TRUE,
+   risk.table.title = "Note the risk set sizes",
+   risk.table.subtitle = "and remember about censoring.",
+   risk.table.caption = "source code: website.com",
+   risk.table.height = 0.35,
+   ncensor.plot = TRUE,
+   ncensor.plot.title = "Number of censorings", 
+   ncensor.plot.subtitle = "over the time.",
+   ncensor.plot.caption = "data available at data.com",
+   ncensor.plot.height = 0.35)
+```
+
+
+
+# Notes
+
+- Note that you will probably need to extend the default risk table height and ncens plot height after those customizations.
+- Distinct between `main` and `submain` for the `curve_plot` and `risk.table.title` and `risk.table.subtitle` for the `table` / `ncens.plot.title` and `ncens.plot.subtitle` for the `ncens`.
+- Fonts are set simultaneously for the `curve_plot`, for the `table` and for the `ncens` parts. This might change in the future.
