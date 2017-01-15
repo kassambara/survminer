@@ -63,7 +63,6 @@ Or, install the latest version from [GitHub](https://github.com/kassambara/survm
     
    
 ```{r, eval = FALSE}
-# Install
 if(!require(devtools)) install.packages("devtools")
 devtools::install_github("kassambara/survminer", build_vignettes = FALSE)
 ```
@@ -216,7 +215,8 @@ ggsurvplot(
 
 
 ## Blog posts
-   
+    
+    
 - A. Kassambara. STHDA December 2016. [Survival Analysis Basics: Curves and Logrank Tests](http://www.sthda.com/english/wiki/survival-analysis-basics)
    
 - A. Kassambara. STHDA December 2016. [Cox Proportional Hazards Model](http://www.sthda.com/english/wiki/cox-proportional-hazards-model)
