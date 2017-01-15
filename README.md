@@ -19,7 +19,7 @@ survminer: Survival Analysis and Visualization
 
 The **survminer** R package provides functions for facilitating **survival analysis** and **visualization**. The current version contains three main functions including:
 
--   **ggsurvplot**(): Draws survival curves with the 'number at risk' table.
+-   **ggsurvplot**(): Draws survival curves with the 'number at risk' table and 'censoring count plot'.
 
 -   **ggcoxzph**(): Graphical test of proportional hazards.
 
