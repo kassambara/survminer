@@ -8,7 +8,7 @@ Authors@R: c(
     person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@@gmail.com")
     )
 Description: Contains the function 'ggsurvplot()' for drawing easily beautiful
-    and 'ready-to-publish' survival curves with the 'number at risk' table. Other
+    and 'ready-to-publish' survival curves with the 'number at risk' table and 'censoring count plot'. Other
     functions are also available for visual examinations of 'cox' model assumptions.
 License: GPL-2
 LazyData: TRUE
