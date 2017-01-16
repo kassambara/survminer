@@ -74,6 +74,7 @@ surv_cutpoint <- function(data, time = "time", event = "event", variables,
   {
   if(!inherits(data, "data.frame"))
     stop("data should be an object of class data.frame")
+  data <- as.data.frame(data)
   if(!all(c(time, event) %in% colnames(data)))
     stop("Specify correct column names containing time and event values.")
   if(!all(variables %in% colnames(data)))
