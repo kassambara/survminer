@@ -581,7 +581,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     for (i in 1:length(grobs)) {
       grobs[[i]]$widths[2:5] <- as.list(maxwidth)
     }
-    do.call(gridExtra::grid.arrange, c(grobs, nrow = nplot, heights = heights ))
+    do.call(gridExtra::grid.arrange, c(grobs, nrow = nplot, heights = heights, newpage = FALSE))
   }
 }
 
