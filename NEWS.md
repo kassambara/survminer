@@ -14,11 +14,14 @@
      
 ## Minor changes
 
-In `ggsurvplot()`, more information, about color palettes, have been added in the details section of the documentation ([#100](https://github.com/kassambara/survminer/issues/100)).
+- In `ggsurvplot()`, more information, about color palettes, have been added in the details section of the documentation ([#100](https://github.com/kassambara/survminer/issues/100)).  
+
+- The R package `maxstat` doesn't support very well an object of class `tbl_df`. To fix this issue, now, in the `surv_cutpoint()` function, the input data is systematically transformed into a standard data.frame format ([@MarcinKosinski, #104](https://github.com/kassambara/survminer/issues/104)).
     
 ## Bug fixes
     
 - Now, `gggcoxzph()` works for univariate Cox analysis ([#103](https://github.com/kassambara/survminer/issues/103)). 
+   
 
 # survminer 0.2.4
      
