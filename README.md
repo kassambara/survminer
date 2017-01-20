@@ -98,7 +98,7 @@ ggsurvplot(
    risk.table = TRUE,       # show risk table.
    pval = TRUE,             # show p-value of log-rank test.
    conf.int = TRUE,         # show confidence intervals for 
-                            # point estimaes of survival curves.
+                            # point estimates of survival curves.
    xlim = c(0,500),         # present narrower X axis, but not affect
                             # survival estimates.
    xlab = "Time in days",   # customize X axis label.
@@ -120,7 +120,7 @@ ggsurvplot(
    risk.table = TRUE,       # show risk table.
    pval = TRUE,             # show p-value of log-rank test.
    conf.int = TRUE,         # show confidence intervals for 
-                            # point estimaes of survival curves.
+                            # point estimates of survival curves.
    xlim = c(0,500),         # present narrower X axis, but not affect
                             # survival estimates.
    xlab = "Time in days",   # customize X axis label.
@@ -149,7 +149,7 @@ ggsurvplot(
    risk.table = TRUE,       # show risk table.
    pval = TRUE,             # show p-value of log-rank test.
    conf.int = TRUE,         # show confidence intervals for 
-                            # point estimaes of survival curves.
+                            # point estimates of survival curves.
    xlim = c(0,500),         # present narrower X axis, but not affect
                             # survival estimates.
    xlab = "Time in days",   # customize X axis label.
