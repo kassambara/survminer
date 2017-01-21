@@ -21,7 +21,7 @@ surv_categorize(x, variables = NULL, labels = c("low", "high"))
 \method{plot}{surv_cutpoint}(x, variables = NULL,
   ggtheme = theme_classic2(), bins = 30, ...)
 
-\method{print}{plot_surv_cutpoint}(x, ...)
+\method{print}{plot_surv_cutpoint}(x, ..., newpage = TRUE)
 }
 \arguments{
 \item{data}{a data frame containing survival information (time, event) and
@@ -49,6 +49,8 @@ shown only, when the number of variables > 5.}
 ?ggplot2::ggtheme.}
 
 \item{bins}{Number of bins for histogram. Defaults to 30.}
+
+\item{newpage}{open a new page. See \code{\link{grid.arrange}}.}
 }
 \value{
 \itemize{

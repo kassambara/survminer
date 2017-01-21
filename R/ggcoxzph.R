@@ -153,10 +153,11 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
 
 #' @param x an object of class ggcoxzph
 #' @param ... further arguments passed to print, but really it's unused
+#' @param newpage open a new page. See \code{\link{grid.arrange}}.
 #' @method print ggcoxzph
 #' @rdname ggcoxzph
 #' @export
-print.ggcoxzph <- function(x, ...){
+print.ggcoxzph <- function(x, ..., newpage = TRUE){
   if(!inherits(x, "ggcoxzph"))
     stop("An object of class ggcoxzph is required.")
   plots <- x
@@ -173,6 +174,6 @@ print.ggcoxzph <- function(x, ...){
 
   if(!is.null(pval)) main <- paste0("Global Schoenfeld Test p: ", signif(pval, 4), "\n")
   else main <- NULL
-  do.call(gridExtra::grid.arrange, c(grobs, top = main))
+  do.call(gridExtra::grid.arrange, c(grobs, top = main, newpage = newpage))
 }
 

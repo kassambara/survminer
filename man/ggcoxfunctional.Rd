@@ -12,7 +12,7 @@ ggcoxfunctional(formula, data, iter = 0, f = 0.6, point.col = "red",
   ylim = NULL, ylab = "Martingale Residuals \\nof Null Cox Model",
   ggtheme = theme_classic2())
 
-\method{print}{ggcoxfunctional}(x, ...)
+\method{print}{ggcoxfunctional}(x, ..., newpage = TRUE)
 }
 \arguments{
 \item{formula}{a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \link{Surv} function.}
@@ -42,6 +42,8 @@ Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}
 \item{x}{an object of class ggcoxfunctional}
 
 \item{...}{further arguments passed to print, but really it's unused}
+
+\item{newpage}{open a new page. See \code{\link{grid.arrange}}.}
 }
 \value{
 Returns an object of class \code{ggcoxfunctional} which is a list of ggplots.
