@@ -8,8 +8,9 @@ Authors@R: c(
     person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@@gmail.com")
     )
 Description: Contains the function 'ggsurvplot()' for drawing easily beautiful
-    and 'ready-to-publish' survival curves with the 'number at risk' table and 'censoring count plot'. Other
-    functions are also available for visual examinations of 'cox' model assumptions.
+    and 'ready-to-publish' survival curves with the 'number at risk' table
+    and 'censoring count plot'. Other functions are also available for visual
+    examinations of 'cox' model assumptions.
 License: GPL-2
 LazyData: TRUE
 Depends:
@@ -24,13 +25,14 @@ Imports:
     scales,
     survival,
     stats,
+    broom,
     tidyr
 Suggests:
     knitr,
     RTCGA.clinical(>= 20151101.4.0),
     survMisc
 VignetteBuilder: knitr
-biocViews:
+biocViews: 
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1
@@ -39,6 +41,7 @@ Collate:
     'utilities.R'
     'ggcoxfunctional.R'
     'ggcoxzph.R'
+    'ggforest.R'
     'surv_summary.R'
     'theme_classic2.R'
     'ggsurvplot.R'
