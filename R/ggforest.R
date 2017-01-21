@@ -31,6 +31,7 @@ ggforest <- function(model, alpha = 0.05) {
     geom_hline(yintercept=1, linetype=3) +
     coord_flip() +
     scale_y_log10(
+      name = "Hazard ratio",
       breaks = scales::trans_breaks("log10", function(x) 10^x),
       labels = scales::trans_format("log10", scales::math_format(10^.x))) +
     scale_color_manual(values = c("black", "red4")) +
