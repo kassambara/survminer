@@ -4,12 +4,17 @@
 \alias{ggforest}
 \title{Drawing Forest Plot for CoxPH model}
 \usage{
-ggforest(model, alpha = 0.05)
+ggforest(model, alpha = 0.05, plot.title = "Forest plot for coxph model",
+  ggtheme = theme_classic2())
 }
 \arguments{
-\item{alpha}{significance level.}
+\item{alpha}{significance level for coloring.}
+
+\item{ggtheme}{function, ggplot2 theme name. Default value is theme_classic2. Allowed values include ggplot2 official themes: see theme.}
 
 \item{fit}{an object of class coxph.}
+
+\item{legend.title}{legend title.}
 }
 \value{
 return an object of class ggplot

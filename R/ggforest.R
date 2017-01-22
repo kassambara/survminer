@@ -1,7 +1,9 @@
 #' Drawing Forest Plot for CoxPH model
 #' @description Drawing Forest Plot for CoxPH model
 #' @param fit an object of class coxph.
-#' @param alpha significance level.
+#' @param alpha significance level for coloring.
+#' @param ggtheme function, ggplot2 theme name. Default value is theme_classic2. Allowed values include ggplot2 official themes: see theme.
+#' @param legend.title legend title.
 #'
 #' @return return an object of class ggplot
 #'
@@ -14,7 +16,9 @@
 #' @export
 #' @import broom
 
-ggforest <- function(model, alpha = 0.05) {
+ggforest <- function(model, alpha = 0.05,
+                     plot.title = "Forest plot for coxph model",
+                     ggtheme = theme_classic2()) {
   coef <- tidy(model)
   coef$p.val <- sapply(coef$p.value, function(x) as.character(signif(x, digits = 2)))
   coef$est <- sapply(exp(coef$estimate), function(x) as.character(signif(x, digits = 2)))
@@ -22,7 +26,7 @@ ggforest <- function(model, alpha = 0.05) {
                   ifelse(coef$p.value < 0.01, "*",""),
                   ifelse(coef$p.value < 0.001, "*",""))
   coef$p.val <- paste0(coef$est, " (p.value ", coef$p.val, stars,")")
-  coef$issig <- coef$p.value < 0.05
+  coef$issig <- coef$p.value < alpha
 
   ggplot(coef, aes(term, exp(estimate), color=issig)) +
     geom_point() +
@@ -35,6 +39,8 @@ ggforest <- function(model, alpha = 0.05) {
       breaks = scales::trans_breaks("log10", function(x) 10^x),
       labels = scales::trans_format("log10", scales::math_format(10^.x))) +
     scale_color_manual(values = c("black", "red4")) +
-    theme_bw() +
-    theme(panel.grid.minor = element_blank(), panel.grid.major.y = element_blank(), legend.position = "none") + xlab("")
+    ggtheme +
+    theme(panel.grid.minor = element_blank(), panel.grid.major.y = element_blank(), legend.position = "none") +
+    xlab("") +
+    ggtitle(plot.title)
 }
