@@ -5,12 +5,23 @@
 \title{Drawing Forest Plot for CoxPH model}
 \usage{
 ggforest(model, alpha = 0.05, plot.title = "Forest plot for coxph model",
-  ggtheme = theme_classic2())
+  ggtheme = theme_classic2(), palette = c("black", "red4"),
+  font.main = c(16, "plain", "black"), font.submain = c(15, "plain",
+  "black"), font.caption = c(15, "plain", "black"), font.x = c(14, "plain",
+  "black"), font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain",
+  "black"))
 }
 \arguments{
 \item{alpha}{significance level for coloring.}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is theme_classic2. Allowed values include ggplot2 official themes: see theme.}
+
+\item{font.main, font.submain, font.caption, font.x, font.y, font.tickslab}{a vector of length 3
+indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
+xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
+font.x = "bold", to change only font face.}
 
 \item{fit}{an object of class coxph.}
 
