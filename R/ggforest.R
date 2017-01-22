@@ -42,6 +42,7 @@ ggforest <- function(model, alpha = 0.05,
   coef$p.val <- paste0(coef$est, " (p.value ", coef$p.val, stars,")")
   coef$issig <- coef$p.value < alpha
 
+  term <- estimate <- issig <- conf.low <- conf.high <- p.val <- .x <- NULL
   p <- ggplot(coef, aes(term, exp(estimate), color=issig)) +
     geom_point() +
     geom_errorbar(aes(ymin=exp(conf.low), ymax=exp(conf.high)), width=0.15) +
