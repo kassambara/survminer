@@ -2,6 +2,9 @@
    
 ## New features
 
+New function `ggforest()` added for drawing forest plot for the Cox model.
+   
+   
 ## Major changes
 
 - New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105))
