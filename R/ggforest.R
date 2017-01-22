@@ -58,5 +58,6 @@ ggforest <- function(model, alpha = 0.05,
     xlab("") +
     ggtitle(plot.title)
   p <- .labs(p = p, font.main = font.main, font.x = font.x, font.y = font.y, font.submain = font.submain, font.caption = font.caption)
+  p <- .set_ticks(p, font.tickslab = font.tickslab)
   p
 }
