@@ -530,10 +530,11 @@ ggsurvplot <- function(fit, fun = NULL,
 }
 
 #' @param x an object of class ggsurvplot
+#' @param newpage open a new page. See \code{\link{grid.arrange}}.
 #' @method print ggsurvplot
 #' @rdname ggsurvplot
 #' @export
-print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NULL, ncensor.plot.height = NULL, ...){
+print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NULL, ncensor.plot.height = NULL, ..., newpage = TRUE){
   if(!inherits(x, "ggsurvplot"))
     stop("An object of class ggsurvplot is required.")
 
@@ -581,7 +582,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     for (i in 1:length(grobs)) {
       grobs[[i]]$widths[2:5] <- as.list(maxwidth)
     }
-    do.call(gridExtra::grid.arrange, c(grobs, nrow = nplot, heights = heights ))
+    do.call(gridExtra::grid.arrange, c(grobs, nrow = nplot, heights = heights, newpage = newpage))
   }
 }
 

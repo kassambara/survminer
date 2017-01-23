@@ -2,6 +2,9 @@
    
 ## New features
 
+New function `ggforest()` added for drawing forest plot for the Cox model.
+   
+   
 ## Major changes
 
 - New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105))
@@ -12,11 +15,38 @@
     - A new vignette and a `ggsurvplot` example was added to present new functionalities of possible texts and fonts customizations. 
     - README was extended with `uber platinium customization` example. 
      
+     
 ## Minor changes
 
 - In `ggsurvplot()`, more information, about color palettes, have been added in the details section of the documentation ([#100](https://github.com/kassambara/survminer/issues/100)).  
 
 - The R package `maxstat` doesn't support very well an object of class `tbl_df`. To fix this issue, now, in the `surv_cutpoint()` function, the input data is systematically transformed into a standard data.frame format ([@MarcinKosinski, #104](https://github.com/kassambara/survminer/issues/104)).
+
+- It's now possible to print the output the survminer packages in a powerpoint created with the ReporteRs package. Thanks to ([@abossenbroek, #110](https://github.com/kassambara/survminer/issues/110)). You should use the argument *newpage = FALSE* in the `print()` function when printing the output in the powerpoint. For instance:   
+    
+    
+```r
+require(survival)
+require(ReporteRs)
+require(survminer)
+
+fit <- survfit(Surv(time, status) ~ rx + adhere, data =colon)
+survplot <- ggsurvplot(fit, pval = TRUE,
+                       break.time.by = 400,
+                       risk.table = TRUE,
+                       risk.table.col = "strata",
+                       risk.table.height = 0.5, # Useful when you have multiple groups
+                       palette = "Dark2")
+
+
+require(ReporteRs)
+doc = pptx(title = "Survival plots")
+doc = addSlide(doc, slide.layout = "Title and Content")
+doc = addTitle(doc, "First try")
+doc = addPlot(doc, function() print(survplot, newpage = FALSE), vector.graphic = TRUE)
+writeDoc(doc, "test.pptx")
+```
+    
     
 ## Bug fixes
     

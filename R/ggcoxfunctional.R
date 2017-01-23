@@ -94,10 +94,11 @@ ggcoxfunctional <- function (formula, data, iter = 0, f = 0.6,
 
 #' @param x an object of class ggcoxfunctional
 #' @param ... further arguments passed to print, but really it's unused
+#' @param newpage open a new page. See \code{\link{grid.arrange}}.
 #' @method print ggcoxfunctional
 #' @rdname ggcoxfunctional
 #' @export
-print.ggcoxfunctional <- function(x, ...){
+print.ggcoxfunctional <- function(x, ..., newpage = TRUE){
   if(!inherits(x, "ggcoxfunctional"))
     stop("An object of class ggcoxfunctional is required.")
   plots <- x
@@ -111,6 +112,6 @@ print.ggcoxfunctional <- function(x, ...){
     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
   }
   y.text <- attr(plots, "y.text")
-  do.call(gridExtra::grid.arrange, c(grobs, left = y.text))
+  do.call(gridExtra::grid.arrange, c(grobs, left = y.text, newpage = newpage))
 }
 
