@@ -15,6 +15,8 @@
 #'
 #' @return return an object of class ggplot
 #'
+#' @author Przemyslaw Biecek, \email{przemyslaw.biecek@@gmail.com}
+#'
 #' @examples
 #' require("survival")
 #' model <- coxph( Surv(time, status) ~ sex + rx + adhere,
