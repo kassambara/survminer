@@ -2,9 +2,10 @@
    
 ## New features
 
-New function `ggforest()` added for drawing forest plot for the Cox model.
+- New function `ggforest()` added for drawing forest plot for the Cox model.
+- New argument `sline` in the `ggcoxdiagnostics()` function for adding loess smoothed trend on the residual plots. This will make it easier to spot some problems with residuals (like quadratic relation). ([@pbiecek, #119](https://github.com/kassambara/survminer/issues/119)). 
    
-   
+
 ## Major changes
 
 - New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105))
