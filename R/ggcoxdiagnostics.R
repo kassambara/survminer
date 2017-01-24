@@ -109,7 +109,7 @@ ggcoxdiagnostics <- function (fit,
   if (hline) gplot <- gplot + geom_hline(yintercept=hline.yintercept, col = hline.col,
                                          size = hline.size, lty = hline.lty, alpha = hline.alpha)
 
-  if (sline) gplot <- gplot + geom_smooth(col = sline.col, se = sline.se,
+  if (sline) gplot <- gplot + geom_smooth(col = sline.col, se = sline.se, method = "loess",
                                          size = sline.size, lty = sline.lty, alpha = sline.alpha)
 
   gplot <- gplot + labs(x = xlabel, y = ylabel) + ggtheme
