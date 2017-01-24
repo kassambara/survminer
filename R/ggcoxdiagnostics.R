@@ -17,7 +17,7 @@
 #'@param sline.col,sline.size,sline.lty,sline.alpha color, size, linetype and visibility to be used for \link{geom_smooth}.
 #'Used only when \code{sline = TRUE}.
 #'@param hline a logical - should the horizontal line be added to highlight the \code{Y=0} level.
-#'@param sline, sline.se a logical - should the smooth line be added to highlight the local average for residuals.
+#'@param sline,sline.se a logical - should the smooth line be added to highlight the local average for residuals.
 #'@param ggtheme function, ggplot2 theme name. Default value is ggplot2::theme_bw().
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@param font.main,font.x,font.y,font.tickslab a vector of length 3
