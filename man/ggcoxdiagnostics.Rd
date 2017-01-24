@@ -6,12 +6,14 @@
 \usage{
 ggcoxdiagnostics(fit, type = c("martingale", "deviance", "score",
   "schoenfeld", "dfbeta", "dfbetas", "scaledsch", "partial"), ...,
-  linear.predictions = TRUE, hline = TRUE, hline.col = "red",
-  hline.size = 1, hline.alpha = 1, hline.yintercept = 0,
-  hline.lty = "dashed", point.col = "black", point.size = 1,
-  point.shape = 19, point.alpha = 1, font.main = c(16, "plain", "black"),
-  font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-  font.tickslab = c(12, "plain", "black"), ggtheme = ggplot2::theme_bw())
+  linear.predictions = TRUE, hline = TRUE, sline = TRUE,
+  sline.se = TRUE, hline.col = "red", hline.size = 1, hline.alpha = 1,
+  hline.yintercept = 0, hline.lty = "dashed", sline.col = "blue",
+  sline.size = 1, sline.alpha = 0.3, sline.lty = "dashed",
+  point.col = "black", point.size = 1, point.shape = 19,
+  point.alpha = 1, font.main = c(16, "plain", "black"), font.x = c(14,
+  "plain", "black"), font.y = c(14, "plain", "black"), font.tickslab = c(12,
+  "plain", "black"), ggtheme = ggplot2::theme_bw())
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
@@ -30,8 +32,13 @@ predictions for observations (\code{TRUE}) or just indexed of observations
 
 \item{hline}{a logical - should the horizontal line be added to highlight the \code{Y=0} level.}
 
+\item{sline, }{sline.se a logical - should the smooth line be added to highlight the local average for residuals.}
+
 \item{hline.col, hline.size, hline.lty, hline.alpha, hline.yintercept}{color, size, linetype, visibility and Y-axis coordinate to be used for \link{geom_hline}.
 Used only when \code{hline = TRUE}.}
+
+\item{sline.col, sline.size, sline.lty, sline.alpha}{color, size, linetype and visibility to be used for \link{geom_smooth}.
+Used only when \code{sline = TRUE}.}
 
 \item{point.col, point.size, point.shape, point.alpha}{color, size, shape and visibility to be used for points.}
 
