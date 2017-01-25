@@ -66,7 +66,7 @@ ggcoxdiagnostics <- function (fit,
                       type = c("martingale", "deviance", "score", "schoenfeld",
                                "dfbeta", "dfbetas", "scaledsch","partial"),
                       ...,
-                      linear.predictions = TRUE,
+                      linear.predictions = type %in% c("martingale", "deviance"),
                       hline = TRUE,
                       sline = TRUE, sline.se = TRUE,
                       hline.col = "red", hline.size = 1, hline.alpha = 1, hline.yintercept = 0, hline.lty = 'dashed',
@@ -91,7 +91,7 @@ ggcoxdiagnostics <- function (fit,
   if(linear.predictions){
     xval <- predict(fit, type="lp")
     xlabel <- "Linear Predictions"
-  }else xval <- 1:fit$n
+  }else xval <- 1:nrow(res)
 
   # Case of multivariate Cox model
   if(type %in% c("martingale", "deviance")) col_names <- "residuals"
