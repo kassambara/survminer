@@ -49,6 +49,8 @@ writeDoc(doc, "test.pptx")
 ```
     
     
+- Now, in `ggcoxdiagnostics()`, the option `ncol = 1` is removed from the function `facet_wrap()`. By default, `ncol = NULL`. In this case, the number of columns and rows in the plot panels is defined automatically based on the number of covariates included in the cox model.
+    
 ## Bug fixes
     
 - Now, `gggcoxzph()` works for univariate Cox analysis ([#103](https://github.com/kassambara/survminer/issues/103)). 
