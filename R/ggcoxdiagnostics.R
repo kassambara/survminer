@@ -117,7 +117,7 @@ ggcoxdiagnostics <- function (fit,
   gplot <-.labs(p = gplot, font.main = font.main, font.x = font.x, font.y = font.y)
   gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)
 
-  gplot <- gplot + facet_wrap(~covariate, scales = "free", ncol = 1)
+  gplot <- gplot + facet_wrap(~covariate, scales = "free")
   gplot
 }
 
