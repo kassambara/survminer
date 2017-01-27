@@ -74,6 +74,7 @@ surv_cutpoint <- function(data, time = "time", event = "event", variables,
   {
   if(!inherits(data, "data.frame"))
     stop("data should be an object of class data.frame")
+  data <- as.data.frame(data)
   if(!all(c(time, event) %in% colnames(data)))
     stop("Specify correct column names containing time and event values.")
   if(!all(variables %in% colnames(data)))
@@ -241,10 +242,11 @@ plot.surv_cutpoint <- function(x, variables = NULL, ggtheme = theme_classic2(), 
   p
 }
 
+#' @param newpage open a new page. See \code{\link{grid.arrange}}.
 #' @method print plot_surv_cutpoint
 #' @rdname surv_cutpoint
 #' @export
-print.plot_surv_cutpoint <- function(x, ...){
+print.plot_surv_cutpoint <- function(x, ..., newpage = TRUE){
   if(!inherits(x, "plot_surv_cutpoint"))
     stop("x must be an object of class plot_surv_cutpoint.")
   x$distribution <- x$distribution  + theme(legend.position = "none")+labs(x = NULL)
@@ -264,7 +266,7 @@ print.plot_surv_cutpoint <- function(x, ...){
   cutpoint <- attr(x, "cutpoint")
   main <- name <- attr(x, "name")
   # main <- paste0(name,"- cutpoint: ", attr(x, "cutpoint"))
-  do.call(gridExtra::grid.arrange, c(grobs, top = main))
+  do.call(gridExtra::grid.arrange, c(grobs, top = main, newpage = newpage))
 }
 
 

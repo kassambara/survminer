@@ -11,7 +11,7 @@ ggcoxzph(fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
   font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain", "black"),
   ggtheme = theme_classic2())
 
-\method{print}{ggcoxzph}(x, ...)
+\method{print}{ggcoxzph}(x, ..., newpage = TRUE)
 }
 \arguments{
 \item{fit}{an object of class \link{cox.zph}.}
@@ -45,6 +45,8 @@ Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}
 \item{x}{an object of class ggcoxzph}
 
 \item{...}{further arguments passed to print, but really it's unused}
+
+\item{newpage}{open a new page. See \code{\link{grid.arrange}}.}
 }
 \value{
 Returns an object of class \code{ggcoxzph} which is a list of ggplots.

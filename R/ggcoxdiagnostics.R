@@ -14,7 +14,10 @@
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
 #'@param hline.col,hline.size,hline.lty,hline.alpha,hline.yintercept color, size, linetype, visibility and Y-axis coordinate to be used for \link{geom_hline}.
 #'Used only when \code{hline = TRUE}.
+#'@param sline.col,sline.size,sline.lty,sline.alpha color, size, linetype and visibility to be used for \link{geom_smooth}.
+#'Used only when \code{sline = TRUE}.
 #'@param hline a logical - should the horizontal line be added to highlight the \code{Y=0} level.
+#'@param sline,sline.se a logical - should the smooth line be added to highlight the local average for residuals.
 #'@param ggtheme function, ggplot2 theme name. Default value is ggplot2::theme_bw().
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@param font.main,font.x,font.y,font.tickslab a vector of length 3
@@ -63,9 +66,11 @@ ggcoxdiagnostics <- function (fit,
                       type = c("martingale", "deviance", "score", "schoenfeld",
                                "dfbeta", "dfbetas", "scaledsch","partial"),
                       ...,
-                      linear.predictions = TRUE,
+                      linear.predictions = type %in% c("martingale", "deviance"),
                       hline = TRUE,
+                      sline = TRUE, sline.se = TRUE,
                       hline.col = "red", hline.size = 1, hline.alpha = 1, hline.yintercept = 0, hline.lty = 'dashed',
+                      sline.col = "blue", sline.size = 1, sline.alpha = 0.3, sline.lty = 'dashed',
                       point.col = "black", point.size = 1, point.shape = 19, point.alpha = 1,
                       font.main = c(16, "plain", "black"),
                       font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
@@ -86,7 +91,7 @@ ggcoxdiagnostics <- function (fit,
   if(linear.predictions){
     xval <- predict(fit, type="lp")
     xlabel <- "Linear Predictions"
-  }else xval <- 1:fit$n
+  }else xval <- 1:nrow(res)
 
   # Case of multivariate Cox model
   if(type %in% c("martingale", "deviance")) col_names <- "residuals"
@@ -102,14 +107,17 @@ ggcoxdiagnostics <- function (fit,
                        size = point.size, alpha = point.alpha)
 
   if (hline) gplot <- gplot + geom_hline(yintercept=hline.yintercept, col = hline.col,
-                                size = hline.size, lty = hline.lty, alpha = hline.alpha)
+                                         size = hline.size, lty = hline.lty, alpha = hline.alpha)
+
+  if (sline) gplot <- gplot + geom_smooth(col = sline.col, se = sline.se, method = "loess",
+                                         size = sline.size, lty = sline.lty, alpha = sline.alpha)
 
   gplot <- gplot + labs(x = xlabel, y = ylabel) + ggtheme
   # customization
   gplot <-.labs(p = gplot, font.main = font.main, font.x = font.x, font.y = font.y)
   gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)
 
-  gplot <- gplot + facet_wrap(~covariate, scales = "free", ncol = 1)
+  gplot <- gplot + facet_wrap(~covariate, scales = "free")
   gplot
 }
 
