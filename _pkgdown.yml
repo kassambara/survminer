@@ -14,6 +14,9 @@ reference:
       - ggcoxdiagnostics
       - ggcoxfunctional
       - ggcoxzph
+  - title: Visual Representation of Cox Model Coefficients
+    contents:
+      - ggforest
   - title: Data
     contents: myeloma
   - title: Others

@@ -83,22 +83,27 @@
   <span class='kw'>break.time.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>surv.scale</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"default"</span>, <span class='st'>"percent"</span>),
   <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conf.int.fill</span> <span class='kw'>=</span> <span class='st'>"gray"</span>, <span class='kw'>conf.int.style</span> <span class='kw'>=</span> <span class='st'>"ribbon"</span>,
   <span class='kw'>censor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pval.size</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>pval.coord</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>NULL</span>,
-  <span class='kw'>NULL</span>), <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival probability"</span>,
-  <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
-  <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
-  <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"top"</span>, <span class='st'>"bottom"</span>, <span class='st'>"left"</span>, <span class='st'>"right"</span>,
-  <span class='st'>"none"</span>), <span class='kw'>legend.title</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>, <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>font.legend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>10</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>risk.table.title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>risk.table.col</span> <span class='kw'>=</span> <span class='st'>"black"</span>,
-  <span class='kw'>risk.table.fontsize</span> <span class='kw'>=</span> <span class='fl'>4.5</span>, <span class='kw'>risk.table.y.text</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>risk.table.y.text.col</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>risk.table.height</span> <span class='kw'>=</span> <span class='fl'>0.25</span>,
-  <span class='kw'>surv.plot.height</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>ncensor.plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>surv.median.line</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"none"</span>, <span class='st'>"hv"</span>, <span class='st'>"h"</span>, <span class='st'>"v"</span>), <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_classic2.html'>theme_classic2</a></span>(),
-  <span class='no'>...</span>)
+  <span class='kw'>NULL</span>), <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>submain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>,
+  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival probability"</span>, <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
+  <span class='kw'>font.submain</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>15</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.caption</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>15</span>, <span class='st'>"plain"</span>,
+  <span class='st'>"black"</span>), <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>,
+  <span class='st'>"black"</span>), <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"top"</span>, <span class='st'>"bottom"</span>, <span class='st'>"left"</span>, <span class='st'>"right"</span>, <span class='st'>"none"</span>),
+  <span class='kw'>legend.title</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>, <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>font.legend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>10</span>,
+  <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>risk.table.title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>risk.table.subtitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>risk.table.caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>risk.table.col</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='kw'>risk.table.fontsize</span> <span class='kw'>=</span> <span class='fl'>4.5</span>,
+  <span class='kw'>risk.table.y.text</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>risk.table.y.text.col</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>risk.table.height</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>surv.plot.height</span> <span class='kw'>=</span> <span class='fl'>0.75</span>,
+  <span class='kw'>ncensor.plot.height</span> <span class='kw'>=</span> <span class='fl'>0.25</span>, <span class='kw'>ncensor.plot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>ncensor.plot.title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncensor.plot.subtitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ncensor.plot.caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>surv.median.line</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"none"</span>, <span class='st'>"hv"</span>, <span class='st'>"h"</span>, <span class='st'>"v"</span>),
+  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_classic2.html'>theme_classic2</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for ggsurvplot</span>
 <span class='fu'>print</span>(<span class='no'>x</span>, <span class='kw'>surv.plot.height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>risk.table.height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>risk.table.height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ncensor.plot.height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>,
+  <span class='kw'>newpage</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -117,7 +122,8 @@ argument palette.</dd>
       <dt>palette</dt>
       <dd>the color palette to be used. Allowed values include &quot;hue&quot; for
 the default hue color scale; &quot;grey&quot; for grey color palettes; brewer palettes
-e.g. &quot;RdBu&quot;, &quot;Blues&quot;, ...; or custom color palette e.g. c(&quot;blue&quot;, &quot;red&quot;).</dd>
+e.g. &quot;RdBu&quot;, &quot;Blues&quot;, ...; or custom color palette e.g. c(&quot;blue&quot;, &quot;red&quot;).
+See details section for more information.</dd>
       <dt>linetype</dt>
       <dd>line types. Allowed values includes i) &quot;strata&quot; for changing
 linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
@@ -144,12 +150,12 @@ c(&quot;ribbon&quot;, &quot;step&quot;).</dd>
       <dt>pval.coord</dt>
       <dd>numeric vector, of length 2, specifying the x and y
 coordinates of the p-value. Default values are NULL.</dd>
-      <dt>main, xlab, ylab</dt>
-      <dd>main title and axis labels</dd>
-      <dt>font.main, font.x, font.y, font.tickslab, font.legend</dt>
+      <dt>main, submain, caption, xlab, ylab</dt>
+      <dd>main title, subtitle, caption and axis labels</dd>
+      <dt>font.main, font.submain, font.caption, font.x, font.y, font.tickslab, font.legend</dt>
       <dd>a vector of length 3
 indicating respectively the size (e.g.: 14), the style (e.g.: &quot;plain&quot;,
-&quot;bold&quot;, &quot;italic&quot;, &quot;bold.italic&quot;) and the color (e.g.: &quot;red&quot;) of main title,
+&quot;bold&quot;, &quot;italic&quot;, &quot;bold.italic&quot;) and the color (e.g.: &quot;red&quot;) of main title, subtitle, caption,
 xlab and ylab and axis tick labels, respectively. For example <em>font.x =
 c(14, &quot;bold&quot;, &quot;red&quot;)</em>.  Use font.x = 14, to change only font size; or use
 font.x = &quot;bold&quot;, to change only font face.</dd>
@@ -177,7 +183,11 @@ to show both absolute number and percentage.</li>
 </ul>
 </dd>
       <dt>risk.table.title</dt>
-      <dd>Title to be used for risk table.</dd>
+      <dd>The title to be used for the risk table.</dd>
+      <dt>risk.table.subtitle</dt>
+      <dd>The subtitle to be used for the risk table.</dd>
+      <dt>risk.table.caption</dt>
+      <dd>The caption to be used for the risk table.</dd>
       <dt>risk.table.col</dt>
       <dd>color to be used for risk table. Default value is
 &quot;black&quot;. If you want to color by strata (i.e. groups), use risk.table.col =
@@ -196,10 +206,18 @@ the value when you have many strata. Default is 0.25. Ignored when
 risk.table = FALSE.</dd>
       <dt>surv.plot.height</dt>
       <dd>the height of the survival plot on the grid. Default
-is 0.75. Ignored when risk.table = FALSE.</dd>
+is 0.75. Ignored when risk.table = FALSE. <code>1-risk.table.height - ncensor.plot.height</code> when <code>risk.table = TRUE</code> and <code>ncensor.plot = TRUE</code></dd>
+      <dt>ncensor.plot.height</dt>
+      <dd>The height of the censor plot. Used when <code>ncensor.plot = TRUE</code>.</dd>
       <dt>ncensor.plot</dt>
       <dd>logical value. If TRUE, the number of censored subjects at
 time t is plotted. Default is FALSE.</dd>
+      <dt>ncensor.plot.title</dt>
+      <dd>The title to be used for the censor plot. Used when <code>ncensor.plot = TRUE</code>.</dd>
+      <dt>ncensor.plot.subtitle</dt>
+      <dd>The subtitle to be used for the censor plot. Used when <code>ncensor.plot = TRUE</code>.</dd>
+      <dt>ncensor.plot.caption</dt>
+      <dd>The caption to be used for the censor plot. Used when <code>ncensor.plot = TRUE</code>.</dd>
       <dt>surv.median.line</dt>
       <dd>character vector for drawing a horizontal/vertical
 line at median survival. Allowed values include one of c(&quot;none&quot;, &quot;hv&quot;, &quot;h&quot;,
@@ -213,6 +231,8 @@ line at median survival. Allowed values include one of c(&quot;none&quot;, &quot
 linetype, size, ...</dd>
       <dt>x</dt>
       <dd>an object of class ggsurvplot</dd>
+      <dt>newpage</dt>
+      <dd>open a new page. See <code>grid.arrange</code>.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -231,7 +251,12 @@ linetype, size, ...</dd>
  inside the plotting area. x and y are the coordinates of the legend box.
  Their values should be between 0 and 1. c(0,0) corresponds to the &quot;bottom
  left&quot; and c(1,1) corresponds to the &quot;top right&quot; position. For instance use
- legend = c(0.8, 0.2).</p>
+ legend = c(0.8, 0.2). <strong>Color palettes</strong>: The argument
+ <strong>palette</strong> can be used to specify the color to be used for each group.
+ By default, the first color in the palette is used to color the first level
+ of the factor variable. This default behavior can be changed by assigning
+ correctly a named vector. That is, the names of colors should match the
+ strata names as generated by the <code>ggsurvplot()</code> function in the legend.</p>
     
     <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
 
@@ -371,7 +396,34 @@ linetype, size, ...</dd>
 <span class='co'># </span>
 <span class='co'># </span>
 <span class='co'># </span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+<span class='co'>## ---------------------------------------------</span>
+
+<span class='co'>#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class='co'># Example 5: Playing with fonts and texts</span>
+<span class='co'>#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class='fu'>ggsurvplot</span>(<span class='no'>fit</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Survival curves"</span>, <span class='kw'>submain</span> <span class='kw'>=</span> <span class='st'>"Based on Kaplan-Meier estimates"</span>,
+  <span class='kw'>caption</span> <span class='kw'>=</span> <span class='st'>"created with survminer"</span>,
+  <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>, <span class='st'>"bold"</span>, <span class='st'>"darkblue"</span>),
+  <span class='kw'>font.submain</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>15</span>, <span class='st'>"bold.italic"</span>, <span class='st'>"purple"</span>),
+  <span class='kw'>font.caption</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"orange"</span>),
+  <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"bold.italic"</span>, <span class='st'>"red"</span>),
+  <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"bold.italic"</span>, <span class='st'>"darkred"</span>),
+  <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"darkgreen"</span>),
+  <span class='co'>########## risk table #########,</span>
+  <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>risk.table.title</span> <span class='kw'>=</span> <span class='st'>"Note the risk set sizes"</span>,
+  <span class='kw'>risk.table.subtitle</span> <span class='kw'>=</span> <span class='st'>"and remember about censoring."</span>,
+  <span class='kw'>risk.table.caption</span> <span class='kw'>=</span> <span class='st'>"source code: website.com"</span>,
+  <span class='kw'>risk.table.height</span> <span class='kw'>=</span> <span class='fl'>0.35</span>,
+  <span class='kw'>ncensor.plot.title</span> <span class='kw'>=</span> <span class='st'>"Number of censorings"</span>,
+  <span class='kw'>ncensor.plot.subtitle</span> <span class='kw'>=</span> <span class='st'>"over the time."</span>,
+  <span class='kw'>ncensor.plot.caption</span> <span class='kw'>=</span> <span class='st'>"data available at data.com"</span>,
+  <span class='kw'>ncensor.plot.height</span> <span class='kw'>=</span> <span class='fl'>0.35</span>)</div><img src='ggsurvplot-14.png' alt='' width='540' height='400' /><div class='input'>
+
+
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
