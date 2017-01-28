@@ -46,4 +46,5 @@ Collate:
     'theme_classic2.R'
     'ggsurvplot.R'
     'myeloma.R'
+    'pairwise_survdiff.R'
     'surv_cutpoint.R'

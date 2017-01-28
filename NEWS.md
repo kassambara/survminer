@@ -4,6 +4,7 @@
 
 - New function `ggforest()` added for drawing forest plot for the Cox model.
 - New argument `sline` in the `ggcoxdiagnostics()` function for adding loess smoothed trend on the residual plots. This will make it easier to spot some problems with residuals (like quadratic relation). ([@pbiecek, #119](https://github.com/kassambara/survminer/issues/119)). 
+- New function `pairwise_survdiff()` for multiple comparisons of survival Curves ([#97](https://github.com/kassambara/survminer/issues/97)).
    
 
 ## Major changes
