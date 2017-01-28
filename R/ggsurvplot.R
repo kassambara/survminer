@@ -450,10 +450,10 @@ ggsurvplot <- function(fit, fun = NULL,
 
   # Add risk table
    if(risk.table){
-     if(inherits(fit, "survfit.cox")) {
-       legend.labs <- "All"
-       risk.table.y.text.col <- FALSE
-     }
+     # if(inherits(fit, "survfit.cox")) {
+     #   legend.labs <- "All"
+     #   risk.table.y.text.col <- FALSE
+     # }
      risktable <- .risk_table_plot(fit, times = times,
                                    xlim = xlim, legend.labs = legend.labs,
                                    risk.table.col = risk.table.col, palette = palette,
