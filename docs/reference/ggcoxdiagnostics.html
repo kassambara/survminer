@@ -82,12 +82,15 @@ can be calculated with coxph function.</p>
 
     <pre><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>fit</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"martingale"</span>, <span class='st'>"deviance"</span>, <span class='st'>"score"</span>,
   <span class='st'>"schoenfeld"</span>, <span class='st'>"dfbeta"</span>, <span class='st'>"dfbetas"</span>, <span class='st'>"scaledsch"</span>, <span class='st'>"partial"</span>), <span class='no'>...</span>,
-  <span class='kw'>linear.predictions</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>hline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>hline.col</span> <span class='kw'>=</span> <span class='st'>"red"</span>,
+  <span class='kw'>linear.predictions</span> <span class='kw'>=</span> <span class='no'>type</span> <span class='kw'>%in%</span> <span class='fu'>c</span>(<span class='st'>"martingale"</span>, <span class='st'>"deviance"</span>),
+  <span class='kw'>hline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>sline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>sline.se</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>hline.col</span> <span class='kw'>=</span> <span class='st'>"red"</span>,
   <span class='kw'>hline.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>hline.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>hline.yintercept</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>hline.lty</span> <span class='kw'>=</span> <span class='st'>"dashed"</span>, <span class='kw'>point.col</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='kw'>point.size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>point.shape</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>point.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
-  <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
-  <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='kw'>ggplot2</span><span class='kw'>::</span><span class='fu'>theme_bw</span>())</pre>
+  <span class='kw'>hline.lty</span> <span class='kw'>=</span> <span class='st'>"dashed"</span>, <span class='kw'>sline.col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>sline.size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>sline.alpha</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>sline.lty</span> <span class='kw'>=</span> <span class='st'>"dashed"</span>, <span class='kw'>point.col</span> <span class='kw'>=</span> <span class='st'>"black"</span>,
+  <span class='kw'>point.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>point.shape</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>point.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>,
+  <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>,
+  <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
+  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='kw'>ggplot2</span><span class='kw'>::</span><span class='fu'>theme_bw</span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -107,9 +110,14 @@ predictions for observations (<code>TRUE</code>) or just indexed of observations
 (<code>FALSE</code>) on X axis.</dd>
       <dt>hline</dt>
       <dd>a logical - should the horizontal line be added to highlight the <code>Y=0</code> level.</dd>
+      <dt>sline, sline.se</dt>
+      <dd>a logical - should the smooth line be added to highlight the local average for residuals.</dd>
       <dt>hline.col, hline.size, hline.lty, hline.alpha, hline.yintercept</dt>
       <dd>color, size, linetype, visibility and Y-axis coordinate to be used for geom_hline.
 Used only when <code>hline = TRUE</code>.</dd>
+      <dt>sline.col, sline.size, sline.lty, sline.alpha</dt>
+      <dd>color, size, linetype and visibility to be used for geom_smooth.
+Used only when <code>sline = TRUE</code>.</dd>
       <dt>point.col, point.size, point.shape, point.alpha</dt>
       <dd>color, size, shape and visibility to be used for points.</dd>
       <dt>font.main, font.x, font.y, font.tickslab</dt>

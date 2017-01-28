@@ -82,7 +82,7 @@ choose the functional form of continuous variable in cox model (coxph). Fitted l
 should be linear to satisfy cox proportional hazards model assumptions.</p>
     
 
-    <pre><span class='fu'>ggcoxfunctional</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>f</span> <span class='kw'>=</span> <span class='fl'>0.6</span>, <span class='kw'>point.col</span> <span class='kw'>=</span> <span class='st'>"red"</span>,
+    <pre><span class='fu'>ggcoxfunctional</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='no'>fit</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>f</span> <span class='kw'>=</span> <span class='fl'>0.6</span>, <span class='kw'>point.col</span> <span class='kw'>=</span> <span class='st'>"red"</span>,
   <span class='kw'>point.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>point.shape</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>point.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>,
   <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>,
   <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -90,7 +90,7 @@ should be linear to satisfy cox proportional hazards model assumptions.</p>
   <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_classic2.html'>theme_classic2</a></span>())
 
 <span class='co'># S3 method for ggcoxfunctional</span>
-<span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>newpage</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -98,6 +98,8 @@ should be linear to satisfy cox proportional hazards model assumptions.</p>
       <dd>a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the Surv function.</dd>
       <dt>data</dt>
       <dd>a <code>data.frame</code> in which to interpret the variables named in the formula,</dd>
+      <dt>fit</dt>
+      <dd>an object of class coxph.object - created with coxph function.</dd>
       <dt>iter</dt>
       <dd>parameter of lowess.</dd>
       <dt>f</dt>
@@ -122,6 +124,8 @@ Allowed values include ggplot2 official themes: see <code><a href='http://www.rd
       <dd>an object of class ggcoxfunctional</dd>
       <dt>...</dt>
       <dd>further arguments passed to print, but really it&#39;s unused</dd>
+      <dt>newpage</dt>
+      <dd>open a new page. See <code>grid.arrange</code>.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -140,9 +144,10 @@ Allowed values include ggplot2 official themes: see <code><a href='http://www.rd
     <pre class="examples"><div class='input'>
 <span class='fu'>library</span>(<span class='no'>survival</span>)
 <span class='fu'>data</span>(<span class='no'>mgus</span>)
-<span class='fu'>ggcoxfunctional</span>(<span class='fu'>Surv</span>(<span class='no'>futime</span>, <span class='no'>death</span>) ~ <span class='no'>mspike</span> + <span class='fu'>log</span>(<span class='no'>mspike</span>) + <span class='fu'>I</span>(<span class='no'>mspike</span>^<span class='fl'>2</span>) +
-                  <span class='no'>age</span> + <span class='fu'>I</span>(<span class='fu'>log</span>(<span class='no'>age</span>)^<span class='fl'>2</span>) + <span class='fu'>I</span>(<span class='fu'>sqrt</span>(<span class='no'>age</span>)), <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mgus</span>,
-                <span class='kw'>point.col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>point.alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</div><img src='ggcoxfunctional-2.png' alt='' width='540' height='400' /><div class='input'>
+<span class='no'>res.cox</span> <span class='kw'>&lt;-</span> <span class='fu'>coxph</span>(<span class='fu'>Surv</span>(<span class='no'>futime</span>, <span class='no'>death</span>) ~ <span class='no'>mspike</span> + <span class='fu'>log</span>(<span class='no'>mspike</span>) + <span class='fu'>I</span>(<span class='no'>mspike</span>^<span class='fl'>2</span>) +
+     <span class='no'>age</span> + <span class='fu'>I</span>(<span class='fu'>log</span>(<span class='no'>age</span>)^<span class='fl'>2</span>) + <span class='fu'>I</span>(<span class='fu'>sqrt</span>(<span class='no'>age</span>)), <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mgus</span>)
+
+<span class='fu'>ggcoxfunctional</span>(<span class='no'>res.cox</span>, <span class='kw'>point.col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>point.alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</div><img src='ggcoxfunctional-2.png' alt='' width='540' height='400' /><div class='input'>
 
 </div></pre>
   </div>
