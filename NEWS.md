@@ -15,6 +15,8 @@
     - ncens.plot part of the `ggsurvplot` has no integer values on y axis (not real as before), as it only can take integer values.
     - A new vignette and a `ggsurvplot` example was added to present new functionalities of possible texts and fonts customizations. 
     - README was extended with `uber platinium customization` example. 
+    
+- The design of `ggcoxfunctional()` has been changed to be consistent with the other functions in the survminer package. Now, `ggcoxfunctional()` works with coxph objects not formulas. The arguments formula and data are now deprecated ([@pbiecek, #115](https://github.com/kassambara/survminer/issues/115)).
      
      
 ## Minor changes
