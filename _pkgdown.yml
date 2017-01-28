@@ -9,6 +9,7 @@ reference:
       - ggsurvplot
       - surv_summary
       - surv_cutpoint
+      - pairwise_survdiff
   - title: Visual Examinations of Cox Model Assumptions
     contents:
       - ggcoxdiagnostics
