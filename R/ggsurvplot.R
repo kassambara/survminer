@@ -487,13 +487,13 @@ ggsurvplot <- function(fit, fun = NULL,
   # Plot of censored subjects
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if(ncensor.plot){
-    ncensor_data <- d
-    if(inherits(fit, "survfit.cox")){
-      ncensor_data <- data.frame(time = fit$time, n.censor = fit$n.censor,
-                                 strata = rep("All", length(fit$n.censor)))
-      surv.color <- "black"
-      strata_names <- legend.labs <- "All"
-    }
+    # ncensor_data <- d
+    # if(inherits(fit, "survfit.cox")){
+     # ncensor_data <- data.frame(time = fit$time, n.censor = fit$n.censor,
+     #                             strata = rep("All", length(fit$n.censor)))
+     #  surv.color <- "black"
+     #  strata_names <- legend.labs <- "All"
+  #  }
 
     ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
       .geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
