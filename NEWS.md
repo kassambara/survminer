@@ -2,7 +2,7 @@
    
 ## New features
 
-- New possibilities to compare survival curves with `pval.method` and `log.rank.weights` parameters in `ggsurvplot()`. Functionality based on `survMisc::comp`.
+- New possibilities to compare survival curves with `pval.method` and `log.rank.weights` parameters in `ggsurvplot()`, by specifing weights in Log-rank test. Functionality based on `survMisc::comp`.
 - New function `ggforest()` added for drawing forest plot for the Cox model.
 - New argument `sline` in the `ggcoxdiagnostics()` function for adding loess smoothed trend on the residual plots. This will make it easier to spot some problems with residuals (like quadratic relation). ([@pbiecek, #119](https://github.com/kassambara/survminer/issues/119)). 
    
@@ -14,7 +14,6 @@
     - It is possible to specify subtitle (param `risk.table.subtitle`) and caption (param `risk.table.caption`) for the `table` part of the `ggsurvplot`.
     - It is possible to specify title (param `ncens.plot.title`), subtitle (param `ncens.plot.subtitle`) and caption (param `ncens.plot.caption`) for the `ncens` part of the `ggsurvplot`.
     - ncens.plot part of the `ggsurvplot` has no integer values on y axis (not real as before), as it only can take integer values.
-    - A new vignette and a `ggsurvplot` example was added to present new functionalities of possible texts and fonts customizations. 
     - README was extended with `uber platinium customization` example. 
      
      
@@ -58,6 +57,10 @@ writeDoc(doc, "test.pptx")
    
 - Now, `ggcoxdiagnostics()` works properly for schoenfeld residuals ([@pbiecek, #119](https://github.com/kassambara/survminer/issues/122)).
    
+## Vignettes and examples
+
+- A new vignette and a `ggsurvplot` example was added to present new functionalities of possible texts and fonts customizations. 
+- A new vignette and a `ggsurvplot` example was added to present new functionalities of possible weights specification in a Log-rank test.    
 
 # survminer 0.2.4
      

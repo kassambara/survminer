@@ -443,7 +443,7 @@ ggsurvplot <- function(fit, fun = NULL,
       pval.method.x <- ifelse(is.null(pval.method.coord[1]), 0.1*max(fit$time), pval.method.coord[1])
       pval.method.y <- ifelse(is.null(pval.method.coord[2]), 0.3, pval.method.coord[2])
       p <- p + ggplot2::annotate("text", x = pval.method.x, y = pval.method.y,
-                                 label = pvalmethod, size = pval.size)
+                                 label = pvalmethod, size = pval.method.size)
     }
   }
 
