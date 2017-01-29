@@ -26,12 +26,12 @@ Imports:
     survival,
     stats,
     broom,
-    tidyr
+    tidyr,
+    survMisc
 Suggests:
     knitr,
     RTCGA(>= 1.4.0),
-    RTCGA.clinical(>= 20151101.4.0),
-    survMisc
+    RTCGA.clinical(>= 20151101.4.0)
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues

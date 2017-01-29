@@ -2,6 +2,7 @@
    
 ## New features
 
+- New possibilities to compare survival curves with `pval.method` and `log.rank.weights` parameters in `ggsurvplot()`. Functionality based on `survMisc::comp`.
 - New function `ggforest()` added for drawing forest plot for the Cox model.
 - New argument `sline` in the `ggcoxdiagnostics()` function for adding loess smoothed trend on the residual plots. This will make it easier to spot some problems with residuals (like quadratic relation). ([@pbiecek, #119](https://github.com/kassambara/survminer/issues/119)). 
    
@@ -23,7 +24,7 @@
 
 - The R package `maxstat` doesn't support very well an object of class `tbl_df`. To fix this issue, now, in the `surv_cutpoint()` function, the input data is systematically transformed into a standard data.frame format ([@MarcinKosinski, #104](https://github.com/kassambara/survminer/issues/104)).
 
-- It's now possible to print the output the survminer packages in a powerpoint created with the ReporteRs package. Thanks to ([@abossenbroek, #110](https://github.com/kassambara/survminer/issues/110)). You should use the argument *newpage = FALSE* in the `print()` function when printing the output in the powerpoint. For instance:   
+- It's now possible to print the output the survminer packages in a powerpoint created with the ReporteRs package. Thanks to ([@abossenbroek, #110](https://github.com/kassambara/survminer/issues/110)) and ([@zzawadz, #111](https://github.com/kassambara/survminer/issues/110)). You should use the argument *newpage = FALSE* in the `print()` function when printing the output in the powerpoint. For instance:   
     
     
 ```r

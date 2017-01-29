@@ -1,7 +1,8 @@
 #' @include utilities.R theme_classic2.R surv_summary.R
 #' @importFrom methods is
 #' @importFrom stats pchisq
-#' @importFrom survMisc ten
+#' @importFrom survMisc ten comp
+#' @importFrom utils capture.output
   NULL
 #'Drawing Survival Curves Using ggplot2
 #'@description Drawing survival curves using ggplot2
@@ -86,6 +87,13 @@
 #'  \code{\link[ggplot2]{theme}}.
 #'@param ... other arguments to be passed to ggplot2 geom_*() functions such as
 #'  linetype, size, ...
+#'@param log.rank.weights The name for the type of weights to be used in computing the p-value for log-rank test.
+#'By default \code{survdiff} is used to calculate regular log-rank test (with weights == 1). A user can specify
+#'\code{"1", "n", "sqrtN", "S1", "S2", "FH"} to use weights specified in \link[survMisc]{comp}, so that weight correspond to the test as
+#': 1 - log-rank, n - Gehan-Breslow (generalized Wilcoxon), sqrtN - Tarone-Ware, S1 - Peto-Peto's modified survival estimate, S2 - modified Peto-Peto (by Andersen), FH - Fleming-Harrington(p=1, q=1).
+#'@param pval.method whether to add a text with the test name used for calculating the pvalue, that corresponds to survival curves' comparison - used only when \code{pval=TRUE}
+#'@param pval.method.size the same as \code{pval.size} but for displaying \code{log.rank.weights} name
+#'@param pval.method.coord the same as \code{pval.coord} but for displaying \code{log.rank.weights} name
 #'@details \strong{legend position}: The argument \strong{legend} can be also a
 #'  numeric vector c(x,y). In this case it is possible to position the legend
 #'  inside the plotting area. x and y are the coordinates of the legend box.
@@ -275,7 +283,8 @@ ggsurvplot <- function(fit, fun = NULL,
                        conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                        censor = TRUE,
                        pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
-                       log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH"), pval.method.coord = c(NULL, NULL),
+                       pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
+                       log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
                        main = NULL, submain = NULL, caption = NULL, xlab = "Time", ylab = "Survival probability",
                        font.main = c(16, "plain", "black"), font.submain = c(15, "plain", "black"),
                        font.caption = c(15, "plain", "black"),
@@ -303,6 +312,7 @@ ggsurvplot <- function(fit, fun = NULL,
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
   if(!is(legend, "numeric")) legend <- match.arg(legend)
   surv.median.line <- match.arg(surv.median.line)
+  stopifnot(log.rank.weights %in% c("survdiff", "1", "n", "sqrtN", "S1", "S2","FH_p=1_q=1"))
   log.rank.weights <- match.arg(log.rank.weights)
   # Adapt ylab value according to the value of the argument fun
   ylab <- .check_ylab(ylab, fun)
@@ -423,16 +433,18 @@ ggsurvplot <- function(fit, fun = NULL,
     pval <- .get_pvalue(fit, method = log.rank.weights)
     pvaltxt <- ifelse(pval$val < 1e-04, "p < 0.0001",
                     paste("p =", signif(pval$val, 2)))
-    pvalmethod <- pval$method
 
     pval.x <- ifelse(is.null(pval.coord[1]), 0.1*max(fit$time), pval.coord[1])
     pval.y <- ifelse(is.null(pval.coord[2]), 0.2, pval.coord[2])
-    pval.method.x <- ifelse(is.null(pval.method.coord[1]), 0.1*max(fit$time), pval.method.coord[1])
-    pval.method.y <- ifelse(is.null(pval.method.coord[2]), 0.3, pval.method.coord[2])
     p <- p + ggplot2::annotate("text", x = pval.x, y = pval.y,
                                label = pvaltxt, size = pval.size)
-    p <- p + ggplot2::annotate("text", x = pval.method.x, y = pval.method.y,
-                               label = pvalmethod, size = pval.size)
+    if(pval.method){
+      pvalmethod <- pval$method
+      pval.method.x <- ifelse(is.null(pval.method.coord[1]), 0.1*max(fit$time), pval.method.coord[1])
+      pval.method.y <- ifelse(is.null(pval.method.coord[2]), 0.3, pval.method.coord[2])
+      p <- p + ggplot2::annotate("text", x = pval.method.x, y = pval.method.y,
+                                 label = pvalmethod, size = pval.size)
+    }
   }
 
   # Drawing a horizontal line at 50% survival
@@ -658,7 +670,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
   # One group
   if(length(levels(summary(fit)$strata)) == 0)  return(list(val = NULL, method = NULL))
 
-  if(method = "survdiff") {
+  if(method == "survdiff") {
     ssubset <- fit$call$subset
     if(is.null(ssubset))
       sdiff <- survival::survdiff(eval(fit$call$formula), data = eval(fit$call$data))
@@ -666,12 +678,20 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
       sdiff <- survival::survdiff(eval(fit$call$formula), data = eval(fit$call$data),
                                      subset = eval(fit$call$subset))
     pvalue <- stats::pchisq(sdiff$chisq, length(sdiff$n) - 1, lower.tail = FALSE)
-    return (list(val = pvalue, method = "Log-rank (survdiff)"))
+    return(list(val = pvalue, method = "Log-rank (survdiff)"))
   } else {
     tenfit <- ten(eval(fit$call$formula), data = eval(fit$call$data))
     capture.output(comp(tenfit)) -> null_dev
     # comp modifies tenfit object (ten class: ?survMisc::ten)
-    attributes(t1)$lrt -> tests
+    # and adds attributes with tests
+    attributes(tenfit)$lrt -> tests
+    # check str(tests) -> W:weights / pNorm:p-values
+    pvalue <- round(tests$pNorm[tests$W == method], 4)
+    test_name <- c("Log-rank (comp)", "Gehan-Breslow (generalized Wilcoxon)",
+                   "Tarone-Ware", "Peto-Peto's modified survival estimate",
+                   "modified Peto-Peto (by Andersen)", "Fleming-Harrington (p=1, q=1)")
+    # taken from ?survMisc::comp
+    return(list(val = pvalue, method = test_name[tests$W == method]))
   }
 }
 
