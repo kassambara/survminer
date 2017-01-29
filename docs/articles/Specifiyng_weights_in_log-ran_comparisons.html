@@ -149,7 +149,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <h2 class="hasAnchor">
 <html><body><a href="#gehan-breslow-generalized-wilcoxon" class="anchor"> </a></body></html>Gehan-Breslow (generalized Wilcoxon)</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">pval =</span> <span class="ot">TRUE</span>, <span class="dt">pval.method =</span> <span class="ot">TRUE</span>,
-           <span class="dt">log.rank.weights =</span> <span class="st">"n"</span>, <span class="dt">pval.method.coord =</span> <span class="kw">c</span>(<span class="dv">200</span>, <span class="fl">0.1</span>),
+           <span class="dt">log.rank.weights =</span> <span class="st">"n"</span>, <span class="dt">pval.method.coord =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="fl">0.1</span>),
            <span class="dt">pval.method.size =</span> <span class="dv">3</span>)</code></pre></div>
 <p><img src="Specifiyng_weights_in_log-ran_comparisons_files/figure-html/unnamed-chunk-6-1.png" width="1152"></p>
 </div>
@@ -157,7 +157,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <h2 class="hasAnchor">
 <html><body><a href="#tharone-ware" class="anchor"> </a></body></html>Tharone-Ware</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">pval =</span> <span class="ot">TRUE</span>, <span class="dt">pval.method =</span> <span class="ot">TRUE</span>,
-           <span class="dt">log.rank.weights =</span> <span class="st">"sqrtN"</span>, <span class="dt">pval.method.coord =</span> <span class="kw">c</span>(<span class="dv">100</span>, <span class="fl">0.1</span>),
+           <span class="dt">log.rank.weights =</span> <span class="st">"sqrtN"</span>, <span class="dt">pval.method.coord =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="fl">0.1</span>),
            <span class="dt">pval.method.size =</span> <span class="dv">4</span>)</code></pre></div>
 <p><img src="Specifiyng_weights_in_log-ran_comparisons_files/figure-html/unnamed-chunk-7-1.png" width="1152"></p>
 </div>
@@ -165,7 +165,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <h2 class="hasAnchor">
 <html><body><a href="#peto-petos-modified-survival-estimate" class="anchor"> </a></body></html>Peto-Peto’s modified survival estimate</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">pval =</span> <span class="ot">TRUE</span>, <span class="dt">pval.method =</span> <span class="ot">TRUE</span>,
-           <span class="dt">log.rank.weights =</span> <span class="st">"S1"</span>, <span class="dt">pval.method.coord =</span> <span class="kw">c</span>(<span class="dv">200</span>, <span class="fl">0.1</span>),
+           <span class="dt">log.rank.weights =</span> <span class="st">"S1"</span>, <span class="dt">pval.method.coord =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="fl">0.1</span>),
            <span class="dt">pval.method.size =</span> <span class="dv">3</span>)</code></pre></div>
 <p><img src="Specifiyng_weights_in_log-ran_comparisons_files/figure-html/unnamed-chunk-8-1.png" width="1152"></p>
 </div>
@@ -173,7 +173,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <h2 class="hasAnchor">
 <html><body><a href="#modified-peto-petos-by-andersen" class="anchor"> </a></body></html>modified Peto-Peto’s (by Andersen)</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">pval =</span> <span class="ot">TRUE</span>, <span class="dt">pval.method =</span> <span class="ot">TRUE</span>,
-           <span class="dt">log.rank.weights =</span> <span class="st">"S2"</span>, <span class="dt">pval.method.coord =</span> <span class="kw">c</span>(<span class="dv">200</span>, <span class="fl">0.1</span>),
+           <span class="dt">log.rank.weights =</span> <span class="st">"S2"</span>, <span class="dt">pval.method.coord =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="fl">0.1</span>),
            <span class="dt">pval.method.size =</span> <span class="dv">3</span>)</code></pre></div>
 <p><img src="Specifiyng_weights_in_log-ran_comparisons_files/figure-html/unnamed-chunk-9-1.png" width="1152"></p>
 </div>
@@ -182,7 +182,8 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <html><body><a href="#fleming-harrington-p1-q1" class="anchor"> </a></body></html>Fleming-Harrington (p=1, q=1)</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">pval =</span> <span class="ot">TRUE</span>, <span class="dt">pval.method =</span> <span class="ot">TRUE</span>,
            <span class="dt">log.rank.weights =</span> <span class="st">"FH_p=1_q=1"</span>, 
-           <span class="dt">pval.method.coord =</span> <span class="kw">c</span>(<span class="dv">200</span>, <span class="fl">0.1</span>), <span class="dt">pval.method.size =</span> <span class="dv">4</span>)</code></pre></div>
+           <span class="dt">pval.method.coord =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="fl">0.1</span>),
+           <span class="dt">pval.method.size =</span> <span class="dv">4</span>)</code></pre></div>
 <p><img src="Specifiyng_weights_in_log-ran_comparisons_files/figure-html/unnamed-chunk-10-1.png" width="1152"></p>
 </div>
 </div>
