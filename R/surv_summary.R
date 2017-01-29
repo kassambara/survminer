@@ -89,7 +89,7 @@ surv_summary <- function (x){
                         x[seq(1, length(x), 2)]
                         })
   variables <- unique(as.vector(variables))
-  variables <- intersect(variables, all.vars(formula(fit$call)))
+  variables <- intersect(variables, colnames(eval(fit$call$data) ))
   variables
 }
 
