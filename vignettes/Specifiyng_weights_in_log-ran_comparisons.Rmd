@@ -109,7 +109,7 @@ ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
 
 ```{r}
 ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
-           log.rank.weights = "n", pval.method.coord = c(200, 0.1),
+           log.rank.weights = "n", pval.method.coord = c(5, 0.1),
            pval.method.size = 3)
 ```
 
@@ -117,7 +117,7 @@ ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
 
 ```{r}
 ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
-           log.rank.weights = "sqrtN", pval.method.coord = c(100, 0.1),
+           log.rank.weights = "sqrtN", pval.method.coord = c(3, 0.1),
            pval.method.size = 4)
 ```
 
@@ -125,7 +125,7 @@ ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
 
 ```{r}
 ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
-           log.rank.weights = "S1", pval.method.coord = c(200, 0.1),
+           log.rank.weights = "S1", pval.method.coord = c(5, 0.1),
            pval.method.size = 3)
 ```
 
@@ -133,7 +133,7 @@ ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
 
 ```{r}
 ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
-           log.rank.weights = "S2", pval.method.coord = c(200, 0.1),
+           log.rank.weights = "S2", pval.method.coord = c(5, 0.1),
            pval.method.size = 3)
 ```
 
@@ -142,7 +142,8 @@ ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
 ```{r}
 ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "FH_p=1_q=1", 
-           pval.method.coord = c(200, 0.1), pval.method.size = 4)
+           pval.method.coord = c(5, 0.1),
+           pval.method.size = 4)
 ```
 
 
