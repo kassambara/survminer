@@ -1,6 +1,7 @@
 #' @include utilities.R theme_classic2.R surv_summary.R
 #' @importFrom methods is
 #' @importFrom stats pchisq
+#' @importFrom survMisc ten
   NULL
 #'Drawing Survival Curves Using ggplot2
 #'@description Drawing survival curves using ggplot2
@@ -274,6 +275,7 @@ ggsurvplot <- function(fit, fun = NULL,
                        conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                        censor = TRUE,
                        pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
+                       log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH"), pval.method.coord = c(NULL, NULL),
                        main = NULL, submain = NULL, caption = NULL, xlab = "Time", ylab = "Survival probability",
                        font.main = c(16, "plain", "black"), font.submain = c(15, "plain", "black"),
                        font.caption = c(15, "plain", "black"),
@@ -301,6 +303,7 @@ ggsurvplot <- function(fit, fun = NULL,
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
   if(!is(legend, "numeric")) legend <- match.arg(legend)
   surv.median.line <- match.arg(surv.median.line)
+  log.rank.weights <- match.arg(log.rank.weights)
   # Adapt ylab value according to the value of the argument fun
   ylab <- .check_ylab(ylab, fun)
   # Check and get linetypes
@@ -417,14 +420,19 @@ ggsurvplot <- function(fit, fun = NULL,
 
   # Add pvalue
   if(pval & !is.null(fit$strata)){
-    pval <- .get_pvalue(fit)
-    pvaltxt <- ifelse(pval < 1e-04, "p < 0.0001",
-                    paste("p =", signif(pval, 2)))
+    pval <- .get_pvalue(fit, method = log.rank.weights)
+    pvaltxt <- ifelse(pval$val < 1e-04, "p < 0.0001",
+                    paste("p =", signif(pval$val, 2)))
+    pvalmethod <- pval$method
 
     pval.x <- ifelse(is.null(pval.coord[1]), 0.1*max(fit$time), pval.coord[1])
     pval.y <- ifelse(is.null(pval.coord[2]), 0.2, pval.coord[2])
+    pval.method.x <- ifelse(is.null(pval.method.coord[1]), 0.1*max(fit$time), pval.method.coord[1])
+    pval.method.y <- ifelse(is.null(pval.method.coord[2]), 0.3, pval.method.coord[2])
     p <- p + ggplot2::annotate("text", x = pval.x, y = pval.y,
                                label = pvaltxt, size = pval.size)
+    p <- p + ggplot2::annotate("text", x = pval.method.x, y = pval.method.y,
+                               label = pvalmethod, size = pval.size)
   }
 
   # Drawing a horizontal line at 50% survival
@@ -646,9 +654,11 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 
 
 # get survdiff pvalue
-.get_pvalue <- function(fit){
+.get_pvalue <- function(fit, method){
   # One group
-  if(length(levels(summary(fit)$strata)) == 0)  return(NULL)
+  if(length(levels(summary(fit)$strata)) == 0)  return(list(val = NULL, method = NULL))
+
+  if(method = "survdiff") {
     ssubset <- fit$call$subset
     if(is.null(ssubset))
       sdiff <- survival::survdiff(eval(fit$call$formula), data = eval(fit$call$data))
@@ -656,7 +666,13 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
       sdiff <- survival::survdiff(eval(fit$call$formula), data = eval(fit$call$data),
                                      subset = eval(fit$call$subset))
     pvalue <- stats::pchisq(sdiff$chisq, length(sdiff$n) - 1, lower.tail = FALSE)
-    return (pvalue)
+    return (list(val = pvalue, method = "Log-rank (survdiff)"))
+  } else {
+    tenfit <- ten(eval(fit$call$formula), data = eval(fit$call$data))
+    capture.output(comp(tenfit)) -> null_dev
+    # comp modifies tenfit object (ten class: ?survMisc::ten)
+    attributes(t1)$lrt -> tests
+  }
 }
 
 # Draw risk table
