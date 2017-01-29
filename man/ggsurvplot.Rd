@@ -9,22 +9,25 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
   break.time.by = NULL, surv.scale = c("default", "percent"),
   conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
   censor = TRUE, pval = FALSE, pval.size = 5, pval.coord = c(NULL,
-  NULL), main = NULL, submain = NULL, caption = NULL, xlab = "Time",
-  ylab = "Survival probability", font.main = c(16, "plain", "black"),
-  font.submain = c(15, "plain", "black"), font.caption = c(15, "plain",
-  "black"), font.x = c(14, "plain", "black"), font.y = c(14, "plain",
-  "black"), font.tickslab = c(12, "plain", "black"), xlim = NULL,
-  ylim = NULL, legend = c("top", "bottom", "left", "right", "none"),
-  legend.title = "Strata", legend.labs = NULL, font.legend = c(10,
-  "plain", "black"), risk.table = FALSE, risk.table.title = NULL,
-  risk.table.subtitle = NULL, risk.table.caption = NULL,
-  risk.table.col = "black", risk.table.fontsize = 4.5,
-  risk.table.y.text = TRUE, risk.table.y.text.col = TRUE,
-  risk.table.height = 0.25, surv.plot.height = 0.75,
-  ncensor.plot.height = 0.25, ncensor.plot = FALSE,
-  ncensor.plot.title = NULL, ncensor.plot.subtitle = NULL,
-  ncensor.plot.caption = NULL, surv.median.line = c("none", "hv", "h", "v"),
-  ggtheme = theme_classic2(), ...)
+  NULL), pval.method = FALSE, pval.method.size = pval.size,
+  pval.method.coord = c(NULL, NULL), log.rank.weights = c("survdiff", "1",
+  "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"), main = NULL, submain = NULL,
+  caption = NULL, xlab = "Time", ylab = "Survival probability",
+  font.main = c(16, "plain", "black"), font.submain = c(15, "plain",
+  "black"), font.caption = c(15, "plain", "black"), font.x = c(14, "plain",
+  "black"), font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain",
+  "black"), xlim = NULL, ylim = NULL, legend = c("top", "bottom", "left",
+  "right", "none"), legend.title = "Strata", legend.labs = NULL,
+  font.legend = c(10, "plain", "black"), risk.table = FALSE,
+  risk.table.title = NULL, risk.table.subtitle = NULL,
+  risk.table.caption = NULL, risk.table.col = "black",
+  risk.table.fontsize = 4.5, risk.table.y.text = TRUE,
+  risk.table.y.text.col = TRUE, risk.table.height = 0.25,
+  surv.plot.height = 0.75, ncensor.plot.height = 0.25,
+  ncensor.plot = FALSE, ncensor.plot.title = NULL,
+  ncensor.plot.subtitle = NULL, ncensor.plot.caption = NULL,
+  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_classic2(),
+  ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
   risk.table.height = NULL, ncensor.plot.height = NULL, ...,
@@ -73,6 +76,17 @@ c("ribbon", "step").}
 
 \item{pval.coord}{numeric vector, of length 2, specifying the x and y
 coordinates of the p-value. Default values are NULL.}
+
+\item{pval.method}{whether to add a text with the test name used for calculating the pvalue, that corresponds to survival curves' comparison - used only when \code{pval=TRUE}}
+
+\item{pval.method.size}{the same as \code{pval.size} but for displaying \code{log.rank.weights} name}
+
+\item{pval.method.coord}{the same as \code{pval.coord} but for displaying \code{log.rank.weights} name}
+
+\item{log.rank.weights}{The name for the type of weights to be used in computing the p-value for log-rank test.
+By default \code{survdiff} is used to calculate regular log-rank test (with weights == 1). A user can specify
+\code{"1", "n", "sqrtN", "S1", "S2", "FH"} to use weights specified in \link[survMisc]{comp}, so that weight correspond to the test as
+: 1 - log-rank, n - Gehan-Breslow (generalized Wilcoxon), sqrtN - Tarone-Ware, S1 - Peto-Peto's modified survival estimate, S2 - modified Peto-Peto (by Andersen), FH - Fleming-Harrington(p=1, q=1).}
 
 \item{main, submain, caption, xlab, ylab}{main title, subtitle, caption and axis labels}
 
