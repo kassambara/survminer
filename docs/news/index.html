@@ -84,6 +84,7 @@
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"> </a>New features</h2>
 <ul>
+<li>New possibilities to compare survival curves with <code>pval.method</code> and <code>log.rank.weights</code> parameters in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, by specifing weights in Log-rank test. Functionality based on <code>survMisc::comp</code>.</li>
 <li>New function <code><a href="../reference/ggforest.html">ggforest()</a></code> added for drawing forest plot for the Cox model.</li>
 <li>New argument <code>sline</code> in the <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> function for adding loess smoothed trend on the residual plots. This will make it easier to spot some problems with residuals (like quadratic relation). (<a href="https://github.com/kassambara/survminer/issues/119">@pbiecek, #119</a>).</li>
 <li>New function <code><a href="../reference/pairwise_survdiff.html">pairwise_survdiff()</a></code> for multiple comparisons of survival Curves (<a href="https://github.com/kassambara/survminer/issues/97">#97</a>).</li>
@@ -99,7 +100,6 @@
 <li>It is possible to specify subtitle (param <code>risk.table.subtitle</code>) and caption (param <code>risk.table.caption</code>) for the <code>table</code> part of the <code>ggsurvplot</code>.</li>
 <li>It is possible to specify title (param <code>ncens.plot.title</code>), subtitle (param <code>ncens.plot.subtitle</code>) and caption (param <code>ncens.plot.caption</code>) for the <code>ncens</code> part of the <code>ggsurvplot</code>.</li>
 <li>ncens.plot part of the <code>ggsurvplot</code> has no integer values on y axis (not real as before), as it only can take integer values.</li>
-<li>A new vignette and a <code>ggsurvplot</code> example was added to present new functionalities of possible texts and fonts customizations.</li>
 <li>README was extended with <code>uber platinium customization</code> example.</li>
 </ul>
 </li>
@@ -112,7 +112,7 @@
 <ul>
 <li><p>In <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, more information, about color palettes, have been added in the details section of the documentation (<a href="https://github.com/kassambara/survminer/issues/100">#100</a>).</p></li>
 <li><p>The R package <code>maxstat</code> doesn’t support very well an object of class <code>tbl_df</code>. To fix this issue, now, in the <code><a href="../reference/surv_cutpoint.html">surv_cutpoint()</a></code> function, the input data is systematically transformed into a standard data.frame format (<a href="https://github.com/kassambara/survminer/issues/104">@MarcinKosinski, #104</a>).</p></li>
-<li><p>It’s now possible to print the output the survminer packages in a powerpoint created with the ReporteRs package. Thanks to (<a href="https://github.com/kassambara/survminer/issues/110">@abossenbroek, #110</a>). You should use the argument <em>newpage = FALSE</em> in the <code>print()</code> function when printing the output in the powerpoint. For instance:</p></li>
+<li><p>It’s now possible to print the output the survminer packages in a powerpoint created with the ReporteRs package. Thanks to (<a href="https://github.com/kassambara/survminer/issues/110">@abossenbroek, #110</a>) and (<a href="https://github.com/kassambara/survminer/issues/110">@zzawadz, #111</a>). You should use the argument <em>newpage = FALSE</em> in the <code>print()</code> function when printing the output in the powerpoint. For instance:</p></li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(survival)
 <span class="kw">require</span>(ReporteRs)
@@ -144,6 +144,14 @@ doc =<span class="st"> </span><span class="kw">addPlot</span>(doc, function() <s
 <li><p>Now, <code>gggcoxzph()</code> works for univariate Cox analysis (<a href="https://github.com/kassambara/survminer/issues/103">#103</a>).</p></li>
 <li><p>Now, <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> works properly for schoenfeld residuals (<a href="https://github.com/kassambara/survminer/issues/122">@pbiecek, #119</a>).</p></li>
 <li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> works properly in the situation where <code>strata()</code> is included in the cox formula (<a href="https://github.com/kassambara/survminer/issues/109">#109</a>).</p></li>
+</ul>
+</div>
+<div id="vignettes-and-examples" class="section level2">
+<h2 class="hasAnchor">
+<a href="#vignettes-and-examples" class="anchor"> </a>Vignettes and examples</h2>
+<ul>
+<li>A new vignette and a <code>ggsurvplot</code> example was added to present new functionalities of possible texts and fonts customizations.</li>
+<li>A new vignette and a <code>ggsurvplot</code> example was added to present new functionalities of possible weights specification in a Log-rank test.</li>
 </ul>
 </div>
 </div>
