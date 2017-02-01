@@ -1,6 +1,7 @@
 #' Adjusted Survival Curves for Cox Proportional Hazards Model
 #' @importFrom tidyr gather
-#' @importFrom dplyr summarise, group_by
+#' @importFrom dplyr summarise
+#' @importFrom dplyr group_by
 #' @description This function plots adjusted survival curves for coxph model.
 #' The idea behind this function is described in \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
 #' For every observation in the dataset a prediction for survival cure is made.
