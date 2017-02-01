@@ -66,7 +66,7 @@
 #' ggcoxdiagnostics(coxph.fit2, type = "schoenfeld")
 #' ggcoxdiagnostics(coxph.fit2, type = "deviance", ox.scale = "time")
 #' ggcoxdiagnostics(coxph.fit2, type = "schoenfeld", ox.scale = "time")
-#' ggcoxdiagnostics(coxph.fit2, type = "schoenfeld", ox.scale = "linear.predictions")
+#' ggcoxdiagnostics(coxph.fit2, type = "deviance", ox.scale = "linear.predictions")
 #' ggcoxdiagnostics(coxph.fit2, type = "schoenfeld", ox.scale = "observation.id")
 #' ggcoxdiagnostics(coxph.fit2, type = "scaledsch", ox.scale = "time")
 #'
