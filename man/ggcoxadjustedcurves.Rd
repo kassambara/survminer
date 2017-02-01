@@ -30,8 +30,6 @@ font.x = "bold", to change only font face.}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
-
-\item{point.col, point.size, point.shape, point.alpha}{color, size, shape and visibility to be used for points.}
 }
 \value{
 Returns an object of class \code{gg}.

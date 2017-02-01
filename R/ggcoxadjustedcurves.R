@@ -2,6 +2,7 @@
 #' @importFrom tidyr gather
 #' @importFrom dplyr summarise
 #' @importFrom dplyr group_by
+#' @importFrom survival survfit
 #' @description This function plots adjusted survival curves for coxph model.
 #' The idea behind this function is described in \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
 #' For every observation in the dataset a prediction for survival cure is made.
@@ -11,7 +12,6 @@
 #'@param plot_all if TRUE then all individual predicted survival curves will be plotted
 #'@param curve.size,curve.alpha size and alpha for individual survival curves
 #'@param ylab y axis label.
-#'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
 #'@param font.main,font.x,font.y,font.tickslab a vector of length 3
 #'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
 #'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
