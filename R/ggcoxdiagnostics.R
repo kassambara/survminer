@@ -7,9 +7,12 @@
 #'residual desired. Possible values are \code{"martingale", "deviance", "score", "schoenfeld", "dfbeta", "dfbetas"}
 #' and \code{"scaledsch"}. Only enough of the string to
 #' determine a unique match is required.
-#' @param linear.predictions a logical value indicating whether to show linear
+#' @param linear.predictions (deprecated, see \code{ox.scale}) a logical value indicating whether to show linear
 #' predictions for observations (\code{TRUE}) or just indexed of observations
 #' (\code{FALSE}) on X axis.
+#' @param ox.scale one value from \code{c("linear.predictions", "observation.id", "time")}.
+#' It defines what will be presented on OX scale. Possible values: y hat for \code{"linear.predictions"},
+#' Id of an observation for \code{"observation.id"} or Time for \code{"time"}.
 #'@param ... furthere arguments passed to \link{residuals.coxph}.
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
 #'@param hline.col,hline.size,hline.lty,hline.alpha,hline.yintercept color, size, linetype, visibility and Y-axis coordinate to be used for \link{geom_hline}.
@@ -60,6 +63,13 @@
 #' coxph.fit2 <- coxph(Surv(futime, fustat) ~ age + ecog.ps, data=ovarian)
 #' ggcoxdiagnostics(coxph.fit2, type = "deviance")
 #'
+#' ggcoxdiagnostics(coxph.fit2, type = "schoenfeld")
+#' ggcoxdiagnostics(coxph.fit2, type = "deviance", ox.scale = "time")
+#' ggcoxdiagnostics(coxph.fit2, type = "schoenfeld", ox.scale = "time")
+#' ggcoxdiagnostics(coxph.fit2, type = "deviance", ox.scale = "linear.predictions")
+#' ggcoxdiagnostics(coxph.fit2, type = "schoenfeld", ox.scale = "observation.id")
+#' ggcoxdiagnostics(coxph.fit2, type = "scaledsch", ox.scale = "time")
+#'
 #'@describeIn ggcoxdiagnostics Diagnostic Plots for Cox Proportional Hazards Model with \pkg{ggplot2}
 #'@export
 ggcoxdiagnostics <- function (fit,
@@ -67,6 +77,7 @@ ggcoxdiagnostics <- function (fit,
                                "dfbeta", "dfbetas", "scaledsch","partial"),
                       ...,
                       linear.predictions = type %in% c("martingale", "deviance"),
+                      ox.scale = ifelse(linear.predictions, "linear.predictions", "observation.id"),
                       hline = TRUE,
                       sline = TRUE, sline.se = TRUE,
                       hline.col = "red", hline.size = 1, hline.alpha = 1, hline.yintercept = 0, hline.lty = 'dashed',
@@ -88,10 +99,24 @@ ggcoxdiagnostics <- function (fit,
   xlabel <- "The index number of observations"
   ylabel <- paste0("Residuals (type = ", type, ")" )
 
-  if(linear.predictions){
-    xval <- predict(fit, type="lp")
-    xlabel <- "Linear Predictions"
-  }else xval <- 1:nrow(res)
+  switch(ox.scale,
+         linear.predictions = {
+           if (!(type %in% c("martingale", "deviance")))
+             warning("ox.scale='linear.predictions' works only with type=martingale/deviance")
+           xval <- predict(fit, type="lp")
+           xlabel <- "Linear Predictions"
+         },
+         observation.id = {
+           xval <- 1:nrow(res)
+           xlabel <- "Observation Id"
+         },
+         time = {
+           if (!(type %in% c("schoenfeld", "scaledsch")))
+             warning("ox.scale='time' works only with type=schoenfeld/scaledsch")
+           xval <- as.numeric(rownames(res))
+           xlabel <- "Time"
+         },
+         {warning("ox.scale should be one of linear.predictions/observation.id/time")})
 
   # Case of multivariate Cox model
   if(type %in% c("martingale", "deviance")) col_names <- "residuals"
