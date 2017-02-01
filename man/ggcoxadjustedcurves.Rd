@@ -48,10 +48,13 @@ library(survival)
 fit <- coxph( Surv(time, status) ~ rx + adhere, data = colon )
 
 ggcoxadjustedcurves(fit)
-ggcoxadjustedcurves(fit, split_var = colon[,"rx"])
-ggcoxadjustedcurves(fit, split_var = cut(colon[,"age"], 3))
-ggcoxadjustedcurves(fit, split_var = colon[,"rx"], plot_all=TRUE)
-ggcoxadjustedcurves(fit, split_var = cut(colon[,"age"], 3), plot_all=TRUE)
+ggcoxadjustedcurves(fit, plot_all=TRUE)
+
+fit2 <- coxph( Surv(stop, event) ~ rx + size, data = bladder )
+ggcoxadjustedcurves(fit2)
+ggcoxadjustedcurves(fit2, plot_all=TRUE, curve.alpha=0.01)
+ggcoxadjustedcurves(fit2, split_var = factor( bladder[,"rx"]))
+ggcoxadjustedcurves(fit2, split_var = factor(bladder[,"rx"]), plot_all=TRUE, curve.alpha=0.01)
 
 }
 \author{
