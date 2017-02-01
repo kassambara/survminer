@@ -18,6 +18,8 @@
     - README was extended with `uber platinium customization` example. 
     
 - The design of `ggcoxfunctional()` has been changed to be consistent with the other functions in the survminer package. Now, `ggcoxfunctional()` works with coxph objects not formulas. The arguments formula and data are now deprecated ([@pbiecek, #115](https://github.com/kassambara/survminer/issues/115)).
+   
+- In the `ggcoxdiagnostics()` function, it's now possible to plot Time in the OX axis ([@pbiecek, #124](https://github.com/kassambara/survminer/issues/124)). This is convenient for some residuals like Schoenfeld. The `linear.predictions parameter has been replaced with ox.scale = c("linear.predictions", "time", "observation.id").
      
      
 ## Minor changes
