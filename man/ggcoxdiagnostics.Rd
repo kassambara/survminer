@@ -33,7 +33,7 @@ predictions for observations (\code{TRUE}) or just indexed of observations
 
 \item{hline}{a logical - should the horizontal line be added to highlight the \code{Y=0} level.}
 
-\item{sline, }{sline.se a logical - should the smooth line be added to highlight the local average for residuals.}
+\item{sline, sline.se}{a logical - should the smooth line be added to highlight the local average for residuals.}
 
 \item{hline.col, hline.size, hline.lty, hline.alpha, hline.yintercept}{color, size, linetype, visibility and Y-axis coordinate to be used for \link{geom_hline}.
 Used only when \code{hline = TRUE}.}

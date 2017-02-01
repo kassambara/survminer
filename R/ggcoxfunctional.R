@@ -10,6 +10,7 @@ NULL
 #'cox proportional hazards model, for each term in of the right side of \code{formula}. This might help to properly
 #'choose the functional form of continuous variable in cox model (\link{coxph}). Fitted lines with \link{lowess} function
 #'should be linear to satisfy cox proportional hazards model assumptions.
+#'@param fit an object of class \link{coxph.object} - created with \link{coxph} function.
 #'@param formula a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \link{Surv} function.
 #'@param data a \code{data.frame} in which to interpret the variables named in the formula,
 #'@param iter parameter of \link{lowess}.
@@ -33,14 +34,15 @@ NULL
 #'
 #' library(survival)
 #' data(mgus)
-#' ggcoxfunctional(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
-#'                   age + I(log(age)^2) + I(sqrt(age)), data = mgus,
-#'                 point.col = "blue", point.alpha = 0.5)
+#' res.cox <- coxph(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
+#'      age + I(log(age)^2) + I(sqrt(age)), data = mgus)
+#'
+#' ggcoxfunctional(res.cox, point.col = "blue", point.alpha = 0.5)
 #'
 #'
 #'@describeIn ggcoxfunctional Functional Form of Continuous Variable in Cox Proportional Hazards Model.
 #'@export
-ggcoxfunctional <- function (formula, data, iter = 0, f = 0.6,
+ggcoxfunctional <- function (formula, data, fit, iter = 0, f = 0.6,
                              point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
                              font.main = c(16, "plain", "black"),
                              font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
@@ -48,6 +50,18 @@ ggcoxfunctional <- function (formula, data, iter = 0, f = 0.6,
                              xlim = NULL, ylim = NULL,
                              ylab = "Martingale Residuals \nof Null Cox Model",
                              ggtheme = theme_classic2()){
+
+  if(!missing(formula) & !missing(data) ){
+    warning("arguments formula and data are deprecated; ",
+            "will be removed in the next version; ",
+            "please use fit instead.", call. = FALSE)
+    fit <- list(formula = formula, call = list(data = data))
+  }
+  else if(!missing(formula)){
+    if(inherits(formula, "coxph")) fit <- formula
+  }
+  formula <- fit$formula
+  data <- eval(fit$call$data)
 
   attr(stats::terms(formula), "term.labels") -> explanatory.variables.names
   stats::model.matrix(formula, data = data) -> explanatory.variables.values

@@ -17,7 +17,7 @@
 #'@param sline.col,sline.size,sline.lty,sline.alpha color, size, linetype and visibility to be used for \link{geom_smooth}.
 #'Used only when \code{sline = TRUE}.
 #'@param hline a logical - should the horizontal line be added to highlight the \code{Y=0} level.
-#'@param sline, sline.se a logical - should the smooth line be added to highlight the local average for residuals.
+#'@param sline,sline.se a logical - should the smooth line be added to highlight the local average for residuals.
 #'@param ggtheme function, ggplot2 theme name. Default value is ggplot2::theme_bw().
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@param font.main,font.x,font.y,font.tickslab a vector of length 3
@@ -109,7 +109,7 @@ ggcoxdiagnostics <- function (fit,
   if (hline) gplot <- gplot + geom_hline(yintercept=hline.yintercept, col = hline.col,
                                          size = hline.size, lty = hline.lty, alpha = hline.alpha)
 
-  if (sline) gplot <- gplot + geom_smooth(col = sline.col, se = sline.se,
+  if (sline) gplot <- gplot + geom_smooth(col = sline.col, se = sline.se, method = "loess",
                                          size = sline.size, lty = sline.lty, alpha = sline.alpha)
 
   gplot <- gplot + labs(x = xlabel, y = ylabel) + ggtheme
@@ -117,7 +117,7 @@ ggcoxdiagnostics <- function (fit,
   gplot <-.labs(p = gplot, font.main = font.main, font.x = font.x, font.y = font.y)
   gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)
 
-  gplot <- gplot + facet_wrap(~covariate, scales = "free", ncol = 1)
+  gplot <- gplot + facet_wrap(~covariate, scales = "free")
   gplot
 }
 

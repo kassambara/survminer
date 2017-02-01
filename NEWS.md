@@ -2,9 +2,12 @@
    
 ## New features
 
-New function `ggforest()` added for drawing forest plot for the Cox model.
+- New possibilities to compare survival curves with `pval.method` and `log.rank.weights` parameters in `ggsurvplot()`, by specifing weights in Log-rank test. Functionality based on `survMisc::comp`.
+- New function `ggforest()` added for drawing forest plot for the Cox model.
+- New argument `sline` in the `ggcoxdiagnostics()` function for adding loess smoothed trend on the residual plots. This will make it easier to spot some problems with residuals (like quadratic relation). ([@pbiecek, #119](https://github.com/kassambara/survminer/issues/119)). 
+- New function `pairwise_survdiff()` for multiple comparisons of survival Curves ([#97](https://github.com/kassambara/survminer/issues/97)).
    
-   
+
 ## Major changes
 
 - New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105))
@@ -12,8 +15,9 @@ New function `ggforest()` added for drawing forest plot for the Cox model.
     - It is possible to specify subtitle (param `risk.table.subtitle`) and caption (param `risk.table.caption`) for the `table` part of the `ggsurvplot`.
     - It is possible to specify title (param `ncens.plot.title`), subtitle (param `ncens.plot.subtitle`) and caption (param `ncens.plot.caption`) for the `ncens` part of the `ggsurvplot`.
     - ncens.plot part of the `ggsurvplot` has no integer values on y axis (not real as before), as it only can take integer values.
-    - A new vignette and a `ggsurvplot` example was added to present new functionalities of possible texts and fonts customizations. 
     - README was extended with `uber platinium customization` example. 
+    
+- The design of `ggcoxfunctional()` has been changed to be consistent with the other functions in the survminer package. Now, `ggcoxfunctional()` works with coxph objects not formulas. The arguments formula and data are now deprecated ([@pbiecek, #115](https://github.com/kassambara/survminer/issues/115)).
      
      
 ## Minor changes
@@ -22,7 +26,7 @@ New function `ggforest()` added for drawing forest plot for the Cox model.
 
 - The R package `maxstat` doesn't support very well an object of class `tbl_df`. To fix this issue, now, in the `surv_cutpoint()` function, the input data is systematically transformed into a standard data.frame format ([@MarcinKosinski, #104](https://github.com/kassambara/survminer/issues/104)).
 
-- It's now possible to print the output the survminer packages in a powerpoint created with the ReporteRs package. Thanks to ([@abossenbroek, #110](https://github.com/kassambara/survminer/issues/110)). You should use the argument *newpage = FALSE* in the `print()` function when printing the output in the powerpoint. For instance:   
+- It's now possible to print the output the survminer packages in a powerpoint created with the ReporteRs package. Thanks to ([@abossenbroek, #110](https://github.com/kassambara/survminer/issues/110)) and ([@zzawadz, #111](https://github.com/kassambara/survminer/issues/110)). You should use the argument *newpage = FALSE* in the `print()` function when printing the output in the powerpoint. For instance:   
     
     
 ```r
@@ -48,10 +52,20 @@ writeDoc(doc, "test.pptx")
 ```
     
     
+- Now, in `ggcoxdiagnostics()`, the option `ncol = 1` is removed from the function `facet_wrap()`. By default, `ncol = NULL`. In this case, the number of columns and rows in the plot panels is defined automatically based on the number of covariates included in the cox model.
+    
 ## Bug fixes
     
 - Now, `gggcoxzph()` works for univariate Cox analysis ([#103](https://github.com/kassambara/survminer/issues/103)). 
    
+- Now, `ggcoxdiagnostics()` works properly for schoenfeld residuals ([@pbiecek, #119](https://github.com/kassambara/survminer/issues/122)).  
+   
+- Now, `ggsurvplot()` works properly in the situation where `strata()` is included in the cox formula ([#109](https://github.com/kassambara/survminer/issues/109)). 
+   
+## Vignettes and examples
+
+- A new vignette and a `ggsurvplot` example was added to present new functionalities of possible texts and fonts customizations. 
+- A new vignette and a `ggsurvplot` example was added to present new functionalities of possible weights specification in a Log-rank test.    
 
 # survminer 0.2.4
      

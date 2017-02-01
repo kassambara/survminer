@@ -5,7 +5,7 @@
 \alias{print.ggcoxfunctional}
 \title{Functional Form of Continuous Variable in Cox Proportional Hazards Model}
 \usage{
-ggcoxfunctional(formula, data, iter = 0, f = 0.6, point.col = "red",
+ggcoxfunctional(formula, data, fit, iter = 0, f = 0.6, point.col = "red",
   point.size = 1, point.shape = 19, point.alpha = 1, font.main = c(16,
   "plain", "black"), font.x = c(14, "plain", "black"), font.y = c(14,
   "plain", "black"), font.tickslab = c(12, "plain", "black"), xlim = NULL,
@@ -18,6 +18,8 @@ ggcoxfunctional(formula, data, iter = 0, f = 0.6, point.col = "red",
 \item{formula}{a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \link{Surv} function.}
 
 \item{data}{a \code{data.frame} in which to interpret the variables named in the formula,}
+
+\item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
 
 \item{iter}{parameter of \link{lowess}.}
 
@@ -62,9 +64,10 @@ should be linear to satisfy cox proportional hazards model assumptions.
 
 library(survival)
 data(mgus)
-ggcoxfunctional(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
-                  age + I(log(age)^2) + I(sqrt(age)), data = mgus,
-                point.col = "blue", point.alpha = 0.5)
+res.cox <- coxph(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
+     age + I(log(age)^2) + I(sqrt(age)), data = mgus)
+
+ggcoxfunctional(res.cox, point.col = "blue", point.alpha = 0.5)
 
 
 }

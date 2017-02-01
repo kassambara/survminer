@@ -47,7 +47,6 @@ Load survminer:
 
 ``` r
 library("survminer")
-# Loading required package: ggplot2
 ```
 
 ggsurvplot: Drawing survival curves
@@ -57,7 +56,6 @@ ggsurvplot: Drawing survival curves
 
 ``` r
 require("survival")
-# Loading required package: survival
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
 
@@ -191,6 +189,8 @@ ggsurvplot(
 
 Blog posts
 ----------
+
+-   M. Kosiński. R-ADDICT January 2017. [Comparing (Fancy) Survival Curves with Weighted Log-rank Tests](http://r-addict.com/2017/01/29/Fancy-Survival-Plots.html)
 
 -   M. Kosiński. R-ADDICT January 2017. [When You Went too Far with Survival Plots During the survminer 1st Anniversary](http://r-addict.com/2017/01/15/Too-Far-With-Survival-Plots.html)
 

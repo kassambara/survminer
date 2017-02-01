@@ -9,11 +9,15 @@ reference:
       - ggsurvplot
       - surv_summary
       - surv_cutpoint
+      - pairwise_survdiff
   - title: Visual Examinations of Cox Model Assumptions
     contents:
       - ggcoxdiagnostics
       - ggcoxfunctional
       - ggcoxzph
+  - title: Visual Representation of Cox Model Coefficients
+    contents:
+      - ggforest
   - title: Data
     contents: myeloma
   - title: Others
