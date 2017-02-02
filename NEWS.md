@@ -69,7 +69,7 @@ writeDoc(doc, "test.pptx")
     
 ## Bug fixes
     
-- Now, `gggcoxzph()` works for univariate Cox analysis ([#103](https://github.com/kassambara/survminer/issues/103)). 
+- Now, `ggcoxzph()` works for univariate Cox analysis ([#103](https://github.com/kassambara/survminer/issues/103)). 
    
 - Now, `ggcoxdiagnostics()` works properly for schoenfeld residuals ([@pbiecek, #119](https://github.com/kassambara/survminer/issues/122)).  
    
