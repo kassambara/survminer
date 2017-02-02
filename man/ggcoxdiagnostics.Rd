@@ -13,9 +13,11 @@ ggcoxdiagnostics(fit, type = c("martingale", "deviance", "score",
   hline.yintercept = 0, hline.lty = "dashed", sline.col = "blue",
   sline.size = 1, sline.alpha = 0.3, sline.lty = "dashed",
   point.col = "black", point.size = 1, point.shape = 19,
-  point.alpha = 1, font.main = c(16, "plain", "black"), font.x = c(14,
-  "plain", "black"), font.y = c(14, "plain", "black"), font.tickslab = c(12,
-  "plain", "black"), ggtheme = ggplot2::theme_bw())
+  point.alpha = 1, font.title = c(16, "plain", "black"),
+  font.subtitle = c(15, "plain", "black"), font.caption = c(15, "plain",
+  "black"), font.x = c(14, "plain", "black"), font.y = c(14, "plain",
+  "black"), title = NULL, subtitle = NULL, caption = NULL,
+  font.tickslab = c(12, "plain", "black"), ggtheme = ggplot2::theme_bw())
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
@@ -48,12 +50,14 @@ Used only when \code{sline = TRUE}.}
 
 \item{point.col, point.size, point.shape, point.alpha}{color, size, shape and visibility to be used for points.}
 
-\item{font.main, font.x, font.y, font.tickslab}{a vector of length 3
+\item{font.title, font.subtitle, font.caption, font.x, font.y, font.tickslab}{a vector of length 3
 indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
 xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
 c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 font.x = "bold", to change only font face.}
+
+\item{title, subtitle, caption}{main title, subtitle and caption}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is ggplot2::theme_bw().
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
@@ -96,10 +100,13 @@ library(survival)
 coxph.fit2 <- coxph(Surv(futime, fustat) ~ age + ecog.ps, data=ovarian)
 ggcoxdiagnostics(coxph.fit2, type = "deviance")
 
-ggcoxdiagnostics(coxph.fit2, type = "schoenfeld")
+ggcoxdiagnostics(coxph.fit2, type = "schoenfeld", title = "Diagnostic plot")
 ggcoxdiagnostics(coxph.fit2, type = "deviance", ox.scale = "time")
-ggcoxdiagnostics(coxph.fit2, type = "schoenfeld", ox.scale = "time")
-ggcoxdiagnostics(coxph.fit2, type = "deviance", ox.scale = "linear.predictions")
+ggcoxdiagnostics(coxph.fit2, type = "schoenfeld", ox.scale = "time",
+                 title = "Diagnostic plot", subtitle = "Data comes from survey XYZ",
+                 font.subtitle = 9)
+ggcoxdiagnostics(coxph.fit2, type = "deviance", ox.scale = "linear.predictions",
+                 caption = "Code is available here - link", font.caption = 10)
 ggcoxdiagnostics(coxph.fit2, type = "schoenfeld", ox.scale = "observation.id")
 ggcoxdiagnostics(coxph.fit2, type = "scaledsch", ox.scale = "time")
 

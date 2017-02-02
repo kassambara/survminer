@@ -17,11 +17,12 @@ NULL
 #'@param f parameter of \link{lowess}.
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
 #'@param ylab y axis label.
+#'@param title the title of the final \link{grob} (\code{top} in \link{arrangeGrob})
+#'@param caption the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
-#'@param font.main,font.x,font.y,font.tickslab a vector of length 3
+#'@param font.x,font.y,font.tickslab a vector of length 3
 #'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
-#'  xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
 #'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 #'  font.x = "bold", to change only font face.
 #'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
@@ -35,20 +36,22 @@ NULL
 #' library(survival)
 #' data(mgus)
 #' res.cox <- coxph(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
-#'      age + I(log(age)^2) + I(sqrt(age)), data = mgus)
-#'
+#'     age + I(log(age)^2) + I(sqrt(age)), data = mgus)
 #' ggcoxfunctional(res.cox, point.col = "blue", point.alpha = 0.5)
+#' ggcoxfunctional(res.cox, point.col = "blue", point.alpha = 0.5,
+#'                 title = "Pass the title", caption = "Pass the caption")
 #'
 #'
 #'@describeIn ggcoxfunctional Functional Form of Continuous Variable in Cox Proportional Hazards Model.
 #'@export
 ggcoxfunctional <- function (formula, data, fit, iter = 0, f = 0.6,
                              point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
-                             font.main = c(16, "plain", "black"),
+                             #font.title = c(16, "plain", "black"),
                              font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
                              font.tickslab = c(12, "plain", "black"),
                              xlim = NULL, ylim = NULL,
                              ylab = "Martingale Residuals \nof Null Cox Model",
+                             title = NULL, caption = NULL,
                              ggtheme = theme_classic2()){
 
   if(!missing(formula) & !missing(data) ){
@@ -95,13 +98,15 @@ ggcoxfunctional <- function (formula, data, fit, iter = 0, f = 0.6,
       ylab(NULL) +
       ggplot2::coord_cartesian(xlim = xlim, ylim = ylim) -> gplot
 
-    gplot <-.labs(p = gplot, font.main = font.main, font.x = font.x, font.y = font.y)
+    gplot <-.labs(p = gplot, font.x = font.x, font.y = font.y)
     gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)
   }) -> plots
 
   names(plots) <- explanatory.variables.names
   class(plots) <- c("ggcoxfunctional", "list")
   attr(plots, "y.text") <- ylab
+  attr(plots, "caption") <- caption
+  attr(plots, "title") <- title
   plots
 
 }
@@ -126,6 +131,9 @@ print.ggcoxfunctional <- function(x, ..., newpage = TRUE){
     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
   }
   y.text <- attr(plots, "y.text")
-  do.call(gridExtra::grid.arrange, c(grobs, left = y.text, newpage = newpage))
+  caption <- attr(plots, "caption")
+  title <- attr(plots, "title")
+  do.call(gridExtra::grid.arrange, c(grobs, left = y.text, top = title,
+                                     bottom = caption, newpage = newpage))
 }
 

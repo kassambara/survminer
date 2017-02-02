@@ -118,7 +118,7 @@ survMisc:::autoplot.survfit(fit) # no customization
 
 ```
 
-Why colours are not asigned to any group? Where is the legend? Why there is so much white space to the right?
+*Why colours are not asigned to any group? Where is the legend? Why there is so much white space to the right?* (Those were questions for the version of survMisc where this was an issue.) Where is OX axis?
 
 ```{r, fig.width=10}
 survMisc:::autoplot.survfit( # with some hard customization

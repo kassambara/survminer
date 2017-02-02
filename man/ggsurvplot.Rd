@@ -21,11 +21,18 @@ ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
   font.legend = c(10, "plain", "black"), risk.table = FALSE,
   risk.table.title = NULL, risk.table.subtitle = NULL,
   risk.table.caption = NULL, risk.table.col = "black",
-  risk.table.fontsize = 4.5, risk.table.y.text = TRUE,
-  risk.table.y.text.col = TRUE, risk.table.height = 0.25,
-  surv.plot.height = 0.75, ncensor.plot.height = 0.25,
-  ncensor.plot = FALSE, ncensor.plot.title = NULL,
-  ncensor.plot.subtitle = NULL, ncensor.plot.caption = NULL,
+  risk.table.fontsize = 4.5, font.risk.table.title = font.main,
+  font.risk.table.subtitle = font.submain,
+  font.risk.table.caption = font.caption, font.risk.table.x = font.x,
+  font.risk.table.y = font.y, font.risk.table.tickslab = font.tickslab,
+  risk.table.y.text = TRUE, risk.table.y.text.col = TRUE,
+  risk.table.height = 0.25, surv.plot.height = 0.75,
+  ncensor.plot.height = 0.25, ncensor.plot = FALSE,
+  ncensor.plot.title = NULL, ncensor.plot.subtitle = NULL,
+  ncensor.plot.caption = NULL, font.ncensor.plot.title = font.main,
+  font.ncensor.plot.subtitle = font.submain,
+  font.ncensor.plot.caption = font.caption, font.ncensor.plot.x = font.x,
+  font.ncensor.plot.y = font.y, font.ncensor.plot.tickslab = font.tickslab,
   surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_classic2(),
   ...)
 
@@ -128,6 +135,13 @@ to show both absolute number and percentage.}}
 
 \item{risk.table.fontsize}{font size to be used for the risk table.}
 
+\item{font.risk.table.title, font.risk.table.subtitle, font.risk.table.caption, font.risk.table.x, font.risk.table.y, font.risk.table.tickslab}{a vector of length 3
+indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
+xlab and ylab and axis tick labels for the \code{risk.table = TRUE}, respectively.
+For example \emph{font.x = c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
+font.x = "bold", to change only font face.}
+
 \item{risk.table.y.text}{logical. Default is TRUE. If FALSE, risk table y axis
 tick labels will be hidden.}
 
@@ -151,6 +165,13 @@ time t is plotted. Default is FALSE.}
 \item{ncensor.plot.subtitle}{The subtitle to be used for the censor plot. Used when \code{ncensor.plot = TRUE}.}
 
 \item{ncensor.plot.caption}{The caption to be used for the censor plot. Used when \code{ncensor.plot = TRUE}.}
+
+\item{font.ncensor.plot.title, font.ncensor.plot.subtitle, font.ncensor.plot.caption, font.ncensor.plot.x, font.ncensor.plot.y, font.ncensor.plot.tickslab}{a vector of length 3
+indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
+xlab and ylab and axis tick labels for the \code{ncensor.plot = TRUE}, respectively.
+For example \emph{font.x = c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
+font.x = "bold", to change only font face.}
 
 \item{surv.median.line}{character vector for drawing a horizontal/vertical
 line at median survival. Allowed values include one of c("none", "hv", "h",
@@ -348,11 +369,45 @@ ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estim
   risk.table.subtitle = "and remember about censoring.",
   risk.table.caption = "source code: website.com",
   risk.table.height = 0.35,
+  ######### ncensor plot #######
+  ncensor.plot = TRUE,
   ncensor.plot.title = "Number of censorings",
   ncensor.plot.subtitle = "over the time.",
   ncensor.plot.caption = "data available at data.com",
   ncensor.plot.height = 0.35)
 
+ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+  caption = "created with survminer",
+  font.main = c(16, "bold", "darkblue"),
+  font.submain = c(15, "bold.italic", "purple"),
+  font.caption = c(14, "plain", "orange"),
+  font.x = c(14, "bold.italic", "red"),
+  font.y = c(14, "bold.italic", "darkred"),
+  font.tickslab = c(12, "plain", "darkgreen"),
+  ########## risk table #########,
+  risk.table = TRUE,
+  risk.table.title = "Note the risk set sizes",
+  risk.table.subtitle = "and remember about censoring.",
+  risk.table.caption = "source code: website.com",
+  risk.table.height = 0.35,
+  font.risk.table.title = c(13, "bold.italic", "green"),
+  font.risk.table.sutitle = c(15, "bold", "pink"),
+  font.risk.table.caption = c(11, "plain", "darkgreen"),
+  font.risk.table.x = c(8, "bold.italic", "orange"),
+  font.risk.table.y = c(11, "bold.italic", "darkgreen"),
+  font.risk.table.tickslab = c(9, "bold", "red"),
+  ######### ncensor plot ###################
+  ncensor.plot = TRUE,
+  ncensor.plot.title = "Number of censorings",
+  ncensor.plot.subtitle = "over the time.",
+  ncensor.plot.caption = "data available at data.com",
+  ncensor.plot.height = 0.35,
+  font.ncensor.plot.title = c(13, "bold.italic", "green"),
+  font.ncensor.plot.sutitle = c(15, "bold", "pink"),
+  font.ncensor.plot.caption = c(11, "plain", "darkgreen"),
+  font.ncensor.plot.x = c(8, "bold.italic", "orange"),
+  font.ncensor.plot.y = c(11, "bold.italic", "darkgreen"),
+  font.ncensor.plot.tickslab = c(9, "bold", "red"))
 
 
 
