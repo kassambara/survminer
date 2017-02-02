@@ -31,6 +31,8 @@
 
 - It is possible to secify `title`, `subtitle` and `caption` for `ggcoxdiagnostics` ([@MarcinKosinski, #139](https://github.com/kassambara/survminer/issues/139)) and `font`s for them.
 
+- It is possible to secify global `caption` for `ggcoxzph` ([@MarcinKosinski, #140](https://github.com/kassambara/survminer/issues/140)).
+
 - In `ggsurvplot()`, more information, about color palettes, have been added in the details section of the documentation ([#100](https://github.com/kassambara/survminer/issues/100)).  
 
 - The R package `maxstat` doesn't support very well an object of class `tbl_df`. To fix this issue, now, in the `surv_cutpoint()` function, the input data is systematically transformed into a standard data.frame format ([@MarcinKosinski, #104](https://github.com/kassambara/survminer/issues/104)).

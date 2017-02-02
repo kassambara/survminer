@@ -7,9 +7,9 @@
 \usage{
 ggcoxzph(fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
   point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
-  font.main = c(16, "plain", "black"), font.x = c(14, "plain", "black"),
-  font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain", "black"),
-  ggtheme = theme_classic2())
+  font.main = c(16, "plain", "black"), caption = NULL, font.x = c(14,
+  "plain", "black"), font.y = c(14, "plain", "black"), font.tickslab = c(12,
+  "plain", "black"), ggtheme = theme_classic2())
 
 \method{print}{ggcoxzph}(x, ..., newpage = TRUE)
 }
@@ -34,10 +34,11 @@ are produced in turn for each variable of a model.}
 
 \item{font.main, font.x, font.y, font.tickslab}{a vector of length 3
 indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
-xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of titles in subplots, xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
 c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 font.x = "bold", to change only font face.}
+
+\item{caption}{the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
@@ -67,9 +68,9 @@ cox.zph.fit <- cox.zph(fit)
 # plot all variables
 ggcoxzph(cox.zph.fit)
 # plot all variables in specified order
-ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx", "age"))
+ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx", "age"), font.main = 12)
 # plot specified variables in specified order
-ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx"))
+ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx"), font.main = 12, caption = "Caption goes here")
 
 }
 \author{

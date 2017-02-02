@@ -12,10 +12,10 @@
 #'@param var the set of variables for which plots are desired. By default, plots
 #'  are produced in turn for each variable of a model.
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
+#'@param caption the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})
 #'@param font.main,font.x,font.y,font.tickslab a vector of length 3
 #'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
-#'  xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of titles in subplots, xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
 #'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 #'  font.x = "bold", to change only font face.
 #'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
@@ -32,15 +32,16 @@
 #' # plot all variables
 #' ggcoxzph(cox.zph.fit)
 #' # plot all variables in specified order
-#' ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx", "age"))
+#' ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx", "age"), font.main = 12)
 #' # plot specified variables in specified order
-#' ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx"))
+#' ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx"), font.main = 12, caption = "Caption goes here")
 #'
 #'@describeIn ggcoxzph Graphical Test of Proportional Hazards using ggplot2.
 #'@export
 ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
                       point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
                       font.main = c(16, "plain", "black"),
+                      caption = NULL,
                       font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
                       font.tickslab = c(12, "plain", "black"),
                       ggtheme = theme_classic2()){
@@ -95,7 +96,7 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
   plots <- list()
   lapply(var, function(i) {
     invisible(round(x$table[i, 3],4) -> pval)
-    ggplot() + ggtitle(paste0('Schoenfeld Individual Test p: ', pval)) + ggtheme -> gplot
+    ggplot() + labs(title = paste0('Schoenfeld Individual Test p: ', pval)) + ggtheme -> gplot
     y <- yy[, i]
     yhat <- pmat %*% qr.coef(qmat, y)
     if (resid)
@@ -135,7 +136,7 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
         geom_line(aes( x = pred.x, y = ylow), lty = "dashed")
     }
 
-    gplot <-.labs(p = gplot, font.main = font.main, font.x = font.x, font.y = font.y)
+    gplot <-.labs(p = gplot, font.x = font.x, font.y = font.y, font.main = font.main)
     gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)
 
 
@@ -147,6 +148,7 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
     global_p <- x$table["GLOBAL", 3]
   else global_p <- NULL # Univariate Cox
   attr(plots, "global_pval") <- global_p
+  attr(plots, "caption") <- caption
   plots
 
 }
@@ -174,6 +176,9 @@ print.ggcoxzph <- function(x, ..., newpage = TRUE){
 
   if(!is.null(pval)) main <- paste0("Global Schoenfeld Test p: ", signif(pval, 4), "\n")
   else main <- NULL
-  do.call(gridExtra::grid.arrange, c(grobs, top = main, newpage = newpage))
+
+  caption <- attr(plots, "caption")
+
+  do.call(gridExtra::grid.arrange, c(grobs, top = main, bottom = caption, newpage = newpage))
 }
 
