@@ -84,12 +84,13 @@
 fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw">Surv</span>(times, patient.vital_status) ~<span class="st"> </span>admin.disease_code,
                <span class="dt">data =</span> BRCAOV.survInfo)
 <span class="co"># Visualize with survminer</span>
-<span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">risk.table =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> BRCAOV.survInfo, <span class="dt">risk.table =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-3-1.png" width="960"></p>
 <p>This simple plot presents, in an elegant way, estimates of survival probability depending on days from cancer diagnostics grouped by cancer types and an informative risk set table, which shows the number of patients that were under observation in the specific period of time. Survival analysis is a specific field of data analysis because of the censored time to event data, so risk set size is a must in visual inference.</p>
 <p>After few improvements (<a href="https://github.com/kassambara/survminer/issues/1">#1</a>, <a href="https://github.com/kassambara/survminer/issues/2">#2</a>, <a href="https://github.com/kassambara/survminer/issues/3">#3</a>, <a href="https://github.com/kassambara/survminer/issues/4">#4</a>, <a href="https://github.com/kassambara/survminer/issues/7">#7</a>, <a href="https://github.com/kassambara/survminer/issues/8">#8</a>, <a href="https://github.com/kassambara/survminer/issues/12">#12</a>, <a href="https://github.com/kassambara/survminer/issues/28">#28</a>), made by Alboukadel in version 0.2.0, one can create a powerful, informative survival plot with such specification of parameters</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(
    fit,                     <span class="co"># survfit object with calculated statistics.</span>
+   <span class="dt">data =</span> BRCAOV.survInfo,  <span class="co"># data used to fit survival curves. </span>
    <span class="dt">risk.table =</span> <span class="ot">TRUE</span>,       <span class="co"># show risk table.</span>
    <span class="dt">pval =</span> <span class="ot">TRUE</span>,             <span class="co"># show p-value of log-rank test.</span>
    <span class="dt">conf.int =</span> <span class="ot">TRUE</span>,         <span class="co"># show confidence intervals for </span>
@@ -130,7 +131,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <span class="kw">library</span>(survMisc)
 survMisc:::<span class="kw">autoplot.survfit</span>(fit) <span class="co"># no customization</span></code></pre></div>
 <p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-7-1.png" width="960"></p>
-<p>Why colours are not asigned to any group? Where is the legend? Why there is so much white space to the right?</p>
+<p><em>Why colours are not asigned to any group? Where is the legend? Why there is so much white space to the right?</em> (Those were questions for the version of survMisc where this was an issue.) Where is OX axis?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">survMisc:::<span class="kw">autoplot.survfit</span>( <span class="co"># with some hard customization</span>
    fit,
    <span class="dt">type =</span> <span class="st">"fill"</span>,

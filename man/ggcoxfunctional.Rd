@@ -5,12 +5,12 @@
 \alias{print.ggcoxfunctional}
 \title{Functional Form of Continuous Variable in Cox Proportional Hazards Model}
 \usage{
-ggcoxfunctional(formula, data, fit, iter = 0, f = 0.6, point.col = "red",
-  point.size = 1, point.shape = 19, point.alpha = 1, font.main = c(16,
-  "plain", "black"), font.x = c(14, "plain", "black"), font.y = c(14,
-  "plain", "black"), font.tickslab = c(12, "plain", "black"), xlim = NULL,
-  ylim = NULL, ylab = "Martingale Residuals \\nof Null Cox Model",
-  ggtheme = theme_classic2())
+ggcoxfunctional(formula, data = NULL, fit, iter = 0, f = 0.6,
+  point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
+  font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
+  font.tickslab = c(12, "plain", "black"), xlim = NULL, ylim = NULL,
+  ylab = "Martingale Residuals \\nof Null Cox Model", title = NULL,
+  caption = NULL, ggtheme = theme_classic2())
 
 \method{print}{ggcoxfunctional}(x, ..., newpage = TRUE)
 }
@@ -27,16 +27,19 @@ ggcoxfunctional(formula, data, fit, iter = 0, f = 0.6, point.col = "red",
 
 \item{point.col, point.size, point.shape, point.alpha}{color, size, shape and visibility to be used for points.}
 
-\item{font.main, font.x, font.y, font.tickslab}{a vector of length 3
+\item{font.x, font.y, font.tickslab}{a vector of length 3
 indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
-xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
+"bold", "italic", "bold.italic") and the color (e.g.: "red") of xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
 c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 font.x = "bold", to change only font face.}
 
 \item{xlim, ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
 
 \item{ylab}{y axis label.}
+
+\item{title}{the title of the final \link{grob} (\code{top} in \link{arrangeGrob})}
+
+\item{caption}{the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
@@ -65,9 +68,10 @@ should be linear to satisfy cox proportional hazards model assumptions.
 library(survival)
 data(mgus)
 res.cox <- coxph(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
-     age + I(log(age)^2) + I(sqrt(age)), data = mgus)
-
-ggcoxfunctional(res.cox, point.col = "blue", point.alpha = 0.5)
+    age + I(log(age)^2) + I(sqrt(age)), data = mgus)
+ggcoxfunctional(res.cox,  data = mgus, point.col = "blue", point.alpha = 0.5)
+ggcoxfunctional(res.cox, data = mgus, point.col = "blue", point.alpha = 0.5,
+                title = "Pass the title", caption = "Pass the caption")
 
 
 }

@@ -11,20 +11,29 @@
    
 
 ## Major changes
+   
+- Additional `data` argument added to the `ggsurvplot()` function ([@kassambara, #142](https://github.com/kassambara/survminer/issues/142)). Now, it's recommended to pass to the function, the data used to fit survival curves. This will avoid the error generated when trying to use the `ggsurvplot()` function inside another functions ([@zzawadz, #125](https://github.com/kassambara/survminer/issues/125)).
 
-- New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105))
+- New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105)) ([@MarcinKosinski, #106](https://github.com/kassambara/survminer/issues/106))
     - It is possible to specify subtitle (param `submain`) and caption (param `caption`) for the `curve` part of the `ggsurvplot`.
     - It is possible to specify subtitle (param `risk.table.subtitle`) and caption (param `risk.table.caption`) for the `table` part of the `ggsurvplot`.
     - It is possible to specify title (param `ncens.plot.title`), subtitle (param `ncens.plot.subtitle`) and caption (param `ncens.plot.caption`) for the `ncens` part of the `ggsurvplot`.
     - ncens.plot part of the `ggsurvplot` has no integer values on y axis (not real as before), as it only can take integer values.
-    - README was extended with `uber platinium customization` example. 
+    - Fonts can be specified directly for `curve`, `risk.table` and `ncensor.plot` elements ([@MarcinKosinski, #106](https://github.com/kassambara/survminer/issues/106)).
+    - README was extended with `uber platinium (premium) customization` examples. 
     
-- The design of `ggcoxfunctional()` has been changed to be consistent with the other functions in the survminer package. Now, `ggcoxfunctional()` works with coxph objects not formulas. The arguments formula and data are now deprecated ([@pbiecek, #115](https://github.com/kassambara/survminer/issues/115)).
+- The design of `ggcoxfunctional()` has been changed to be consistent with the other functions in the survminer package. Now, `ggcoxfunctional()` works with coxph objects not formulas. The arguments formula is now deprecated ([@pbiecek, #115](https://github.com/kassambara/survminer/issues/115)).
    
 - In the `ggcoxdiagnostics()` function, it's now possible to plot Time in the OX axis ([@pbiecek, #124](https://github.com/kassambara/survminer/issues/124)). This is convenient for some residuals like Schoenfeld. The `linear.predictions` parameter has been replaced with `ox.scale = c("linear.predictions", "time", "observation.id")`.
      
      
 ## Minor changes
+
+- It is possible to secify `title` and `caption` for `ggcoxfunctional` ([@MarcinKosinski, #138](https://github.com/kassambara/survminer/issues/138)) (`font.main` was removed as it was unused.)
+
+- It is possible to secify `title`, `subtitle` and `caption` for `ggcoxdiagnostics` ([@MarcinKosinski, #139](https://github.com/kassambara/survminer/issues/139)) and `font`s for them.
+
+- It is possible to secify global `caption` for `ggcoxzph` ([@MarcinKosinski, #140](https://github.com/kassambara/survminer/issues/140)).
 
 - In `ggsurvplot()`, more information, about color palettes, have been added in the details section of the documentation ([#100](https://github.com/kassambara/survminer/issues/100)).  
 

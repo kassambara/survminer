@@ -60,7 +60,7 @@ library(survival)
 fit <- survfit(Surv(times, patient.vital_status) ~ admin.disease_code,
                data = BRCAOV.survInfo)
 # Visualize with survminer
-ggsurvplot(fit, risk.table = TRUE)
+ggsurvplot(fit, data = BRCAOV.survInfo, risk.table = TRUE)
 ```
 
 This simple plot presents, in an elegant way, estimates of survival probability depending on days from cancer diagnostics grouped by cancer types and an informative risk set table, which shows the number of patients that were under observation in the specific period of time. Survival analysis is a specific field of data analysis because of the censored time to event data, so risk set size is a must in visual inference.
@@ -71,6 +71,7 @@ After few improvements ([#1](https://github.com/kassambara/survminer/issues/1), 
 ```{r, fig.width=10}
 ggsurvplot(
    fit,                     # survfit object with calculated statistics.
+   data = BRCAOV.survInfo,  # data used to fit survival curves. 
    risk.table = TRUE,       # show risk table.
    pval = TRUE,             # show p-value of log-rank test.
    conf.int = TRUE,         # show confidence intervals for 
@@ -118,7 +119,7 @@ survMisc:::autoplot.survfit(fit) # no customization
 
 ```
 
-Why colours are not asigned to any group? Where is the legend? Why there is so much white space to the right?
+*Why colours are not asigned to any group? Where is the legend? Why there is so much white space to the right?* (Those were questions for the version of survMisc where this was an issue.) Where is OX axis?
 
 ```{r, fig.width=10}
 survMisc:::autoplot.survfit( # with some hard customization

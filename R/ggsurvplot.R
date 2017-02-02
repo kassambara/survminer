@@ -7,6 +7,8 @@
 #'Drawing Survival Curves Using ggplot2
 #'@description Drawing survival curves using ggplot2
 #'@param fit an object of class survfit.
+#'@param data a dataset used to fit survival curves. If not supplied then data
+#'  will be extracted from 'fit' object.
 #'@param fun an arbitrary function defining a transformation of the survival
 #'  curve.  Often used transformations can be specified with a character
 #'  argument: "event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the
@@ -35,13 +37,32 @@
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
-#'@param main,submain,caption,xlab,ylab main title, subtitle, caption and axis labels
-#'@param font.main,font.submain,font.caption,font.x,font.y,font.tickslab,font.legend a vector of length 3
-#'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
-#'  xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
-#'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-#'  font.x = "bold", to change only font face.
+#'@param main,submain,caption,xlab,ylab main title, subtitle, caption and axis
+#'  labels
+#'@param
+#'  font.main,font.submain,font.caption,font.x,font.y,font.tickslab,font.legend
+#'  a vector of length 3 indicating respectively the size (e.g.: 14), the style
+#'  (e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
+#'  of main title, subtitle, caption, xlab and ylab and axis tick labels,
+#'  respectively. For example \emph{font.x = c(14, "bold", "red")}.  Use font.x
+#'  = 14, to change only font size; or use font.x = "bold", to change only font
+#'  face.
+#'@param
+#'  font.risk.table.title,font.risk.table.subtitle,font.risk.table.caption,font.risk.table.x,font.risk.table.y,font.risk.table.tickslab
+#'  a vector of length 3 indicating respectively the size (e.g.: 14), the style
+#'  (e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
+#'  of main title, subtitle, caption, xlab and ylab and axis tick labels for the
+#'  \code{risk.table = TRUE}, respectively. For example \emph{font.x = c(14,
+#'  "bold", "red")}.  Use font.x = 14, to change only font size; or use font.x =
+#'  "bold", to change only font face.
+#'@param
+#'  font.ncensor.plot.title,font.ncensor.plot.subtitle,font.ncensor.plot.caption,font.ncensor.plot.x,font.ncensor.plot.y,font.ncensor.plot.tickslab
+#'  a vector of length 3 indicating respectively the size (e.g.: 14), the style
+#'  (e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
+#'  of main title, subtitle, caption, xlab and ylab and axis tick labels for the
+#'  \code{ncensor.plot = TRUE}, respectively. For example \emph{font.x = c(14,
+#'  "bold", "red")}.  Use font.x = 14, to change only font size; or use font.x =
+#'  "bold", to change only font face.
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
 #'@param legend character specifying legend position. Allowed values are one of
 #'  c("top", "bottom", "left", "right", "none"). Default is "top" side position.
@@ -72,13 +93,19 @@
 #'  the value when you have many strata. Default is 0.25. Ignored when
 #'  risk.table = FALSE.
 #'@param surv.plot.height the height of the survival plot on the grid. Default
-#'  is 0.75. Ignored when risk.table = FALSE. \code{1-risk.table.height - ncensor.plot.height} when \code{risk.table = TRUE} and \code{ncensor.plot = TRUE}
+#'  is 0.75. Ignored when risk.table = FALSE. \code{1-risk.table.height -
+#'  ncensor.plot.height} when \code{risk.table = TRUE} and \code{ncensor.plot =
+#'  TRUE}
 #'@param ncensor.plot logical value. If TRUE, the number of censored subjects at
 #'  time t is plotted. Default is FALSE.
-#'@param ncensor.plot.title The title to be used for the censor plot. Used when \code{ncensor.plot = TRUE}.
-#'@param ncensor.plot.subtitle The subtitle to be used for the censor plot. Used when \code{ncensor.plot = TRUE}.
-#'@param ncensor.plot.caption The caption to be used for the censor plot. Used when \code{ncensor.plot = TRUE}.
-#'@param ncensor.plot.height The height of the censor plot. Used when \code{ncensor.plot = TRUE}.
+#'@param ncensor.plot.title The title to be used for the censor plot. Used when
+#'  \code{ncensor.plot = TRUE}.
+#'@param ncensor.plot.subtitle The subtitle to be used for the censor plot. Used
+#'  when \code{ncensor.plot = TRUE}.
+#'@param ncensor.plot.caption The caption to be used for the censor plot. Used
+#'  when \code{ncensor.plot = TRUE}.
+#'@param ncensor.plot.height The height of the censor plot. Used when
+#'  \code{ncensor.plot = TRUE}.
 #'@param surv.median.line character vector for drawing a horizontal/vertical
 #'  line at median survival. Allowed values include one of c("none", "hv", "h",
 #'  "v"). v: vertical, h:horizontal.
@@ -87,13 +114,21 @@
 #'  \code{\link[ggplot2]{theme}}.
 #'@param ... other arguments to be passed to ggplot2 geom_*() functions such as
 #'  linetype, size, ...
-#'@param log.rank.weights The name for the type of weights to be used in computing the p-value for log-rank test.
-#'By default \code{survdiff} is used to calculate regular log-rank test (with weights == 1). A user can specify
-#'\code{"1", "n", "sqrtN", "S1", "S2", "FH"} to use weights specified in \link[survMisc]{comp}, so that weight correspond to the test as
-#': 1 - log-rank, n - Gehan-Breslow (generalized Wilcoxon), sqrtN - Tarone-Ware, S1 - Peto-Peto's modified survival estimate, S2 - modified Peto-Peto (by Andersen), FH - Fleming-Harrington(p=1, q=1).
-#'@param pval.method whether to add a text with the test name used for calculating the pvalue, that corresponds to survival curves' comparison - used only when \code{pval=TRUE}
-#'@param pval.method.size the same as \code{pval.size} but for displaying \code{log.rank.weights} name
-#'@param pval.method.coord the same as \code{pval.coord} but for displaying \code{log.rank.weights} name
+#'@param log.rank.weights The name for the type of weights to be used in
+#'  computing the p-value for log-rank test. By default \code{survdiff} is used
+#'  to calculate regular log-rank test (with weights == 1). A user can specify
+#'  \code{"1", "n", "sqrtN", "S1", "S2", "FH"} to use weights specified in
+#'  \link[survMisc]{comp}, so that weight correspond to the test as : 1 -
+#'  log-rank, n - Gehan-Breslow (generalized Wilcoxon), sqrtN - Tarone-Ware, S1
+#'  - Peto-Peto's modified survival estimate, S2 - modified Peto-Peto (by
+#'  Andersen), FH - Fleming-Harrington(p=1, q=1).
+#'@param pval.method whether to add a text with the test name used for
+#'  calculating the pvalue, that corresponds to survival curves' comparison -
+#'  used only when \code{pval=TRUE}
+#'@param pval.method.size the same as \code{pval.size} but for displaying
+#'  \code{log.rank.weights} name
+#'@param pval.method.coord the same as \code{pval.coord} but for displaying
+#'  \code{log.rank.weights} name
 #'@details \strong{legend position}: The argument \strong{legend} can be also a
 #'  numeric vector c(x,y). In this case it is possible to position the legend
 #'  inside the plotting area. x and y are the coordinates of the legend box.
@@ -123,13 +158,13 @@
 #'fit<- survfit(Surv(time, status) ~ sex, data = lung)
 #'
 #'# Drawing survival curves
-#'ggsurvplot(fit)
+#'ggsurvplot(fit, data = lung)
 #'
 #'# Change font size, style and color
 #'#++++++++++++++++++++++++++++++++++++
 #'\dontrun{
 #' # Change font size, style and color at the same time
-#' ggsurvplot(fit, main = "Survival curve",
+#' ggsurvplot(fit, data = lung,  main = "Survival curve",
 #'    font.main = c(16, "bold", "darkblue"),
 #'    font.x = c(14, "bold.italic", "red"),
 #'    font.y = c(14, "bold.italic", "darkred"),
@@ -140,12 +175,12 @@
 #'#++++++++++++++++++++++++++++++++++++
 #'
 #'# Change the legend title and labels
-#'ggsurvplot(fit, legend = "bottom",
+#'ggsurvplot(fit, data = lung, legend = "bottom",
 #'           legend.title = "Sex",
 #'           legend.labs = c("Male", "Female"))
 #'
 #'# Specify legend position by its coordinates
-#'ggsurvplot(fit, legend = c(0.2, 0.2))
+#'ggsurvplot(fit, data = lung, legend = c(0.2, 0.2))
 #'
 #'
 #'# format
@@ -153,7 +188,7 @@
 #'# change line size --> 1
 #'# Change line types by groups (i.e. "strata")
 #'# and change color palette
-#'ggsurvplot(fit,  size = 1,  # change line size
+#'ggsurvplot(fit, data = lung, size = 1,  # change line size
 #'           linetype = "strata", # change line type by groups
 #'           break.time.by = 250, # break time axis by 250
 #'           palette = c("#E7B800", "#2E9FDF"), # custom color palette
@@ -163,13 +198,13 @@
 #'
 #'# Use brewer color palette "Dark2"
 #'# Add risk table
-#'ggsurvplot(fit, linetype = "strata",
+#'ggsurvplot(fit, data = lung, linetype = "strata",
 #'           conf.int = TRUE, pval = TRUE,
 #'           palette = "Dark2", risk.table = TRUE)
 #'
 #'
 #'# Change color, linetype by strata, risk.table color by strata
-#'ggsurvplot(fit,
+#'ggsurvplot(fit, data = lung,
 #'           pval = TRUE, conf.int = TRUE,
 #'           risk.table = TRUE, # Add risk table
 #'           risk.table.col = "strata", # Change risk table color by groups
@@ -195,7 +230,7 @@
 #'# Visualize: add p-value, chang y limits
 #'# change color using brewer palette
 #'# Adjust risk table and survival plot heights
-#'ggsurvplot(fit2, pval = TRUE,
+#'ggsurvplot(fit2, data = colon, pval = TRUE,
 #'           break.time.by = 400,
 #'           risk.table = TRUE,
 #'           risk.table.col = "strata",
@@ -218,7 +253,8 @@
 #'
 #'# Visualize
 #'#++++++++++++++++++++++++++++++++++++
-#' ggsurv <- ggsurvplot(fit3, fun = "cumhaz", conf.int = TRUE,
+#' ggsurv <- ggsurvplot(fit3, data = colon,
+#'   fun = "cumhaz", conf.int = TRUE,
 #'   risk.table = TRUE, risk.table.col="strata",
 #'   ggtheme = theme_bw())
 #'
@@ -253,7 +289,8 @@
 #'# Example 5: Playing with fonts and texts
 #'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #'
-#'ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+#'ggsurvplot(fit, data = lung,
+#'   main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
 #'   caption = "created with survminer",
 #'   font.main = c(16, "bold", "darkblue"),
 #'   font.submain = c(15, "bold.italic", "purple"),
@@ -267,17 +304,52 @@
 #'   risk.table.subtitle = "and remember about censoring.",
 #'   risk.table.caption = "source code: website.com",
 #'   risk.table.height = 0.35,
+#'   ######### ncensor plot #######
+#'   ncensor.plot = TRUE,
 #'   ncensor.plot.title = "Number of censorings",
 #'   ncensor.plot.subtitle = "over the time.",
 #'   ncensor.plot.caption = "data available at data.com",
 #'   ncensor.plot.height = 0.35)
 #'
+#' ggsurvplot(fit, data = lung,
+#'   main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+#'   caption = "created with survminer",
+#'   font.main = c(16, "bold", "darkblue"),
+#'   font.submain = c(15, "bold.italic", "purple"),
+#'   font.caption = c(14, "plain", "orange"),
+#'   font.x = c(14, "bold.italic", "red"),
+#'   font.y = c(14, "bold.italic", "darkred"),
+#'   font.tickslab = c(12, "plain", "darkgreen"),
+#'   ########## risk table #########,
+#'   risk.table = TRUE,
+#'   risk.table.title = "Note the risk set sizes",
+#'   risk.table.subtitle = "and remember about censoring.",
+#'   risk.table.caption = "source code: website.com",
+#'   risk.table.height = 0.35,
+#'   font.risk.table.title = c(13, "bold.italic", "green"),
+#'   font.risk.table.sutitle = c(15, "bold", "pink"),
+#'   font.risk.table.caption = c(11, "plain", "darkgreen"),
+#'   font.risk.table.x = c(8, "bold.italic", "orange"),
+#'   font.risk.table.y = c(11, "bold.italic", "darkgreen"),
+#'   font.risk.table.tickslab = c(9, "bold", "red"),
+#'   ######### ncensor plot ###################
+#'   ncensor.plot = TRUE,
+#'   ncensor.plot.title = "Number of censorings",
+#'   ncensor.plot.subtitle = "over the time.",
+#'   ncensor.plot.caption = "data available at data.com",
+#'   ncensor.plot.height = 0.35,
+#'   font.ncensor.plot.title = c(13, "bold.italic", "green"),
+#'   font.ncensor.plot.sutitle = c(15, "bold", "pink"),
+#'   font.ncensor.plot.caption = c(11, "plain", "darkgreen"),
+#'   font.ncensor.plot.x = c(8, "bold.italic", "orange"),
+#'   font.ncensor.plot.y = c(11, "bold.italic", "darkgreen"),
+#'   font.ncensor.plot.tickslab = c(9, "bold", "red"))
 #'
 #'
 #'
 #'@describeIn ggsurvplot Draws survival curves using ggplot2.
 #'@export
-ggsurvplot <- function(fit, fun = NULL,
+ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        color = NULL, palette = "hue", linetype = 1, break.time.by = NULL,
                        surv.scale = c("default", "percent"),
                        conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
@@ -290,16 +362,24 @@ ggsurvplot <- function(fit, fun = NULL,
                        font.caption = c(15, "plain", "black"),
                        font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
                        font.tickslab = c(12, "plain", "black"),
-                       xlim = NULL, ylim = NULL,
+                        xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
                        font.legend = c(10, "plain", "black"),
                        risk.table = FALSE, risk.table.title = NULL, risk.table.subtitle = NULL, risk.table.caption = NULL,
                        risk.table.col = "black", risk.table.fontsize = 4.5,
+                       font.risk.table.title = font.main, font.risk.table.subtitle = font.submain,
+                       font.risk.table.caption = font.caption,
+                       font.risk.table.x = font.x, font.risk.table.y = font.y,
+                       font.risk.table.tickslab = font.tickslab,
                        risk.table.y.text = TRUE,
                        risk.table.y.text.col = TRUE,
                        risk.table.height = 0.25, surv.plot.height = 0.75, ncensor.plot.height = 0.25,
                        ncensor.plot = FALSE, ncensor.plot.title = NULL, ncensor.plot.subtitle = NULL, ncensor.plot.caption = NULL,
+                       font.ncensor.plot.title = font.main, font.ncensor.plot.subtitle = font.submain,
+                       font.ncensor.plot.caption = font.caption,
+                       font.ncensor.plot.x = font.x, font.ncensor.plot.y = font.y,
+                       font.ncensor.plot.tickslab = font.tickslab,
                        surv.median.line = c("none", "hv", "h", "v"),
                        ggtheme = theme_classic2(),
                        ...
@@ -333,7 +413,7 @@ ggsurvplot <- function(fit, fun = NULL,
   }
 
   # Data for survival plot
-  d <- surv_summary(fit)
+  d <- surv_summary(fit, data = data)
 
   # Number of strata and strata names
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -365,7 +445,7 @@ ggsurvplot <- function(fit, fun = NULL,
   # Connect surv data to the origin for plotting
   # time = 0, surv = 1
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  d <- .connect2origin(d, fit)
+  d <- .connect2origin(d, fit, data)
 
   #  Transformation of the survival curve
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -430,7 +510,7 @@ ggsurvplot <- function(fit, fun = NULL,
 
   # Add pvalue
   if(pval & !is.null(fit$strata)){
-    pval <- .get_pvalue(fit, method = log.rank.weights)
+    pval <- .get_pvalue(fit, method = log.rank.weights, data = data)
     pvaltxt <- ifelse(pval$val < 1e-04, "p < 0.0001",
                     paste("p =", signif(pval$val, 2)))
 
@@ -450,7 +530,7 @@ ggsurvplot <- function(fit, fun = NULL,
   # Drawing a horizontal line at 50% survival
   #if(surv.scale == "percent") fun <- "pct"
   if(surv.median.line %in% c("hv", "h", "v"))
-    p <- .add_surv_median(p, fit, type = surv.median.line, fun = fun)
+    p <- .add_surv_median(p, fit, type = surv.median.line, fun = fun, data = data)
 
   # Axis limits
   p <- p + ggplot2::expand_limits(x = 0, y = 0)
@@ -474,7 +554,7 @@ ggsurvplot <- function(fit, fun = NULL,
      #   legend.labs <- "All"
      #   risk.table.y.text.col <- FALSE
      # }
-     risktable <- .risk_table_plot(fit, times = times,
+     risktable <- .risk_table_plot(fit, data = data, times = times,
                                    xlim = xlim, legend.labs = legend.labs,
                                    risk.table.col = risk.table.col, palette = palette,
                                    ggtheme = ggtheme, risk.table.fontsize = risk.table.fontsize,
@@ -482,10 +562,11 @@ ggsurvplot <- function(fit, fun = NULL,
                                    risk.table.subtitle = risk.table.subtitle,
                                    risk.table.caption = risk.table.caption,
                                    risk.table.y.text = risk.table.y.text,
-                                   font.tickslab = font.tickslab, type = risk.table.type
+                                   font.tickslab = font.risk.table.tickslab, type = risk.table.type
                                    )
-     risktable <-.labs(risktable, font.main = font.main, font.x = font.x, font.y = font.y, xlab = xlab, ylab = legend.title,
-                       font.submain = font.submain, font.caption = font.caption)
+     risktable <-.labs(risktable, font.main = font.risk.table.title, font.x = font.risk.table.x,
+                       font.y = font.risk.table.y, xlab = xlab, ylab = legend.title,
+                       font.submain = font.risk.table.subtitle, font.caption = font.risk.table.caption)
 
      # risktable <- .set_ticks(risktable, font.tickslab = font.tickslab)
      risktable <- risktable + ggplot2::labs(color = legend.title, shape = legend.title)
@@ -529,9 +610,11 @@ ggsurvplot <- function(fit, fun = NULL,
         .ggfill(palette, breaks = strata_names, labels = legend.labs)
     }
 
-    ncensor_plot <-.labs(ncensor_plot, font.main = font.main, font.submain = font.submain, font.caption = font.caption,
-                         font.x = font.x, font.y = font.y, xlab = xlab, ylab = "n.censor")
-    ncensor_plot <- .set_ticks(ncensor_plot, font.tickslab = font.tickslab)
+    ncensor_plot <-.labs(ncensor_plot, font.main = font.ncensor.plot.title, font.submain = font.ncensor.plot.subtitle,
+                         font.caption = font.ncensor.plot.caption,
+                         font.x = font.ncensor.plot.x, font.y = font.ncensor.plot.y,
+                         xlab = xlab, ylab = "n.censor")
+    ncensor_plot <- .set_ticks(ncensor_plot, font.tickslab = font.ncensor.plot.tickslab)
     ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
                                                  title = ncensor.plot.title, subtitle = ncensor.plot.subtitle, caption = ncensor.plot.caption)
     if("left" %in% legend) ncensor_plot <- ncensor_plot + ggplot2::theme(legend.position = legend)
@@ -666,21 +749,24 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 
 
 # get survdiff pvalue
-.get_pvalue <- function(fit, method){
+.get_pvalue <- function(fit, method, data = NULL){
+
+  data <- .get_data(fit, data)
+
   # One group
   if(length(levels(summary(fit)$strata)) == 0)  return(list(val = NULL, method = NULL))
 
   if(method == "survdiff") {
     ssubset <- fit$call$subset
     if(is.null(ssubset))
-      sdiff <- survival::survdiff(eval(fit$call$formula), data = eval(fit$call$data))
+      sdiff <- survival::survdiff(eval(fit$call$formula), data = data)
     else
-      sdiff <- survival::survdiff(eval(fit$call$formula), data = eval(fit$call$data),
+      sdiff <- survival::survdiff(eval(fit$call$formula), data = data,
                                      subset = eval(fit$call$subset))
     pvalue <- stats::pchisq(sdiff$chisq, length(sdiff$n) - 1, lower.tail = FALSE)
     return(list(val = pvalue, method = "Log-rank (survdiff)"))
   } else {
-    tenfit <- ten(eval(fit$call$formula), data = eval(fit$call$data))
+    tenfit <- ten(eval(fit$call$formula), data = data)
     capture.output(comp(tenfit)) -> null_dev
     # comp modifies tenfit object (ten class: ?survMisc::ten)
     # and adds attributes with tests
@@ -697,7 +783,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 
 # Draw risk table
 # on the left
-.risk_table_plot <- function(fit, times, legend.labs = NULL,
+.risk_table_plot <- function(fit, data = NULL, times, legend.labs = NULL,
                              xlim = c(0, max(fit$time)),
                              risk.table.col = "black",
                              palette = NULL, ggtheme = ggplot2::theme_classic(),
@@ -731,8 +817,8 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
   risk.data$abs_pct.risk <- paste0(risk.data$n.risk, " (", risk.data$pct.risk, ")")
 
   if(!is.null(fit$strata)){
-    variables <- .get_variables(risk.data$strata, fit)
-    for(variable in variables) risk.data[[variable]] <- .get_variable_value(variable, risk.data$strata, fit)
+    variables <- .get_variables(risk.data$strata, fit, data)
+    for(variable in variables) risk.data[[variable]] <- .get_variable_value(variable, risk.data$strata, fit, data)
   }
 
 
@@ -807,7 +893,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 
 # Connect survival data to the origine
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-.connect2origin <- function(d, fit){
+.connect2origin <- function(d, fit, data = NULL){
   base <- d[1, , drop = FALSE]
   base[intersect(c('time', 'n.censor', 'std.err', "n.event"), colnames(base))] <- 0
   base[c('surv', 'upper', 'lower')] <- 1.0
@@ -822,8 +908,8 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
     base$strata <- factor(strata, levels = strata)
     # update variable values
     if(!inherits(fit, "survfit.cox")){
-    variables <- .get_variables(base$strata,  fit)
-    for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata, fit)
+    variables <- .get_variables(base$strata,  fit, data)
+    for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata, fit, data)
     }
   }
   d <- rbind(base, d)
@@ -883,7 +969,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 
 # Drawing horizontal line at 50% median survival
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-.add_surv_median <-function(p, fit, type = "hv", fun = NULL){
+.add_surv_median <-function(p, fit, type = "hv", fun = NULL, data = NULL){
   x1 <- x2 <- y1 <- y2 <- NULL
 
   draw_lines <- TRUE
@@ -908,8 +994,8 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
                        y2 = rep(med_y, length(surv_median)),
                        strata = .clean_strata(rownames(.table)))
       if(!is.null(fit$strata)){
-        variables <- .get_variables(df$strata, fit)
-        for(variable in variables) df[[variable]] <- .get_variable_value(variable, df$strata, fit)
+        variables <- .get_variables(df$strata, fit, data)
+        for(variable in variables) df[[variable]] <- .get_variable_value(variable, df$strata, fit, data)
       }
       df <- stats::na.omit(df)
 
