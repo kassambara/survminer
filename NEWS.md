@@ -17,7 +17,7 @@
     - It is possible to specify subtitle (param `risk.table.subtitle`) and caption (param `risk.table.caption`) for the `table` part of the `ggsurvplot`.
     - It is possible to specify title (param `ncens.plot.title`), subtitle (param `ncens.plot.subtitle`) and caption (param `ncens.plot.caption`) for the `ncens` part of the `ggsurvplot`.
     - ncens.plot part of the `ggsurvplot` has no integer values on y axis (not real as before), as it only can take integer values.
-    - Fonts can be specified directly for `plot`, `risk.table` and `ncensor.plot` elements ([@MarcinKosinski, #106](https://github.com/kassambara/survminer/issues/106)).
+    - Fonts can be specified directly for `curve`, `risk.table` and `ncensor.plot` elements ([@MarcinKosinski, #106](https://github.com/kassambara/survminer/issues/106)).
     - README was extended with `uber platinium (premium) customization` examples. 
     
 - The design of `ggcoxfunctional()` has been changed to be consistent with the other functions in the survminer package. Now, `ggcoxfunctional()` works with coxph objects not formulas. The arguments formula and data are now deprecated ([@pbiecek, #115](https://github.com/kassambara/survminer/issues/115)).
@@ -28,6 +28,8 @@
 ## Minor changes
 
 - It is possible to secify `title` and `caption` for `ggcoxfunctional` ([@MarcinKosinski, #138](https://github.com/kassambara/survminer/issues/138)) (`font.main` was removed as it was unused.)
+
+- It is possible to secify `title`, `subtitle` and `caption` for `ggcoxdiagnostics` ([@MarcinKosinski, #139](https://github.com/kassambara/survminer/issues/139)) and `font`s for them.
 
 - In `ggsurvplot()`, more information, about color palettes, have been added in the details section of the documentation ([#100](https://github.com/kassambara/survminer/issues/100)).  
 
