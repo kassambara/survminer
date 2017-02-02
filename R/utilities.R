@@ -302,4 +302,12 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
   x$value
 }
 
-
+# extract dataset if not provided
+.get_data <- function(fit, data = NULL, complain = TRUE) {
+  if(is.null(data)){
+    if (complain)
+      warning ("The `data` argument is not provided. Data will be extracted from model fit.")
+    data <- eval(fit$call$data)
+  }
+  data
+}
