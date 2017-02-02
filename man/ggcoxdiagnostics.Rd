@@ -7,14 +7,15 @@
 ggcoxdiagnostics(fit, type = c("martingale", "deviance", "score",
   "schoenfeld", "dfbeta", "dfbetas", "scaledsch", "partial"), ...,
   linear.predictions = type \%in\% c("martingale", "deviance"),
-  hline = TRUE, sline = TRUE, sline.se = TRUE, hline.col = "red",
-  hline.size = 1, hline.alpha = 1, hline.yintercept = 0,
-  hline.lty = "dashed", sline.col = "blue", sline.size = 1,
-  sline.alpha = 0.3, sline.lty = "dashed", point.col = "black",
-  point.size = 1, point.shape = 19, point.alpha = 1, font.main = c(16,
-  "plain", "black"), font.x = c(14, "plain", "black"), font.y = c(14,
-  "plain", "black"), font.tickslab = c(12, "plain", "black"),
-  ggtheme = ggplot2::theme_bw())
+  ox.scale = ifelse(linear.predictions, "linear.predictions",
+  "observation.id"), hline = TRUE, sline = TRUE, sline.se = TRUE,
+  hline.col = "red", hline.size = 1, hline.alpha = 1,
+  hline.yintercept = 0, hline.lty = "dashed", sline.col = "blue",
+  sline.size = 1, sline.alpha = 0.3, sline.lty = "dashed",
+  point.col = "black", point.size = 1, point.shape = 19,
+  point.alpha = 1, font.main = c(16, "plain", "black"), font.x = c(14,
+  "plain", "black"), font.y = c(14, "plain", "black"), font.tickslab = c(12,
+  "plain", "black"), ggtheme = ggplot2::theme_bw())
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
@@ -27,9 +28,13 @@ determine a unique match is required.}
 
 \item{...}{furthere arguments passed to \link{residuals.coxph}.}
 
-\item{linear.predictions}{a logical value indicating whether to show linear
+\item{linear.predictions}{(deprecated, see \code{ox.scale}) a logical value indicating whether to show linear
 predictions for observations (\code{TRUE}) or just indexed of observations
 (\code{FALSE}) on X axis.}
+
+\item{ox.scale}{one value from \code{c("linear.predictions", "observation.id", "time")}.
+It defines what will be presented on OX scale. Possible values: y hat for \code{"linear.predictions"},
+Id of an observation for \code{"observation.id"} or Time for \code{"time"}.}
 
 \item{hline}{a logical - should the horizontal line be added to highlight the \code{Y=0} level.}
 
@@ -90,6 +95,13 @@ ggcoxdiagnostics(coxph.fit, ggtheme = theme_light(), linear.predictions = FALSE)
 library(survival)
 coxph.fit2 <- coxph(Surv(futime, fustat) ~ age + ecog.ps, data=ovarian)
 ggcoxdiagnostics(coxph.fit2, type = "deviance")
+
+ggcoxdiagnostics(coxph.fit2, type = "schoenfeld")
+ggcoxdiagnostics(coxph.fit2, type = "deviance", ox.scale = "time")
+ggcoxdiagnostics(coxph.fit2, type = "schoenfeld", ox.scale = "time")
+ggcoxdiagnostics(coxph.fit2, type = "deviance", ox.scale = "linear.predictions")
+ggcoxdiagnostics(coxph.fit2, type = "schoenfeld", ox.scale = "observation.id")
+ggcoxdiagnostics(coxph.fit2, type = "scaledsch", ox.scale = "time")
 
 }
 \author{
