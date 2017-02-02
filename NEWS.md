@@ -1,6 +1,8 @@
 # survminer 0.2.4.999
    
 ## New features
+   
+- New function `ggcoxadjustedcurves()` added to plot adjusted survival curves for Cox proportional hazards model ([@pbiecek, #133](https://github.com/kassambara/survminer/issues/133) & [@markdanese, #67](https://github.com/kassambara/survminer/issues/67)).
 
 - New possibilities to compare survival curves with `pval.method` and `log.rank.weights` parameters in `ggsurvplot()`, by specifing weights in Log-rank test. Functionality based on `survMisc::comp`.
 - New function `ggforest()` added for drawing forest plot for the Cox model.
@@ -18,6 +20,8 @@
     - README was extended with `uber platinium customization` example. 
     
 - The design of `ggcoxfunctional()` has been changed to be consistent with the other functions in the survminer package. Now, `ggcoxfunctional()` works with coxph objects not formulas. The arguments formula and data are now deprecated ([@pbiecek, #115](https://github.com/kassambara/survminer/issues/115)).
+   
+- In the `ggcoxdiagnostics()` function, it's now possible to plot Time in the OX axis ([@pbiecek, #124](https://github.com/kassambara/survminer/issues/124)). This is convenient for some residuals like Schoenfeld. The `linear.predictions` parameter has been replaced with `ox.scale = c("linear.predictions", "time", "observation.id")`.
      
      
 ## Minor changes

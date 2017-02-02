@@ -60,7 +60,7 @@ ggcoxadjustedcurves <- function(fit,
   colnames(adj_surv) <- paste0("time", timepoints)
 
   both <- cbind(data, adj_surv)
-
+  time <- value <- .id <- NULL
   if (is.null(split_var)) {
     # only one curve
     both <- cbind(.id = seq(data[,1]), adj_surv)
