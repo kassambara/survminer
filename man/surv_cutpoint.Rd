@@ -111,7 +111,7 @@ head(res.cat)
 # 4. Fit survival curves and visualize
 library("survival")
 fit <- survfit(Surv(time, event) ~DEPDC1, data = res.cat)
-ggsurvplot(fit, risk.table = TRUE, conf.int = TRUE)
+ggsurvplot(fit, data = res.cat, risk.table = TRUE, conf.int = TRUE)
 
 }
 \author{

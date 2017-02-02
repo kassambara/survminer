@@ -5,10 +5,10 @@
 \alias{print.ggcoxfunctional}
 \title{Functional Form of Continuous Variable in Cox Proportional Hazards Model}
 \usage{
-ggcoxfunctional(formula, data, fit, iter = 0, f = 0.6, point.col = "red",
-  point.size = 1, point.shape = 19, point.alpha = 1, font.x = c(14,
-  "plain", "black"), font.y = c(14, "plain", "black"), font.tickslab = c(12,
-  "plain", "black"), xlim = NULL, ylim = NULL,
+ggcoxfunctional(formula, data = NULL, fit, iter = 0, f = 0.6,
+  point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
+  font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
+  font.tickslab = c(12, "plain", "black"), xlim = NULL, ylim = NULL,
   ylab = "Martingale Residuals \\nof Null Cox Model", title = NULL,
   caption = NULL, ggtheme = theme_classic2())
 
@@ -69,8 +69,8 @@ library(survival)
 data(mgus)
 res.cox <- coxph(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
     age + I(log(age)^2) + I(sqrt(age)), data = mgus)
-ggcoxfunctional(res.cox, point.col = "blue", point.alpha = 0.5)
-ggcoxfunctional(res.cox, point.col = "blue", point.alpha = 0.5,
+ggcoxfunctional(res.cox,  data = mgus, point.col = "blue", point.alpha = 0.5)
+ggcoxfunctional(res.cox, data = mgus, point.col = "blue", point.alpha = 0.5,
                 title = "Pass the title", caption = "Pass the caption")
 
 

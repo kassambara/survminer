@@ -37,14 +37,14 @@ NULL
 #' data(mgus)
 #' res.cox <- coxph(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
 #'     age + I(log(age)^2) + I(sqrt(age)), data = mgus)
-#' ggcoxfunctional(res.cox, point.col = "blue", point.alpha = 0.5)
-#' ggcoxfunctional(res.cox, point.col = "blue", point.alpha = 0.5,
+#' ggcoxfunctional(res.cox,  data = mgus, point.col = "blue", point.alpha = 0.5)
+#' ggcoxfunctional(res.cox, data = mgus, point.col = "blue", point.alpha = 0.5,
 #'                 title = "Pass the title", caption = "Pass the caption")
 #'
 #'
 #'@describeIn ggcoxfunctional Functional Form of Continuous Variable in Cox Proportional Hazards Model.
 #'@export
-ggcoxfunctional <- function (formula, data, fit, iter = 0, f = 0.6,
+ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6,
                              point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
                              #font.title = c(16, "plain", "black"),
                              font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
@@ -54,17 +54,17 @@ ggcoxfunctional <- function (formula, data, fit, iter = 0, f = 0.6,
                              title = NULL, caption = NULL,
                              ggtheme = theme_classic2()){
 
-  if(!missing(formula) & !missing(data) ){
-    warning("arguments formula and data are deprecated; ",
-            "will be removed in the next version; ",
-            "please use fit instead.", call. = FALSE)
-    fit <- list(formula = formula, call = list(data = data))
-  }
-  else if(!missing(formula)){
+  if(!missing(formula)){
     if(inherits(formula, "coxph")) fit <- formula
+    else{
+      warning("arguments formula is deprecated; ",
+              "will be removed in the next version; ",
+              "please use fit instead.", call. = FALSE)
+      fit <- list(formula = formula, call = list(data = data))
+    }
   }
   formula <- fit$formula
-  data <- eval(fit$call$data)
+  data <- .get_data(fit, data)
 
   attr(stats::terms(formula), "term.labels") -> explanatory.variables.names
   stats::model.matrix(formula, data = data) -> explanatory.variables.values

@@ -30,7 +30,7 @@
 #' library(survival)
 #' fit <- coxph( Surv(time, status) ~ rx + adhere, data = colon )
 #'
-#' ggcoxadjustedcurves(fit)
+#' ggcoxadjustedcurves(fit, data = colon)
 #'
 #' fit2 <- coxph( Surv(stop, event) ~ rx + size, data = bladder )
 #' ggcoxadjustedcurves(fit2)
