@@ -12,12 +12,13 @@
 
 ## Major changes
 
-- New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105))
+- New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105)) ([@MarcinKosinski, #106](https://github.com/kassambara/survminer/issues/106))
     - It is possible to specify subtitle (param `submain`) and caption (param `caption`) for the `curve` part of the `ggsurvplot`.
     - It is possible to specify subtitle (param `risk.table.subtitle`) and caption (param `risk.table.caption`) for the `table` part of the `ggsurvplot`.
     - It is possible to specify title (param `ncens.plot.title`), subtitle (param `ncens.plot.subtitle`) and caption (param `ncens.plot.caption`) for the `ncens` part of the `ggsurvplot`.
     - ncens.plot part of the `ggsurvplot` has no integer values on y axis (not real as before), as it only can take integer values.
-    - README was extended with `uber platinium customization` example. 
+    - Fonts can be specified directly for `plot`, `risk.table` and `ncensor.plot` elements ([@MarcinKosinski, #106](https://github.com/kassambara/survminer/issues/106)).
+    - README was extended with `uber platinium (premium) customization` examples. 
     
 - The design of `ggcoxfunctional()` has been changed to be consistent with the other functions in the survminer package. Now, `ggcoxfunctional()` works with coxph objects not formulas. The arguments formula and data are now deprecated ([@pbiecek, #115](https://github.com/kassambara/survminer/issues/115)).
    

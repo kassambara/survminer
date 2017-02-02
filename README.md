@@ -12,6 +12,7 @@
         -   [More customized survival curves](#more-customized-survival-curves)
         -   [Uber customized survival curves](#uber-customized-survival-curves)
         -   [Uber platinum customized survival curves](#uber-platinum-customized-survival-curves)
+        -   [Uber platinum premium customized survival curves](#uber-platinum-premium-customized-survival-curves)
     -   [Blog posts](#blog-posts)
 
 survminer: Survival Analysis and Visualization
@@ -47,6 +48,7 @@ Load survminer:
 
 ``` r
 library("survminer")
+# Loading required package: ggplot2
 ```
 
 ggsurvplot: Drawing survival curves
@@ -56,6 +58,7 @@ ggsurvplot: Drawing survival curves
 
 ``` r
 require("survival")
+# Loading required package: survival
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
 
@@ -186,6 +189,47 @@ ggsurvplot(
 ```
 
 ![](README-ggplot2-uber-platinium-customized-survival-plot-1.png)
+
+Uber platinum premium customized survival curves
+------------------------------------------------
+
+``` r
+ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+  caption = "created with survminer",
+  font.main = c(16, "bold", "darkblue"),
+  font.submain = c(15, "bold.italic", "purple"),
+  font.caption = c(14, "plain", "orange"),
+  font.x = c(14, "bold.italic", "red"),
+  font.y = c(14, "bold.italic", "darkred"),
+  font.tickslab = c(12, "plain", "darkgreen"),
+  ########## risk table #########,
+  risk.table = TRUE,
+  risk.table.title = "Note the risk set sizes",
+  risk.table.subtitle = "and remember about censoring.",
+  risk.table.caption = "source code: website.com",
+  risk.table.height = 0.35,
+  font.risk.table.title = c(13, "bold.italic", "green"),
+  font.risk.table.sutitle = c(15, "bold", "pink"),
+  font.risk.table.caption = c(11, "plain", "darkgreen"),
+  font.risk.table.x = c(8, "bold.italic", "orange"),
+  font.risk.table.y = c(11, "bold.italic", "darkgreen"),
+  font.risk.table.tickslab = c(9, "bold", "red"),
+  ######### ncensor plot ###################
+  ncensor.plot = TRUE,
+  ncensor.plot.title = "Number of censorings",
+  ncensor.plot.subtitle = "over the time.",
+  ncensor.plot.caption = "data available at data.com",
+  ncensor.plot.height = 0.35,
+  font.ncensor.plot.title = c(13, "bold.italic", "green"),
+  font.ncensor.plot.sutitle = c(15, "bold", "pink"),
+  font.ncensor.plot.caption = c(11, "plain", "darkgreen"),
+  font.ncensor.plot.x = c(8, "bold.italic", "orange"),
+  font.ncensor.plot.y = c(11, "bold.italic", "darkgreen"),
+  font.ncensor.plot.tickslab = c(9, "bold", "red")
+)
+```
+
+![](README-ggplot2-uber-platinium-premium-customized-survival-plot-1.png)
 
 Blog posts
 ----------
