@@ -8,6 +8,7 @@
 #' For every observation in the dataset a prediction for survival cure is made.
 #' Then the predictions are averaged with respect to a selected variable.
 #'@param fit an object of class \link{coxph.object} - created with \link{coxph} function.
+#'@param data a dataset for predictions. If not supplied then data will be extracted from `fit` object.
 #'@param split_var a variable (vector) with values corresponding to groups to be plotted
 #'@param plot_all if TRUE then all individual predicted survival curves will be plotted
 #'@param curve.size,curve.alpha size and alpha for individual survival curves
@@ -30,10 +31,10 @@
 #' fit <- coxph( Surv(time, status) ~ rx + adhere, data = colon )
 #'
 #' ggcoxadjustedcurves(fit)
-#' ggcoxadjustedcurves(fit, plot_all=TRUE)
 #'
 #' fit2 <- coxph( Surv(stop, event) ~ rx + size, data = bladder )
 #' ggcoxadjustedcurves(fit2)
+#' ggcoxadjustedcurves(fit2, plot_all=TRUE, data = bladder)
 #' ggcoxadjustedcurves(fit2, plot_all=TRUE, curve.alpha=0.01)
 #' ggcoxadjustedcurves(fit2, split_var = factor( bladder[,"rx"]))
 #' ggcoxadjustedcurves(fit2, split_var = factor(bladder[,"rx"]), plot_all=TRUE, curve.alpha=0.01)
@@ -42,16 +43,14 @@
 ggcoxadjustedcurves <- function(fit,
                              split_var = NULL,
                              plot_all = FALSE,
+                             data = NULL,
                              curve.size = 2, curve.alpha = 0.2,
                              font.main = c(16, "plain", "black"),
                              font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
                              font.tickslab = c(12, "plain", "black"),
                              ylab = "Survival rate",
                              ggtheme = theme_classic2()){
-  # this is a very risky way to get the data for a model
-  # it works only in the call$data exists in the search path and may be evaluated
-  # unfortunately it is quite common in this package and I do not see a better way ;-)
-  data <- eval(fit$call$data)
+  data <- .get_data(fit, data)
 
   pred <- survfit(fit, data)
   timepoints <- c(0, pred$time)
