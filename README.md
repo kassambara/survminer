@@ -65,7 +65,7 @@ fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ### Basic plots
 
 ``` r
-ggsurvplot(fit)
+ggsurvplot(fit, data = lung)
 ```
 
 ![](README-ggplot2-basic-survival-plot-1.png)
@@ -73,7 +73,7 @@ ggsurvplot(fit)
 ### Customized survival curves
 
 ``` r
-ggsurvplot(fit,  size = 1,  # change line size
+ggsurvplot(fit, data = lung, size = 1,  # change line size
            palette = c("#E7B800", "#2E9FDF"), # custom color palettes
            conf.int = TRUE, # Add confidence interval
            pval = TRUE, # Add p-value
@@ -96,6 +96,7 @@ Focus on `xlim` and `break.time.by` parameters which do not change the calculati
 ``` r
 ggsurvplot(
    fit,                     # survfit object with calculated statistics.
+   data = lung,             # data used to fit survival curves.
    risk.table = TRUE,       # show risk table.
    pval = TRUE,             # show p-value of log-rank test.
    conf.int = TRUE,         # show confidence intervals for 
@@ -118,6 +119,7 @@ ggsurvplot(
 ``` r
 ggsurvplot(
    fit,                     # survfit object with calculated statistics.
+   data = lung,             # data used to fit survival curves.
    risk.table = TRUE,       # show risk table.
    pval = TRUE,             # show p-value of log-rank test.
    conf.int = TRUE,         # show confidence intervals for 
@@ -147,6 +149,7 @@ ggsurvplot(
 ``` r
 ggsurvplot(
    fit,                     # survfit object with calculated statistics.
+   data = lung,             # data used to fit survival curves.
    risk.table = TRUE,       # show risk table.
    pval = TRUE,             # show p-value of log-rank test.
    conf.int = TRUE,         # show confidence intervals for 
@@ -194,7 +197,7 @@ Uber platinum premium customized survival curves
 ------------------------------------------------
 
 ``` r
-ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+ggsurvplot(fit, data = lung, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
   caption = "created with survminer",
   font.main = c(16, "bold", "darkblue"),
   font.submain = c(15, "bold.italic", "purple"),
