@@ -1,6 +1,8 @@
 # survminer 0.2.4.999
    
 ## New features
+   
+- New function `ggcoxadjustedcurves()` added to plot adjusted survival curves for Cox proportional hazards model ([@pbiecek, #133](https://github.com/kassambara/survminer/issues/133) & [@markdanese, #67](https://github.com/kassambara/survminer/issues/67)).
 
 - New possibilities to compare survival curves with `pval.method` and `log.rank.weights` parameters in `ggsurvplot()`, by specifing weights in Log-rank test. Functionality based on `survMisc::comp`.
 - New function `ggforest()` added for drawing forest plot for the Cox model.
