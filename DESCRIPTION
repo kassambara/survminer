@@ -26,6 +26,7 @@ Imports:
     survival,
     stats,
     broom,
+    dplyr,
     tidyr,
     survMisc
 Suggests:
@@ -38,6 +39,7 @@ URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1
 Collate:
+    'ggcoxadjustedcurves.R'
     'ggcoxdiagnostics.R'
     'utilities.R'
     'ggcoxfunctional.R'
