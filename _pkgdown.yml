@@ -18,6 +18,7 @@ reference:
   - title: Visual Representation of Cox Model Coefficients
     contents:
       - ggforest
+      - ggcoxadjustedcurves
   - title: Data
     contents: myeloma
   - title: Others
