@@ -34,7 +34,7 @@
 #'
 #' fit2 <- coxph( Surv(stop, event) ~ rx + size, data = bladder )
 #' ggcoxadjustedcurves(fit2)
-#' ggcoxadjustedcurves(fit2, plot_all=TRUE, data = bladder)
+#' ggcoxadjustedcurves(fit2, plot_all=TRUE, data = bladder, curve.alpha=0.01)
 #' ggcoxadjustedcurves(fit2, plot_all=TRUE, curve.alpha=0.01)
 #' ggcoxadjustedcurves(fit2, split_var = factor( bladder[,"rx"]))
 #' ggcoxadjustedcurves(fit2, split_var = factor(bladder[,"rx"]), plot_all=TRUE, curve.alpha=0.01)
@@ -58,14 +58,16 @@ ggcoxadjustedcurves <- function(fit,
   adj_surv <- as.data.frame(cbind(time0 = 1, t(pred$surv)))
   colnames(adj_surv) <- paste0("time", timepoints)
 
-  both <- cbind(data, adj_surv)
+  # this dirty hack hides the problem with CHECK NOTES generated for
+  # non standard evaluation used by dplyr/tidyr
+  .id <- time <- value <- NULL
 
   if (is.null(split_var)) {
     # only one curve
     both <- cbind(.id = seq(data[,1]), adj_surv)
     curves <- gather(both, time, value, -.id)
     curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
-    curve <- summarise(group_by(curves, time), value = mean(value))
+    curve <- summarise(group_by(curves, time), value = mean(value, na.rm=TRUE))
     pl <- ggplot(curve, aes(x = time, y = value)) +
       geom_step(size=curve.size)
   } else {
@@ -73,7 +75,7 @@ ggcoxadjustedcurves <- function(fit,
     both <- cbind(.id = seq(data[,1]), split_var, adj_surv)
     curves <- gather(both, time, value, -.id, -split_var)
     curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
-    curve <- summarise(group_by(curves, time, split_var), value = mean(value))
+    curve <- summarise(group_by(curves, time, split_var), value = mean(value, na.rm=TRUE))
     pl <- ggplot(curve, aes(x = time, y = value, color=split_var)) +
       geom_step(size=curve.size)
   }
