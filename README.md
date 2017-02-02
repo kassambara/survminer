@@ -48,7 +48,6 @@ Load survminer:
 
 ``` r
 library("survminer")
-# Loading required package: ggplot2
 ```
 
 ggsurvplot: Drawing survival curves
@@ -58,7 +57,6 @@ ggsurvplot: Drawing survival curves
 
 ``` r
 require("survival")
-# Loading required package: survival
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
 
