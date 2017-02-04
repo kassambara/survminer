@@ -385,7 +385,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        ...
                        ){
 
-  if(!methods::is(fit, "survfit"))
+  if(!inherits(fit, "survfit"))
     stop("Can't handle an object of class ", class(fit))
   size <- ifelse(is.null(list(...)$size), 1, list(...)$size)
   if(is.null(xlim)) xlim <- c(0, max(fit$time))
