@@ -48,6 +48,7 @@ Load survminer:
 
 ``` r
 library("survminer")
+# Loading required package: ggplot2
 ```
 
 ggsurvplot: Drawing survival curves
@@ -57,6 +58,7 @@ ggsurvplot: Drawing survival curves
 
 ``` r
 require("survival")
+# Loading required package: survival
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
 
@@ -210,7 +212,7 @@ ggsurvplot(fit, data = lung, main = "Survival curves", submain = "Based on Kapla
   risk.table.caption = "source code: website.com",
   risk.table.height = 0.35,
   font.risk.table.title = c(13, "bold.italic", "green"),
-  font.risk.table.sutitle = c(15, "bold", "pink"),
+  font.risk.table.subtitle = c(15, "bold", "pink"),
   font.risk.table.caption = c(11, "plain", "darkgreen"),
   font.risk.table.x = c(8, "bold.italic", "orange"),
   font.risk.table.y = c(11, "bold.italic", "darkgreen"),
@@ -222,7 +224,7 @@ ggsurvplot(fit, data = lung, main = "Survival curves", submain = "Based on Kapla
   ncensor.plot.caption = "data available at data.com",
   ncensor.plot.height = 0.35,
   font.ncensor.plot.title = c(13, "bold.italic", "green"),
-  font.ncensor.plot.sutitle = c(15, "bold", "pink"),
+  font.ncensor.plot.subtitle = c(15, "bold", "pink"),
   font.ncensor.plot.caption = c(11, "plain", "darkgreen"),
   font.ncensor.plot.x = c(8, "bold.italic", "orange"),
   font.ncensor.plot.y = c(11, "bold.italic", "darkgreen"),
