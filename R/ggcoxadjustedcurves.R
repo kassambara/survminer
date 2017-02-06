@@ -21,6 +21,7 @@
 #'  font.x = "bold", to change only font face.
 #'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
+#'@inheritParams ggpubr::ggpar
 #'@return Returns an object of class \code{gg}.
 #'
 #'@author Przemyslaw Biecek, \email{przemyslaw.biecek@@gmail.com}
@@ -44,6 +45,7 @@ ggcoxadjustedcurves <- function(fit,
                                 variable = NULL,
                                 individual.curves = FALSE,
                                 data = NULL,
+                                palette = "hue",
                                 curve.size = 2, curve.alpha = 0.2,
                                 font.main = c(16, "plain", "black"),
                                 font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
@@ -69,7 +71,7 @@ ggcoxadjustedcurves <- function(fit,
     curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
     curve <- summarise(group_by(curves, time), value = mean(value, na.rm=TRUE))
     pl <- ggplot(curve, aes(x = time, y = value)) +
-      geom_step(size=curve.size)
+      geom_step(size=curve.size, color = color)
   } else {
     # one per level
     both <- cbind(.id = seq(data[,1]), variable, adj_surv)
@@ -81,11 +83,10 @@ ggcoxadjustedcurves <- function(fit,
   }
   if (individual.curves)
     pl <- pl + geom_step(data = curves, aes(group=.id), alpha=curve.alpha)
-
-  pl <-.labs(p = pl, font.main = font.main, font.x = font.x, font.y = font.y)
-  pl <- .set_ticks(pl, font.tickslab = font.tickslab)
+  pl <- ggpubr::ggpar(pl, font.main = font.main, font.x = font.x, font.y = font.y,
+                      font.tickslab = font.tickslab, palette = palette,
+                      ggtheme = ggtheme)
   pl +
     scale_y_continuous(limits = c(0, 1)) +
-    ylab(ylab) +
-    ggtheme
+    ylab(ylab)
 }

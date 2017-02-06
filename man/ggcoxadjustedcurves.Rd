@@ -5,9 +5,9 @@
 \title{Adjusted Survival Curves for Cox Proportional Hazards Model}
 \usage{
 ggcoxadjustedcurves(fit, variable = NULL, individual.curves = FALSE,
-  data = NULL, curve.size = 2, curve.alpha = 0.2, font.main = c(16,
-  "plain", "black"), font.x = c(14, "plain", "black"), font.y = c(14,
-  "plain", "black"), font.tickslab = c(12, "plain", "black"),
+  data = NULL, palette = "hue", curve.size = 2, curve.alpha = 0.2,
+  font.main = c(16, "plain", "black"), font.x = c(14, "plain", "black"),
+  font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain", "black"),
   ylab = "Survival rate", ggtheme = theme_classic2())
 }
 \arguments{
@@ -18,6 +18,13 @@ ggcoxadjustedcurves(fit, variable = NULL, individual.curves = FALSE,
 \item{individual.curves}{if TRUE then all individual predicted survival curves will be plotted}
 
 \item{data}{a dataset for predictions. If not supplied then data will be extracted from `fit` object.}
+
+\item{palette}{the color palette to be used for coloring or filling by
+groups. Allowed values include "grey" for grey color palettes; brewer
+palettes e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue",
+"red"); and scientific journal palettes from ggsci R package, e.g.: "npg",
+"aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and
+"rickandmorty".}
 
 \item{curve.size, curve.alpha}{size and alpha for individual survival curves}
 
