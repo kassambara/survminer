@@ -71,7 +71,7 @@ ggcoxadjustedcurves <- function(fit,
     curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
     curve <- summarise(group_by(curves, time), value = mean(value, na.rm=TRUE))
     pl <- ggplot(curve, aes(x = time, y = value)) +
-      geom_step(size=curve.size, color = color)
+      geom_step(size=curve.size)
   } else {
     # one per level
     both <- cbind(.id = seq(data[,1]), variable, adj_surv)
