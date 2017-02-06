@@ -85,7 +85,7 @@ ggcoxadjustedcurves <- function(fit,
     pl <- pl + geom_step(data = curves, aes(group=.id), alpha=curve.alpha)
   pl <- ggpubr::ggpar(pl, font.main = font.main, font.x = font.x, font.y = font.y,
                       font.tickslab = font.tickslab, palette = palette,
-                      ggtheme = ggtheme)
+                      ggtheme = ggtheme, legend = "right")
   pl +
     scale_y_continuous(limits = c(0, 1)) +
     ylab(ylab)
