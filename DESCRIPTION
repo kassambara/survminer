@@ -45,6 +45,7 @@ Collate:
     'ggcoxfunctional.R'
     'ggcoxzph.R'
     'ggforest.R'
+    'ggsurvevents.R'
     'surv_summary.R'
     'theme_classic2.R'
     'ggsurvplot.R'
