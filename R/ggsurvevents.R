@@ -46,10 +46,9 @@
 ggsurvevents <- function(surv = NULL,
                          fit = NULL,
                          data = NULL,
-                         type = "cumulative",
-                         normalized = FALSE,
+                         type = "fraction",
+                         normalized = TRUE,
                          censored.on.top = TRUE,
-                         plot.title = "Distribution of event's times",
                      ggtheme = theme_classic2(),
                      palette = c("grey75", "grey25"),
                      font.main = c(16, "plain", "black"), font.submain = c(15, "plain", "black"),
@@ -78,24 +77,26 @@ ggsurvevents <- function(surv = NULL,
   surv$timeN <- rank(surv$time)/length(surv$time)
   for (i in seq_along(surv$time)) {
     if (type == "cumulative") {
-      .ylab = "Cumulative Distribution Of Events"
+      plot.title = "Cumulative Distribution Of Events' Times"
       surv$cum0[i] <- sum(surv$time[surv$status == 0] <= surv$time[i], na.rm=TRUE)
       surv$cum1[i] <- sum(surv$time[surv$status == 1] <= surv$time[i], na.rm=TRUE)
     }
     if (type == "radius") {
-      .ylab = "Distribution Of Events"
+      plot.title = "Distribution Of Events's Times"
       surv$cum0[i] <- sum(abs(surv$time[surv$status == 0] - surv$time[i]) < radius, na.rm=TRUE)
       surv$cum1[i] <- sum(abs(surv$time[surv$status == 1] - surv$time[i]) < radius, na.rm=TRUE)
     }
     if (type == "fraction") {
-      .ylab = "Distribution Of Events"
+      plot.title = "Distribution Of Events's Times"
       surv$cum0[i] <- sum(abs(surv$timeN[surv$status == 0] - surv$timeN[i]) < radiusN, na.rm=TRUE)
       surv$cum1[i] <- sum(abs(surv$timeN[surv$status == 1] - surv$timeN[i]) < radiusN, na.rm=TRUE)
     }
   }
 
+  .ylab <- "Number of events"
   if (normalized) {
-    .ylab = paste("Ratio of", .ylab)
+    .ylab <- "Fraction of events"
+    plot.title = paste("Ratio of", plot.title)
     tmp <- surv$cum0 + surv$cum1
     surv$cum0 <- surv$cum0/tmp
     surv$cum1 <- surv$cum1/tmp
@@ -112,8 +113,9 @@ ggsurvevents <- function(surv = NULL,
   }
   p <- p + ggtheme +
     theme(panel.grid.minor = element_blank(), panel.grid.major.y = element_blank(), legend.position = "none") +
-    xlab("Time") + ylab(.ylab) +
-    ggtitle(plot.title)
+    labs(title = plot.title,
+         subtitle = "black for status = 0 / grey for status = 1",
+         x = "Time", y = .ylab)
   p <- .labs(p = p, font.main = font.main, font.x = font.x, font.y = font.y, font.submain = font.submain, font.caption = font.caption)
   p <- .set_ticks(p, font.tickslab = font.tickslab)
   p
