@@ -6,10 +6,8 @@
 #' @param type one of \code{c("cumulative", "radius", "fraction")}. \code{"cumulative"} stands for cumulative number of events, \code{"radius"} stands for number of events within a given radius,
 #' @param normalized if \code{TRUE} relative number of events is presented,
 #' @param ggtheme function, ggplot2 theme name. Default value is theme_classic2. Allowed values include ggplot2 official themes: see theme.
-#' @param plot.title legend title.
 #' @param censored.on.top is TRUE then censored events are on the top
 #' @param palette the color palette to be used for coloring of significant variables.
-#' @param xlab Label in OX axis.
 #' @param font.main,font.submain,font.caption,font.x,font.y,font.tickslab a vector of length 3
 #'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
 #'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
@@ -18,7 +16,7 @@
 #'  font.x = "bold", to change only font face.
 #'
 #' @return return an object of class ggplot
-#'
+#' @importFrom stats as.formula terms
 #' @author Przemyslaw Biecek, \email{przemyslaw.biecek@@gmail.com}
 #'
 #' @examples
@@ -66,6 +64,8 @@ ggsurvevents <- function(surv = NULL,
     surv <- eval(attr(terms(form),"variables"), envir = data)[[1]]
   }
 
+  # to remove NOTES
+  cum0 <- cum1 <- time <- NULL
   class(surv) <- NULL
   surv <- as.data.frame(surv)
 

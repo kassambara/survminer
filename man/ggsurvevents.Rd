@@ -34,10 +34,6 @@ indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
 xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
 c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 font.x = "bold", to change only font face.}
-
-\item{plot.title}{legend title.}
-
-\item{xlab}{Label in OX axis.}
 }
 \value{
 return an object of class ggplot
