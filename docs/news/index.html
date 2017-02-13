@@ -95,6 +95,7 @@
 <h2 class="hasAnchor">
 <a href="#major-changes" class="anchor"> </a>Major changes</h2>
 <ul>
+<li><p>Additional <code>data</code> argument added to the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function (<a href="https://github.com/kassambara/survminer/issues/142">@kassambara, #142</a>). Now, it’s recommended to pass to the function, the data used to fit survival curves. This will avoid the error generated when trying to use the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function inside another functions (<a href="https://github.com/kassambara/survminer/issues/125">@zzawadz, #125</a>).</p></li>
 <li>New fonts and texts customization features for <code>ggsurvplot</code> (<a href="https://github.com/kassambara/survminer/issues/105">@MarcinKosinski, #105</a>) (<a href="https://github.com/kassambara/survminer/issues/106">@MarcinKosinski, #106</a>)
 <ul>
 <li>It is possible to specify subtitle (param <code>submain</code>) and caption (param <code>caption</code>) for the <code>curve</code> part of the <code>ggsurvplot</code>.</li>
@@ -147,7 +148,7 @@ doc =<span class="st"> </span><span class="kw">addPlot</span>(doc, function() <s
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"> </a>Bug fixes</h2>
 <ul>
-<li><p>Now, <code>gggcoxzph()</code> works for univariate Cox analysis (<a href="https://github.com/kassambara/survminer/issues/103">#103</a>).</p></li>
+<li><p>Now, <code><a href="../reference/ggcoxzph.html">ggcoxzph()</a></code> works for univariate Cox analysis (<a href="https://github.com/kassambara/survminer/issues/103">#103</a>).</p></li>
 <li><p>Now, <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> works properly for schoenfeld residuals (<a href="https://github.com/kassambara/survminer/issues/122">@pbiecek, #119</a>).</p></li>
 <li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> works properly in the situation where <code>strata()</code> is included in the cox formula (<a href="https://github.com/kassambara/survminer/issues/109">#109</a>).</p></li>
 </ul>
