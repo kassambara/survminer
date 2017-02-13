@@ -2,6 +2,8 @@
    
 ## New features
    
+- New function `ggsurvevents()`. Calculates and plots distribution for events (both status=0 and status1); with `type` parameter one can plot cumulative distribution of locally smooth density; with normalised distributions are normalised. This function helps to notice when censorings are more common ([@pbiecek, #116](https://github.com/kassambara/survminer/issues/116)). 
+    
 - New function `ggcoxadjustedcurves()` added to plot adjusted survival curves for Cox proportional hazards model ([@pbiecek, #133](https://github.com/kassambara/survminer/issues/133) & [@markdanese, #67](https://github.com/kassambara/survminer/issues/67)).
 
 - New possibilities to compare survival curves with `pval.method` and `log.rank.weights` parameters in `ggsurvplot()`, by specifing weights in Log-rank test. Functionality based on `survMisc::comp`.
