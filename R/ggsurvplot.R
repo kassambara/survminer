@@ -411,7 +411,8 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     else if(risk.table.type == "abs_pct") risk.table.title = "Number at risk by time: n (%)"
     else risk.table.title = "Number at risk by time"
   }
-
+  # data used to compute survfit
+  data <- .get_data(fit, data = data)
   # Data for survival plot
   d <- surv_summary(fit, data = data)
 
