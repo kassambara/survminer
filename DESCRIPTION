@@ -39,16 +39,17 @@ URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 5.0.1
 Collate:
+    'utilities.R'
+    'surv_summary.R'
+    'theme_classic2.R'
+    'ggsurvplot.R'
+    'arrange_ggsurvplots.R'
     'ggcoxadjustedcurves.R'
     'ggcoxdiagnostics.R'
-    'utilities.R'
     'ggcoxfunctional.R'
     'ggcoxzph.R'
     'ggforest.R'
     'ggsurvevents.R'
-    'surv_summary.R'
-    'theme_classic2.R'
-    'ggsurvplot.R'
     'myeloma.R'
     'pairwise_survdiff.R'
     'surv_cutpoint.R'

@@ -639,6 +639,17 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 #' @rdname ggsurvplot
 #' @export
 print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NULL, ncensor.plot.height = NULL, ..., newpage = TRUE){
+  res <- .build_ggsurvplot(x = x, surv.plot.height = surv.plot.height,
+                    risk.table.height = risk.table.height,
+                    ncensor.plot.height = ncensor.plot.height)
+  grid::grid.draw(res)
+}
+
+
+# Build ggsurvplot for printing
+.build_ggsurvplot <- function(x, surv.plot.height = NULL,
+                              risk.table.height = NULL, ncensor.plot.height = NULL, ...)
+{
   if(!inherits(x, "ggsurvplot"))
     stop("An object of class ggsurvplot is required.")
 
@@ -665,7 +676,8 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     }
   }
 
-  if(is.null(x$table) & is.null(x$ncensor.plot)) print(x$plot)
+  res <- NULL
+  if(is.null(x$table) & is.null(x$ncensor.plot)) res <- x$plot
   else{
     if(is.null(x$ncensor.plot))
       heights = list(c(surv.plot.height, risk.table.height))
@@ -686,11 +698,12 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     for (i in 1:length(grobs)) {
       grobs[[i]]$widths[2:5] <- as.list(maxwidth)
     }
-    do.call(gridExtra::grid.arrange, c(grobs, nrow = nplot, heights = heights, newpage = newpage))
+
+    res <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
+    # res <- do.call(gridExtra::grid.arrange, c(grobs, nrow = nplot, heights = heights, newpage = newpage))
   }
+  return(res)
 }
-
-
 
 .hide_legend <- function(p){
 p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
