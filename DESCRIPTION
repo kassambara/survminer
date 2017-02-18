@@ -9,8 +9,8 @@ Authors@R: c(
     )
 Description: Contains the function 'ggsurvplot()' for drawing easily beautiful
     and 'ready-to-publish' survival curves with the 'number at risk' table
-    and 'censoring count plot'. Other functions are also available for visual
-    examinations of 'cox' model assumptions.
+    and 'censoring count plot'. Other functions are also available to plot 
+    adjusted curves for `Cox` model and to visually examine 'Cox' model assumptions.
 License: GPL-2
 LazyData: TRUE
 Depends:
