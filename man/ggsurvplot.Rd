@@ -229,6 +229,7 @@ Drawing survival curves using ggplot2
 \itemize{
 \item \code{ggsurvplot}: Draws survival curves using ggplot2.
 }}
+
 \examples{
 
 #\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
@@ -434,4 +435,3 @@ ggsurvplot(fit, data = lung,
 \author{
 Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
 }
-

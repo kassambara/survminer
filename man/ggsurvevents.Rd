@@ -65,4 +65,3 @@ ggsurvevents(surv2, normalized = TRUE, type = "fraction")
 \author{
 Przemyslaw Biecek, \email{przemyslaw.biecek@gmail.com}
 }
-

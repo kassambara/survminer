@@ -66,4 +66,3 @@ ggsave("myfile.pdf", res)
 \author{
 Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
 }
-

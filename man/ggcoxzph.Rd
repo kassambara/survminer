@@ -60,6 +60,7 @@ Displays a graph of the scaled Schoenfeld residuals, along with a
 \itemize{
 \item \code{ggcoxzph}: Graphical Test of Proportional Hazards using ggplot2.
 }}
+
 \examples{
 
 library(survival)
@@ -76,4 +77,3 @@ ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx"), font.main = 12, caption = "Capti
 \author{
 Marcin Kosinski , \email{m.p.kosinski@gmail.com}
 }
-

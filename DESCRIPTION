@@ -38,7 +38,7 @@ Suggests:
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Collate:
     'utilities.R'
     'surv_summary.R'

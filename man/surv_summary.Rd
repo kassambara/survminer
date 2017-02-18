@@ -50,4 +50,3 @@ attr(res.sum, "table")
 
 
 }
-

@@ -50,10 +50,9 @@ symnum(res$p.value, cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 0.1, 1),
 
 
 }
-\author{
-Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
-}
 \seealso{
 survival::survdiff
 }
-
+\author{
+Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
+}
