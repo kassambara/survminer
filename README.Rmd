@@ -46,7 +46,7 @@ The **survminer** R package provides functions for facilitating **survival analy
 The main functions, in the package, are organized in different categories as follow.  
    
    
-**Summarizing and Visuaizing Survival Curves**
+**Summarizing and Visualizing Survival Curves**
 <hr/>
     
 - **ggsurvplot**(): Draws survival curves with the 'number at risk' table and 'censoring count plot'.
