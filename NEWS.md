@@ -4,13 +4,16 @@
    
 - New function `arrange_ggsurvplots()` to arrange multiple ggsurvplots on the same page ([#66](https://github.com/kassambara/survminer/issues/66)).
   
-- New function `ggsurvevents()`. Calculates and plots distribution for events (both status=0 and status1); with `type` parameter one can plot cumulative distribution of locally smooth density; with normalised distributions are normalised. This function helps to notice when censorings are more common ([@pbiecek, #116](https://github.com/kassambara/survminer/issues/116)). 
+- New function `ggsurvevents()`. Calculates and plots distribution for events (both status = 0 and status = 1); with `type` parameter one can plot cumulative distribution of locally smooth density; with normalised, distributions are normalised. This function helps to notice when censorings are more common ([@pbiecek, #116](https://github.com/kassambara/survminer/issues/116)). 
     
 - New function `ggcoxadjustedcurves()` added to plot adjusted survival curves for Cox proportional hazards model ([@pbiecek, #133](https://github.com/kassambara/survminer/issues/133) & [@markdanese, #67](https://github.com/kassambara/survminer/issues/67)).
 
 - New possibilities to compare survival curves with `pval.method` and `log.rank.weights` parameters in `ggsurvplot()`, by specifing weights in Log-rank test. Functionality based on `survMisc::comp`.
-- New function `ggforest()` added for drawing forest plot for the Cox model.
+    
+- New function `ggforest()` added for drawing forest plot for the Cox model.  
+   
 - New argument `sline` in the `ggcoxdiagnostics()` function for adding loess smoothed trend on the residual plots. This will make it easier to spot some problems with residuals (like quadratic relation). ([@pbiecek, #119](https://github.com/kassambara/survminer/issues/119)). 
+  
 - New function `pairwise_survdiff()` for multiple comparisons of survival Curves ([#97](https://github.com/kassambara/survminer/issues/97)).
    
 
@@ -35,7 +38,7 @@
 
 - It is possible to secify `title` and `caption` for `ggcoxfunctional` ([@MarcinKosinski, #138](https://github.com/kassambara/survminer/issues/138)) (`font.main` was removed as it was unused.)
 
-- It is possible to secify `title`, `subtitle` and `caption` for `ggcoxdiagnostics` ([@MarcinKosinski, #139](https://github.com/kassambara/survminer/issues/139)) and `font`s for them.
+- It is possible to specify `title`, `subtitle` and `caption` for `ggcoxdiagnostics` ([@MarcinKosinski, #139](https://github.com/kassambara/survminer/issues/139)) and `fonts` for them.
 
 - It is possible to secify global `caption` for `ggcoxzph` ([@MarcinKosinski, #140](https://github.com/kassambara/survminer/issues/140)).
 
@@ -43,7 +46,7 @@
 
 - The R package `maxstat` doesn't support very well an object of class `tbl_df`. To fix this issue, now, in the `surv_cutpoint()` function, the input data is systematically transformed into a standard data.frame format ([@MarcinKosinski, #104](https://github.com/kassambara/survminer/issues/104)).
 
-- It's now possible to print the output the survminer packages in a powerpoint created with the ReporteRs package. Thanks to ([@abossenbroek, #110](https://github.com/kassambara/survminer/issues/110)) and ([@zzawadz, #111](https://github.com/kassambara/survminer/issues/110)). For instance:   
+- It's now possible to print the output of the survminer packages in a powerpoint created with the ReporteRs package. Thanks to ([@abossenbroek, #110](https://github.com/kassambara/survminer/issues/110)) and ([@zzawadz, #111](https://github.com/kassambara/survminer/issues/110)). For instance:   
     
     
 ```r
@@ -82,6 +85,7 @@ writeDoc(doc, "test.pptx")
 ## Vignettes and examples
 
 - A new vignette and a `ggsurvplot` example was added to present new functionalities of possible texts and fonts customizations. 
+  
 - A new vignette and a `ggsurvplot` example was added to present new functionalities of possible weights specification in a Log-rank test.    
 
 # survminer 0.2.4
