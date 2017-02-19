@@ -79,7 +79,7 @@ theme_survminer <-
     legend.text <- element_text(size = font.legend$size,
                  face = font.legend$face, colour = font.legend$color)
 
-    theme_classic(base_size = base_size, base_family = base_family) + theme(
+    result <- theme_classic(base_size = base_size, base_family = base_family) + theme(
       plot.title = element_text(
         size = font.main$size,
         lineheight = 1.0,
@@ -115,5 +115,7 @@ theme_survminer <-
       legend.text = legend.text,
       legend.title = legend.text
     )
+    class(result) <- "theme"
+    result
   }
 
