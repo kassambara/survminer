@@ -32,7 +32,7 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = "hue",
   font.ncensor.plot.caption = c(15, "plain", "black"),
   font.ncensor.plot.x = c(14, "plain", "black"), font.ncensor.plot.y = c(14,
   "plain", "black"), font.ncensor.plot.tickslab = c(12, "plain", "black"),
-  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_classic2(),
+  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_survminer(),
   ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
