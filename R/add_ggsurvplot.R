@@ -47,6 +47,9 @@
   else list.plots
 }
 
+#'@method + ggsurvplot
+#' @export
+`+.ggsurvplot` <- `+.gglist`
 
 
 #' @rdname add-ggsurvplot
