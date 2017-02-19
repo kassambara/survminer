@@ -2,6 +2,8 @@
    
 ## New features
    
+- New function `theme_survminer()` to change easily the graphical parameters of plots generated with survminer ([#151](https://github.com/kassambara/survminer/issues/151)).
+  
 - New function `arrange_ggsurvplots()` to arrange multiple ggsurvplots on the same page ([#66](https://github.com/kassambara/survminer/issues/66)).
   
 - New function `ggsurvevents()`. Calculates and plots distribution for events (both status = 0 and status = 1); with `type` parameter one can plot cumulative distribution of locally smooth density; with normalised, distributions are normalised. This function helps to notice when censorings are more common ([@pbiecek, #116](https://github.com/kassambara/survminer/issues/116)). 

@@ -35,11 +35,13 @@ Suggests:
     RTCGA(>= 1.4.0),
     RTCGA.clinical(>= 20151101.4.0),
     KMsurv
+Remotes: 
+    kassambara/ggpubr
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'utilities.R'
     'surv_summary.R'
     'theme_classic2.R'
@@ -54,3 +56,4 @@ Collate:
     'myeloma.R'
     'pairwise_survdiff.R'
     'surv_cutpoint.R'
+    'theme_survminer.R'

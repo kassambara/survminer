@@ -1,0 +1,113 @@
+#' @include utilities.R
+NULL
+
+#' Default Theme for Survminer Plots
+#'
+#' @description
+#' Default theme for plots generated with survminer.
+#' @param base_size base font size
+#' @param base_family base font family
+#' @param font.main,font.submain,font.caption,font.x,font.y,font.tickslab,font.legend a vector of length 3
+#'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
+#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
+#'  xlab and ylab, axis tick labels and legend, respectively. For example \emph{font.x =
+#'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
+#'  font.x = "bold", to change only font face.
+#' @name theme_survminer
+#' @examples
+#'
+#'# Fit survival curves
+#'#++++++++++++++++++++++++++++++++++++
+#'require("survival")
+#'fit<- survfit(Surv(time, status) ~ sex, data = lung)
+#'
+#'# Basic survival curves
+#'#++++++++++++++++++++++++++++++++++++
+#'ggsurvplot(fit, data = lung)
+#'
+#'# Change font size, style and color
+#'#++++++++++++++++++++++++++++++++++++
+#' # Change font size, style and color at the same time
+#' # Use font.x = 14, to change only font size; or use
+#' # font.x = "bold", to change only font face.
+#'
+#' ggsurvplot(
+#'    fit, data = lung,
+#'    main = "Survival curve",
+#'    submain = "Based on Kaplan-Meier estimates",
+#'    caption = "created with survminer",
+#'
+#'    ggtheme = theme_survminer(
+#'      font.main = c(16, "bold", "darkblue"),
+#'      font.submain = c(15, "bold.italic", "purple"),
+#'      font.caption = c(14, "plain", "orange"),
+#'      font.x = c(14, "bold.italic", "red"),
+#'      font.y = c(14, "bold.italic", "darkred"),
+#'      font.tickslab = c(12, "plain", "darkgreen")
+#'    )
+#'  )
+#' @export
+theme_survminer <-
+  function (base_size = 12, base_family = "",
+            font.main = c(16, "plain", "black"), font.submain = c(15, "plain", "black"),
+            font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
+            font.caption = c(15, "plain", "black"),
+            font.tickslab = c(12, "plain", "black"),
+            font.legend = c(10, "plain", "black")
+            )
+  {
+
+    font.main <- ggpubr:::.parse_font(font.main)
+    font.x <- ggpubr:::.parse_font(font.x)
+    font.y <- ggpubr:::.parse_font(font.y)
+    font.submain <- ggpubr:::.parse_font(font.submain)
+    font.caption <- ggpubr:::.parse_font(font.caption)
+    font.tickslab <- ggpubr:::.parse_font(font.tickslab)
+    font.legend <- ggpubr:::.parse_font(font.legend)
+
+    tickslab <-
+      element_text(
+        size = font.tickslab$size, face = font.tickslab$face,
+        colour = font.tickslab$color, angle = 0)
+
+    legend.text <- element_text(size = font.legend$size,
+                 face = font.legend$face, colour = font.legend$color)
+
+    theme_classic(base_size = base_size, base_family = base_family) + theme(
+      plot.title = element_text(
+        size = font.main$size,
+        lineheight = 1.0,
+        face = font.main$face,
+        colour = font.main$color
+      ),
+      plot.subtitle = element_text(
+        size = font.submain$size,
+        lineheight = 1.0,
+        face = font.submain$face,
+        colour = font.submain$color
+      ),
+      axis.title.x = element_text(
+        size = font.x$size,
+        face = font.x$face,
+        colour = font.x$color
+      ),
+      axis.title.y = element_text(
+        angle = 90,
+        size = font.y$size,
+        face = font.y$face,
+        colour = font.y$color
+      ),
+      plot.caption = element_text(
+        size = font.caption$size,
+        lineheight = 1.0,
+        face = font.caption$face,
+        colour = font.caption$color
+      ),
+      axis.text.x = tickslab,
+      axis.text.y = tickslab,
+      legend.text = legend.text,
+      legend.title = legend.text
+    )
+  }
+
+
