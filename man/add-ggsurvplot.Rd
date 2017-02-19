@@ -22,8 +22,12 @@ Allows to add ggplot theme function to an object of class ggsurvplot.
 require("survival")
 fit<- survfit(Surv(time, status) ~ sex, data = lung)
 
-# Basicsurvival curves
-p <- ggsurvplot(fit, data = lung, risk.table = TRUE)
+# Basic survival curves
+p <- ggsurvplot(fit, data = lung, risk.table = TRUE,
+   main = "Survival curve",
+   submain = "Based on Kaplan-Meier estimates",
+   caption = "created with survminer"
+   )
 p
 
 # Customizing the plots
