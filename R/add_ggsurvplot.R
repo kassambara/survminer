@@ -1,6 +1,6 @@
 #' Add Components to a ggsurvplot
-#'@description Allows to add ggplot theme function to an object of class ggsurvplot.
-#'@param e1 an object of class \code{\link{ggsurvplot}}.
+#'@description Allows to add ggplot components - theme(), labs(), ... - to one or a list of ggplots.
+#'@param e1 an object of class ggplot or a list of ggplots.
 #'@param e2 a theme function.
 #'@examples
 #'# Fit survival curves
@@ -26,19 +26,29 @@
 #')
 #'
 #'@rdname add-ggsurvplot
-#'@method + ggsurvplot
+#'@method + gglist
 #'@export
-"+.ggsurvplot" <- function (e1, e2)
+"+.gglist" <- function (e1, e2)
 {
-  if (!is.theme(e2)) stop("e2 should be a theme function.")
-  if(inherits(e1, "ggsurvplot")){
-    e1$plot <- e1$plot + e2
-    if(!is.null(e1$table)) e1$table <- e1$table + e2
-    if(!is.null(e1$ncensor.plot)) e1$ncensor.plot <- e1$ncensor.plot + e2
+
+  original.p <- e1
+  if(is.ggplot(original.p)) list.plots <- list(original.p)
+  else if(is.list(original.p)) list.plots <- original.p
+  else stop("Can't handle an object of class ", class (original.p))
+
+  # if (!is.theme(e2)) stop("e2 should be a theme function.")
+
+  for(i in 1:length(list.plots)){
+    p <- list.plots[[i]]
+    if(is.ggplot(p)) list.plots[[i]] <- p + e2
   }
-  e1
+
+  if(is.ggplot(original.p)) list.plots[[1]]
+  else list.plots
 }
+
+
 
 #' @rdname add-ggsurvplot
 #' @export
-"%+%" <- `+.ggsurvplot`
+"%+%" <- `+.gglist`
