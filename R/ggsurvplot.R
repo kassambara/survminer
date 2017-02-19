@@ -386,6 +386,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     else if(risk.table.type == "abs_pct") risk.table.title = "Number at risk by time: n (%)"
     else risk.table.title = "Number at risk by time"
   }
+  extra.params <- list(...)
 
   # Data
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
