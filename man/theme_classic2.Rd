@@ -27,4 +27,3 @@ p + theme_classic()
 # Use theme_classic2()
 p + theme_classic2()
 }
-

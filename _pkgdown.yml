@@ -7,6 +7,8 @@ reference:
     desc:  Summarize and visualize survival curves.
     contents:
       - ggsurvplot
+      - arrange_ggsurvplots
+      - ggsurvevents
       - surv_summary
       - surv_cutpoint
       - pairwise_survdiff
@@ -22,7 +24,9 @@ reference:
   - title: Data
     contents: myeloma
   - title: Others
-    contents: theme_classic2
+    contents:
+      - theme_survminer
+      - theme_classic2
 
 
 

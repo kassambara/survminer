@@ -18,15 +18,43 @@
 survminer: Survival Analysis and Visualization
 ==============================================
 
-The **survminer** R package provides functions for facilitating **survival analysis** and **visualization**. The current version contains three main functions including:
+The **survminer** R package provides functions for facilitating **survival analysis** and **visualization**.
 
+The main functions, in the package, are organized in different categories as follow.
+
+**Summarizing and Visualizing Survival Curves**
+<hr/>
 -   **ggsurvplot**(): Draws survival curves with the 'number at risk' table and 'censoring count plot'.
 
--   **ggcoxzph**(): Graphical test of proportional hazards.
+-   **arrange\_ggsurvplots**(): Arranges multiple ggsurvplots on the same page.
+
+-   **ggsurvevents**(): Plots the distribution of event's times.
+
+-   **surv\_summary**(): Summary of a survival curve. Compared to the default summary() function, surv\_summary() creates a data frame containing a nice summary from survfit results.
+
+-   **surv\_cutpoint**(): Determines the optimal cutpoint for one or multiple continuous variables at once. Provides a value of a cutpoint that correspond to the most significant relation with survival.
+
+-   **pairwise\_survdiff**(): Multiple comparisons of survival curves. Calculate pairwise comparisons between group levels with corrections for multiple testing.
+
+<br/>
+
+**Visual Examinations of Cox Model Assumptions**
+<hr/>
+-   **ggcoxzph**(): Graphical test of proportional hazards. Displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ggplot2. Wrapper around plot.cox.zph().
+
+-   **ggcoxdiagnostics**(): Displays diagnostics graphs presenting goodness of Cox Proportional Hazards Model fit.
 
 -   **ggcoxfunctional**(): Displays graphs of continuous explanatory variable against martingale residuals of null cox proportional hazards model. It helps to properly choose the functional form of continuous variable in cox model.
 
-Find out more at <http://www.sthda.com/english/rpkgs/survminer/>, and check out the documentation and usage examples of each of the functions in survminer package.
+<br/>
+
+**Visual Representation of Cox Model Coefficients**
+<hr/>
+-   **ggforest**(): Draws forest plot for CoxPH model.
+
+-   **ggcoxadjustedcurves**(): Plots adjusted survival curves for coxph model.
+
+> Find out more at <http://www.sthda.com/english/rpkgs/survminer/>, and check out the documentation and usage examples of each of the functions in survminer package.
 
 Installation and loading
 ------------------------
@@ -48,7 +76,6 @@ Load survminer:
 
 ``` r
 library("survminer")
-# Loading required package: ggplot2
 ```
 
 ggsurvplot: Drawing survival curves
@@ -58,7 +85,6 @@ ggsurvplot: Drawing survival curves
 
 ``` r
 require("survival")
-# Loading required package: survival
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
 
@@ -237,7 +263,7 @@ ggsurvplot(fit, data = lung, main = "Survival curves", submain = "Based on Kapla
 Blog posts
 ----------
 
--   M. Kosiński. R-ADDICT January 2017. [Comparing (Fancy) Survival Curves with Weighted Log-rank Tests](http://r-addict.com/2017/01/29/Fancy-Survival-Plots.html)
+-   M. Kosiński. R-ADDICT January 2017. [Comparing (Fancy) Survival Curves with Weighted Log-rank Tests](http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html)
 
 -   M. Kosiński. R-ADDICT January 2017. [When You Went too Far with Survival Plots During the survminer 1st Anniversary](http://r-addict.com/2017/01/15/Too-Far-With-Survival-Plots.html)
 

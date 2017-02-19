@@ -365,12 +365,12 @@ linetype, size, ...</dd>
           <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"#E7B800"</span>, <span class='st'>"#2E9FDF"</span>), <span class='co'># custom color palette</span>
           <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='co'># Add confidence interval</span>
           <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span> <span class='co'># Add p-value</span>
-)</div><img src='ggsurvplot-8.png' alt='' width='540' height='400' /><div class='input'>
+)</div><div class='input'>
 <span class='co'># Use brewer color palette "Dark2"</span>
 <span class='co'># Add risk table</span>
 <span class='fu'>ggsurvplot</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>, <span class='kw'>linetype</span> <span class='kw'>=</span> <span class='st'>"strata"</span>,
           <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-          <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"Dark2"</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><img src='ggsurvplot-10.png' alt='' width='540' height='400' /><div class='input'>
+          <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"Dark2"</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
 
 <span class='co'># Change color, linetype by strata, risk.table color by strata</span>
 <span class='fu'>ggsurvplot</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>,
@@ -379,7 +379,7 @@ linetype, size, ...</dd>
           <span class='kw'>risk.table.col</span> <span class='kw'>=</span> <span class='st'>"strata"</span>, <span class='co'># Change risk table color by groups</span>
           <span class='kw'>linetype</span> <span class='kw'>=</span> <span class='st'>"strata"</span>, <span class='co'># Change line type by groups</span>
           <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'>theme_bw</span>(), <span class='co'># Change ggplot2 theme</span>
-          <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"#E7B800"</span>, <span class='st'>"#2E9FDF"</span>))</div><img src='ggsurvplot-12.png' alt='' width='540' height='400' /><div class='input'>
+          <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"#E7B800"</span>, <span class='st'>"#2E9FDF"</span>))</div><div class='input'>
 
 <span class='co'>#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 <span class='co'># Example 3: Survival curve with multiple group</span>
@@ -477,7 +477,7 @@ linetype, size, ...</dd>
   <span class='kw'>ncensor.plot.title</span> <span class='kw'>=</span> <span class='st'>"Number of censorings"</span>,
   <span class='kw'>ncensor.plot.subtitle</span> <span class='kw'>=</span> <span class='st'>"over the time."</span>,
   <span class='kw'>ncensor.plot.caption</span> <span class='kw'>=</span> <span class='st'>"data available at data.com"</span>,
-  <span class='kw'>ncensor.plot.height</span> <span class='kw'>=</span> <span class='fl'>0.35</span>)</div><img src='ggsurvplot-14.png' alt='' width='540' height='400' /><div class='input'>
+  <span class='kw'>ncensor.plot.height</span> <span class='kw'>=</span> <span class='fl'>0.35</span>)</div><div class='input'>
 <span class='fu'>ggsurvplot</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>,
   <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Survival curves"</span>, <span class='kw'>submain</span> <span class='kw'>=</span> <span class='st'>"Based on Kaplan-Meier estimates"</span>,
   <span class='kw'>caption</span> <span class='kw'>=</span> <span class='st'>"created with survminer"</span>,
@@ -494,7 +494,7 @@ linetype, size, ...</dd>
   <span class='kw'>risk.table.caption</span> <span class='kw'>=</span> <span class='st'>"source code: website.com"</span>,
   <span class='kw'>risk.table.height</span> <span class='kw'>=</span> <span class='fl'>0.35</span>,
   <span class='kw'>font.risk.table.title</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>13</span>, <span class='st'>"bold.italic"</span>, <span class='st'>"green"</span>),
-  <span class='kw'>font.risk.table.sutitle</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>15</span>, <span class='st'>"bold"</span>, <span class='st'>"pink"</span>),
+  <span class='kw'>font.risk.table.subtitle</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>15</span>, <span class='st'>"bold"</span>, <span class='st'>"pink"</span>),
   <span class='kw'>font.risk.table.caption</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>11</span>, <span class='st'>"plain"</span>, <span class='st'>"darkgreen"</span>),
   <span class='kw'>font.risk.table.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>8</span>, <span class='st'>"bold.italic"</span>, <span class='st'>"orange"</span>),
   <span class='kw'>font.risk.table.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>11</span>, <span class='st'>"bold.italic"</span>, <span class='st'>"darkgreen"</span>),
@@ -506,11 +506,11 @@ linetype, size, ...</dd>
   <span class='kw'>ncensor.plot.caption</span> <span class='kw'>=</span> <span class='st'>"data available at data.com"</span>,
   <span class='kw'>ncensor.plot.height</span> <span class='kw'>=</span> <span class='fl'>0.35</span>,
   <span class='kw'>font.ncensor.plot.title</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>13</span>, <span class='st'>"bold.italic"</span>, <span class='st'>"green"</span>),
-  <span class='kw'>font.ncensor.plot.sutitle</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>15</span>, <span class='st'>"bold"</span>, <span class='st'>"pink"</span>),
+  <span class='kw'>font.ncensor.plot.subtitle</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>15</span>, <span class='st'>"bold"</span>, <span class='st'>"pink"</span>),
   <span class='kw'>font.ncensor.plot.caption</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>11</span>, <span class='st'>"plain"</span>, <span class='st'>"darkgreen"</span>),
   <span class='kw'>font.ncensor.plot.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>8</span>, <span class='st'>"bold.italic"</span>, <span class='st'>"orange"</span>),
   <span class='kw'>font.ncensor.plot.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>11</span>, <span class='st'>"bold.italic"</span>, <span class='st'>"darkgreen"</span>),
-  <span class='kw'>font.ncensor.plot.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>9</span>, <span class='st'>"bold"</span>, <span class='st'>"red"</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: la condition a une longueur &gt; 1 et seul le premier élément est utilisé</span></div><div class='output co'>#&gt; <span class='warning'>Warning: la condition a une longueur &gt; 1 et seul le premier élément est utilisé</span></div><img src='ggsurvplot-18.png' alt='' width='540' height='400' /><div class='input'>
+  <span class='kw'>font.ncensor.plot.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>9</span>, <span class='st'>"bold"</span>, <span class='st'>"red"</span>))</div><img src='ggsurvplot-12.png' alt='' width='540' height='400' /><div class='input'>
 
 
 </div></pre>

@@ -47,4 +47,3 @@ ggforest(model)
 \author{
 Przemyslaw Biecek, \email{przemyslaw.biecek@gmail.com}
 }
-

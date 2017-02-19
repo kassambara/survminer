@@ -84,6 +84,8 @@
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"> </a>New features</h2>
 <ul>
+<li><p>New function <code><a href="../reference/arrange_ggsurvplots.html">arrange_ggsurvplots()</a></code> to arrange multiple ggsurvplots on the same page (<a href="https://github.com/kassambara/survminer/issues/66">#66</a>).</p></li>
+<li><p>New function <code><a href="../reference/ggsurvevents.html">ggsurvevents()</a></code>. Calculates and plots distribution for events (both status=0 and status1); with <code>type</code> parameter one can plot cumulative distribution of locally smooth density; with normalised distributions are normalised. This function helps to notice when censorings are more common (<a href="https://github.com/kassambara/survminer/issues/116">@pbiecek, #116</a>).</p></li>
 <li><p>New function <code><a href="../reference/ggcoxadjustedcurves.html">ggcoxadjustedcurves()</a></code> added to plot adjusted survival curves for Cox proportional hazards model (<a href="https://github.com/kassambara/survminer/issues/133">@pbiecek, #133</a> &amp; <a href="https://github.com/kassambara/survminer/issues/67">@markdanese, #67</a>).</p></li>
 <li>New possibilities to compare survival curves with <code>pval.method</code> and <code>log.rank.weights</code> parameters in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, by specifing weights in Log-rank test. Functionality based on <code>survMisc::comp</code>.</li>
 <li>New function <code><a href="../reference/ggforest.html">ggforest()</a></code> added for drawing forest plot for the Cox model.</li>
@@ -95,6 +97,7 @@
 <h2 class="hasAnchor">
 <a href="#major-changes" class="anchor"> </a>Major changes</h2>
 <ul>
+<li><p>Additional <code>data</code> argument added to the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function (<a href="https://github.com/kassambara/survminer/issues/142">@kassambara, #142</a>). Now, it’s recommended to pass to the function, the data used to fit survival curves. This will avoid the error generated when trying to use the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function inside another functions (<a href="https://github.com/kassambara/survminer/issues/125">@zzawadz, #125</a>).</p></li>
 <li>New fonts and texts customization features for <code>ggsurvplot</code> (<a href="https://github.com/kassambara/survminer/issues/105">@MarcinKosinski, #105</a>) (<a href="https://github.com/kassambara/survminer/issues/106">@MarcinKosinski, #106</a>)
 <ul>
 <li>It is possible to specify subtitle (param <code>submain</code>) and caption (param <code>caption</code>) for the <code>curve</code> part of the <code>ggsurvplot</code>.</li>
@@ -147,7 +150,7 @@ doc =<span class="st"> </span><span class="kw">addPlot</span>(doc, function() <s
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"> </a>Bug fixes</h2>
 <ul>
-<li><p>Now, <code>gggcoxzph()</code> works for univariate Cox analysis (<a href="https://github.com/kassambara/survminer/issues/103">#103</a>).</p></li>
+<li><p>Now, <code><a href="../reference/ggcoxzph.html">ggcoxzph()</a></code> works for univariate Cox analysis (<a href="https://github.com/kassambara/survminer/issues/103">#103</a>).</p></li>
 <li><p>Now, <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> works properly for schoenfeld residuals (<a href="https://github.com/kassambara/survminer/issues/122">@pbiecek, #119</a>).</p></li>
 <li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> works properly in the situation where <code>strata()</code> is included in the cox formula (<a href="https://github.com/kassambara/survminer/issues/109">#109</a>).</p></li>
 </ul>

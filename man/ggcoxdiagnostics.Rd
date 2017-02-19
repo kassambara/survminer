@@ -73,6 +73,7 @@ can be calculated with \link{coxph} function.
 \itemize{
 \item \code{ggcoxdiagnostics}: Diagnostic Plots for Cox Proportional Hazards Model with \pkg{ggplot2}
 }}
+
 \examples{
 
 if(require(RTCGA.clinical)){
@@ -114,4 +115,3 @@ ggcoxdiagnostics(coxph.fit2, type = "scaledsch", ox.scale = "time")
 \author{
 Marcin Kosinski , \email{m.p.kosinski@gmail.com}
 }
-

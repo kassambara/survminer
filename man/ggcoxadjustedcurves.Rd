@@ -67,4 +67,3 @@ ggcoxadjustedcurves(fit2, data = bladder, variable=factor(bladder[,"rx"]),
 \author{
 Przemyslaw Biecek, \email{przemyslaw.biecek@gmail.com}
 }
-
