@@ -39,22 +39,6 @@
 #'  coordinates of the p-value. Default values are NULL.
 #'@param main,submain,caption,xlab,ylab main title, subtitle, caption and axis
 #'  labels
-#'@param
-#'font.risk.table.title,font.risk.table.subtitle,font.risk.table.caption,font.risk.table.x,font.risk.table.y,font.risk.table.tickslab
-#'a vector of length 3 indicating respectively the size (e.g.: 14), the style
-#'(e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
-#'of main title, subtitle, caption, xlab and ylab and axis tick labels for the
-#'\code{risk.table = TRUE}, respectively. For example \emph{font.x = c(14,
-#'"bold", "red")}.  Use font.x = 14, to change only font size; or use font.x =
-#'"bold", to change only font face.
-#'@param
-#'font.ncensor.plot.title,font.ncensor.plot.subtitle,font.ncensor.plot.caption,font.ncensor.plot.x,font.ncensor.plot.y,font.ncensor.plot.tickslab
-#'a vector of length 3 indicating respectively the size (e.g.: 14), the style
-#'(e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
-#'of main title, subtitle, caption, xlab and ylab and axis tick labels for the
-#'\code{ncensor.plot = TRUE}, respectively. For example \emph{font.x = c(14,
-#'"bold", "red")}.  Use font.x = 14, to change only font size; or use font.x =
-#'"bold", to change only font face.
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
 #'@param legend character specifying legend position. Allowed values are one of
 #'  c("top", "bottom", "left", "right", "none"). Default is "top" side position.
@@ -361,28 +345,16 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                        log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
                        main = NULL, submain = NULL, caption = NULL, xlab = "Time", ylab = "Survival probability",
-                       #font.main = c(16, "plain", "black"), font.submain = c(15, "plain", "black"),
-                       #font.caption = c(15, "plain", "black"),
-                       #font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-                       #font.tickslab = c(12, "plain", "black"),
                         xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
                        #font.legend = c(10, "plain", "black"),
                        risk.table = FALSE, risk.table.title = NULL, risk.table.subtitle = NULL, risk.table.caption = NULL,
                        risk.table.col = "black", risk.table.fontsize = 4.5,
-                       font.risk.table.title = c(16, "plain", "black"), font.risk.table.subtitle = c(15, "plain", "black"),
-                       font.risk.table.caption = c(15, "plain", "black"),
-                       font.risk.table.x = c(14, "plain", "black"), font.risk.table.y =  c(14, "plain", "black"),
-                       font.risk.table.tickslab = c(12, "plain", "black"),
                        risk.table.y.text = TRUE,
                        risk.table.y.text.col = TRUE,
                        risk.table.height = 0.25, surv.plot.height = 0.75, ncensor.plot.height = 0.25,
                        ncensor.plot = FALSE, ncensor.plot.title = NULL, ncensor.plot.subtitle = NULL, ncensor.plot.caption = NULL,
-                       font.ncensor.plot.title = c(16, "plain", "black"), font.ncensor.plot.subtitle = c(15, "plain", "black"),
-                       font.ncensor.plot.caption = c(15, "plain", "black"),
-                       font.ncensor.plot.x = c(14, "plain", "black"), font.ncensor.plot.y = c(14, "plain", "black"),
-                       font.ncensor.plot.tickslab = c(12, "plain", "black"),
                        surv.median.line = c("none", "hv", "h", "v"),
                        ggtheme = theme_survminer(),
                        ...
@@ -413,21 +385,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     if(risk.table.type == "percentage") risk.table.title = "Percentage at risk by time"
     else if(risk.table.type == "abs_pct") risk.table.title = "Number at risk by time: n (%)"
     else risk.table.title = "Number at risk by time"
-  }
-
-  # Graphical parameters
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # Now they should be passed to theme_survminer() or to ggpubr::ggpar()
-  dots.params <- list(...)
-  graphical.params <- list()
-  allowed.arguments <- list("font.main", "font.submain",  "font.x",
-                          "font.y", "font.caption", "font.tickslab", "font.legend")
-  for(argument in names (dots.params)){
-
-    if(argument %in% allowed.arguments ){
-      argument.value <- dots.params[[argument]]
-      graphical.params[[argument]] <- argument.value
-    }
   }
 
   # Data
@@ -486,7 +443,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   d <- d[order(d$strata), , drop = FALSE]
   surv.color <- ifelse(n.strata > 1, "strata", color)
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
-      .geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
+      ggpubr::geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
        #.ggcolor(palette, breaks = strata_names, labels = legend.labs) +
@@ -562,14 +519,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                          color = legend.title, fill = legend.title,
                          linetype = lty.leg.title
                          )
-  graphical.params[["p"]] <- p
-  graphical.params[["ggtheme"]] <- ggtheme
-  p <- do.call(ggpubr::ggpar, graphical.params)
-  #p <-.labs(p = p,  font.submain = font.submain, font.caption = font.caption)
-  #p <-.labs(p = p, font.main = font.main, font.x = font.x, font.y = font.y, font.submain = font.submain, font.caption = font.caption)
-  #p <- .set_ticks(p, font.tickslab = font.tickslab)
-  p <- p + ggplot2::theme(legend.position = legend)
-  #p <- .set_legend_font(p, font.legend)
+  p <-  .set_general_gpar(p, legend = legend, ...) # general graphical parameters
   if(!is.null(linetype.manual)) p <- p + scale_linetype_manual(values = linetype.manual)
 
 
@@ -588,16 +538,19 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                                    risk.table.subtitle = risk.table.subtitle,
                                    risk.table.caption = risk.table.caption,
                                    risk.table.y.text = risk.table.y.text,
-                                   font.tickslab = font.risk.table.tickslab, type = risk.table.type
+                                   font.tickslab = extra.params$font.risk.table.tickslab,
+                                   type = risk.table.type
                                    )
-     risktable <-.labs(risktable, font.main = font.risk.table.title, font.x = font.risk.table.x,
-                       font.y = font.risk.table.y, xlab = xlab, ylab = legend.title,
-                       font.submain = font.risk.table.subtitle, font.caption = font.risk.table.caption)
+     risktable <-  .set_general_gpar(risktable, legend = "none", ...) # general graphical parameters
+     risktable <- .set_risktable_gpar(risktable, legend = "none", ...) # specific graphical params
+     risktable <- risktable + labs(x = xlab, y = legend.title)
+     if(!risk.table.y.text)
+       risktable <- risktable + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
+                          axis.ticks.y = element_blank())
 
-     # risktable <- .set_ticks(risktable, font.tickslab = font.tickslab)
+     # risktable <-.labs(risktable,  xlab = xlab, ylab = legend.title)
      risktable <- risktable + ggplot2::labs(color = legend.title, shape = legend.title)
      if("left" %in% legend) risktable <- risktable + ggplot2::theme(legend.position = legend)
-     else risktable <- risktable + ggplot2::theme(legend.position = "none")
      # color risk.table ticks by strata
      if(risk.table.y.text.col){
        g <- ggplot2::ggplot_build(p)
@@ -636,15 +589,12 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
         .ggfill(palette, breaks = strata_names, labels = legend.labs)
     }
 
-    ncensor_plot <-.labs(ncensor_plot, font.main = font.ncensor.plot.title, font.submain = font.ncensor.plot.subtitle,
-                         font.caption = font.ncensor.plot.caption,
-                         font.x = font.ncensor.plot.x, font.y = font.ncensor.plot.y,
-                         xlab = xlab, ylab = "n.censor")
-    ncensor_plot <- .set_ticks(ncensor_plot, font.tickslab = font.ncensor.plot.tickslab)
+    ncensor_plot <-  .set_general_gpar(ncensor_plot, legend = "none", ...) # general graphical parameters
+    ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot, legend = "none", ...) # specific graphical params
     ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
+                                                 x = xlab, y = "n.censor",
                                                  title = ncensor.plot.title, subtitle = ncensor.plot.subtitle, caption = ncensor.plot.caption)
     if("left" %in% legend) ncensor_plot <- ncensor_plot + ggplot2::theme(legend.position = legend)
-    else ncensor_plot <- ncensor_plot + ggplot2::theme(legend.position = "none")
     res$ncensor.plot <- ncensor_plot
   }
 
@@ -653,7 +603,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   attr(res, "risk.table.height") <- risk.table.height
   attr(res, "ncensor.plot.height") <- ncensor.plot.height
   attr(res, "risk.table.y.text.col") <- risk.table.y.text.col
-
 
   return(res)
 }
@@ -1058,3 +1007,41 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 }
 
 
+# Graphical parameters
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# general graphical parameters to be applied to
+# survival curves, risk.table, ncensor.plot
+.set_general_gpar <- function(p, legend = "top", ...){
+  extra.params <- list(...)
+  ggpubr::ggpar(p = p, font.main = extra.params$font.main, font.x = extra.params$font.x,
+                font.y = extra.params$font.y, font.submain = extra.params$font.submain,
+                font.caption = extra.params$font.caption,
+                font.tickslab = extra.params$font.tickslab,
+                legend = legend, font.legend = extra.params$font.legend)
+}
+
+# Specific graphical params to risk.table
+.set_risktable_gpar <- function(p, legend = "none",  ...){
+  extra.params <- list(...)
+  ggpubr::ggpar(p, font.main = extra.params$font.risk.table.title,
+                   font.x = extra.params$font.risk.table.x,
+                   font.y = extra.params$font.risk.table.y,
+                   font.submain = extra.params$font.risk.table.subtitle,
+                   font.caption = extra.params$font.risk.table.caption,
+                   legend = legend
+  )
+}
+
+# Specific graphical params to ncensor_plot
+.set_ncensorplot_gpar <- function(p, legend = "none", ...){
+  extra.params <- list(...)
+  ggpubr::ggpar(p,
+             font.main = extra.params$font.ncensor.plot.title,
+             font.submain = extra.params$font.ncensor.plot.subtitle,
+             font.caption = extra.params$font.ncensor.plot.caption,
+             font.tickslab = extra.params$font.ncensor.plot.tickslab,
+             font.x = extra.params$font.ncensor.plot.x,
+             font.y = extra.params$font.ncensor.plot.y,
+             legend = legend)
+
+}
