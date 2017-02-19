@@ -10,12 +10,12 @@
 e1 \%+\% e2
 }
 \arguments{
-\item{e1}{an object of class \code{\link{ggsurvplot}}.}
+\item{e1}{an object of class ggplot or a list of ggplots.}
 
 \item{e2}{a theme function.}
 }
 \description{
-Allows to add ggplot theme function to an object of class ggsurvplot.
+Allows to add ggplot components - theme(), labs(), ... - to one or a list of ggplots.
 }
 \examples{
 # Fit survival curves

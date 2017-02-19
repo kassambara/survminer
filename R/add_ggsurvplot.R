@@ -1,6 +1,6 @@
 #' Add Components to a ggsurvplot
-#'@description Allows to add ggplot theme function to an object of class ggsurvplot.
-#'@param e1 an object of class \code{\link{ggsurvplot}}.
+#'@description Allows to add ggplot components - theme(), labs(), ... - to one or a list of ggplots.
+#'@param e1 an object of class ggplot or a list of ggplots.
 #'@param e2 a theme function.
 #'@examples
 #'# Fit survival curves
@@ -36,7 +36,7 @@
   else if(is.list(original.p)) list.plots <- original.p
   else stop("Can't handle an object of class ", class (original.p))
 
-  if (!is.theme(e2)) stop("e2 should be a theme function.")
+  # if (!is.theme(e2)) stop("e2 should be a theme function.")
 
   for(i in 1:length(list.plots)){
     p <- list.plots[[i]]
