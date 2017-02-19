@@ -13,6 +13,10 @@ NULL
 #'  xlab and ylab, axis tick labels and legend, respectively. For example \emph{font.x =
 #'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 #'  font.x = "bold", to change only font face.
+#'@param legend character specifying legend position. Allowed values are one of
+#'  c("top", "bottom", "left", "right", "none"). Default is "top" side position.
+#'  to remove the legend use legend = "none". Legend position can be also
+#'  specified using a numeric vector c(x, y); see details section.
 #' @name theme_survminer
 #' @examples
 #'
@@ -53,6 +57,7 @@ theme_survminer <-
             font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
             font.caption = c(15, "plain", "black"),
             font.tickslab = c(12, "plain", "black"),
+            legend = c("top", "bottom", "left", "right", "none"),
             font.legend = c(10, "plain", "black")
             )
   {
@@ -64,6 +69,7 @@ theme_survminer <-
     font.caption <- ggpubr:::.parse_font(font.caption)
     font.tickslab <- ggpubr:::.parse_font(font.tickslab)
     font.legend <- ggpubr:::.parse_font(font.legend)
+    legend <- match.arg(legend)
 
     tickslab <-
       element_text(
@@ -105,9 +111,9 @@ theme_survminer <-
       ),
       axis.text.x = tickslab,
       axis.text.y = tickslab,
+      legend.position = legend,
       legend.text = legend.text,
       legend.title = legend.text
     )
   }
-
 

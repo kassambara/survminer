@@ -8,7 +8,8 @@ theme_survminer(base_size = 12, base_family = "", font.main = c(16,
   "plain", "black"), font.submain = c(15, "plain", "black"), font.x = c(14,
   "plain", "black"), font.y = c(14, "plain", "black"), font.caption = c(15,
   "plain", "black"), font.tickslab = c(12, "plain", "black"),
-  font.legend = c(10, "plain", "black"))
+  legend = c("top", "bottom", "left", "right", "none"), font.legend = c(10,
+  "plain", "black"))
 }
 \arguments{
 \item{base_size}{base font size}
@@ -21,6 +22,11 @@ indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
 xlab and ylab, axis tick labels and legend, respectively. For example \emph{font.x =
 c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
 font.x = "bold", to change only font face.}
+
+\item{legend}{character specifying legend position. Allowed values are one of
+c("top", "bottom", "left", "right", "none"). Default is "top" side position.
+to remove the legend use legend = "none". Legend position can be also
+specified using a numeric vector c(x, y); see details section.}
 }
 \description{
 Default theme for plots generated with survminer.

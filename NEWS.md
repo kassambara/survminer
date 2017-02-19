@@ -2,6 +2,30 @@
    
 ## New features
    
+- New function `+.ggsurvplot()` to add ggplot theme functions to a ggsurvplot. ([#151](https://github.com/kassambara/survminer/issues/151)). For example:
+
+```r
+# Fit survival curves
+require("survival")
+fit<- survfit(Surv(time, status) ~ sex, data = lung)
+
+# Basicsurvival curves
+require("survminer")
+p <- ggsurvplot(fit, data = lung, risk.table = TRUE)
+p
+
+# Customizing the plots
+p %+% theme_survminer(
+     font.main = c(16, "bold", "darkblue"),
+     font.submain = c(15, "bold.italic", "purple"),
+     font.caption = c(14, "plain", "orange"),
+     font.x = c(14, "bold.italic", "red"),
+     font.y = c(14, "bold.italic", "darkred"),
+     font.tickslab = c(12, "plain", "darkgreen")
+)
+
+```
+  
 - New function `theme_survminer()` to change easily the graphical parameters of plots generated with survminer ([#151](https://github.com/kassambara/survminer/issues/151)).
   
 - New function `arrange_ggsurvplots()` to arrange multiple ggsurvplots on the same page ([#66](https://github.com/kassambara/survminer/issues/66)).

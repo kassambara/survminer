@@ -42,6 +42,7 @@ URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 6.0.1
 Collate: 
+    'add_ggsurvplot.R'
     'utilities.R'
     'surv_summary.R'
     'theme_classic2.R'
