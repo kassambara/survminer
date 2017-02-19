@@ -38,7 +38,8 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = "hue",
   ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
-  risk.table.height = NULL, ncensor.plot.height = NULL, ...)
+  risk.table.height = NULL, ncensor.plot.height = NULL, newpage = TRUE,
+  ...)
 }
 \arguments{
 \item{fit}{an object of class survfit.}
@@ -203,6 +204,8 @@ line at median survival. Allowed values include one of c("none", "hv", "h",
 linetype, size, ...}
 
 \item{x}{an object of class ggsurvplot}
+
+\item{newpage}{open a new page. See \code{\link{grid.arrange}}}
 }
 \value{
 return an object of class ggsurvplot which is list containing two

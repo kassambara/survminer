@@ -635,13 +635,15 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 
 #' @param x an object of class ggsurvplot
 #' @method print ggsurvplot
+#' @param newpage open a new page. See \code{\link{grid.arrange}}
 #' @rdname ggsurvplot
 #' @export
-print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NULL, ncensor.plot.height = NULL, ...){
+print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NULL, ncensor.plot.height = NULL, newpage = TRUE, ...){
 
   res <- .build_ggsurvplot(x = x, surv.plot.height = surv.plot.height,
                     risk.table.height = risk.table.height,
                     ncensor.plot.height = ncensor.plot.height)
+  if(newpage) grid::grid.newpage()
   grid::grid.draw(res)
 
 }
