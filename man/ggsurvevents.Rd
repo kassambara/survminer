@@ -5,11 +5,8 @@
 \title{Distribution of Event's Times}
 \usage{
 ggsurvevents(surv = NULL, fit = NULL, data = NULL, type = "fraction",
-  normalized = TRUE, censored.on.top = TRUE, ggtheme = theme_classic2(),
-  palette = c("grey75", "grey25"), font.main = c(16, "plain", "black"),
-  font.submain = c(15, "plain", "black"), font.caption = c(15, "plain",
-  "black"), font.x = c(14, "plain", "black"), font.y = c(14, "plain",
-  "black"), font.tickslab = c(12, "plain", "black"))
+  normalized = TRUE, censored.on.top = TRUE, ggtheme = theme_survminer(),
+  palette = c("grey75", "grey25"), ...)
 }
 \arguments{
 \item{surv}{an object of \link{Surv}. If not suplied, the censoring variable is extracted from the model.}
@@ -28,12 +25,7 @@ ggsurvevents(surv = NULL, fit = NULL, data = NULL, type = "fraction",
 
 \item{palette}{the color palette to be used for coloring of significant variables.}
 
-\item{font.main, font.submain, font.caption, font.x, font.y, font.tickslab}{a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
-xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
-c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-font.x = "bold", to change only font face.}
+\item{...}{other graphical parameters to be passed to the function \link[ggpubr]{ggpar}.}
 }
 \value{
 return an object of class ggplot

@@ -8,12 +8,7 @@
 #' @param ggtheme function, ggplot2 theme name. Default value is theme_classic2. Allowed values include ggplot2 official themes: see theme.
 #' @param censored.on.top is TRUE then censored events are on the top
 #' @param palette the color palette to be used for coloring of significant variables.
-#' @param font.main,font.submain,font.caption,font.x,font.y,font.tickslab a vector of length 3
-#'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
-#'  xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
-#'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-#'  font.x = "bold", to change only font face.
+#' @param ... other graphical parameters to be passed to the function \link[ggpubr]{ggpar}.
 #'
 #' @return return an object of class ggplot
 #' @importFrom stats as.formula terms
@@ -47,12 +42,9 @@ ggsurvevents <- function(surv = NULL,
                          type = "fraction",
                          normalized = TRUE,
                          censored.on.top = TRUE,
-                     ggtheme = theme_classic2(),
-                     palette = c("grey75", "grey25"),
-                     font.main = c(16, "plain", "black"), font.submain = c(15, "plain", "black"),
-                     font.caption = c(15, "plain", "black"),
-                     font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-                     font.tickslab = c(12, "plain", "black")) {
+                         ggtheme = theme_survminer(),
+                         palette = c("grey75", "grey25"),
+                         ...) {
   if (!is.null(surv)) {
     stopifnot(class(surv) == "Surv")
   } else {
@@ -116,7 +108,5 @@ ggsurvevents <- function(surv = NULL,
     labs(title = plot.title,
          subtitle = "black for status = 0 / grey for status = 1",
          x = "Time", y = .ylab)
-  p <- .labs(p = p, font.main = font.main, font.x = font.x, font.y = font.y, font.submain = font.submain, font.caption = font.caption)
-  p <- .set_ticks(p, font.tickslab = font.tickslab)
-  p
+  ggpubr::ggpar(p, ...)
 }
