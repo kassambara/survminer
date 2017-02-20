@@ -103,7 +103,7 @@ ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6,
   }) -> plots
 
   names(plots) <- explanatory.variables.names
-  class(plots) <- c("ggcoxfunctional", "list")
+  class(plots) <- c("ggcoxfunctional", "ggsurv", "list")
   attr(plots, "y.text") <- ylab
   attr(plots, "caption") <- caption
   attr(plots, "title") <- title

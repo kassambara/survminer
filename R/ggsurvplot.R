@@ -599,7 +599,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     res$ncensor.plot <- ncensor_plot
   }
 
-  class(res) <- c("ggsurvplot", "list")
+  class(res) <- c("ggsurvplot", "ggsurv", "list")
   attr(res, "surv.plot.height") <- surv.plot.height
   attr(res, "risk.table.height") <- risk.table.height
   attr(res, "ncensor.plot.height") <- ncensor.plot.height

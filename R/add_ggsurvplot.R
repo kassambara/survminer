@@ -1,7 +1,9 @@
-#' Add Components to a ggsurvplot
-#'@description Allows to add ggplot components - theme(), labs(), ... - to one or a list of ggplots.
-#'@param e1 an object of class ggplot or a list of ggplots.
-#'@param e2 a theme function.
+#'Add Components to a ggsurvplot
+#'@description Allows to add ggplot components - theme(), labs(), ... - to an
+#'  object of class ggsurv, which is a list of ggplots.
+#'@param e1 an object of class ggsurv.
+#'@param e2 a plot component such as theme and labs.
+#'@seealso \code{\link{theme_survminer}} and \code{\link{ggsurvplot}}
 #'@examples
 #'# Fit survival curves
 #'require("survival")
@@ -16,7 +18,7 @@
 #'p
 #'
 #'# Customizing the plots
-#'p %+% theme_survminer(
+#'p + theme_survminer(
 #'      font.main = c(16, "bold", "darkblue"),
 #'      font.submain = c(15, "bold.italic", "purple"),
 #'      font.caption = c(14, "plain", "orange"),
@@ -26,9 +28,9 @@
 #')
 #'
 #'@rdname add-ggsurvplot
-#'@method + gglist
+#'@method + ggsurv
 #'@export
-"+.gglist" <- function (e1, e2)
+"+.ggsurv" <- function (e1, e2)
 {
 
   original.p <- e1
@@ -47,11 +49,7 @@
   else list.plots
 }
 
-#'@method + ggsurvplot
-#' @export
-`+.ggsurvplot` <- `+.gglist`
-
 
 #' @rdname add-ggsurvplot
 #' @export
-"%+%" <- `+.gglist`
+"%+%" <- `+.ggsurv`

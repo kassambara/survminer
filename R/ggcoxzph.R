@@ -142,7 +142,7 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
 
   }) -> plots
   names(plots) <- var
-  class(plots) <- c("ggcoxzph", "list")
+  class(plots) <- c("ggcoxzph", "ggsurv", "list")
 
   if("GLOBAL" %in% rownames(x$table)) # case of multivariate Cox
     global_p <- x$table["GLOBAL", 3]
