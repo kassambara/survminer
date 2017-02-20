@@ -6,9 +6,7 @@
 \usage{
 ggcoxadjustedcurves(fit, variable = NULL, individual.curves = FALSE,
   data = NULL, palette = "hue", curve.size = 2, curve.alpha = 0.2,
-  font.main = c(16, "plain", "black"), font.x = c(14, "plain", "black"),
-  font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain", "black"),
-  ylab = "Survival rate", ggtheme = theme_classic2())
+  ylab = "Survival rate", ggtheme = theme_survminer(), ...)
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
@@ -28,17 +26,12 @@ palettes e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue",
 
 \item{curve.size, curve.alpha}{size and alpha for individual survival curves}
 
-\item{font.main, font.x, font.y, font.tickslab}{a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
-xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
-c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-font.x = "bold", to change only font face.}
-
 \item{ylab}{y axis label.}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
+
+\item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.}
 }
 \value{
 Returns an object of class \code{gg}.
