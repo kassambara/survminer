@@ -36,13 +36,11 @@ are produced in turn for each variable of a model.}
 \item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
 
-\item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot (See Details section).}
+\item{...}{further arguments passed to either the print() function or to the \code{\link[ggpubr]{ggpar}} function for customizing the plot.}
 
 \item{x}{an object of class ggcoxzph}
 
 \item{newpage}{open a new page. See \code{\link{grid.arrange}}.}
-
-\item{...}{further arguments passed to print, but really it's unused}
 }
 \value{
 Returns an object of class \code{ggcoxzph} which is a list of ggplots.
@@ -50,18 +48,6 @@ Returns an object of class \code{ggcoxzph} which is a list of ggplots.
 \description{
 Displays a graph of the scaled Schoenfeld residuals, along with a
  smooth curve using \pkg{ggplot2}. Wrapper around \link{plot.cox.zph}.
-}
-\details{
-\strong{Customizing the plots}: The plot can be easily
- customized using additional arguments to be passed to the function ggpar().
- Read ?ggpubr::ggpar. These arguments include
- \emph{font.main,font.submain,font.caption,font.x,font.y,font.tickslab,font.legend}:
- a vector of length 3 indicating respectively the size (e.g.: 14), the style
- (e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
- of main title, subtitle, caption, xlab and ylab and axis tick labels,
- respectively. For example \emph{font.x = c(14, "bold", "red")}.  Use font.x
- = 14, to change only font size; or use font.x = "bold", to change only font
- face.
 }
 \section{Functions}{
 \itemize{
