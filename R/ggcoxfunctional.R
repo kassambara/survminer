@@ -23,7 +23,6 @@ NULL
 #'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@param ... further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.
-#'@details
 #'@return Returns an object of class \code{ggcoxfunctional} which is a list of ggplots.
 #'
 #'@author Marcin Kosinski , \email{m.p.kosinski@@gmail.com}
