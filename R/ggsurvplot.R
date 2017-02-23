@@ -653,6 +653,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
       x$table <- x$table + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
     }
   }
+  if(!is.null(x$ncensor.plot)) x$ncensor.plot <- x$ncensor.plot + theme (legend.position = "none")
 
   res <- NULL
   if(is.null(x$table) & is.null(x$ncensor.plot)) res <- x$plot
