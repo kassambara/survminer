@@ -603,6 +603,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   attr(res, "surv.plot.height") <- surv.plot.height
   attr(res, "risk.table.height") <- risk.table.height
   attr(res, "ncensor.plot.height") <- ncensor.plot.height
+  attr(res, "risk.table.y.text") <- risk.table.y.text
   attr(res, "risk.table.y.text.col") <- risk.table.y.text.col
 
   return(res)
@@ -642,6 +643,12 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   if(!is.null(x$table)){
     # Hide legende: don't use  theme(legend.position = "none") because awkward legend when position = "left"
     x$table <- .hide_legend(x$table)
+    risk.table.y.text <- attr(x, 'risk.table.y.text')
+
+    if(!risk.table.y.text)
+      x$table <- x$table + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
+                         axis.ticks.y = element_blank())
+
     # Make sure that risk.table.y.text.col will be the same as the plot legend colors
     risk.table.y.text.col <- attr(x, 'risk.table.y.text.col')
     if(risk.table.y.text.col){
