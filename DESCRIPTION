@@ -15,9 +15,9 @@ Description: Contains the function 'ggsurvplot()' for drawing easily beautiful
 License: GPL-2
 LazyData: TRUE
 Depends:
-    ggplot2
+    ggplot2,
+    ggpubr
 Imports:
-    ggpubr,
     grid,
     gridExtra(>= 2.0),
     magrittr,
