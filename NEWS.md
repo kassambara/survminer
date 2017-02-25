@@ -2,7 +2,7 @@
    
 ## New features
    
-- New function `+.gglist()` to add component - `theme()`, `labs()` -  to a ggplot or to a list of ggplots. ([#151](https://github.com/kassambara/survminer/issues/151)). For example:
+- New function `+.ggsurv()` to add ggplot components - `theme()`, `labs()` -  to an object of class ggsurv, which is a list of ggplots. ([#151](https://github.com/kassambara/survminer/issues/151)). For example:
 
 ```r
 # Fit survival curves
