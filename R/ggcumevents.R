@@ -11,7 +11,7 @@ NULL
 #' @param fontsize text font size.
 #' @param ... other arguments passed to the function \code{\link[ggpubr]{ggpar}}.
 #' @return a ggplot.
-#'
+#' @author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @examples
 #' # Fit survival curves
 #'require("survival")
