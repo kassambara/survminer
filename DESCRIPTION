@@ -54,6 +54,7 @@ Collate:
     'ggcoxzph.R'
     'ggcumevents.R'
     'ggforest.R'
+    'ggrisktable.R'
     'ggsurvevents.R'
     'ggsurvtheme.R'
     'myeloma.R'

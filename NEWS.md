@@ -2,6 +2,8 @@
    
 ## New features
    
+- New heper function `ggrisktable()` for plotting number of subjects at risk by time. ([#154](https://github.com/kassambara/survminer/issues/154)). Normally, users don't need to use this function directly. Internally used by the function `ggsurvplot()`.
+
 - New helper function `ggcumevents()` for plotting the cumulative number of events table ([#117](https://github.com/kassambara/survminer/issues/117)). Normally, users don't need to use this function directly. Internally used by the function `ggsurvplot()`.
 
 - New function `+.ggsurv()` to add ggplot components - `theme()`, `labs()` -  to an object of class ggsurv, which is a list of ggplots. ([#151](https://github.com/kassambara/survminer/issues/151)). For example:
