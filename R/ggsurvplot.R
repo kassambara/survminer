@@ -37,7 +37,7 @@
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
-#'@param main,submain,caption,xlab,ylab main title, subtitle, caption and axis
+#'@param main,xlab,ylab main title and axis
 #'  labels
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
 #'@param legend character specifying legend position. Allowed values are one of
@@ -350,7 +350,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
                        pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                        log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
-                       main = NULL, submain = NULL, caption = NULL, xlab = "Time", ylab = "Survival probability",
+                       main = NULL,  xlab = "Time", ylab = "Survival probability",
                         xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
@@ -522,10 +522,11 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   p <- p + ggplot2::expand_limits(x = 0, y = 0)
   # Axis label and legend title
   lty.leg.title <- ifelse(linetype == "strata", legend.title, linetype)
-  p <- p + ggplot2::labs(x = xlab, y = ylab, title = main, subtitle = submain, caption = caption,
+  p <- p + ggplot2::labs(x = xlab, y = ylab, title = main,
                          color = legend.title, fill = legend.title,
                          linetype = lty.leg.title
                          )
+  p <- ggpubr::ggpar(p, subtitle = extra.params$submain, caption = extra.params$caption )
   p <-  .set_general_gpar(p, legend = legend, ...) # general graphical parameters
   if(!is.null(linetype.manual)) p <- p + scale_linetype_manual(values = linetype.manual)
 

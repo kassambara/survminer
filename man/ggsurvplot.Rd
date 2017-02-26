@@ -12,9 +12,9 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = "hue",
   pval.coord = c(NULL, NULL), pval.method = FALSE,
   pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
   log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2",
-  "FH_p=1_q=1"), main = NULL, submain = NULL, caption = NULL,
-  xlab = "Time", ylab = "Survival probability", xlim = NULL,
-  ylim = NULL, legend = c("top", "bottom", "left", "right", "none"),
+  "FH_p=1_q=1"), main = NULL, xlab = "Time",
+  ylab = "Survival probability", xlim = NULL, ylim = NULL,
+  legend = c("top", "bottom", "left", "right", "none"),
   legend.title = "Strata", legend.labs = NULL, risk.table = FALSE,
   risk.table.title = NULL, risk.table.col = "black",
   risk.table.fontsize = 4.5, fontsize = 4.5, risk.table.y.text = TRUE,
@@ -96,7 +96,7 @@ log-rank, n - Gehan-Breslow (generalized Wilcoxon), sqrtN - Tarone-Ware, S1
 - Peto-Peto's modified survival estimate, S2 - modified Peto-Peto (by
 Andersen), FH - Fleming-Harrington(p=1, q=1).}
 
-\item{main, submain, caption, xlab, ylab}{main title, subtitle, caption and axis
+\item{main, xlab, ylab}{main title and axis
 labels}
 
 \item{xlim, ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}

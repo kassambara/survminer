@@ -33,10 +33,10 @@ is NULL.}
 
 \item{title}{the title of the plot.}
 
-\item{xlab}{main title, subtitle, caption and axis
+\item{xlab}{main title and axis
 labels}
 
-\item{ylab}{main title, subtitle, caption and axis
+\item{ylab}{main title and axis
 labels}
 
 \item{legend}{character specifying legend position. Allowed values are one of
