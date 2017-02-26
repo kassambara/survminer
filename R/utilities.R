@@ -416,4 +416,71 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
 }
 
 
+# Build ggsurvplot for printing
+# Old version. To be removed
+.build_ggsurvplot2 <- function(x, surv.plot.height = NULL,
+                               risk.table.height = NULL, ncensor.plot.height = NULL, ...)
+{
+  if(!inherits(x, "ggsurvplot"))
+    stop("An object of class ggsurvplot is required.")
+
+  surv.plot.height <- ifelse(is.null(surv.plot.height), attr(x, "surv.plot.height"), surv.plot.height)
+  risk.table.height <- ifelse(is.null(risk.table.height), attr(x, "risk.table.height"), risk.table.height)
+  ncensor.plot.height <- ifelse(is.null(ncensor.plot.height), attr(x, "ncensor.plot.height"), ncensor.plot.height)
+
+  if(is.null(risk.table.height)) risk.table.height <- 0.25
+  ncensor.plot.height <- ifelse(is.null(x$ncensor.plot), 0, ncensor.plot.height)
+  if(is.null(surv.plot.height)) surv.plot.height <- 1-risk.table.height-ncensor.plot.height
+
+  if(!is.null(x$table)){
+    # Hide legende: don't use  theme(legend.position = "none") because awkward legend when position = "left"
+    x$table <- .hide_legend(x$table)
+    risk.table.y.text <- attr(x, 'risk.table.y.text')
+
+    if(!risk.table.y.text)
+      x$table <- x$table + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
+                                 axis.ticks.y = element_blank())
+
+    # Make sure that risk.table.y.text.col will be the same as the plot legend colors
+    risk.table.y.text.col <- attr(x, 'risk.table.y.text.col')
+    if(risk.table.y.text.col){
+      g <- ggplot2::ggplot_build(x$plot)
+      cols <- unlist(unique(g$data[[1]]["colour"]))
+      legend.labs <- levels(g$plot$data$strata)
+      if(length(cols)==1) cols <- rep(cols, length(legend.labs))
+      names(cols) <- legend.labs # Give every color an appropriate name
+      x$table <- x$table + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+    }
+  }
+  if(!is.null(x$ncensor.plot)) x$ncensor.plot <- x$ncensor.plot + theme (legend.position = "none")
+
+  res <- NULL
+  if(is.null(x$table) & is.null(x$ncensor.plot)) res <- x$plot
+  else{
+    if(is.null(x$ncensor.plot))
+      heights = list(c(surv.plot.height, risk.table.height))
+    else if(is.null(x$table)){
+      heights = list(c(surv.plot.height, ncensor.plot.height))
+    }
+    else  heights = list(c(surv.plot.height, risk.table.height, ncensor.plot.height))
+
+    nplot <- length(heights[[1]])
+
+    plots <- x
+    grobs <- widths <- list()
+    for (i in 1:length(plots)) {
+      grobs[[i]] <- ggplotGrob(plots[[i]])
+      widths[[i]] <- grobs[[i]]$widths[2:5]
+    }
+    maxwidth <- do.call(grid::unit.pmax, widths)
+    for (i in 1:length(grobs)) {
+      grobs[[i]]$widths[2:5] <- as.list(maxwidth)
+    }
+
+    res <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
+    # res <- do.call(gridExtra::grid.arrange, c(grobs, nrow = nplot, heights = heights, newpage = newpage))
+  }
+  return(res)
+}
+
 

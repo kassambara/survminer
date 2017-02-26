@@ -18,13 +18,15 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = "hue",
   legend.title = "Strata", legend.labs = NULL, risk.table = FALSE,
   risk.table.title = NULL, risk.table.subtitle = NULL,
   risk.table.caption = NULL, risk.table.col = "black",
-  risk.table.fontsize = 4.5, risk.table.y.text = TRUE,
+  risk.table.fontsize = 4.5, fontsize = 4.5, risk.table.y.text = TRUE,
   risk.table.y.text.col = TRUE, risk.table.height = 0.25,
   surv.plot.height = 0.75, ncensor.plot.height = 0.25,
-  ncensor.plot = FALSE, ncensor.plot.title = NULL,
-  ncensor.plot.subtitle = NULL, ncensor.plot.caption = NULL,
-  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_survminer(),
-  ...)
+  cumevents.height = 0.25, ncensor.plot = FALSE,
+  ncensor.plot.title = NULL, ncensor.plot.subtitle = NULL,
+  ncensor.plot.caption = NULL, cumevents = FALSE, cumevents.col = "black",
+  cumevents.title = "Cumulative number of events", cumevents.y.text = TRUE,
+  cumevents.y.text.col = TRUE, surv.median.line = c("none", "hv", "h", "v"),
+  ggtheme = theme_survminer(), ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
   risk.table.height = NULL, ncensor.plot.height = NULL, newpage = TRUE,
@@ -128,7 +130,7 @@ to show both absolute number and percentage.}}
 "black". If you want to color by strata (i.e. groups), use risk.table.col =
 "strata".}
 
-\item{risk.table.fontsize}{font size to be used for the risk table.}
+\item{risk.table.fontsize, fontsize}{font size to be used for the risk table and the cumulative events table.}
 
 \item{risk.table.y.text}{logical. Default is TRUE. If FALSE, risk table y axis
 tick labels will be hidden.}
@@ -148,6 +150,9 @@ TRUE}}
 \item{ncensor.plot.height}{The height of the censor plot. Used when
 \code{ncensor.plot = TRUE}.}
 
+\item{cumevents.height}{the height of the cumulative events table on the grid. Default is 0.25. Ignored when
+cumevents = FALSE.}
+
 \item{ncensor.plot}{logical value. If TRUE, the number of censored subjects at
 time t is plotted. Default is FALSE.}
 
@@ -159,6 +164,21 @@ when \code{ncensor.plot = TRUE}.}
 
 \item{ncensor.plot.caption}{The caption to be used for the censor plot. Used
 when \code{ncensor.plot = TRUE}.}
+
+\item{cumevents}{logical value specifying whether to show or not the table of
+the cumulative number of events. Default is FALSE.}
+
+\item{cumevents.col}{color to be used for cumulative events table. Default value is
+"black". If you want to color by strata (i.e. groups), use cumevents.col =
+"strata".}
+
+\item{cumevents.title}{The title to be used for the cumulative events table.}
+
+\item{cumevents.y.text}{logical. Default is TRUE. If FALSE, the y axis
+tick labels of the cumulative events table  will be hidden.}
+
+\item{cumevents.y.text.col}{logical. Default value is FALSE. If TRUE,
+the y tick labels of the cumulative events will be colored by strata.}
 
 \item{surv.median.line}{character vector for drawing a horizontal/vertical
 line at median survival. Allowed values include one of c("none", "hv", "h",

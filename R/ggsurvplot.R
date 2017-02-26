@@ -60,7 +60,7 @@
 #'@param risk.table.col color to be used for risk table. Default value is
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
 #'  "strata".
-#'@param risk.table.fontsize font size to be used for the risk table.
+#'@param risk.table.fontsize,fontsize font size to be used for the risk table and the cumulative events table.
 #'@param risk.table.y.text logical. Default is TRUE. If FALSE, risk table y axis
 #'  tick labels will be hidden.
 #'@param risk.table.y.text.col logical. Default value is FALSE. If TRUE, risk
@@ -82,6 +82,18 @@
 #'  when \code{ncensor.plot = TRUE}.
 #'@param ncensor.plot.height The height of the censor plot. Used when
 #'  \code{ncensor.plot = TRUE}.
+#'@param cumevents logical value specifying whether to show or not the table of
+#'  the cumulative number of events. Default is FALSE.
+#'@param cumevents.title The title to be used for the cumulative events table.
+#'@param cumevents.col color to be used for cumulative events table. Default value is
+#'  "black". If you want to color by strata (i.e. groups), use cumevents.col =
+#'  "strata".
+#'@param cumevents.y.text logical. Default is TRUE. If FALSE, the y axis
+#'  tick labels of the cumulative events table  will be hidden.
+#'@param cumevents.y.text.col logical. Default value is FALSE. If TRUE,
+#'  the y tick labels of the cumulative events will be colored by strata.
+#'@param cumevents.height the height of the cumulative events table on the grid. Default is 0.25. Ignored when
+#'  cumevents = FALSE.
 #'@param surv.median.line character vector for drawing a horizontal/vertical
 #'  line at median survival. Allowed values include one of c("none", "hv", "h",
 #'  "v"). v: vertical, h:horizontal.
@@ -350,11 +362,13 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        legend.title = "Strata", legend.labs = NULL,
                        #font.legend = c(10, "plain", "black"),
                        risk.table = FALSE, risk.table.title = NULL, risk.table.subtitle = NULL, risk.table.caption = NULL,
-                       risk.table.col = "black", risk.table.fontsize = 4.5,
+                       risk.table.col = "black", risk.table.fontsize = 4.5, fontsize = 4.5,
                        risk.table.y.text = TRUE,
                        risk.table.y.text.col = TRUE,
-                       risk.table.height = 0.25, surv.plot.height = 0.75, ncensor.plot.height = 0.25,
+                       risk.table.height = 0.25, surv.plot.height = 0.75, ncensor.plot.height = 0.25, cumevents.height = 0.25,
                        ncensor.plot = FALSE, ncensor.plot.title = NULL, ncensor.plot.subtitle = NULL, ncensor.plot.caption = NULL,
+                       cumevents = FALSE, cumevents.col = "black", cumevents.title = "Cumulative number of events",
+                       cumevents.y.text = TRUE, cumevents.y.text.col = TRUE,
                        surv.median.line = c("none", "hv", "h", "v"),
                        ggtheme = theme_survminer(),
                        ...
@@ -565,6 +579,15 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
    }
   else res <- list(plot = p)
 
+  if(cumevents){
+    res$cumevents <- ggcumevents (fit, data = data, color = cumevents.col,
+                                  palette = palette, break.time.by = break.time.by,
+                                  xlim = xlim, title = cumevents.title,
+                                  legend = legend, legend.title = legend.title, legend.labs = legend.labs,
+                                  y.text = cumevents.y.text, y.text.col = cumevents.y.text,
+                                  fontsize = fontsize, ggtheme = ggtheme, ...)
+  }
+
   # Plot of censored subjects
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if(ncensor.plot){
@@ -599,14 +622,28 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     res$ncensor.plot <- ncensor_plot
   }
 
+
+
+  heights <- list(
+    plot =  surv.plot.height,
+    table =  ifelse(risk.table, risk.table.height, 0),
+    ncensor.plot = ifelse(ncensor.plot, ncensor.plot.height, 0),
+    cumevents = ifelse(cumevents, cumevents.height, 0)
+  )
+
   class(res) <- c("ggsurvplot", "ggsurv", "list")
+  attr(res, "heights") <- heights
+  attr(res, "legend.labs") <- legend.labs
   attr(res, "surv.plot.height") <- surv.plot.height
   attr(res, "risk.table.height") <- risk.table.height
   attr(res, "ncensor.plot.height") <- ncensor.plot.height
   attr(res, "risk.table.y.text") <- risk.table.y.text
   attr(res, "risk.table.y.text.col") <- risk.table.y.text.col
+  attr(res, "cumevents.y.text") <- cumevents.y.text
+  attr(res, "cumevents.y.text.col") <- cumevents.y.text.col
 
-  return(res)
+  res
+  # ggpubr::ggpar(res, palette = palette)
 }
 
 #' @param x an object of class ggsurvplot
@@ -627,67 +664,74 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
 # Build ggsurvplot for printing
 .build_ggsurvplot <- function(x, surv.plot.height = NULL,
-                              risk.table.height = NULL, ncensor.plot.height = NULL, ...)
+                              risk.table.height = NULL, ncensor.plot.height = NULL,
+                              cumevents.height = NULL, ...)
 {
   if(!inherits(x, "ggsurvplot"))
     stop("An object of class ggsurvplot is required.")
+  heights <- attr(x, "heights")
+  params <- attr(x, "call")
 
-  surv.plot.height <- ifelse(is.null(surv.plot.height), attr(x, "surv.plot.height"), surv.plot.height)
-  risk.table.height <- ifelse(is.null(risk.table.height), attr(x, "risk.table.height"), risk.table.height)
-  ncensor.plot.height <- ifelse(is.null(ncensor.plot.height), attr(x, "ncensor.plot.height"), ncensor.plot.height)
+  # Update heights
+  if(!is.null(surv.plot.height))  heights$plot <- surv.plot.height
+  if(!is.null(risk.table.height))  heights$table <- risk.table.height
+  if(!is.null(ncensor.plot.height))  heights$ncensor.plot <- ncensor.plot.height
+  if(!is.null(cumevents.height))  heights$cumevents <- cumevents.height
+  heights$plot <- 1 - heights$table - heights$ncensor.plot - heights$cumevents
 
-  if(is.null(risk.table.height)) risk.table.height <- 0.25
-  ncensor.plot.height <- ifelse(is.null(x$ncensor.plot), 0, ncensor.plot.height)
-  if(is.null(surv.plot.height)) surv.plot.height <- 1-risk.table.height-ncensor.plot.height
+  # Extract strata colors for survival curves
+  legend.labs <- attr(x, "legend.labs")
+  g <- ggplot_build(x$plot)
+  cols <- unlist(unique(g$data[[1]]["colour"]))
+  if(length(cols)==1) cols <- rep(cols, length(legend.labs))
+  names(cols) <- legend.labs # Give every color an appropriate name
 
   if(!is.null(x$table)){
     # Hide legende: don't use  theme(legend.position = "none") because awkward legend when position = "left"
     x$table <- .hide_legend(x$table)
     risk.table.y.text <- attr(x, 'risk.table.y.text')
-
     if(!risk.table.y.text)
       x$table <- x$table + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
-                         axis.ticks.y = element_blank())
-
+                                 axis.ticks.y = element_blank())
     # Make sure that risk.table.y.text.col will be the same as the plot legend colors
     risk.table.y.text.col <- attr(x, 'risk.table.y.text.col')
-    if(risk.table.y.text.col){
-      g <- ggplot2::ggplot_build(x$plot)
-      cols <- unlist(unique(g$data[[1]]["colour"]))
-      legend.labs <- levels(g$plot$data$strata)
-      if(length(cols)==1) cols <- rep(cols, length(legend.labs))
-      names(cols) <- legend.labs # Give every color an appropriate name
+    if(risk.table.y.text.col)
       x$table <- x$table + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
-    }
   }
+
+
+  if(!is.null(x$cumevents)){
+    x$cumevents <- .hide_legend(x$cumevents)
+    cumevents.y.text <- attr(x, 'cumevents.y.text')
+    if(!cumevents.y.text)
+      x$cumevents <- x$cumevents + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
+                                         axis.ticks.y = element_blank())
+    # Make sure that y.text.col will be the same as the plot legend colors
+    cumevents.y.text.col <- attr(x, 'cumevents.y.text.col')
+    if(cumevents.y.text.col)
+      x$cumevents <- x$cumevents + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+  }
+
+
   if(!is.null(x$ncensor.plot)) x$ncensor.plot <- x$ncensor.plot + theme (legend.position = "none")
 
-  res <- NULL
-  if(is.null(x$table) & is.null(x$ncensor.plot)) res <- x$plot
-  else{
-    if(is.null(x$ncensor.plot))
-      heights = list(c(surv.plot.height, risk.table.height))
-    else if(is.null(x$table)){
-      heights = list(c(surv.plot.height, ncensor.plot.height))
-    }
-    else  heights = list(c(surv.plot.height, risk.table.height, ncensor.plot.height))
+  nplot <- length(x)
+  if(is.null(x$table) & is.null(x$ncensor.plot) & is.null(x$cumevents)) return(x$plot)
 
-    nplot <- length(heights[[1]])
-
-    plots <- x
-    grobs <- widths <- list()
-    for (i in 1:length(plots)) {
-      grobs[[i]] <- ggplotGrob(plots[[i]])
-      widths[[i]] <- grobs[[i]]$widths[2:5]
-    }
-    maxwidth <- do.call(grid::unit.pmax, widths)
-    for (i in 1:length(grobs)) {
-      grobs[[i]]$widths[2:5] <- as.list(maxwidth)
-    }
-
-    res <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
-    # res <- do.call(gridExtra::grid.arrange, c(grobs, nrow = nplot, heights = heights, newpage = newpage))
+  heights <- unlist(heights)[names(x)] # get the height of each component in x
+  plots <- x
+  grobs <- widths <- list()
+  for (i in 1:length(plots)) {
+    grobs[[i]] <- ggplotGrob(plots[[i]])
+    widths[[i]] <- grobs[[i]]$widths[2:5]
   }
+  maxwidth <- do.call(grid::unit.pmax, widths)
+  for (i in 1:length(grobs)) {
+    grobs[[i]]$widths[2:5] <- as.list(maxwidth)
+  }
+
+  res <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
+
   return(res)
 }
 

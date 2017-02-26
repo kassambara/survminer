@@ -3,6 +3,7 @@ NULL
 #'Cumulative Number of Events Table
 #' @description Cumulative number of events table.
 #' @inheritParams ggsurvplot
+#' @param title the title of the plot.
 #' @param y.text logical. Default is TRUE. If FALSE, the table y axis.
 #'  tick labels will be hidden.
 #'@param y.text.col logical. Default value is FALSE. If TRUE, the

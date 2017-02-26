@@ -31,6 +31,8 @@ is NULL.}
 
 \item{xlim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
 
+\item{title}{the title of the plot.}
+
 \item{xlab}{main title, subtitle, caption and axis
 labels}
 
