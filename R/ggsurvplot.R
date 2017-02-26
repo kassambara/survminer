@@ -530,6 +530,8 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   p <-  .set_general_gpar(p, legend = legend, ...) # general graphical parameters
   if(!is.null(linetype.manual)) p <- p + scale_linetype_manual(values = linetype.manual)
 
+  res <- list(plot = p)
+
   # Extract strata colors used in survival curves
   # Will be used to color the y.text of risk table and cumevents table
   g <- ggplot_build(p)
@@ -540,41 +542,34 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 
   # Add risk table
    if(risk.table){
-     risktable <- .risk_table_plot(fit, data = data, times = times,
-                                   xlim = xlim, legend.labs = legend.labs,
-                                   risk.table.col = risk.table.col, palette = palette,
-                                   ggtheme = ggtheme, risk.table.fontsize = risk.table.fontsize,
-                                   risk.table.title = risk.table.title,
-                                   risk.table.y.text = risk.table.y.text,
-                                   font.tickslab = extra.params$font.risk.table.tickslab,
-                                   type = risk.table.type
-                                   )
+     risktable <- ggrisktable(fit, data = data, type = risk.table.type, color = risk.table.col,
+                             palette = palette, break.time.by = break.time.by,
+                             xlim = xlim, title = risk.table.title,
+                             legend = legend, legend.title = legend.title, legend.labs = legend.labs,
+                             y.text = risk.table.y.text, y.text.col = risk.table.y.text.col,
+                             fontsize = risk.table.fontsize, ggtheme = ggtheme,
+                             xlab = xlab, ylab = legend.title,
+                             ...)
+     # For backward compatibility
      risktable <-  .set_general_gpar(risktable, legend = "none", ...) # general graphical parameters
      risktable <- .set_risktable_gpar(risktable, legend = "none", ...) # specific graphical params
-     risktable <- risktable + labs(x = xlab, y = legend.title)
-     if(!risk.table.y.text)
-       risktable <- risktable + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
-                          axis.ticks.y = element_blank())
 
-     # risktable <-.labs(risktable,  xlab = xlab, ylab = legend.title)
-     risktable <- risktable + ggplot2::labs(color = legend.title, shape = legend.title)
-     if("left" %in% legend) risktable <- risktable + ggplot2::theme(legend.position = legend)
      # color risk.table ticks by strata
      if(risk.table.y.text.col)
-       risktable <- risktable + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(scurve_cols)))
+       risktable <- risktable + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
 
 
-    res <- list(plot = p, table = risktable)
+    res$table <-  risktable
    }
-  else res <- list(plot = p)
 
   if(cumevents){
     res$cumevents <- ggcumevents (fit, data = data, color = cumevents.col,
                                   palette = palette, break.time.by = break.time.by,
                                   xlim = xlim, title = cumevents.title,
                                   legend = legend, legend.title = legend.title, legend.labs = legend.labs,
-                                  y.text = cumevents.y.text, y.text.col = cumevents.y.text,
-                                  fontsize = fontsize, ggtheme = ggtheme, ...)
+                                  y.text = cumevents.y.text, y.text.col = cumevents.y.text.col,
+                                  fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
+                                  ...)
     if(cumevents.y.text.col)
       res$cumevents <- res$cumevents + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
   }
