@@ -1,17 +1,19 @@
 #' @include utilities.R surv_summary.R
 NULL
 #'Cumulative Number of Events Table
-#' @description Cumulative number of events table.
-#' @inheritParams ggsurvplot
-#' @param title the title of the plot.
-#' @param y.text logical. Default is TRUE. If FALSE, the table y axis.
-#'  tick labels will be hidden.
-#'@param y.text.col logical. Default value is FALSE. If TRUE, the
-#'  table tick labels will be colored by strata.
-#' @param fontsize text font size.
-#' @param ... other arguments passed to the function \code{\link[ggpubr]{ggpar}}.
-#' @return a ggplot.
-#' @author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
+#'@description Cumulative number of events table. Normally, users don't need to
+#'  use this function directly. Internally used by the function
+#'  \code{\link{ggsurvplot}}.
+#'@inheritParams ggsurvplot
+#'@param title the title of the plot.
+#'@param y.text logical. Default is TRUE. If FALSE, the table y axis. tick
+#'  labels will be hidden.
+#'@param y.text.col logical. Default value is FALSE. If TRUE, the table tick
+#'  labels will be colored by strata.
+#'@param fontsize text font size.
+#'@param ... other arguments passed to the function \code{\link[ggpubr]{ggpar}}.
+#'@return a ggplot.
+#'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @examples
 #' # Fit survival curves
 #'require("survival")

@@ -50,11 +50,11 @@ specified using a numeric vector c(x, y); see details section.}
 the names of the strata from the fit. Should be given in the same order as
 those strata.}
 
-\item{y.text}{logical. Default is TRUE. If FALSE, the table y axis.
-tick labels will be hidden.}
+\item{y.text}{logical. Default is TRUE. If FALSE, the table y axis. tick
+labels will be hidden.}
 
-\item{y.text.col}{logical. Default value is FALSE. If TRUE, the
-table tick labels will be colored by strata.}
+\item{y.text.col}{logical. Default value is FALSE. If TRUE, the table tick
+labels will be colored by strata.}
 
 \item{fontsize}{text font size.}
 
@@ -68,7 +68,9 @@ table tick labels will be colored by strata.}
 a ggplot.
 }
 \description{
-Cumulative number of events table.
+Cumulative number of events table. Normally, users don't need to
+ use this function directly. Internally used by the function
+ \code{\link{ggsurvplot}}.
 }
 \examples{
 # Fit survival curves
