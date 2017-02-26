@@ -67,6 +67,7 @@ surv_summary <- function (x, data = NULL){
                       upper = x$upper, lower = x$lower)
   }
   if (!is.null(x$strata)) {
+    data <- .get_data(x, data = data) # data used to compute survfit
     res$strata <- rep(names(x$strata), x$strata)
     res$strata <- .clean_strata(res$strata, x)
     # Add column for each variable in survival fit
