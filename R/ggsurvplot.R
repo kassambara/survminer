@@ -530,6 +530,12 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   p <-  .set_general_gpar(p, legend = legend, ...) # general graphical parameters
   if(!is.null(linetype.manual)) p <- p + scale_linetype_manual(values = linetype.manual)
 
+  # Extract strata colors used in survival curves
+  # Will be used to color the y.text of risk table and cumevents table
+  g <- ggplot_build(p)
+  scurve_cols <- unlist(unique(g$data[[1]]["colour"]))
+  if(length(scurve_cols)==1) scurve_cols <- rep(scurve_cols, length(legend.labs))
+  names(scurve_cols) <- legend.labs # Give every color an appropriate name
 
 
   # Add risk table
@@ -554,13 +560,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
      risktable <- risktable + ggplot2::labs(color = legend.title, shape = legend.title)
      if("left" %in% legend) risktable <- risktable + ggplot2::theme(legend.position = legend)
      # color risk.table ticks by strata
-     if(risk.table.y.text.col){
-       g <- ggplot2::ggplot_build(p)
-       cols <- unlist(unique(g$data[[1]]["colour"]))
-       if(length(cols)==1) cols <- rep(cols, length(legend.labs))
-       names(cols) <- legend.labs # Give every color an appropriate name
-       risktable <- risktable + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
-     }
+     if(risk.table.y.text.col)
+       risktable <- risktable + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(scurve_cols)))
+
 
     res <- list(plot = p, table = risktable)
    }
@@ -573,6 +575,8 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                                   legend = legend, legend.title = legend.title, legend.labs = legend.labs,
                                   y.text = cumevents.y.text, y.text.col = cumevents.y.text,
                                   fontsize = fontsize, ggtheme = ggtheme, ...)
+    if(cumevents.y.text.col)
+      res$cumevents <- res$cumevents + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
   }
 
   # Plot of censored subjects
