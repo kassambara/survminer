@@ -16,8 +16,7 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = "hue",
   xlab = "Time", ylab = "Survival probability", xlim = NULL,
   ylim = NULL, legend = c("top", "bottom", "left", "right", "none"),
   legend.title = "Strata", legend.labs = NULL, risk.table = FALSE,
-  risk.table.title = NULL, risk.table.subtitle = NULL,
-  risk.table.caption = NULL, risk.table.col = "black",
+  risk.table.title = NULL, risk.table.col = "black",
   risk.table.fontsize = 4.5, fontsize = 4.5, risk.table.y.text = TRUE,
   risk.table.y.text.col = TRUE, risk.table.height = 0.25,
   surv.plot.height = 0.75, ncensor.plot.height = 0.25,
@@ -121,10 +120,6 @@ specifying whether to show or not the risk table. Default is FALSE. \item
 to show both absolute number and percentage.}}
 
 \item{risk.table.title}{The title to be used for the risk table.}
-
-\item{risk.table.subtitle}{The subtitle to be used for the risk table.}
-
-\item{risk.table.caption}{The caption to be used for the risk table.}
 
 \item{risk.table.col}{color to be used for risk table. Default value is
 "black". If you want to color by strata (i.e. groups), use risk.table.col =

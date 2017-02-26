@@ -55,8 +55,6 @@
 #'  to show both absolute number and percentage.}
 #'
 #'@param risk.table.title The title to be used for the risk table.
-#'@param risk.table.subtitle The subtitle to be used for the risk table.
-#'@param risk.table.caption The caption to be used for the risk table.
 #'@param risk.table.col color to be used for risk table. Default value is
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
 #'  "strata".
@@ -361,7 +359,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
                        #font.legend = c(10, "plain", "black"),
-                       risk.table = FALSE, risk.table.title = NULL, risk.table.subtitle = NULL, risk.table.caption = NULL,
+                       risk.table = FALSE, risk.table.title = NULL,
                        risk.table.col = "black", risk.table.fontsize = 4.5, fontsize = 4.5,
                        risk.table.y.text = TRUE,
                        risk.table.y.text.col = TRUE,
@@ -544,8 +542,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                                    risk.table.col = risk.table.col, palette = palette,
                                    ggtheme = ggtheme, risk.table.fontsize = risk.table.fontsize,
                                    risk.table.title = risk.table.title,
-                                   risk.table.subtitle = risk.table.subtitle,
-                                   risk.table.caption = risk.table.caption,
                                    risk.table.y.text = risk.table.y.text,
                                    font.tickslab = extra.params$font.risk.table.tickslab,
                                    type = risk.table.type
@@ -818,7 +814,6 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
                              risk.table.col = "black",
                              palette = NULL, ggtheme = ggplot2::theme_classic(),
                              risk.table.fontsize = 5, risk.table.title = "Number at risk by time",
-                             risk.table.subtitle = NULL, risk.table.caption = NULL,
                              risk.table.y.text = TRUE,
                              font.tickslab = c(12, "plain", "black"), type = "absolute"
 )
@@ -884,7 +879,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
     ggplot2::coord_cartesian(xlim = xlim) +
     ggplot2::scale_x_continuous(breaks = times) +
     # .ggcolor(palette)+
-    labs(title = risk.table.title, caption = risk.table.caption, subtitle = risk.table.subtitle) +
+    labs(title = risk.table.title) +
     ggplot2::theme(legend.position = "none")
 
   # if palette != hue
@@ -1062,12 +1057,15 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 # Specific graphical params to risk.table
 .set_risktable_gpar <- function(p, legend = "none",  ...){
   extra.params <- list(...)
-  ggpubr::ggpar(p, font.main = extra.params$font.risk.table.title,
-                   font.x = extra.params$font.risk.table.x,
-                   font.y = extra.params$font.risk.table.y,
-                   font.submain = extra.params$font.risk.table.subtitle,
-                   font.caption = extra.params$font.risk.table.caption,
-                   legend = legend
+  ggpubr::ggpar(p,
+                 subtitle = extra.params$risk.table.subtitle,
+                 caption = extra.params$risk.table.caption,
+                 font.title = extra.params$font.risk.table.title,
+                 font.x = extra.params$font.risk.table.x,
+                 font.y = extra.params$font.risk.table.y,
+                 font.submain = extra.params$font.risk.table.subtitle,
+                 font.caption = extra.params$font.risk.table.caption,
+                 legend = legend
   )
 }
 
