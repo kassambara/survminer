@@ -34,7 +34,7 @@ ggcumevents <- function (fit, data = NULL, color = "black", palette = NULL, brea
                          title = "Cumulative number of events", xlab = "Time", ylab = "Strata",
                          legend = "top",
                          legend.title = "Strata", legend.labs = NULL, y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
-                         ggtheme = theme_light(), ...)
+                         ggtheme = theme_survminer(), ...)
   {
 
   if(!inherits(fit, "survfit"))
