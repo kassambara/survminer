@@ -74,10 +74,6 @@
 #'  time t is plotted. Default is FALSE.
 #'@param ncensor.plot.title The title to be used for the censor plot. Used when
 #'  \code{ncensor.plot = TRUE}.
-#'@param ncensor.plot.subtitle The subtitle to be used for the censor plot. Used
-#'  when \code{ncensor.plot = TRUE}.
-#'@param ncensor.plot.caption The caption to be used for the censor plot. Used
-#'  when \code{ncensor.plot = TRUE}.
 #'@param ncensor.plot.height The height of the censor plot. Used when
 #'  \code{ncensor.plot = TRUE}.
 #'@param cumevents logical value specifying whether to show or not the table of
@@ -364,7 +360,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        risk.table.y.text = TRUE,
                        risk.table.y.text.col = TRUE,
                        risk.table.height = 0.25, surv.plot.height = 0.75, ncensor.plot.height = 0.25, cumevents.height = 0.25,
-                       ncensor.plot = FALSE, ncensor.plot.title = NULL, ncensor.plot.subtitle = NULL, ncensor.plot.caption = NULL,
+                       ncensor.plot = FALSE, ncensor.plot.title = NULL,
                        cumevents = FALSE, cumevents.col = "black", cumevents.title = "Cumulative number of events",
                        cumevents.y.text = TRUE, cumevents.y.text.col = TRUE,
                        surv.median.line = c("none", "hv", "h", "v"),
@@ -598,8 +594,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     ncensor_plot <-  .set_general_gpar(ncensor_plot, legend = "none", ...) # general graphical parameters
     ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot, legend = "none", ...) # specific graphical params
     ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
-                                                 x = xlab, y = "n.censor",
-                                                 title = ncensor.plot.title, subtitle = ncensor.plot.subtitle, caption = ncensor.plot.caption)
+                                                 x = xlab, y = "n.censor", title = ncensor.plot.title)
     if("left" %in% legend) ncensor_plot <- ncensor_plot + ggplot2::theme(legend.position = legend)
     res$ncensor.plot <- ncensor_plot
   }
@@ -1073,6 +1068,8 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 .set_ncensorplot_gpar <- function(p, legend = "none", ...){
   extra.params <- list(...)
   ggpubr::ggpar(p,
+             subtitle = extra.params$ncensor.plot.subtitle,
+             caption = extra.params$ncensor.plot.caption,
              font.main = extra.params$font.ncensor.plot.title,
              font.submain = extra.params$font.ncensor.plot.subtitle,
              font.caption = extra.params$font.ncensor.plot.caption,

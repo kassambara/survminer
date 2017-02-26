@@ -21,8 +21,7 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = "hue",
   risk.table.y.text.col = TRUE, risk.table.height = 0.25,
   surv.plot.height = 0.75, ncensor.plot.height = 0.25,
   cumevents.height = 0.25, ncensor.plot = FALSE,
-  ncensor.plot.title = NULL, ncensor.plot.subtitle = NULL,
-  ncensor.plot.caption = NULL, cumevents = FALSE, cumevents.col = "black",
+  ncensor.plot.title = NULL, cumevents = FALSE, cumevents.col = "black",
   cumevents.title = "Cumulative number of events", cumevents.y.text = TRUE,
   cumevents.y.text.col = TRUE, surv.median.line = c("none", "hv", "h", "v"),
   ggtheme = theme_survminer(), ...)
@@ -153,12 +152,6 @@ time t is plotted. Default is FALSE.}
 
 \item{ncensor.plot.title}{The title to be used for the censor plot. Used when
 \code{ncensor.plot = TRUE}.}
-
-\item{ncensor.plot.subtitle}{The subtitle to be used for the censor plot. Used
-when \code{ncensor.plot = TRUE}.}
-
-\item{ncensor.plot.caption}{The caption to be used for the censor plot. Used
-when \code{ncensor.plot = TRUE}.}
 
 \item{cumevents}{logical value specifying whether to show or not the table of
 the cumulative number of events. Default is FALSE.}
