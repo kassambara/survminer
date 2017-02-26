@@ -54,21 +54,18 @@ fit<- survfit(Surv(time, status) ~ sex, data = lung)
 
 # Basic survival curves
 #++++++++++++++++++++++++++++++++++++
-ggsurvplot(fit, data = lung)
+ggsurv <- ggsurvplot(fit, data = lung, risk.table = TRUE,
+   main = "Survival curves",
+   submain = "Based on Kaplan-Meier estimates",
+   caption = "created with survminer",
+   )
 
 # Change font size, style and color
 #++++++++++++++++++++++++++++++++++++
 # Change font size, style and color at the same time
 # Use font.x = 14, to change only font size; or use
 # font.x = "bold", to change only font face.
-
-ggsurvplot(
-   fit, data = lung,
-   main = "Survival curve",
-   submain = "Based on Kaplan-Meier estimates",
-   caption = "created with survminer",
-
-   ggtheme = theme_survminer(
+ggsurv \%+\% theme_survminer(
      font.main = c(16, "bold", "darkblue"),
      font.submain = c(15, "bold.italic", "purple"),
      font.caption = c(14, "plain", "orange"),
@@ -76,7 +73,13 @@ ggsurvplot(
      font.y = c(14, "bold.italic", "darkred"),
      font.tickslab = c(12, "plain", "darkgreen")
    )
- )
 
+# Clean risk table
+# +++++++++++++++++++++++++++++
+ggsurv$table <- ggsurv$table + theme_cleantable()
+ggsurv
 
+}
+\author{
+Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
 }

@@ -86,3 +86,6 @@ ggcumevents(fit, data = lung, color = "strata",
 
 
 }
+\author{
+Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
+}

@@ -17,7 +17,9 @@ NULL
 #'  c("top", "bottom", "left", "right", "none"). Default is "top" side position.
 #'  to remove the legend use legend = "none". Legend position can be also
 #'  specified using a numeric vector c(x, y); see details section.
+#'
 #' @param ... additional arguments passed to the function theme_survminer().
+#'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @examples
 #'
 #'# Fit survival curves
@@ -27,21 +29,18 @@ NULL
 #'
 #'# Basic survival curves
 #'#++++++++++++++++++++++++++++++++++++
-#'ggsurvplot(fit, data = lung)
+#'ggsurv <- ggsurvplot(fit, data = lung, risk.table = TRUE,
+#'    main = "Survival curves",
+#'    submain = "Based on Kaplan-Meier estimates",
+#'    caption = "created with survminer",
+#'    )
 #'
 #'# Change font size, style and color
 #'#++++++++++++++++++++++++++++++++++++
 #' # Change font size, style and color at the same time
 #' # Use font.x = 14, to change only font size; or use
 #' # font.x = "bold", to change only font face.
-#'
-#' ggsurvplot(
-#'    fit, data = lung,
-#'    main = "Survival curve",
-#'    submain = "Based on Kaplan-Meier estimates",
-#'    caption = "created with survminer",
-#'
-#'    ggtheme = theme_survminer(
+#'ggsurv %+% theme_survminer(
 #'      font.main = c(16, "bold", "darkblue"),
 #'      font.submain = c(15, "bold.italic", "purple"),
 #'      font.caption = c(14, "plain", "orange"),
@@ -49,8 +48,11 @@ NULL
 #'      font.y = c(14, "bold.italic", "darkred"),
 #'      font.tickslab = c(12, "plain", "darkgreen")
 #'    )
-#'  )
 #'
+#' # Clean risk table
+#' # +++++++++++++++++++++++++++++
+#' ggsurv$table <- ggsurv$table + theme_cleantable()
+#' ggsurv
 #'
 #' @describeIn ggsurvtheme Default theme for survminer plots. A theme similar to theme_classic() with large font size.
 #' @export
