@@ -25,7 +25,8 @@ reference:
     contents: myeloma
   - title: Others
     contents:
-      - theme_survminer
+      - ggcumevents
+      - ggsurvtheme
       - theme_classic2
 
 
