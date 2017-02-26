@@ -312,3 +312,11 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
   }
   data
 }
+
+# Compute default axis breaks as ggplot2
+#-------------------------------------
+# Return a vector of axis labels
+.get_default_breaks <- function(x){
+  scales::extended_breaks()(x)
+}
+
