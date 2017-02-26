@@ -320,3 +320,50 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
   scales::extended_breaks()(x)
 }
 
+
+# Get survival summary for a specified time points
+#------------------------------------------------
+# fit: survfit object
+# data: data used for survfit
+# times: a vector of timepoints
+#
+# Return a data frame with the following components:
+#   - strata: stratification of curve estimation
+#   - time: the timepoints on the curve
+#   - n.risk: the number of subjects at risk at time t-0
+#   - n.event: the cumulative number of events that have occurred since the last time listed until time t+0
+#   - n.censor: number of censored subjects
+#   - strata_size: number of subject in the strata
+.get_timepoints_survsummary <- function(fit, data, times)
+{
+  survsummary <- summary(fit, times = times, extend = TRUE)
+
+  if (is.null(fit$strata)) {
+    .strata <- factor(rep("All", length(times)))
+    strata_names <- "All"
+    strata_size <- rep(fit$n, length(.strata))
+  }
+  else {
+    .strata <- factor(survsummary$strata)
+    strata_names <- names(fit$strata)
+    nstrata <- length(strata_names)
+    strata_size <- rep(fit$n, each = length(.strata)/nstrata)
+  }
+
+  res <- data.frame(
+    strata = .clean_strata(.strata),
+    time = survsummary$time,
+    n.risk = survsummary$n.risk,
+    n.event = survsummary$n.event,
+    n.censor = survsummary$n.censor,
+    strata_size = strata_size
+  )
+
+  if(!is.null(fit$strata)){
+    variables <- .get_variables(res$strata, fit, data)
+    for(variable in variables) res[[variable]] <- .get_variable_value(variable, res$strata, fit, data)
+  }
+  res
+}
+
+
