@@ -55,7 +55,7 @@ Collate:
     'ggcumevents.R'
     'ggforest.R'
     'ggsurvevents.R'
+    'ggsurvtheme.R'
     'myeloma.R'
     'pairwise_survdiff.R'
     'surv_cutpoint.R'
-    'theme_survminer.R'

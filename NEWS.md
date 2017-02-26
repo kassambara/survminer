@@ -28,6 +28,8 @@ p %+% theme_survminer(
 
 ```
   
+- New function `theme_cleantable()`: theme for drawing a clean risk table and cumulative number of events table. A theme similar to theme_survminer() without i) axis lines and, ii) x axis ticks and title ([#117](https://github.com/kassambara/survminer/issues/117)).
+   
 - New function `theme_survminer()` to change easily the graphical parameters of plots generated with survminer ([#151](https://github.com/kassambara/survminer/issues/151)).
   
 - New function `arrange_ggsurvplots()` to arrange multiple ggsurvplots on the same page ([#66](https://github.com/kassambara/survminer/issues/66)).
