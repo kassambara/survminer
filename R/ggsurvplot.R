@@ -461,8 +461,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
       ggpubr::geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
-       #.ggcolor(palette, breaks = strata_names, labels = legend.labs) +
-       #.ggfill(palette, breaks = strata_names, labels = legend.labs) +
         ggtheme
 
   # if palette != hue
@@ -541,10 +539,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 
   # Add risk table
    if(risk.table){
-     # if(inherits(fit, "survfit.cox")) {
-     #   legend.labs <- "All"
-     #   risk.table.y.text.col <- FALSE
-     # }
      risktable <- .risk_table_plot(fit, data = data, times = times,
                                    xlim = xlim, legend.labs = legend.labs,
                                    risk.table.col = risk.table.col, palette = palette,
@@ -591,14 +585,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   # Plot of censored subjects
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if(ncensor.plot){
-    # ncensor_data <- d
-    # if(inherits(fit, "survfit.cox")){
-     # ncensor_data <- data.frame(time = fit$time, n.censor = fit$n.censor,
-     #                             strata = rep("All", length(fit$n.censor)))
-     #  surv.color <- "black"
-     #  strata_names <- legend.labs <- "All"
-  #  }
-
     ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
       .geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
                  stat = "identity", position = "dodge")+
