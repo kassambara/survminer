@@ -25,7 +25,7 @@ NULL
 #'  confidence intervals, as well as, the total number of subjects and the
 #'  number of event in each curve.
 #'
-#'
+#'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @examples
 #'
 #'# Fit survival curves
