@@ -452,10 +452,10 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   d <- d[order(d$strata), , drop = FALSE]
   surv.color <- ifelse(n.strata > 1, "strata", color)
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
-      ggpubr::geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
+       ggpubr::geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
-        ggtheme
+       ggtheme
   p <- ggpubr::ggpar(p, palette = palette)
 
   if(is.null(break.time.by)) times <- .get_default_breaks(fit$time)
@@ -467,15 +467,15 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   if(conf.int){
     if(missing(conf.int.fill)) conf.int.fill <- surv.color
     if(conf.int.style == "ribbon"){
-      p <- p + .geom_exec(.geom_confint, data = d,
+      p <- p + ggpubr::geom_exec(.geom_confint, data = d,
                           ymin = "lower", ymax = "upper",
                           fill = conf.int.fill,  alpha = 0.3, na.rm = TRUE)
     }
     else if(conf.int.style == "step"){
-      p <- p + .geom_exec(ggplot2::geom_step, data = d,
+      p <- p + ggpubr::geom_exec(ggplot2::geom_step, data = d,
                           y = "lower", linetype = "dashed",
                           color = surv.color, na.rm = TRUE)+
-        .geom_exec(ggplot2::geom_step, data = d,
+        ggpubr::geom_exec(ggplot2::geom_step, data = d,
                    y = "upper", linetype = "dashed",
                    color = surv.color, na.rm = TRUE)
 
@@ -483,7 +483,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   }
   # Add cencored
   if (censor & any(d$n.censor >= 1)) {
-    p <- p + .geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
+    p <- p + ggpubr::geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
                           colour = surv.color, size = size*4.5, shape = "+")
   }
 
@@ -568,7 +568,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if(ncensor.plot){
     ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
-      .geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
+      ggpubr::geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
                  stat = "identity", position = "dodge")+
       coord_cartesian(xlim = xlim)+
       scale_x_continuous(breaks = times)+
@@ -633,7 +633,6 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   if(!inherits(x, "ggsurvplot"))
     stop("An object of class ggsurvplot is required.")
   heights <- attr(x, "heights")
-  params <- attr(x, "call")
 
   # Update heights
   if(!is.null(surv.plot.height))  heights$plot <- surv.plot.height
