@@ -464,7 +464,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   }
 
 
-  if(is.null(break.time.by)) times <- .get_x_major_breaks(p)
+  if(is.null(break.time.by)) times <- .get_default_breaks(fit$time)
   else times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
 
   p <- p + ggplot2::scale_x_continuous(breaks = times)
@@ -553,12 +553,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
      # For backward compatibility
      risktable <-  .set_general_gpar(risktable, legend = "none", ...) # general graphical parameters
      risktable <- .set_risktable_gpar(risktable, legend = "none", ...) # specific graphical params
-
      # color risk.table ticks by strata
      if(risk.table.y.text.col)
        risktable <- risktable + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
-
-
     res$table <-  risktable
    }
 
@@ -848,19 +845,6 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
   d
 }
 
-# Ge x axis major breaks
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%
-.get_x_major_breaks <- function(p){
-  vv <- as.character(utils::packageVersion("ggplot2"))
-  cc <- utils::compareVersion(vv, "2.1.0") > 0
-  if(cc){
-    # "v>2.1.0"
-    breaks <- ggplot_build(p)$layout$panel_ranges[[1]]$x.major_source
-  }
-  # v<=2.1.0
-  else breaks <- ggplot_build(p)$panel$ranges[[1]]$x.major_source
-  breaks
-}
 
 # Adjust linetype manually
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%
