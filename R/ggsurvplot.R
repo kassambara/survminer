@@ -343,7 +343,7 @@
 #'@describeIn ggsurvplot Draws survival curves using ggplot2.
 #'@export
 ggsurvplot <- function(fit, data = NULL, fun = NULL,
-                       color = NULL, palette = "hue", linetype = 1, break.time.by = NULL,
+                       color = NULL, palette = NULL, linetype = 1, break.time.by = NULL,
                        surv.scale = c("default", "percent"),
                        conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                        censor = TRUE,
@@ -456,17 +456,10 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
         ggtheme
-
-  # if palette != hue
-  if(!("hue" %in% palette)){
-    p <- p + .ggcolor(palette)+
-      .ggfill(palette)
-  }
-
+  p <- ggpubr::ggpar(p, palette = palette)
 
   if(is.null(break.time.by)) times <- .get_default_breaks(fit$time)
   else times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
-
   p <- p + ggplot2::scale_x_continuous(breaks = times)
 
 
@@ -581,15 +574,11 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
       scale_x_continuous(breaks = times)+
       scale_y_continuous(breaks = sort(unique(d$n.censor))) +
       ggtheme
-    # if palette != hue
-    if(!("hue" %in% palette)){
-      ncensor_plot <- ncensor_plot +
-        .ggcolor(palette, breaks = strata_names, labels = legend.labs)+
-        .ggfill(palette, breaks = strata_names, labels = legend.labs)
-    }
-
+    ncensor_plot <- ggpubr::ggpar(ncensor_plot, palette = palette)
+    # for backward compatibility
     ncensor_plot <-  .set_general_gpar(ncensor_plot, legend = "none", ...) # general graphical parameters
     ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot, legend = "none", ...) # specific graphical params
+
     ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
                                                  x = xlab, y = "n.censor", title = ncensor.plot.title)
     if("left" %in% legend) ncensor_plot <- ncensor_plot + ggplot2::theme(legend.position = legend)

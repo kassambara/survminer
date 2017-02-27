@@ -5,7 +5,7 @@
 \alias{print.ggsurvplot}
 \title{Drawing Survival Curves Using ggplot2}
 \usage{
-ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = "hue",
+ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
   linetype = 1, break.time.by = NULL, surv.scale = c("default",
   "percent"), conf.int = FALSE, conf.int.fill = "gray",
   conf.int.style = "ribbon", censor = TRUE, pval = FALSE, pval.size = 5,
