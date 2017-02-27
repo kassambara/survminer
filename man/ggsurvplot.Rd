@@ -12,7 +12,7 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
   pval.coord = c(NULL, NULL), pval.method = FALSE,
   pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
   log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2",
-  "FH_p=1_q=1"), main = NULL, xlab = "Time",
+  "FH_p=1_q=1"), title = NULL, xlab = "Time",
   ylab = "Survival probability", xlim = NULL, ylim = NULL,
   legend = c("top", "bottom", "left", "right", "none"),
   legend.title = "Strata", legend.labs = NULL, risk.table = FALSE,
@@ -96,7 +96,7 @@ log-rank, n - Gehan-Breslow (generalized Wilcoxon), sqrtN - Tarone-Ware, S1
 - Peto-Peto's modified survival estimate, S2 - modified Peto-Peto (by
 Andersen), FH - Fleming-Harrington(p=1, q=1).}
 
-\item{main, xlab, ylab}{main title and axis
+\item{title, xlab, ylab}{main title and axis
 labels}
 
 \item{xlim, ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
@@ -207,7 +207,7 @@ Drawing survival curves using ggplot2
  legend.\cr\cr \strong{Customizing the plots}: The plot can be easily
  customized using additional arguments to be passed to the function ggpar().
  Read ?ggpubr::ggpar. These arguments include
- \emph{font.main,font.submain,font.caption,font.x,font.y,font.tickslab,font.legend}:
+ \emph{font.title,font.subtitle,font.caption,font.x,font.y,font.tickslab,font.legend}:
  a vector of length 3 indicating respectively the size (e.g.: 14), the style
  (e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
  of main title, subtitle, caption, xlab and ylab and axis tick labels,

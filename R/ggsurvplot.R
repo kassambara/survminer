@@ -37,7 +37,7 @@
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
-#'@param main,xlab,ylab main title and axis
+#'@param title,xlab,ylab main title and axis
 #'  labels
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
 #'@param legend character specifying legend position. Allowed values are one of
@@ -126,7 +126,7 @@
 #'  legend.\cr\cr \strong{Customizing the plots}: The plot can be easily
 #'  customized using additional arguments to be passed to the function ggpar().
 #'  Read ?ggpubr::ggpar. These arguments include
-#'  \emph{font.main,font.submain,font.caption,font.x,font.y,font.tickslab,font.legend}:
+#'  \emph{font.title,font.subtitle,font.caption,font.x,font.y,font.tickslab,font.legend}:
 #'  a vector of length 3 indicating respectively the size (e.g.: 14), the style
 #'  (e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
 #'  of main title, subtitle, caption, xlab and ylab and axis tick labels,
@@ -350,7 +350,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
                        pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                        log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
-                       main = NULL,  xlab = "Time", ylab = "Survival probability",
+                       title = NULL,  xlab = "Time", ylab = "Survival probability",
                         xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
@@ -515,7 +515,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   p <- p + ggplot2::expand_limits(x = 0, y = 0)
   # Axis label and legend title
   lty.leg.title <- ifelse(linetype == "strata", legend.title, linetype)
-  p <- p + ggplot2::labs(x = xlab, y = ylab,
+  p <- p + ggplot2::labs(x = xlab, y = ylab, title = title,
                          color = legend.title, fill = legend.title,
                          linetype = lty.leg.title
                          )
