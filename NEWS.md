@@ -51,6 +51,8 @@ p %+% theme_survminer(
 
 ## Major changes
    
+- New arguments `cumevents` added to the `ggsurvplot()` function. Logical value specifying whether to show or not the table of the cumulative number of events ([#117](https://github.com/kassambara/survminer/issues/117)).
+
 - Additional `data` argument added to the `ggsurvplot()` function ([@kassambara, #142](https://github.com/kassambara/survminer/issues/142)). Now, it's recommended to pass to the function, the data used to fit survival curves. This will avoid the error generated when trying to use the `ggsurvplot()` function inside another functions ([@zzawadz, #125](https://github.com/kassambara/survminer/issues/125)).
 
 - New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105)) ([@MarcinKosinski, #106](https://github.com/kassambara/survminer/issues/106))
