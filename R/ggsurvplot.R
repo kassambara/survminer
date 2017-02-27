@@ -456,7 +456,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
        ggtheme
-  p <- ggpubr::ggpar(p, palette = palette)
+  p <- ggpubr::ggpar(p, palette = palette, ...)
 
   if(is.null(break.time.by)) times <- .get_default_breaks(fit$time)
   else times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
@@ -515,11 +515,10 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   p <- p + ggplot2::expand_limits(x = 0, y = 0)
   # Axis label and legend title
   lty.leg.title <- ifelse(linetype == "strata", legend.title, linetype)
-  p <- p + ggplot2::labs(x = xlab, y = ylab, title = main,
+  p <- p + ggplot2::labs(x = xlab, y = ylab,
                          color = legend.title, fill = legend.title,
                          linetype = lty.leg.title
                          )
-  p <- ggpubr::ggpar(p, subtitle = extra.params$submain, caption = extra.params$caption )
   p <-  .set_general_gpar(p, legend = legend, ...) # general graphical parameters
   if(!is.null(linetype.manual)) p <- p + scale_linetype_manual(values = linetype.manual)
 
