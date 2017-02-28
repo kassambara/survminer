@@ -687,6 +687,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   attr(res, "heights") <- heights
   attr(res, "y.text") <- y.text
   attr(res, "y.text.col") <- y.text.col
+  attr(res, "legend.position") <- legend
   attr(res, "legend.labs") <- legend.labs
   attr(res, "cumcensor") <- cumcensor
   res
@@ -719,8 +720,12 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   y.text <- attr(x, "y.text")
   y.text.col <- attr(x, "y.text.col")
   cumcensor <- attr(x, "cumcensor")
+  nplot <- .count_ggplots(x)
   # Removing data components from the list and keep only plot objects
   x$data.survplot <- x$data.survtable <-  NULL
+  # Extract legend from the survival plot
+  legend.position <- attr(x, "legend.position")[1]
+  legend.grob <- .get_legend(x$plot)
 
   # Update heights
   if(!is.null(surv.plot.height))  heights$plot <- surv.plot.height
@@ -736,8 +741,9 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   if(length(cols)==1) cols <- rep(cols, length(legend.labs))
   names(cols) <- legend.labs # Give every color an appropriate name
 
+  if(nplot > 1 & legend.position %in% c("left", "right", "bottom")) x$plot <- .hide_legend(x$plot)
+
   if(!is.null(x$table)){
-    # Hide legende: don't use  theme(legend.position = "none") because awkward legend when position = "left"
     x$table <- .hide_legend(x$table)
     if(!y.text$table) x$table <- .set_large_dash_as_ytext(x$table)
     # Make sure that risk.table.y.text.col will be the same as the plot legend colors
@@ -764,7 +770,6 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     }
   }
 
-  nplot <- .count_ggplots(x)
   if(is.null(x$table) & is.null(x$ncensor.plot) & is.null(x$cumevents)) return(x$plot)
 
   heights <- unlist(heights)[names(x)] # get the height of each component in x
@@ -781,17 +786,24 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
   }
 
-  res <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
+  ggsurv <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
 
-  return(res)
+  # Set legend
+  if(nplot > 1 & legend.position %in% c("left", "right", "bottom")){
+    ggsurv <- switch(legend.position,
+                   bottom = gridExtra::arrangeGrob(grobs = list(ggsurv, legend.grob), nrow = 2, heights = c(0.9, 0.1)),
+                   top = gridExtra::arrangeGrob(grobs = list(legend.grob, ggsurv), nrow = 2, heights = c(0.1, 0.9)),
+                   right = gridExtra::arrangeGrob(grobs = list(ggsurv, legend.grob), ncol = 2, widths = c(0.75, 0.25)),
+                   left = gridExtra::arrangeGrob(grobs = list(legend.grob, ggsurv), ncol = 2, widths = c(0.25, 0.75)),
+                   ggsurv
+                  )
+  }
+
+  return(ggsurv)
 }
 
 .hide_legend <- function(p){
-p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
-                           legend.key = element_rect(colour = NA, fill = NA),
-                           legend.text = element_text(colour = NA),
-                           legend.title = element_text(colour = NA)) +
-  guides(color = FALSE)
+p <- p + theme(legend.position = "none")
 }
 
 

@@ -11,6 +11,14 @@
   nplot
 }
 
+# Extract legend from a ggplot
+.get_legend <- function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  leg <- tmp$grobs[[leg]]
+  return(leg)
+}
+
 # Connect observations by stairs.
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Connect observations by stairs.
