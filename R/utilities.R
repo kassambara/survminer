@@ -2,6 +2,15 @@
 #' @import ggpubr
 
 
+# Count the number of ggplots in a list
+.count_ggplots <- function(list.objects){
+  nplot <- 0
+  for(i in 1:length(list.objects)){
+    if(is.ggplot(list.objects[[i]])) nplot <- nplot +1
+  }
+  nplot
+}
+
 # Connect observations by stairs.
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Connect observations by stairs.
@@ -113,12 +122,16 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
     strata_size <- rep(fit$n, each = length(.strata)/nstrata)
   }
 
+  strata <- .clean_strata(.strata)
   res <- data.frame(
-    strata = .clean_strata(.strata),
+    strata = strata,
     time = survsummary$time,
     n.risk = survsummary$n.risk,
+    pct.risk = round(survsummary$n.risk*100/strata_size),
     n.event = survsummary$n.event,
+    cum.n.event = unlist(by(survsummary$n.event, strata, cumsum)),
     n.censor = survsummary$n.censor,
+    cum.n.censor = unlist(by(survsummary$n.censor, strata, cumsum)),
     strata_size = strata_size
   )
 
@@ -126,6 +139,7 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
     variables <- .get_variables(res$strata, fit, data)
     for(variable in variables) res[[variable]] <- .get_variable_value(variable, res$strata, fit, data)
   }
+  rownames(res) <- 1:nrow(res)
   res
 }
 

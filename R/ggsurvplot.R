@@ -109,6 +109,8 @@
 #'  labels of the cumcensor table will be hidden.
 #'@param cumcensor.y.text.col logical. Default value is FALSE. If TRUE, the y
 #'  tick labels of the cumcensor will be colored by strata.
+#'@param cumcensor.height the height of the cumcensor table on the grid. Default
+#'  is 0.25. Ignored when cumcensor = FALSE.
 #'@param surv.median.line character vector for drawing a horizontal/vertical
 #'  line at median survival. Allowed values include one of c("none", "hv", "h",
 #'  "v"). v: vertical, h:horizontal.
@@ -155,9 +157,15 @@
 #'  = 14, to change only font size; or use font.x = "bold", to change only font
 #'  face.
 #'
-#'@return return an object of class ggsurvplot which is list containing two
-#'  ggplot objects, including: \itemize{ \item plot: the survival plot \item
-#'  table: the number at risk table per time }
+#'@return return an object of class ggsurvplot which is list containing the
+#'  following components: \itemize{
+#'  \item plot: the survival plot (ggplot object)
+#'  \item table: the number of subjects at risk table per time (ggplot object).
+#'  \item cumevents: the cumulative number of events table (ggplot object)
+#'  \item ncensor.plot: the number of censoring. (ggplot object)
+#'  \item data.survplot: the data used to plot the survival curves (data.frame).
+#'  \item data.survtable: the data used to plot the tables under the main survival curves (data.frame).
+#'  }
 #'
 #'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @examples
@@ -382,6 +390,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        risk.table.y.text.col = TRUE,
                        risk.table.height = tables.height, surv.plot.height = 0.75,
                        ncensor.plot.height = tables.height, cumevents.height = tables.height,
+                       cumcensor.height = tables.height,
                        ncensor.plot = FALSE, ncensor.plot.type = c("bar", "table"),
                        ncensor.plot.title = NULL,
                        cumevents = FALSE, cumevents.col = "black", cumevents.title = NULL,
@@ -416,6 +425,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     cumsensor <- TRUE
     ncensor.plot <- FALSE
   }
+  if(cumcensor) ncensor.plot.height <- cumcensor.height
   if(is.null(ncensor.plot.title))
     ncensor.plot.title <- "Number of censoring"
   if(is.null(cumcensor.title))
@@ -655,7 +665,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   heights <- list(
     plot =  surv.plot.height,
     table =  ifelse(risk.table, risk.table.height, 0),
-    ncensor.plot = ifelse(ncensor.plot, ncensor.plot.height, 0),
+    ncensor.plot = ifelse(ncensor.plot | cumcensor, ncensor.plot.height, 0),
     cumevents = ifelse(cumevents, cumevents.height, 0)
   )
   y.text <- list(
@@ -668,6 +678,10 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     cumevents = cumevents.y.text.col,
     cumcensor = cumcensor.y.text.col
   )
+
+  # Returning the data used to generate the survival plots
+  res$data.survplot <- d
+  res$data.survtable <- .get_timepoints_survsummary(fit, data, times)
 
   class(res) <- c("ggsurvplot", "ggsurv", "list")
   attr(res, "heights") <- heights
@@ -705,6 +719,8 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   y.text <- attr(x, "y.text")
   y.text.col <- attr(x, "y.text.col")
   cumcensor <- attr(x, "cumcensor")
+  # Removing data components from the list and keep only plot objects
+  x$data.survplot <- x$data.survtable <-  NULL
 
   # Update heights
   if(!is.null(surv.plot.height))  heights$plot <- surv.plot.height
@@ -748,15 +764,17 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     }
   }
 
-  nplot <- length(x)
+  nplot <- .count_ggplots(x)
   if(is.null(x$table) & is.null(x$ncensor.plot) & is.null(x$cumevents)) return(x$plot)
 
   heights <- unlist(heights)[names(x)] # get the height of each component in x
   plots <- x
   grobs <- widths <- list()
   for (i in 1:length(plots)) {
-    grobs[[i]] <- ggplotGrob(plots[[i]])
-    widths[[i]] <- grobs[[i]]$widths[2:5]
+    if(is.ggplot(plots[[i]])){
+      grobs[[i]] <- ggplotGrob(plots[[i]])
+      widths[[i]] <- grobs[[i]]$widths[2:5]
+    }
   }
   maxwidth <- do.call(grid::unit.pmax, widths)
   for (i in 1:length(grobs)) {

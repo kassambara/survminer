@@ -21,13 +21,14 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
   risk.table.y.text = tables.y.text, risk.table.y.text.col = TRUE,
   risk.table.height = tables.height, surv.plot.height = 0.75,
   ncensor.plot.height = tables.height, cumevents.height = tables.height,
-  ncensor.plot = FALSE, ncensor.plot.type = c("bar", "table"),
-  ncensor.plot.title = NULL, cumevents = FALSE, cumevents.col = "black",
-  cumevents.title = NULL, cumevents.y.text = tables.y.text,
-  cumevents.y.text.col = TRUE, cumcensor = FALSE, cumcensor.col = "black",
-  cumcensor.title = NULL, cumcensor.y.text = tables.y.text,
-  cumcensor.y.text.col = TRUE, surv.median.line = c("none", "hv", "h", "v"),
-  ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
+  cumcensor.height = tables.height, ncensor.plot = FALSE,
+  ncensor.plot.type = c("bar", "table"), ncensor.plot.title = NULL,
+  cumevents = FALSE, cumevents.col = "black", cumevents.title = NULL,
+  cumevents.y.text = tables.y.text, cumevents.y.text.col = TRUE,
+  cumcensor = FALSE, cumcensor.col = "black", cumcensor.title = NULL,
+  cumcensor.y.text = tables.y.text, cumcensor.y.text.col = TRUE,
+  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_survminer(),
+  tables.theme = ggtheme, ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
   risk.table.height = NULL, ncensor.plot.height = NULL, newpage = TRUE,
@@ -156,6 +157,9 @@ TRUE}}
 \item{cumevents.height}{the height of the cumulative events table on the grid.
 Default is 0.25. Ignored when cumevents = FALSE.}
 
+\item{cumcensor.height}{the height of the cumcensor table on the grid. Default
+is 0.25. Ignored when cumcensor = FALSE.}
+
 \item{ncensor.plot}{logical value. If TRUE, the number of censored subjects at
 time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.}
 
@@ -218,9 +222,15 @@ the plots. See details section.}
 \item{newpage}{open a new page. See \code{\link{grid.arrange}}}
 }
 \value{
-return an object of class ggsurvplot which is list containing two
- ggplot objects, including: \itemize{ \item plot: the survival plot \item
- table: the number at risk table per time }
+return an object of class ggsurvplot which is list containing the
+ following components: \itemize{
+ \item plot: the survival plot (ggplot object)
+ \item table: the number of subjects at risk table per time (ggplot object).
+ \item cumevents: the cumulative number of events table (ggplot object)
+ \item ncensor.plot: the number of censoring. (ggplot object)
+ \item data.survplot: the data used to plot the survival curves (data.frame).
+ \item data.survtable: the data used to plot the tables under the main survival curves (data.frame).
+ }
 }
 \description{
 Drawing survival curves using ggplot2
