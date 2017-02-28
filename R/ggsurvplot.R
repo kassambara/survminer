@@ -37,8 +37,7 @@
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
-#'@param title,xlab,ylab main title and axis
-#'  labels
+#'@param title,xlab,ylab main title and axis labels
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
 #'@param legend character specifying legend position. Allowed values are one of
 #'  c("top", "bottom", "left", "right", "none"). Default is "top" side position.
@@ -58,7 +57,8 @@
 #'@param risk.table.col color to be used for risk table. Default value is
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
 #'  "strata".
-#'@param risk.table.fontsize,fontsize font size to be used for the risk table and the cumulative events table.
+#'@param risk.table.fontsize,fontsize font size to be used for the risk table
+#'  and the cumulative events table.
 #'@param risk.table.y.text logical. Default is TRUE. If FALSE, risk table y axis
 #'  tick labels will be hidden.
 #'@param risk.table.y.text.col logical. Default value is FALSE. If TRUE, risk
@@ -71,7 +71,11 @@
 #'  ncensor.plot.height} when \code{risk.table = TRUE} and \code{ncensor.plot =
 #'  TRUE}
 #'@param ncensor.plot logical value. If TRUE, the number of censored subjects at
-#'  time t is plotted. Default is FALSE.
+#'  time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.
+#'@param ncensor.plot.type character vector specifying the type for ncensor
+#'  plot. Allowed options include one of c("bar", "table"). "bar" = barplot of
+#'  the number of censoring. "table" = table of cumulative number of censoring.
+#'  ncensor.plot.type = "table" is the same as cumcensor = TRUE.
 #'@param ncensor.plot.title The title to be used for the censor plot. Used when
 #'  \code{ncensor.plot = TRUE}.
 #'@param ncensor.plot.height The height of the censor plot. Used when
@@ -79,15 +83,25 @@
 #'@param cumevents logical value specifying whether to show or not the table of
 #'  the cumulative number of events. Default is FALSE.
 #'@param cumevents.title The title to be used for the cumulative events table.
-#'@param cumevents.col color to be used for cumulative events table. Default value is
-#'  "black". If you want to color by strata (i.e. groups), use cumevents.col =
+#'@param cumevents.col color to be used for cumulative events table. Default
+#'  value is "black". If you want to color by strata (i.e. groups), use
+#'  cumevents.col = "strata".
+#'@param cumevents.y.text logical. Default is TRUE. If FALSE, the y axis tick
+#'  labels of the cumulative events table  will be hidden.
+#'@param cumevents.y.text.col logical. Default value is FALSE. If TRUE, the y
+#'  tick labels of the cumulative events will be colored by strata.
+#'@param cumevents.height the height of the cumulative events table on the grid.
+#'  Default is 0.25. Ignored when cumevents = FALSE.
+#'@param cumcensor logical value specifying whether to show or not the table of
+#'  the cumulative number of censoring. Default is FALSE.
+#'@param cumcensor.title The title to be used for the cumcensor table.
+#'@param cumcensor.col color to be used for cumcensor table. Default value is
+#'  "black". If you want to color by strata (i.e. groups), use cumcensor.col =
 #'  "strata".
-#'@param cumevents.y.text logical. Default is TRUE. If FALSE, the y axis
-#'  tick labels of the cumulative events table  will be hidden.
-#'@param cumevents.y.text.col logical. Default value is FALSE. If TRUE,
-#'  the y tick labels of the cumulative events will be colored by strata.
-#'@param cumevents.height the height of the cumulative events table on the grid. Default is 0.25. Ignored when
-#'  cumevents = FALSE.
+#'@param cumcensor.y.text logical. Default is TRUE. If FALSE, the y axis tick
+#'  labels of the cumcensor table will be hidden.
+#'@param cumcensor.y.text.col logical. Default value is FALSE. If TRUE, the y
+#'  tick labels of the cumcensor will be colored by strata.
 #'@param surv.median.line character vector for drawing a horizontal/vertical
 #'  line at median survival. Allowed values include one of c("none", "hv", "h",
 #'  "v"). v: vertical, h:horizontal.
@@ -127,7 +141,7 @@
 #'  customized using additional arguments to be passed to the function ggpar().
 #'  Read ?ggpubr::ggpar. These arguments include
 #'  \emph{font.title,font.subtitle,font.caption,font.x,font.y,font.tickslab,font.legend}:
-#'  a vector of length 3 indicating respectively the size (e.g.: 14), the style
+#'   a vector of length 3 indicating respectively the size (e.g.: 14), the style
 #'  (e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
 #'  of main title, subtitle, caption, xlab and ylab and axis tick labels,
 #'  respectively. For example \emph{font.x = c(14, "bold", "red")}.  Use font.x
@@ -360,9 +374,12 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        risk.table.y.text = TRUE,
                        risk.table.y.text.col = TRUE,
                        risk.table.height = 0.25, surv.plot.height = 0.75, ncensor.plot.height = 0.25, cumevents.height = 0.25,
-                       ncensor.plot = FALSE, ncensor.plot.title = NULL,
-                       cumevents = FALSE, cumevents.col = "black", cumevents.title = "Cumulative number of events",
+                       ncensor.plot = FALSE, ncensor.plot.type = c("bar", "table"),
+                       ncensor.plot.title = NULL,
+                       cumevents = FALSE, cumevents.col = "black", cumevents.title = NULL,
                        cumevents.y.text = TRUE, cumevents.y.text.col = TRUE,
+                       cumcensor = FALSE, cumcensor.col = "black", cumcensor.title = NULL,
+                       cumcensor.y.text = TRUE, cumcensor.y.text.col = TRUE,
                        surv.median.line = c("none", "hv", "h", "v"),
                        ggtheme = theme_survminer(),
                        ...
@@ -377,6 +394,23 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   surv.median.line <- match.arg(surv.median.line)
   stopifnot(log.rank.weights %in% c("survdiff", "1", "n", "sqrtN", "S1", "S2","FH_p=1_q=1"))
   log.rank.weights <- match.arg(log.rank.weights)
+
+  if(is.null(cumevents.title))
+    cumevents.title <- "Cumulative number of events"
+
+  if(ncensor.plot & cumcensor)
+    warning("Both ncensor.plot and cumsensor are TRUE.",
+            "In this case, we consider only cumcensor.", call. = FALSE)
+  ncensor.plot.type <- match.arg(ncensor.plot.type)
+  if(cumcensor) {
+    ncensor.plot = TRUE
+    ncensor.plot.type = "table"
+  }
+  if(is.null(ncensor.plot.title))
+    ncensor.plot.title <- "Number of censoring"
+  if(is.null(cumcensor.title))
+    cumcensor.title <- "Cumulative number of censoring"
+
   # Adapt ylab value according to the value of the argument fun
   ylab <- .check_ylab(ylab, fun)
   # Check and get linetypes
@@ -566,6 +600,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   # Plot of censored subjects
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if(ncensor.plot){
+    if(ncensor.plot.type == "bar"){
     ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
       ggpubr::geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
                  stat = "identity", position = "dodge")+
@@ -573,14 +608,27 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
       scale_x_continuous(breaks = times)+
       scale_y_continuous(breaks = sort(unique(d$n.censor))) +
       ggtheme
+
     ncensor_plot <- ggpubr::ggpar(ncensor_plot, palette = palette)
+    ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
+                                                 x = xlab, y = "n.censor", title = ncensor.plot.title)
+    }
+    else{
+      ncensor_plot <- ggcumcensor (fit, data = data, color = cumcensor.col,
+                                    palette = palette, break.time.by = break.time.by,
+                                    xlim = xlim, title = cumcensor.title,
+                                    legend = legend, legend.title = legend.title, legend.labs = legend.labs,
+                                    y.text = cumcensor.y.text, y.text.col = cumcensor.y.text.col,
+                                    fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
+                                    ...)
+    }
     # for backward compatibility
     ncensor_plot <-  .set_general_gpar(ncensor_plot, legend = "none", ...) # general graphical parameters
     ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot, legend = "none", ...) # specific graphical params
 
-    ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
-                                                 x = xlab, y = "n.censor", title = ncensor.plot.title)
-    if("left" %in% legend) ncensor_plot <- ncensor_plot + ggplot2::theme(legend.position = legend)
+    if(cumcensor.y.text.col & ncensor.plot.type == "table")
+      ncensor_plot <- ncensor_plot + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
+
     res$ncensor.plot <- ncensor_plot
   }
 
