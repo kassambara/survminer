@@ -659,9 +659,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   class(res) <- c("ggsurvplot", "ggsurv", "list")
   attr(res, "heights") <- heights
   attr(res, "legend.labs") <- legend.labs
-  attr(res, "surv.plot.height") <- surv.plot.height
-  attr(res, "risk.table.height") <- risk.table.height
-  attr(res, "ncensor.plot.height") <- ncensor.plot.height
   attr(res, "risk.table.y.text") <- risk.table.y.text
   attr(res, "risk.table.y.text.col") <- risk.table.y.text.col
   attr(res, "cumevents.y.text") <- cumevents.y.text
