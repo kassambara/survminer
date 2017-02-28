@@ -56,7 +56,7 @@ labels will be colored by strata.}
 \item{fontsize}{text font size.}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is
-\link{theme_classic2}. Allowed values include ggplot2 official themes: see
+\link{theme_survminer}. Allowed values include ggplot2 official themes: see
 \code{\link[ggplot2]{theme}}.}
 
 \item{...}{other arguments passed to the function \code{\link[ggpubr]{ggpar}}.}

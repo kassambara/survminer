@@ -15,19 +15,19 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
   "FH_p=1_q=1"), title = NULL, xlab = "Time",
   ylab = "Survival probability", xlim = NULL, ylim = NULL,
   legend = c("top", "bottom", "left", "right", "none"),
-  legend.title = "Strata", legend.labs = NULL, risk.table = FALSE,
-  risk.table.title = NULL, risk.table.col = "black",
-  risk.table.fontsize = 4.5, fontsize = 4.5, risk.table.y.text = TRUE,
-  risk.table.y.text.col = TRUE, tables.height = 0.25,
+  legend.title = "Strata", legend.labs = NULL, tables.height = 0.25,
+  tables.y.text = TRUE, risk.table = FALSE, risk.table.title = NULL,
+  risk.table.col = "black", risk.table.fontsize = 4.5, fontsize = 4.5,
+  risk.table.y.text = tables.y.text, risk.table.y.text.col = TRUE,
   risk.table.height = tables.height, surv.plot.height = 0.75,
   ncensor.plot.height = tables.height, cumevents.height = tables.height,
   ncensor.plot = FALSE, ncensor.plot.type = c("bar", "table"),
   ncensor.plot.title = NULL, cumevents = FALSE, cumevents.col = "black",
-  cumevents.title = NULL, cumevents.y.text = TRUE,
+  cumevents.title = NULL, cumevents.y.text = tables.y.text,
   cumevents.y.text.col = TRUE, cumcensor = FALSE, cumcensor.col = "black",
   cumcensor.title = NULL, cumcensor.y.text = TRUE,
   cumcensor.y.text.col = TRUE, surv.median.line = c("none", "hv", "h", "v"),
-  ggtheme = theme_survminer(), ...)
+  ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
   risk.table.height = NULL, ncensor.plot.height = NULL, newpage = TRUE,
@@ -114,6 +114,12 @@ specified using a numeric vector c(x, y); see details section.}
 the names of the strata from the fit. Should be given in the same order as
 those strata.}
 
+\item{tables.height}{numeric value (in [0 - 1]) specifying the general height
+of all tables under the main survival plot.}
+
+\item{tables.y.text}{logical. Default is TRUE. If FALSE, the y axis tick
+labels of tables will be hidden.}
+
 \item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
 specifying whether to show or not the risk table. Default is FALSE. \item
 "absolute" or "percentage": to show the \bold{absolute number} and the
@@ -134,9 +140,6 @@ tick labels will be hidden.}
 
 \item{risk.table.y.text.col}{logical. Default value is FALSE. If TRUE, risk
 table tick labels will be colored by strata.}
-
-\item{tables.height}{numeric value (in [0 - 1]) specifying the general height
-of all tables under the main survival plot.}
 
 \item{risk.table.height}{the height of the risk table on the grid. Increase
 the value when you have many strata. Default is 0.25. Ignored when
@@ -199,7 +202,11 @@ line at median survival. Allowed values include one of c("none", "hv", "h",
 "v"). v: vertical, h:horizontal.}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is
-\link{theme_classic2}. Allowed values include ggplot2 official themes: see
+\link{theme_survminer}. Allowed values include ggplot2 official themes: see
+\code{\link[ggplot2]{theme}}.}
+
+\item{tables.theme}{function, ggplot2 theme name. Default value is
+\link{theme_survminer}. Allowed values include ggplot2 official themes: see
 \code{\link[ggplot2]{theme}}.}
 
 \item{...}{other arguments to be passed i) to ggplot2 geom_*() functions such

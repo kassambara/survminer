@@ -65,6 +65,11 @@
 #'  table tick labels will be colored by strata.
 #'@param tables.height numeric value (in [0 - 1]) specifying the general height
 #'  of all tables under the main survival plot.
+#'@param tables.y.text logical. Default is TRUE. If FALSE, the y axis tick
+#'  labels of tables will be hidden.
+#'@param tables.theme function, ggplot2 theme name. Default value is
+#'  \link{theme_survminer}. Allowed values include ggplot2 official themes: see
+#'  \code{\link[ggplot2]{theme}}.
 #'@param risk.table.height the height of the risk table on the grid. Increase
 #'  the value when you have many strata. Default is 0.25. Ignored when
 #'  risk.table = FALSE.
@@ -108,7 +113,7 @@
 #'  line at median survival. Allowed values include one of c("none", "hv", "h",
 #'  "v"). v: vertical, h:horizontal.
 #'@param ggtheme function, ggplot2 theme name. Default value is
-#'  \link{theme_classic2}. Allowed values include ggplot2 official themes: see
+#'  \link{theme_survminer}. Allowed values include ggplot2 official themes: see
 #'  \code{\link[ggplot2]{theme}}.
 #'@param ... other arguments to be passed i) to ggplot2 geom_*() functions such
 #'  as linetype, size, ii) or to the function ggpubr::ggpar() for customizing
@@ -370,22 +375,22 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                         xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
-                       #font.legend = c(10, "plain", "black"),
+                       tables.height = 0.25, tables.y.text = TRUE,
                        risk.table = FALSE, risk.table.title = NULL,
                        risk.table.col = "black", risk.table.fontsize = 4.5, fontsize = 4.5,
-                       risk.table.y.text = TRUE,
+                       risk.table.y.text = tables.y.text,
                        risk.table.y.text.col = TRUE,
-                       tables.height = 0.25,
                        risk.table.height = tables.height, surv.plot.height = 0.75,
                        ncensor.plot.height = tables.height, cumevents.height = tables.height,
                        ncensor.plot = FALSE, ncensor.plot.type = c("bar", "table"),
                        ncensor.plot.title = NULL,
                        cumevents = FALSE, cumevents.col = "black", cumevents.title = NULL,
-                       cumevents.y.text = TRUE, cumevents.y.text.col = TRUE,
+                       cumevents.y.text = tables.y.text, cumevents.y.text.col = TRUE,
                        cumcensor = FALSE, cumcensor.col = "black", cumcensor.title = NULL,
                        cumcensor.y.text = TRUE, cumcensor.y.text.col = TRUE,
                        surv.median.line = c("none", "hv", "h", "v"),
                        ggtheme = theme_survminer(),
+                       tables.theme = ggtheme,
                        ...
                        ){
 
@@ -586,7 +591,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
      # color risk.table ticks by strata
      if(risk.table.y.text.col)
        risktable <- risktable + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
-    res$table <-  risktable
+    res$table <-  risktable + tables.theme
    }
 
   if(cumevents){
@@ -597,6 +602,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                                   y.text = cumevents.y.text, y.text.col = cumevents.y.text.col,
                                   fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
                                   ...)
+    res$cumevents <- res$cumevents + tables.theme
     if(cumevents.y.text.col)
       res$cumevents <- res$cumevents + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
   }
@@ -633,7 +639,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     if(cumcensor.y.text.col & ncensor.plot.type == "table")
       ncensor_plot <- ncensor_plot + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
 
-    res$ncensor.plot <- ncensor_plot
+    res$ncensor.plot <- ncensor_plot + tables.theme
   }
 
 
