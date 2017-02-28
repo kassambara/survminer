@@ -161,8 +161,8 @@
 #'  following components: \itemize{
 #'  \item plot: the survival plot (ggplot object)
 #'  \item table: the number of subjects at risk table per time (ggplot object).
-#'  \item cumevents: the cumulative number of events table (ggplot object)
-#'  \item ncensor.plot: the number of censoring. (ggplot object)
+#'  \item cumevents: the cumulative number of events table (ggplot object).
+#'  \item ncensor.plot: the number of censoring (ggplot object).
 #'  \item data.survplot: the data used to plot the survival curves (data.frame).
 #'  \item data.survtable: the data used to plot the tables under the main survival curves (data.frame).
 #'  }
