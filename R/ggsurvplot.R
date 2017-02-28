@@ -387,7 +387,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        cumevents = FALSE, cumevents.col = "black", cumevents.title = NULL,
                        cumevents.y.text = tables.y.text, cumevents.y.text.col = TRUE,
                        cumcensor = FALSE, cumcensor.col = "black", cumcensor.title = NULL,
-                       cumcensor.y.text = TRUE, cumcensor.y.text.col = TRUE,
+                       cumcensor.y.text = tables.y.text, cumcensor.y.text.col = TRUE,
                        surv.median.line = c("none", "hv", "h", "v"),
                        ggtheme = theme_survminer(),
                        tables.theme = ggtheme,
@@ -715,8 +715,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     x$table <- .hide_legend(x$table)
     risk.table.y.text <- attr(x, 'risk.table.y.text')
     if(!risk.table.y.text)
-      x$table <- x$table + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
-                                 axis.ticks.y = element_blank())
+      x$table <- .set_large_dash_as_ytext(x$table)
     # Make sure that risk.table.y.text.col will be the same as the plot legend colors
     risk.table.y.text.col <- attr(x, 'risk.table.y.text.col')
     if(risk.table.y.text.col)
@@ -728,8 +727,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     x$cumevents <- .hide_legend(x$cumevents)
     cumevents.y.text <- attr(x, 'cumevents.y.text')
     if(!cumevents.y.text)
-      x$cumevents <- x$cumevents + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
-                                         axis.ticks.y = element_blank())
+      x$cumevents <- .set_large_dash_as_ytext(x$cumevents)
     # Make sure that y.text.col will be the same as the plot legend colors
     cumevents.y.text.col <- attr(x, 'cumevents.y.text.col')
     if(cumevents.y.text.col)
