@@ -2,6 +2,15 @@
    
 ## New features
     
+- Now, `ggsurvplot()` returns an object of class ggsurvplot which is list containing the following components ([#158](https://github.com/kassambara/survminer/issues/158)):
+    - **plot**: the survival plot (ggplot object)
+    - **table**: the number of subjects at risk table per time (ggplot object).
+    - **cumevents**: the cumulative number of events table (ggplot object).
+    - **ncensor.plot**: the number of censoring (ggplot object).
+    - **data.survplot**: the data used to plot the survival curves (data.frame).
+    - **data.survtable**: the data used to plot the tables under the main survival curves (data.frame).
+   
+   
 - New arguments in the `ggsurvplot()` function for customizing tables under the main survival plot: `tables.height, tables.y.text, tables.theme` ([#156](https://github.com/kassambara/survminer/issues/156)). 
    
 - New arguments in the `ggsurvplot()` function:
