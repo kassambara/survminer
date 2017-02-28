@@ -1,10 +1,16 @@
 # survminer 0.2.4.999
    
 ## New features
-   
-- New heper function `ggrisktable()` for plotting number of subjects at risk by time. ([#154](https://github.com/kassambara/survminer/issues/154)). Normally, users don't need to use this function directly. Internally used by the function `ggsurvplot()`.
+    
+- New arguments in `ggsurvplot()` function:
+    - `cumevents` logical value for displaying the cumulative number of events table ([#117](https://github.com/kassambara/survminer/issues/117)).
+    - `cumcensor` logical value for displaying the cumulative number of censoring table ([#155](https://github.com/kassambara/survminer/issues/155)).
+    
+- New heper functions `ggrisktable()`, `ggcumevents()`, `ggcumcensor()`. Normally, users don't need to use these function directly. Internally used by the function `ggsurvplot()`.
+    - `ggrisktable()` for plotting number of subjects at risk by time. ([#154](https://github.com/kassambara/survminer/issues/154)).
+    - `ggcumevents()` for plotting the cumulative number of events table ([#117](https://github.com/kassambara/survminer/issues/117)).
+    - `ggcumcensor()` for plotting the cumulative number of censoring table ([#155](https://github.com/kassambara/survminer/issues/155)).
 
-- New helper function `ggcumevents()` for plotting the cumulative number of events table ([#117](https://github.com/kassambara/survminer/issues/117)). Normally, users don't need to use this function directly. Internally used by the function `ggsurvplot()`.
 
 - New function `+.ggsurv()` to add ggplot components - `theme()`, `labs()` -  to an object of class ggsurv, which is a list of ggplots. ([#151](https://github.com/kassambara/survminer/issues/151)). For example:
 
@@ -51,8 +57,6 @@ p %+% theme_survminer(
 
 ## Major changes
    
-- New arguments `cumevents` added to the `ggsurvplot()` function. Logical value specifying whether to show or not the table of the cumulative number of events ([#117](https://github.com/kassambara/survminer/issues/117)).
-
 - Additional `data` argument added to the `ggsurvplot()` function ([@kassambara, #142](https://github.com/kassambara/survminer/issues/142)). Now, it's recommended to pass to the function, the data used to fit survival curves. This will avoid the error generated when trying to use the `ggsurvplot()` function inside another functions ([@zzawadz, #125](https://github.com/kassambara/survminer/issues/125)).
 
 - New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105)) ([@MarcinKosinski, #106](https://github.com/kassambara/survminer/issues/106))
