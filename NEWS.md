@@ -73,6 +73,8 @@ p %+% theme_survminer(
      
      
 ## Minor changes
+  
+- New argument `tables.height` in `ggsurvplot()` to apply the same height to all the tables under the main survival plots ([#157](https://github.com/kassambara/survminer/issues/157)).
 
 - It is possible to secify `title` and `caption` for `ggcoxfunctional` ([@MarcinKosinski, #138](https://github.com/kassambara/survminer/issues/138)) (`font.main` was removed as it was unused.)
 

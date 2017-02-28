@@ -63,6 +63,8 @@
 #'  tick labels will be hidden.
 #'@param risk.table.y.text.col logical. Default value is FALSE. If TRUE, risk
 #'  table tick labels will be colored by strata.
+#'@param tables.height numeric value (in [0 - 1]) specifying the general height
+#'  of all tables under the main survival plot.
 #'@param risk.table.height the height of the risk table on the grid. Increase
 #'  the value when you have many strata. Default is 0.25. Ignored when
 #'  risk.table = FALSE.
@@ -373,7 +375,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        risk.table.col = "black", risk.table.fontsize = 4.5, fontsize = 4.5,
                        risk.table.y.text = TRUE,
                        risk.table.y.text.col = TRUE,
-                       risk.table.height = 0.25, surv.plot.height = 0.75, ncensor.plot.height = 0.25, cumevents.height = 0.25,
+                       tables.height = 0.25,
+                       risk.table.height = tables.height, surv.plot.height = 0.75,
+                       ncensor.plot.height = tables.height, cumevents.height = tables.height,
                        ncensor.plot = FALSE, ncensor.plot.type = c("bar", "table"),
                        ncensor.plot.title = NULL,
                        cumevents = FALSE, cumevents.col = "black", cumevents.title = NULL,

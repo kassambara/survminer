@@ -132,7 +132,7 @@ theme_survminer <-
 #'   axis lines and, ii) x axis ticks and title.
 theme_cleantable <- function(base_size = 12, base_family = "", ...)
 {
-  theme_survminer(base_size = base_size, base_family = base_family, ...) %+replace%
+  #theme_survminer(base_size = base_size, base_family = base_family, ...) %+replace%
     theme(
       axis.line.x = element_blank(),
       axis.line.y = element_blank(),
