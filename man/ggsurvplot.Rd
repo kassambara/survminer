@@ -183,6 +183,8 @@ the cumulative number of censoring. Default is FALSE.}
 "black". If you want to color by strata (i.e. groups), use cumcensor.col =
 "strata".}
 
+\item{cumcensor.title}{The title to be used for the cumcensor table.}
+
 \item{cumcensor.y.text}{logical. Default is TRUE. If FALSE, the y axis tick
 labels of the cumcensor table will be hidden.}
 
