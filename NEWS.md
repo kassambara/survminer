@@ -127,6 +127,8 @@ writeDoc(doc, "test.pptx")
     
 ## Bug fixes
     
+- Now, risk table align with survival plots when legend = "right" ([@jonlehrer, #102](https://github.com/kassambara/survminer/issues/102)).
+
 - Now, `ggcoxzph()` works for univariate Cox analysis ([#103](https://github.com/kassambara/survminer/issues/103)). 
    
 - Now, `ggcoxdiagnostics()` works properly for schoenfeld residuals ([@pbiecek, #119](https://github.com/kassambara/survminer/issues/122)).  
