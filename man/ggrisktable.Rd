@@ -37,11 +37,9 @@ is NULL.}
 
 \item{title}{the title of the plot.}
 
-\item{xlab}{main title and axis
-labels}
+\item{xlab}{main title and axis labels}
 
-\item{ylab}{main title and axis
-labels}
+\item{ylab}{main title and axis labels}
 
 \item{legend}{character specifying legend position. Allowed values are one of
 c("top", "bottom", "left", "right", "none"). Default is "top" side position.
