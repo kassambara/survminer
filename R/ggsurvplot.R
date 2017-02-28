@@ -599,8 +599,8 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                              xlab = xlab, ylab = legend.title,
                              ...)
      # For backward compatibility
-     risktable <-  .set_general_gpar(risktable, legend = "none", ...) # general graphical parameters
-     risktable <- .set_risktable_gpar(risktable, legend = "none", ...) # specific graphical params
+     risktable <-  .set_general_gpar(risktable, legend = legend, ...) # general graphical parameters
+     risktable <- .set_risktable_gpar(risktable, legend = legend, ...) # specific graphical params
      risktable <- risktable  + tables.theme
      if(!risk.table.y.text) risktable <- .set_large_dash_as_ytext(risktable)
      # color risk.table ticks by strata
