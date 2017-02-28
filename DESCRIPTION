@@ -52,6 +52,7 @@ Collate:
     'ggcoxdiagnostics.R'
     'ggcoxfunctional.R'
     'ggcoxzph.R'
+    'ggcumcensor.R'
     'ggcumevents.R'
     'ggforest.R'
     'ggrisktable.R'
