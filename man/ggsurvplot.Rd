@@ -25,7 +25,7 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
   ncensor.plot.title = NULL, cumevents = FALSE, cumevents.col = "black",
   cumevents.title = NULL, cumevents.y.text = tables.y.text,
   cumevents.y.text.col = TRUE, cumcensor = FALSE, cumcensor.col = "black",
-  cumcensor.title = NULL, cumcensor.y.text = TRUE,
+  cumcensor.title = NULL, cumcensor.y.text = tables.y.text,
   cumcensor.y.text.col = TRUE, surv.median.line = c("none", "hv", "h", "v"),
   ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
 
