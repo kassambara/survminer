@@ -2,7 +2,9 @@
    
 ## New features
     
-- New arguments in `ggsurvplot()` function:
+- New arguments in the `ggsurvplot()` function for customizing tables under the main survival plot: `tables.height, tables.y.text, tables.theme` ([#156](https://github.com/kassambara/survminer/issues/156)). 
+   
+- New arguments in the `ggsurvplot()` function:
     - `cumevents` logical value for displaying the cumulative number of events table ([#117](https://github.com/kassambara/survminer/issues/117)).
     - `cumcensor` logical value for displaying the cumulative number of censoring table ([#155](https://github.com/kassambara/survminer/issues/155)).
     
@@ -36,7 +38,7 @@ p %+% theme_survminer(
 
 ```
   
-- New function `theme_cleantable()`: theme for drawing a clean risk table and cumulative number of events table. A theme similar to theme_survminer() without i) axis lines and, ii) x axis ticks and title ([#117](https://github.com/kassambara/survminer/issues/117)).
+- New function `theme_cleantable()`: theme for drawing a clean risk table and cumulative number of events table. A theme similar to theme_survminer() without i) axis lines and, ii) x axis ticks and title ([#117](https://github.com/kassambara/survminer/issues/117) & [#156](https://github.com/kassambara/survminer/issues/156)).
    
 - New function `theme_survminer()` to change easily the graphical parameters of plots generated with survminer ([#151](https://github.com/kassambara/survminer/issues/151)).
   
