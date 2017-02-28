@@ -404,21 +404,24 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   stopifnot(log.rank.weights %in% c("survdiff", "1", "n", "sqrtN", "S1", "S2","FH_p=1_q=1"))
   log.rank.weights <- match.arg(log.rank.weights)
 
-  if(is.null(cumevents.title))
-    cumevents.title <- "Cumulative number of events"
-
-  if(ncensor.plot & cumcensor)
+  # Make sure that user can do either ncensor.plot or cumcensor
+  # But not both
+  ncensor.plot.type <- match.arg(ncensor.plot.type)
+  if(ncensor.plot & cumcensor){
     warning("Both ncensor.plot and cumsensor are TRUE.",
             "In this case, we consider only cumcensor.", call. = FALSE)
-  ncensor.plot.type <- match.arg(ncensor.plot.type)
-  if(cumcensor) {
-    ncensor.plot = TRUE
-    ncensor.plot.type = "table"
+    ncensor.plot <- FALSE
+  }
+  else if(ncensor.plot & ncensor.plot.type == "bar"){
+    cumsensor <- TRUE
+    ncensor.plot <- FALSE
   }
   if(is.null(ncensor.plot.title))
     ncensor.plot.title <- "Number of censoring"
   if(is.null(cumcensor.title))
     cumcensor.title <- "Cumulative number of censoring"
+  if(is.null(cumevents.title))
+    cumevents.title <- "Cumulative number of events"
 
   # Adapt ylab value according to the value of the argument fun
   ylab <- .check_ylab(ylab, fun)
@@ -596,6 +599,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
      res$table <- risktable
    }
 
+ # Add the cumulative number of events
   if(cumevents){
     res$cumevents <- ggcumevents (fit, data = data, color = cumevents.col,
                                   palette = palette, break.time.by = break.time.by,
@@ -610,62 +614,68 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
       res$cumevents <- res$cumevents + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
   }
 
-  # Plot of censored subjects
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  # Add ncensor.plot or cumcensor plot
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if(ncensor.plot){
-    if(ncensor.plot.type == "bar"){
-    ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
-      ggpubr::geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
-                 stat = "identity", position = "dodge")+
-      coord_cartesian(xlim = xlim)+
-      scale_x_continuous(breaks = times)+
-      scale_y_continuous(breaks = sort(unique(d$n.censor))) +
-      ggtheme
+  ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
+    ggpubr::geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
+               stat = "identity", position = "dodge")+
+    coord_cartesian(xlim = xlim)+
+    scale_x_continuous(breaks = times)+
+    scale_y_continuous(breaks = sort(unique(d$n.censor))) +
+    ggtheme
 
-    ncensor_plot <- ggpubr::ggpar(ncensor_plot, palette = palette)
-    ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
-                                                 x = xlab, y = "n.censor", title = ncensor.plot.title)
-    }
-    else{
-      ncensor_plot <- ggcumcensor (fit, data = data, color = cumcensor.col,
-                                    palette = palette, break.time.by = break.time.by,
-                                    xlim = xlim, title = cumcensor.title,
-                                    legend = legend, legend.title = legend.title, legend.labs = legend.labs,
-                                    y.text = cumcensor.y.text, y.text.col = cumcensor.y.text.col,
-                                    fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
-                                    ...)
-    }
-    # for backward compatibility
-    ncensor_plot <-  .set_general_gpar(ncensor_plot, legend = "none", ...) # general graphical parameters
-    ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot, legend = "none", ...) # specific graphical params
+  ncensor_plot <- ggpubr::ggpar(ncensor_plot, palette = palette)
+  ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
+                                               x = xlab, y = "n.censor", title = ncensor.plot.title)
+
+  # For backward compatibility
+  ncensor_plot <-  .set_general_gpar(ncensor_plot,  ...) # general graphical parameters
+  ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot,  ...) # specific graphical params
+  ncensor_plot <- ncensor_plot + tables.theme
+  }
+  else if(cumcensor){
+    ncensor_plot <- ggcumcensor (fit, data = data, color = cumcensor.col,
+                                  palette = palette, break.time.by = break.time.by,
+                                  xlim = xlim, title = cumcensor.title,
+                                  legend = legend, legend.title = legend.title, legend.labs = legend.labs,
+                                  y.text = cumcensor.y.text, y.text.col = cumcensor.y.text.col,
+                                  fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
+                                  ...)
     ncensor_plot <- ncensor_plot + tables.theme
     if(!cumcensor.y.text) ncensor_plot <- .set_large_dash_as_ytext(ncensor_plot)
-
-    if(cumcensor.y.text.col & ncensor.plot.type == "table")
+    if(cumcensor.y.text.col)
       ncensor_plot <- ncensor_plot + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
-
-    res$ncensor.plot <- ncensor_plot
   }
+  if(ncensor.plot | cumcensor)
+    res$ncensor.plot <- ncensor_plot
 
-
-
+  # Defining attributs for ggsurvplot
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   heights <- list(
     plot =  surv.plot.height,
     table =  ifelse(risk.table, risk.table.height, 0),
     ncensor.plot = ifelse(ncensor.plot, ncensor.plot.height, 0),
     cumevents = ifelse(cumevents, cumevents.height, 0)
   )
+  y.text <- list(
+    table =  risk.table.y.text,
+    cumevents = cumevents.y.text,
+    cumcensor = cumcensor.y.text
+  )
+  y.text.col <- list(
+    table =  risk.table.y.text.col,
+    cumevents = cumevents.y.text.col,
+    cumcensor = cumcensor.y.text.col
+  )
 
   class(res) <- c("ggsurvplot", "ggsurv", "list")
   attr(res, "heights") <- heights
+  attr(res, "y.text") <- y.text
+  attr(res, "y.text.col") <- y.text.col
   attr(res, "legend.labs") <- legend.labs
-  attr(res, "risk.table.y.text") <- risk.table.y.text
-  attr(res, "risk.table.y.text.col") <- risk.table.y.text.col
-  attr(res, "cumevents.y.text") <- cumevents.y.text
-  attr(res, "cumevents.y.text.col") <- cumevents.y.text.col
-
+  attr(res, "cumcensor") <- cumcensor
   res
-  # ggpubr::ggpar(res, palette = palette)
 }
 
 #' @param x an object of class ggsurvplot
@@ -692,6 +702,9 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   if(!inherits(x, "ggsurvplot"))
     stop("An object of class ggsurvplot is required.")
   heights <- attr(x, "heights")
+  y.text <- attr(x, "y.text")
+  y.text.col <- attr(x, "y.text.col")
+  cumcensor <- attr(x, "cumcensor")
 
   # Update heights
   if(!is.null(surv.plot.height))  heights$plot <- surv.plot.height
@@ -710,29 +723,30 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   if(!is.null(x$table)){
     # Hide legende: don't use  theme(legend.position = "none") because awkward legend when position = "left"
     x$table <- .hide_legend(x$table)
-    risk.table.y.text <- attr(x, 'risk.table.y.text')
-    if(!risk.table.y.text)
-      x$table <- .set_large_dash_as_ytext(x$table)
+    if(!y.text$table) x$table <- .set_large_dash_as_ytext(x$table)
     # Make sure that risk.table.y.text.col will be the same as the plot legend colors
-    risk.table.y.text.col <- attr(x, 'risk.table.y.text.col')
-    if(risk.table.y.text.col)
+    if(y.text.col$table)
       x$table <- x$table + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
   }
 
 
   if(!is.null(x$cumevents)){
     x$cumevents <- .hide_legend(x$cumevents)
-    cumevents.y.text <- attr(x, 'cumevents.y.text')
-    if(!cumevents.y.text)
-      x$cumevents <- .set_large_dash_as_ytext(x$cumevents)
+    if(!y.text$cumevents) x$cumevents <- .set_large_dash_as_ytext(x$cumevents)
     # Make sure that y.text.col will be the same as the plot legend colors
-    cumevents.y.text.col <- attr(x, 'cumevents.y.text.col')
-    if(cumevents.y.text.col)
+    if(y.text.col$cumevents)
       x$cumevents <- x$cumevents + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
   }
 
 
-  if(!is.null(x$ncensor.plot)) x$ncensor.plot <- x$ncensor.plot + theme (legend.position = "none")
+  if(!is.null(x$ncensor.plot)){
+    x$ncensor.plot <- x$ncensor.plot + theme (legend.position = "none")
+    if(cumcensor){
+      if(!y.text$cumcensor) x$ncensor.plot <- .set_large_dash_as_ytext(x$ncensor.plot)
+      if(y.text.col$cumcensor)
+        x$ncensor.plot <- x$ncensor.plot + theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+    }
+  }
 
   nplot <- length(x)
   if(is.null(x$table) & is.null(x$ncensor.plot) & is.null(x$cumevents)) return(x$plot)
