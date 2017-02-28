@@ -178,3 +178,13 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
   return(strata)
 }
 
+
+# Set large dash as y tick labels when ytext = FALSE
+# Each dash corresponds to a strata
+# This is used for tables under the main survival plots
+#
+.set_large_dash_as_ytext <- function(ggp){
+  ggp + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
+        axis.ticks.y = element_blank())
+}
+

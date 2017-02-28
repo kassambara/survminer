@@ -72,9 +72,7 @@ ggcumcensor <- function (fit, data = NULL, color = "black", palette = NULL, brea
 
   p <- ggpubr::ggpar(p, legend = legend, palette = palette,...)
 
-  if(!y.text)
-    p <- p + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
-                       axis.ticks.y = element_blank())
+  if(!y.text) p <- .set_large_dash_as_ytext(p)
   # color table tick labels by strata
   if(y.text.col){
     g <- ggplot2::ggplot_build(p)

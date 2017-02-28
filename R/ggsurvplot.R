@@ -588,10 +588,12 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
      # For backward compatibility
      risktable <-  .set_general_gpar(risktable, legend = "none", ...) # general graphical parameters
      risktable <- .set_risktable_gpar(risktable, legend = "none", ...) # specific graphical params
+     risktable <- risktable  + tables.theme
+     if(!risk.table.y.text) risktable <- .set_large_dash_as_ytext(risktable)
      # color risk.table ticks by strata
      if(risk.table.y.text.col)
        risktable <- risktable + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
-    res$table <-  risktable + tables.theme
+     res$table <- risktable
    }
 
   if(cumevents){
@@ -603,6 +605,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                                   fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
                                   ...)
     res$cumevents <- res$cumevents + tables.theme
+    if(!cumevents.y.text) res$cumevents <- .set_large_dash_as_ytext(res$cumevents)
     if(cumevents.y.text.col)
       res$cumevents <- res$cumevents + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
   }
@@ -635,11 +638,13 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     # for backward compatibility
     ncensor_plot <-  .set_general_gpar(ncensor_plot, legend = "none", ...) # general graphical parameters
     ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot, legend = "none", ...) # specific graphical params
+    ncensor_plot <- ncensor_plot + tables.theme
+    if(!cumcensor.y.text) ncensor_plot <- .set_large_dash_as_ytext(ncensor_plot)
 
     if(cumcensor.y.text.col & ncensor.plot.type == "table")
       ncensor_plot <- ncensor_plot + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
 
-    res$ncensor.plot <- ncensor_plot + tables.theme
+    res$ncensor.plot <- ncensor_plot
   }
 
 

@@ -91,9 +91,7 @@ ggrisktable <- function (fit, data = NULL, type = c("absolute", "percentage", "a
 
   p <- ggpubr::ggpar(p, legend = legend, palette = palette,...)
 
-  if(!y.text)
-    p <- p + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
-                       axis.ticks.y = element_blank())
+  if(!y.text) p <- .set_large_dash_as_ytext(p)
 
   # color table tick labels by strata
   if(y.text.col){
