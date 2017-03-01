@@ -51,7 +51,7 @@ ggrisktable <- function (fit, data = NULL, type = c("absolute", "percentage", "a
 
   if(is.null(title)){
     title <- switch(type,
-                    absolute = "N at risk",
+                    absolute = "Number at risk",
                     percentage = "Percentage at risk",
                     abs_pct = "Number at risk: n (%)",
                     nrisk_cumcensor = "Number at risk (number censored)",

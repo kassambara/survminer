@@ -56,6 +56,9 @@
 #'  of censoring and events, respectively. }
 #'
 #'@param risk.table.title The title to be used for the risk table.
+#'@param risk.table.pos character vector specifying the risk table position.
+#'  Allowed options are one of c("out", "in") indicating 'outside' or 'inside'
+#'  the main plot, respectively. Default value is "out".
 #'@param risk.table.col color to be used for risk table. Default value is
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
 #'  "strata".
@@ -381,7 +384,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
                        tables.height = 0.25, tables.y.text = TRUE,
-                       risk.table = FALSE, risk.table.title = NULL,
+                       risk.table = FALSE, risk.table.pos = c("out", "in"), risk.table.title = NULL,
                        risk.table.col = "black", risk.table.fontsize = 4.5, fontsize = 4.5,
                        risk.table.y.text = tables.y.text,
                        risk.table.y.text.col = TRUE,
@@ -434,6 +437,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   # Check legend
   .check_legend_labs(fit, legend.labs)
   # risk.table argument
+  risk.table.pos <- match.arg(risk.table.pos)
   risktable <- .parse_risk_table_arg(risk.table)
   risk.table <- risktable$display
   risk.table.type <- risktable$type
@@ -577,6 +581,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 
   # Add risk table
    if(risk.table){
+     if(risk.table.pos == "in") risk.table.col = surv.color
      risktable <- ggrisktable(fit, data = data, type = risk.table.type, color = risk.table.col,
                              palette = palette, break.time.by = break.time.by,
                              xlim = xlim, title = risk.table.title,
@@ -677,6 +682,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   attr(res, "legend.position") <- legend
   attr(res, "legend.labs") <- legend.labs
   attr(res, "cumcensor") <- cumcensor
+  attr(res, "risk.table.pos") <- risk.table.pos
   res
 }
 
@@ -707,6 +713,10 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   y.text <- attr(x, "y.text")
   y.text.col <- attr(x, "y.text.col")
   cumcensor <- attr(x, "cumcensor")
+
+  risk.table.pos <- attr(x, "risk.table.pos")
+  if(risk.table.pos == "in") x <- .put_risktable_in_survplot(x)
+
   nplot <- .count_ggplots(x)
   # Removing data components from the list and keep only plot objects
   x$data.survplot <- x$data.survtable <-  NULL
@@ -1050,4 +1060,44 @@ p <- p + theme(legend.position = "none")
              font.y = extra.params$font.ncensor.plot.y,
              legend = legend)
 
+}
+
+# Put risk table inside main plot
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+.put_risktable_in_survplot <- function(ggsurv){
+
+  if(is.null(ggsurv$table)) return(ggsurv)
+
+  if(is.null(ggsurv$table))
+    stop("You can't put risk table inside the main plot because risk.table = FALSE. Use risk.table = TRUE")
+
+  # Create a transparent theme object
+  theme_transparent<- function() {
+    theme(
+    title = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank(),
+    axis.line = element_blank(),
+    panel.background = element_rect(fill = "transparent",colour = NA),
+    plot.background = element_rect(fill = "transparent",colour = NA),
+    plot.margin=unit(c(0,0,0,0),"mm"),
+    panel.border = element_blank(),
+    legend.position = "none")
+  }
+
+  survplot <- ggsurv$plot
+  risktable <- ggsurv$table + theme_transparent()
+  nstrata <- length(levels(survplot$data$strata))
+  .time <- survplot$data$time
+  ymax <- nstrata*0.05
+  risktable_grob = ggplotGrob(risktable)
+  survplot <- survplot + annotation_custom(grob = risktable_grob, xmin = -max(.time)/20,
+                                           ymin = -0.05, ymax = ymax)
+  ggsurv$plot <- survplot
+  ggsurv$table <- NULL
+  ggsurv
 }

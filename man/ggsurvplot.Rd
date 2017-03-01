@@ -16,8 +16,9 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
   ylab = "Survival probability", xlim = NULL, ylim = NULL,
   legend = c("top", "bottom", "left", "right", "none"),
   legend.title = "Strata", legend.labs = NULL, tables.height = 0.25,
-  tables.y.text = TRUE, risk.table = FALSE, risk.table.title = NULL,
-  risk.table.col = "black", risk.table.fontsize = 4.5, fontsize = 4.5,
+  tables.y.text = TRUE, risk.table = FALSE, risk.table.pos = c("out",
+  "in"), risk.table.title = NULL, risk.table.col = "black",
+  risk.table.fontsize = 4.5, fontsize = 4.5,
   risk.table.y.text = tables.y.text, risk.table.y.text.col = TRUE,
   risk.table.height = tables.height, surv.plot.height = 0.75,
   ncensor.plot.height = tables.height, cumevents.height = tables.height,
@@ -127,6 +128,10 @@ specifying whether to show or not the risk table. Default is FALSE. \item
 "abs_pct" to show both absolute number and percentage. ii) "nrisk_cumcensor"
 and "nrisk_cumevents" to show the number at risk and, the cumulative number
 of censoring and events, respectively. }}
+
+\item{risk.table.pos}{character vector specifying the risk table position.
+Allowed options are one of c("out", "in") indicating 'outside' or 'inside'
+the main plot, respectively. Default value is "out".}
 
 \item{risk.table.title}{The title to be used for the risk table.}
 
