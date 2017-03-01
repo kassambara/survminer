@@ -50,8 +50,10 @@
 #'@param risk.table Allowed values include: \itemize{ \item TRUE or FALSE
 #'  specifying whether to show or not the risk table. Default is FALSE. \item
 #'  "absolute" or "percentage": to show the \bold{absolute number} and the
-#'  \bold{percentage} of subjects at risk by time, respectively. Use "abs_pct"
-#'  to show both absolute number and percentage.}
+#'  \bold{percentage} of subjects at risk by time, respectively. Use i)
+#'  "abs_pct" to show both absolute number and percentage. ii) "nrisk_cumcensor"
+#'  and "nrisk_cumevents" to show the number at risk and, the cumulative number
+#'  of censoring and events, respectively. }
 #'
 #'@param risk.table.title The title to be used for the risk table.
 #'@param risk.table.col color to be used for risk table. Default value is
@@ -154,14 +156,13 @@
 #'  face.
 #'
 #'@return return an object of class ggsurvplot which is list containing the
-#'  following components: \itemize{
-#'  \item plot: the survival plot (ggplot object)
-#'  \item table: the number of subjects at risk table per time (ggplot object).
-#'  \item cumevents: the cumulative number of events table (ggplot object).
-#'  \item ncensor.plot: the number of censoring (ggplot object).
-#'  \item data.survplot: the data used to plot the survival curves (data.frame).
-#'  \item data.survtable: the data used to plot the tables under the main survival curves (data.frame).
-#'  }
+#'  following components: \itemize{ \item plot: the survival plot (ggplot
+#'  object) \item table: the number of subjects at risk table per time (ggplot
+#'  object). \item cumevents: the cumulative number of events table (ggplot
+#'  object). \item ncensor.plot: the number of censoring (ggplot object). \item
+#'  data.survplot: the data used to plot the survival curves (data.frame). \item
+#'  data.survtable: the data used to plot the tables under the main survival
+#'  curves (data.frame). }
 #'
 #'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @examples
@@ -436,11 +437,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   risktable <- .parse_risk_table_arg(risk.table)
   risk.table <- risktable$display
   risk.table.type <- risktable$type
-  if(is.null(risk.table.title)){
-    if(risk.table.type == "percentage") risk.table.title = "Percentage at risk by time"
-    else if(risk.table.type == "abs_pct") risk.table.title = "Number at risk by time: n (%)"
-    else risk.table.title = "Number at risk by time"
-  }
   extra.params <- list(...)
 
   # Data
@@ -956,9 +952,9 @@ p <- p + theme(legend.position = "none")
 .parse_risk_table_arg <- function(risk.table){
   res <- list(display = risk.table, type = "absolute")
   if(inherits(risk.table, "character") ){
-    if(risk.table %in% c("absolute", "percentage", "abs_pct") )
+    if(risk.table %in% c("absolute", "percentage", "abs_pct", "nrisk_cumcensor", "nrisk_cumevents") )
       res <- list(display = TRUE, type = risk.table)
-    else stop("Allowed values for risk.table are: TRUE, FALSE, 'absolute', 'percentage'")
+    else stop("Allowed values for risk.table are: TRUE, FALSE, 'absolute', 'percentage', 'nrisk_cumcensor', 'nrisk_cumevents' ")
   }
   res
 }

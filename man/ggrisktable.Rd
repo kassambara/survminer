@@ -4,11 +4,12 @@
 \alias{ggrisktable}
 \title{Number at Risk Table}
 \usage{
-ggrisktable(fit, data = NULL, type = c("absolute", "percentage", "abs_pct"),
-  color = "black", palette = NULL, break.time.by = NULL, xlim = NULL,
-  title = NULL, xlab = "Time", ylab = "Strata", legend = "top",
-  legend.title = "Strata", legend.labs = NULL, y.text = TRUE,
-  y.text.col = TRUE, fontsize = 4.5, ggtheme = theme_light(), ...)
+ggrisktable(fit, data = NULL, type = c("absolute", "percentage", "abs_pct",
+  "nrisk_cumcensor", "nrisk_cumevents"), color = "black", palette = NULL,
+  break.time.by = NULL, xlim = NULL, title = NULL, xlab = "Time",
+  ylab = "Strata", legend = "top", legend.title = "Strata",
+  legend.labs = NULL, y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
+  ggtheme = theme_light(), ...)
 }
 \arguments{
 \item{fit}{an object of class survfit.}

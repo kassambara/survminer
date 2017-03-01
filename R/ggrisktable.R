@@ -34,7 +34,7 @@ NULL
 #'
 #'
 #'@export
-ggrisktable <- function (fit, data = NULL, type = c("absolute", "percentage", "abs_pct"),
+ggrisktable <- function (fit, data = NULL, type = c("absolute", "percentage", "abs_pct", "nrisk_cumcensor", "nrisk_cumevents"),
                          color = "black", palette = NULL, break.time.by = NULL,  xlim = NULL,
                          title = NULL, xlab = "Time", ylab = "Strata",
                          legend = "top",
@@ -48,10 +48,16 @@ ggrisktable <- function (fit, data = NULL, type = c("absolute", "percentage", "a
   .check_legend_labs(fit, legend.labs)
 
   type <- match.arg(type)
-  title <- switch(type,
-                  absolute = "Number at risk",
-                  percentage = "Percentage at risk",
-                  abs_pct = "Number at risk: n (%)")
+
+  if(is.null(title)){
+    title <- switch(type,
+                    absolute = "N at risk",
+                    percentage = "Percentage at risk",
+                    abs_pct = "Number at risk: n (%)",
+                    nrisk_cumcensor = "Number at risk (number censored)",
+                    nrisk_cumevents = "Number at risk (number of events)",
+                    "Number at risk")
+  }
 
   data <- .get_data(fit, data = data)
 
@@ -60,8 +66,6 @@ ggrisktable <- function (fit, data = NULL, type = c("absolute", "percentage", "a
   else times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
 
   survsummary <- .get_timepoints_survsummary(fit, data, times)
-  survsummary$pct.risk <- round(survsummary$n.risk*100/survsummary$strata_size)
-  survsummary$abs_pct.risk <- paste0(survsummary$n.risk, " (", survsummary$pct.risk, ")")
 
   if (!is.null(legend.labs))
     survsummary$strata <- factor(survsummary$strata, labels = legend.labs)
@@ -74,12 +78,17 @@ ggrisktable <- function (fit, data = NULL, type = c("absolute", "percentage", "a
 
   # risk table labels depending on the type argument
   time <- strata <- label <- pct.risk <- abs_pct.risk <- n.risk <- NULL
-  if(type == "percentage") p <- ggplot(data = survsummary,
-                                       aes(x = time, y = rev(strata), label = pct.risk, shape = rev(strata)))
-  else if(type == "abs_pct") p <- ggplot(data = survsummary,
-                                         aes(x = time, y = rev(strata), label = abs_pct.risk, shape = rev(strata)))
-  else p <- ggplot(data = survsummary,
-                   aes(x = time, y = rev(strata), label = n.risk, shape = rev(strata)))
+  llabels <- switch(type,
+                    percentage = round(survsummary$n.risk*100/survsummary$strata_size),
+                    abs_pct = paste0(survsummary$n.risk, " (", survsummary$pct.risk, ")"),
+                    nrisk_cumcensor = paste0(survsummary$n.risk, " (", survsummary$cum.n.censor, ")"),
+                    nrisk_cumevents = paste0(survsummary$n.risk, " (", survsummary$cum.n.event, ")"),
+                    survsummary$n.risk
+                  )
+  survsummary$llabels <- llabels
+
+  p <- ggplot(data = survsummary,
+              aes(x = time, y = rev(strata), label = llabels, shape = rev(strata)))
 
   p <- p + ggpubr::geom_exec(geom_text, data = survsummary, size = fontsize, color = color) +
     scale_shape_manual(values = 1:length(levels(survsummary$strata)))+

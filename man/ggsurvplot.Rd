@@ -123,8 +123,10 @@ labels of tables will be hidden.}
 \item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
 specifying whether to show or not the risk table. Default is FALSE. \item
 "absolute" or "percentage": to show the \bold{absolute number} and the
-\bold{percentage} of subjects at risk by time, respectively. Use "abs_pct"
-to show both absolute number and percentage.}}
+\bold{percentage} of subjects at risk by time, respectively. Use i)
+"abs_pct" to show both absolute number and percentage. ii) "nrisk_cumcensor"
+and "nrisk_cumevents" to show the number at risk and, the cumulative number
+of censoring and events, respectively. }}
 
 \item{risk.table.title}{The title to be used for the risk table.}
 
@@ -217,14 +219,13 @@ the plots. See details section.}
 }
 \value{
 return an object of class ggsurvplot which is list containing the
- following components: \itemize{
- \item plot: the survival plot (ggplot object)
- \item table: the number of subjects at risk table per time (ggplot object).
- \item cumevents: the cumulative number of events table (ggplot object).
- \item ncensor.plot: the number of censoring (ggplot object).
- \item data.survplot: the data used to plot the survival curves (data.frame).
- \item data.survtable: the data used to plot the tables under the main survival curves (data.frame).
- }
+ following components: \itemize{ \item plot: the survival plot (ggplot
+ object) \item table: the number of subjects at risk table per time (ggplot
+ object). \item cumevents: the cumulative number of events table (ggplot
+ object). \item ncensor.plot: the number of censoring (ggplot object). \item
+ data.survplot: the data used to plot the survival curves (data.frame). \item
+ data.survtable: the data used to plot the tables under the main survival
+ curves (data.frame). }
 }
 \description{
 Drawing survival curves using ggplot2
