@@ -79,10 +79,6 @@
 #'  TRUE}
 #'@param ncensor.plot logical value. If TRUE, the number of censored subjects at
 #'  time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.
-#'@param ncensor.plot.type character vector specifying the type for ncensor
-#'  plot. Allowed options include one of c("bar", "table"). "bar" = barplot of
-#'  the number of censoring. "table" = table of cumulative number of censoring.
-#'  ncensor.plot.type = "table" is the same as cumcensor = TRUE.
 #'@param ncensor.plot.title The title to be used for the censor plot. Used when
 #'  \code{ncensor.plot = TRUE}.
 #'@param ncensor.plot.height The height of the censor plot. Used when
@@ -391,7 +387,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        risk.table.height = tables.height, surv.plot.height = 0.75,
                        ncensor.plot.height = tables.height, cumevents.height = tables.height,
                        cumcensor.height = tables.height,
-                       ncensor.plot = FALSE, ncensor.plot.type = c("bar", "table"),
+                       ncensor.plot = FALSE,
                        ncensor.plot.title = NULL,
                        cumevents = FALSE, cumevents.col = "black", cumevents.title = NULL,
                        cumevents.y.text = tables.y.text, cumevents.y.text.col = TRUE,
@@ -415,14 +411,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 
   # Make sure that user can do either ncensor.plot or cumcensor
   # But not both
-  ncensor.plot.type <- match.arg(ncensor.plot.type)
   if(ncensor.plot & cumcensor){
     warning("Both ncensor.plot and cumsensor are TRUE.",
             "In this case, we consider only cumcensor.", call. = FALSE)
-    ncensor.plot <- FALSE
-  }
-  else if(ncensor.plot & ncensor.plot.type == "bar"){
-    cumsensor <- TRUE
     ncensor.plot <- FALSE
   }
   if(cumcensor) ncensor.plot.height <- cumcensor.height

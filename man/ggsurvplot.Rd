@@ -22,13 +22,12 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
   risk.table.height = tables.height, surv.plot.height = 0.75,
   ncensor.plot.height = tables.height, cumevents.height = tables.height,
   cumcensor.height = tables.height, ncensor.plot = FALSE,
-  ncensor.plot.type = c("bar", "table"), ncensor.plot.title = NULL,
-  cumevents = FALSE, cumevents.col = "black", cumevents.title = NULL,
-  cumevents.y.text = tables.y.text, cumevents.y.text.col = TRUE,
-  cumcensor = FALSE, cumcensor.col = "black", cumcensor.title = NULL,
-  cumcensor.y.text = tables.y.text, cumcensor.y.text.col = TRUE,
-  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_survminer(),
-  tables.theme = ggtheme, ...)
+  ncensor.plot.title = NULL, cumevents = FALSE, cumevents.col = "black",
+  cumevents.title = NULL, cumevents.y.text = tables.y.text,
+  cumevents.y.text.col = TRUE, cumcensor = FALSE, cumcensor.col = "black",
+  cumcensor.title = NULL, cumcensor.y.text = tables.y.text,
+  cumcensor.y.text.col = TRUE, surv.median.line = c("none", "hv", "h", "v"),
+  ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
   risk.table.height = NULL, ncensor.plot.height = NULL, newpage = TRUE,
@@ -162,11 +161,6 @@ is 0.25. Ignored when cumcensor = FALSE.}
 
 \item{ncensor.plot}{logical value. If TRUE, the number of censored subjects at
 time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.}
-
-\item{ncensor.plot.type}{character vector specifying the type for ncensor
-plot. Allowed options include one of c("bar", "table"). "bar" = barplot of
-the number of censoring. "table" = table of cumulative number of censoring.
-ncensor.plot.type = "table" is the same as cumcensor = TRUE.}
 
 \item{ncensor.plot.title}{The title to be used for the censor plot. Used when
 \code{ncensor.plot = TRUE}.}
