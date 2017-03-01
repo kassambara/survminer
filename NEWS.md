@@ -2,6 +2,8 @@
    
 ## New features
     
+- New argument `risk.table.pos` in `ggsurvplot()` for placing risk table inside survival curves ([#69](https://github.com/kassambara/survminer/issues/69)). Allowed options are one of c("out", "in") indicating 'outside' or 'inside' the main plot, respectively. Default value is "out".  
+   
 - Now, `ggsurvplot()` can display both the number at risk and the cumulative number of censored in the same table using the option `risk.table = 'nrisk_cumcenor'` ([#96](https://github.com/kassambara/survminer/issues/96)). It's also possible to display the number at risk and the cumulative number of events using the option `risk.table = 'nrisk_cumevents'`.
    
 - Now, `ggsurvplot()` returns an object of class ggsurvplot which is list containing the following components ([#158](https://github.com/kassambara/survminer/issues/158)):
