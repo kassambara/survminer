@@ -13,7 +13,8 @@
 #' @param ox.scale one value from \code{c("linear.predictions", "observation.id", "time")}.
 #' It defines what will be presented on OX scale. Possible values: y hat for \code{"linear.predictions"},
 #' Id of an observation for \code{"observation.id"} or Time for \code{"time"}.
-#'@param ... furthere arguments passed to \link{residuals.coxph}.
+#'@param ... further arguments passed to \code{\link[survival]{residuals.coxph}} or
+#' to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
 #'@param hline.col,hline.size,hline.lty,hline.alpha,hline.yintercept color, size, linetype, visibility and Y-axis coordinate to be used for \link{geom_hline}.
 #'Used only when \code{hline = TRUE}.
@@ -23,13 +24,7 @@
 #'@param sline,sline.se a logical - should the smooth line be added to highlight the local average for residuals.
 #'@param ggtheme function, ggplot2 theme name. Default value is ggplot2::theme_bw().
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
-#'@param font.title,font.subtitle,font.caption,font.x,font.y,font.tickslab a vector of length 3
-#'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
-#'  xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
-#'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-#'  font.x = "bold", to change only font face.
-#'@param title,subtitle,caption main title, subtitle and caption
+#'@param title,subtitle,caption main title, subtitle and caption.
 #'
 #'@return Returns an object of class \code{ggplot}.
 #'
@@ -87,11 +82,7 @@ ggcoxdiagnostics <- function (fit,
                       hline.col = "red", hline.size = 1, hline.alpha = 1, hline.yintercept = 0, hline.lty = 'dashed',
                       sline.col = "blue", sline.size = 1, sline.alpha = 0.3, sline.lty = 'dashed',
                       point.col = "black", point.size = 1, point.shape = 19, point.alpha = 1,
-                      font.title = c(16, "plain", "black"), font.subtitle = c(15, "plain", "black"),
-                      font.caption = c(15, "plain", "black"),
-                      font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
                       title = NULL, subtitle = NULL, caption = NULL,
-                      font.tickslab = c(12, "plain", "black"),
                       ggtheme = ggplot2::theme_bw()){
 
   model <- fit
@@ -145,9 +136,7 @@ ggcoxdiagnostics <- function (fit,
 
   gplot <- gplot + labs(x = xlabel, y = ylabel, title = title, subtitle = subtitle, caption = caption) + ggtheme
   # customization
-  gplot <-.labs(p = gplot, font.main = font.title, font.submain = font.subtitle,
-                font.caption = font.caption, font.x = font.x, font.y = font.y)
-  gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)
+  gplot <- ggpubr::ggpar(gplot, ...)
 
   gplot <- gplot + facet_wrap(~covariate, scales = "free")
   gplot

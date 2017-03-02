@@ -13,13 +13,19 @@
 #'  are produced in turn for each variable of a model.
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
 #'@param caption the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})
-#'@param font.main,font.x,font.y,font.tickslab a vector of length 3
-#'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of titles in subplots, xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
-#'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-#'  font.x = "bold", to change only font face.
 #'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
+#'@param ... further arguments passed to either the print() function or to the \code{\link[ggpubr]{ggpar}} function for customizing the plot (see Details section).
+#'@details \strong{Customizing the plots}: The plot can be easily
+#'  customized using additional arguments to be passed to the function ggpar().
+#'  Read ?ggpubr::ggpar. These arguments include
+#'  \emph{font.main,font.submain,font.caption,font.x,font.y,font.tickslab,font.legend}:
+#'  a vector of length 3 indicating respectively the size (e.g.: 14), the style
+#'  (e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
+#'  of main title, subtitle, caption, xlab and ylab and axis tick labels,
+#'  respectively. For example \emph{font.x = c(14, "bold", "red")}.  Use font.x
+#'  = 14, to change only font size; or use font.x = "bold", to change only font
+#'  face.
 #'@return Returns an object of class \code{ggcoxzph} which is a list of ggplots.
 #'
 #'@author Marcin Kosinski , \email{m.p.kosinski@@gmail.com}
@@ -40,11 +46,8 @@
 #'@export
 ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
                       point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
-                      font.main = c(16, "plain", "black"),
                       caption = NULL,
-                      font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-                      font.tickslab = c(12, "plain", "black"),
-                      ggtheme = theme_classic2()){
+                      ggtheme = theme_survminer(), ...){
 
   x <- fit
   if(!methods::is(x, "cox.zph"))
@@ -98,12 +101,12 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
     invisible(round(x$table[i, 3],4) -> pval)
     ggplot() + labs(title = paste0('Schoenfeld Individual Test p: ', pval)) + ggtheme -> gplot
     y <- yy[, i]
-    yhat <- pmat %*% qr.coef(qmat, y)
+    yhat <- as.vector(pmat %*% qr.coef(qmat, y))
     if (resid)
       yr <- range(yhat, y)
     else yr <- range(yhat)
     if (se) {
-      temp <- 2 * sqrt(x$var[i, i] * seval)
+      temp <- as.vector(2 * sqrt(x$var[i, i] * seval))
       yup <- yhat + temp
       ylow <- yhat - temp
       yr <- range(yr, yup, ylow)
@@ -136,13 +139,12 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
         geom_line(aes( x = pred.x, y = ylow), lty = "dashed")
     }
 
-    gplot <-.labs(p = gplot, font.x = font.x, font.y = font.y, font.main = font.main)
-    gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)
+    ggpubr::ggpar(gplot, ...)
 
 
   }) -> plots
   names(plots) <- var
-  class(plots) <- c("ggcoxzph", "list")
+  class(plots) <- c("ggcoxzph", "ggsurv", "list")
 
   if("GLOBAL" %in% rownames(x$table)) # case of multivariate Cox
     global_p <- x$table["GLOBAL", 3]
@@ -154,7 +156,6 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
 }
 
 #' @param x an object of class ggcoxzph
-#' @param ... further arguments passed to print, but really it's unused
 #' @param newpage open a new page. See \code{\link{grid.arrange}}.
 #' @method print ggcoxzph
 #' @rdname ggcoxzph

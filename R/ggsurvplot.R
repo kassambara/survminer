@@ -37,24 +37,7 @@
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
-#'@param main,submain,caption,xlab,ylab main title, subtitle, caption and axis
-#'  labels
-#'@param
-#'font.risk.table.title,font.risk.table.subtitle,font.risk.table.caption,font.risk.table.x,font.risk.table.y,font.risk.table.tickslab
-#'a vector of length 3 indicating respectively the size (e.g.: 14), the style
-#'(e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
-#'of main title, subtitle, caption, xlab and ylab and axis tick labels for the
-#'\code{risk.table = TRUE}, respectively. For example \emph{font.x = c(14,
-#'"bold", "red")}.  Use font.x = 14, to change only font size; or use font.x =
-#'"bold", to change only font face.
-#'@param
-#'font.ncensor.plot.title,font.ncensor.plot.subtitle,font.ncensor.plot.caption,font.ncensor.plot.x,font.ncensor.plot.y,font.ncensor.plot.tickslab
-#'a vector of length 3 indicating respectively the size (e.g.: 14), the style
-#'(e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
-#'of main title, subtitle, caption, xlab and ylab and axis tick labels for the
-#'\code{ncensor.plot = TRUE}, respectively. For example \emph{font.x = c(14,
-#'"bold", "red")}.  Use font.x = 14, to change only font size; or use font.x =
-#'"bold", to change only font face.
+#'@param title,xlab,ylab main title and axis labels
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
 #'@param legend character specifying legend position. Allowed values are one of
 #'  c("top", "bottom", "left", "right", "none"). Default is "top" side position.
@@ -67,20 +50,31 @@
 #'@param risk.table Allowed values include: \itemize{ \item TRUE or FALSE
 #'  specifying whether to show or not the risk table. Default is FALSE. \item
 #'  "absolute" or "percentage": to show the \bold{absolute number} and the
-#'  \bold{percentage} of subjects at risk by time, respectively. Use "abs_pct"
-#'  to show both absolute number and percentage.}
+#'  \bold{percentage} of subjects at risk by time, respectively. Use i)
+#'  "abs_pct" to show both absolute number and percentage. ii) "nrisk_cumcensor"
+#'  and "nrisk_cumevents" to show the number at risk and, the cumulative number
+#'  of censoring and events, respectively. }
 #'
 #'@param risk.table.title The title to be used for the risk table.
-#'@param risk.table.subtitle The subtitle to be used for the risk table.
-#'@param risk.table.caption The caption to be used for the risk table.
+#'@param risk.table.pos character vector specifying the risk table position.
+#'  Allowed options are one of c("out", "in") indicating 'outside' or 'inside'
+#'  the main plot, respectively. Default value is "out".
 #'@param risk.table.col color to be used for risk table. Default value is
 #'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
 #'  "strata".
-#'@param risk.table.fontsize font size to be used for the risk table.
+#'@param risk.table.fontsize,fontsize font size to be used for the risk table
+#'  and the cumulative events table.
 #'@param risk.table.y.text logical. Default is TRUE. If FALSE, risk table y axis
 #'  tick labels will be hidden.
 #'@param risk.table.y.text.col logical. Default value is FALSE. If TRUE, risk
 #'  table tick labels will be colored by strata.
+#'@param tables.height numeric value (in [0 - 1]) specifying the general height
+#'  of all tables under the main survival plot.
+#'@param tables.y.text logical. Default is TRUE. If FALSE, the y axis tick
+#'  labels of tables will be hidden.
+#'@param tables.theme function, ggplot2 theme name. Default value is
+#'  \link{theme_survminer}. Allowed values include ggplot2 official themes: see
+#'  \code{\link[ggplot2]{theme}}.
 #'@param risk.table.height the height of the risk table on the grid. Increase
 #'  the value when you have many strata. Default is 0.25. Ignored when
 #'  risk.table = FALSE.
@@ -89,20 +83,40 @@
 #'  ncensor.plot.height} when \code{risk.table = TRUE} and \code{ncensor.plot =
 #'  TRUE}
 #'@param ncensor.plot logical value. If TRUE, the number of censored subjects at
-#'  time t is plotted. Default is FALSE.
+#'  time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.
 #'@param ncensor.plot.title The title to be used for the censor plot. Used when
 #'  \code{ncensor.plot = TRUE}.
-#'@param ncensor.plot.subtitle The subtitle to be used for the censor plot. Used
-#'  when \code{ncensor.plot = TRUE}.
-#'@param ncensor.plot.caption The caption to be used for the censor plot. Used
-#'  when \code{ncensor.plot = TRUE}.
 #'@param ncensor.plot.height The height of the censor plot. Used when
 #'  \code{ncensor.plot = TRUE}.
+#'@param cumevents logical value specifying whether to show or not the table of
+#'  the cumulative number of events. Default is FALSE.
+#'@param cumevents.title The title to be used for the cumulative events table.
+#'@param cumevents.col color to be used for cumulative events table. Default
+#'  value is "black". If you want to color by strata (i.e. groups), use
+#'  cumevents.col = "strata".
+#'@param cumevents.y.text logical. Default is TRUE. If FALSE, the y axis tick
+#'  labels of the cumulative events table  will be hidden.
+#'@param cumevents.y.text.col logical. Default value is FALSE. If TRUE, the y
+#'  tick labels of the cumulative events will be colored by strata.
+#'@param cumevents.height the height of the cumulative events table on the grid.
+#'  Default is 0.25. Ignored when cumevents = FALSE.
+#'@param cumcensor logical value specifying whether to show or not the table of
+#'  the cumulative number of censoring. Default is FALSE.
+#'@param cumcensor.title The title to be used for the cumcensor table.
+#'@param cumcensor.col color to be used for cumcensor table. Default value is
+#'  "black". If you want to color by strata (i.e. groups), use cumcensor.col =
+#'  "strata".
+#'@param cumcensor.y.text logical. Default is TRUE. If FALSE, the y axis tick
+#'  labels of the cumcensor table will be hidden.
+#'@param cumcensor.y.text.col logical. Default value is FALSE. If TRUE, the y
+#'  tick labels of the cumcensor will be colored by strata.
+#'@param cumcensor.height the height of the cumcensor table on the grid. Default
+#'  is 0.25. Ignored when cumcensor = FALSE.
 #'@param surv.median.line character vector for drawing a horizontal/vertical
 #'  line at median survival. Allowed values include one of c("none", "hv", "h",
 #'  "v"). v: vertical, h:horizontal.
 #'@param ggtheme function, ggplot2 theme name. Default value is
-#'  \link{theme_classic2}. Allowed values include ggplot2 official themes: see
+#'  \link{theme_survminer}. Allowed values include ggplot2 official themes: see
 #'  \code{\link[ggplot2]{theme}}.
 #'@param ... other arguments to be passed i) to ggplot2 geom_*() functions such
 #'  as linetype, size, ii) or to the function ggpubr::ggpar() for customizing
@@ -136,17 +150,22 @@
 #'  legend.\cr\cr \strong{Customizing the plots}: The plot can be easily
 #'  customized using additional arguments to be passed to the function ggpar().
 #'  Read ?ggpubr::ggpar. These arguments include
-#'  \emph{font.main,font.submain,font.caption,font.x,font.y,font.tickslab,font.legend}:
-#'  a vector of length 3 indicating respectively the size (e.g.: 14), the style
+#'  \emph{font.title,font.subtitle,font.caption,font.x,font.y,font.tickslab,font.legend}:
+#'   a vector of length 3 indicating respectively the size (e.g.: 14), the style
 #'  (e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
 #'  of main title, subtitle, caption, xlab and ylab and axis tick labels,
 #'  respectively. For example \emph{font.x = c(14, "bold", "red")}.  Use font.x
 #'  = 14, to change only font size; or use font.x = "bold", to change only font
 #'  face.
 #'
-#'@return return an object of class ggsurvplot which is list containing two
-#'  ggplot objects, including: \itemize{ \item plot: the survival plot \item
-#'  table: the number at risk table per time }
+#'@return return an object of class ggsurvplot which is list containing the
+#'  following components: \itemize{ \item plot: the survival plot (ggplot
+#'  object) \item table: the number of subjects at risk table per time (ggplot
+#'  object). \item cumevents: the cumulative number of events table (ggplot
+#'  object). \item ncensor.plot: the number of censoring (ggplot object). \item
+#'  data.survplot: the data used to plot the survival curves (data.frame). \item
+#'  data.survtable: the data used to plot the tables under the main survival
+#'  curves (data.frame). }
 #'
 #'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @examples
@@ -353,38 +372,34 @@
 #'@describeIn ggsurvplot Draws survival curves using ggplot2.
 #'@export
 ggsurvplot <- function(fit, data = NULL, fun = NULL,
-                       color = NULL, palette = "hue", linetype = 1, break.time.by = NULL,
+                       color = NULL, palette = NULL, linetype = 1, break.time.by = NULL,
                        surv.scale = c("default", "percent"),
                        conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                        censor = TRUE,
                        pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
                        pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                        log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
-                       main = NULL, submain = NULL, caption = NULL, xlab = "Time", ylab = "Survival probability",
-                       #font.main = c(16, "plain", "black"), font.submain = c(15, "plain", "black"),
-                       #font.caption = c(15, "plain", "black"),
-                       #font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-                       #font.tickslab = c(12, "plain", "black"),
+                       title = NULL,  xlab = "Time", ylab = "Survival probability",
                         xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
-                       #font.legend = c(10, "plain", "black"),
-                       risk.table = FALSE, risk.table.title = NULL, risk.table.subtitle = NULL, risk.table.caption = NULL,
-                       risk.table.col = "black", risk.table.fontsize = 4.5,
-                       font.risk.table.title = c(16, "plain", "black"), font.risk.table.subtitle = c(15, "plain", "black"),
-                       font.risk.table.caption = c(15, "plain", "black"),
-                       font.risk.table.x = c(14, "plain", "black"), font.risk.table.y =  c(14, "plain", "black"),
-                       font.risk.table.tickslab = c(12, "plain", "black"),
-                       risk.table.y.text = TRUE,
+                       tables.height = 0.25, tables.y.text = TRUE,
+                       risk.table = FALSE, risk.table.pos = c("out", "in"), risk.table.title = NULL,
+                       risk.table.col = "black", risk.table.fontsize = 4.5, fontsize = 4.5,
+                       risk.table.y.text = tables.y.text,
                        risk.table.y.text.col = TRUE,
-                       risk.table.height = 0.25, surv.plot.height = 0.75, ncensor.plot.height = 0.25,
-                       ncensor.plot = FALSE, ncensor.plot.title = NULL, ncensor.plot.subtitle = NULL, ncensor.plot.caption = NULL,
-                       font.ncensor.plot.title = c(16, "plain", "black"), font.ncensor.plot.subtitle = c(15, "plain", "black"),
-                       font.ncensor.plot.caption = c(15, "plain", "black"),
-                       font.ncensor.plot.x = c(14, "plain", "black"), font.ncensor.plot.y = c(14, "plain", "black"),
-                       font.ncensor.plot.tickslab = c(12, "plain", "black"),
+                       risk.table.height = tables.height, surv.plot.height = 0.75,
+                       ncensor.plot.height = tables.height, cumevents.height = tables.height,
+                       cumcensor.height = tables.height,
+                       ncensor.plot = FALSE,
+                       ncensor.plot.title = NULL,
+                       cumevents = FALSE, cumevents.col = "black", cumevents.title = NULL,
+                       cumevents.y.text = tables.y.text, cumevents.y.text.col = TRUE,
+                       cumcensor = FALSE, cumcensor.col = "black", cumcensor.title = NULL,
+                       cumcensor.y.text = tables.y.text, cumcensor.y.text.col = TRUE,
                        surv.median.line = c("none", "hv", "h", "v"),
                        ggtheme = theme_survminer(),
+                       tables.theme = ggtheme,
                        ...
                        ){
 
@@ -397,6 +412,22 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   surv.median.line <- match.arg(surv.median.line)
   stopifnot(log.rank.weights %in% c("survdiff", "1", "n", "sqrtN", "S1", "S2","FH_p=1_q=1"))
   log.rank.weights <- match.arg(log.rank.weights)
+
+  # Make sure that user can do either ncensor.plot or cumcensor
+  # But not both
+  if(ncensor.plot & cumcensor){
+    warning("Both ncensor.plot and cumsensor are TRUE.",
+            "In this case, we consider only cumcensor.", call. = FALSE)
+    ncensor.plot <- FALSE
+  }
+  if(cumcensor) ncensor.plot.height <- cumcensor.height
+  if(is.null(ncensor.plot.title))
+    ncensor.plot.title <- "Number of censoring"
+  if(is.null(cumcensor.title))
+    cumcensor.title <- "Cumulative number of censoring"
+  if(is.null(cumevents.title))
+    cumevents.title <- "Cumulative number of events"
+
   # Adapt ylab value according to the value of the argument fun
   ylab <- .check_ylab(ylab, fun)
   # Check and get linetypes
@@ -406,29 +437,11 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   # Check legend
   .check_legend_labs(fit, legend.labs)
   # risk.table argument
+  risk.table.pos <- match.arg(risk.table.pos)
   risktable <- .parse_risk_table_arg(risk.table)
   risk.table <- risktable$display
   risk.table.type <- risktable$type
-  if(is.null(risk.table.title)){
-    if(risk.table.type == "percentage") risk.table.title = "Percentage at risk by time"
-    else if(risk.table.type == "abs_pct") risk.table.title = "Number at risk by time: n (%)"
-    else risk.table.title = "Number at risk by time"
-  }
-
-  # Graphical parameters
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  # Now they should be passed to theme_survminer() or to ggpubr::ggpar()
-  dots.params <- list(...)
-  graphical.params <- list()
-  allowed.arguments <- list("font.main", "font.submain",  "font.x",
-                          "font.y", "font.caption", "font.tickslab", "font.legend")
-  for(argument in names (dots.params)){
-
-    if(argument %in% allowed.arguments ){
-      argument.value <- dots.params[[argument]]
-      graphical.params[[argument]] <- argument.value
-    }
-  }
+  extra.params <- list(...)
 
   # Data
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -486,23 +499,14 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   d <- d[order(d$strata), , drop = FALSE]
   surv.color <- ifelse(n.strata > 1, "strata", color)
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
-      .geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
+       ggpubr::geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
        ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
-       #.ggcolor(palette, breaks = strata_names, labels = legend.labs) +
-       #.ggfill(palette, breaks = strata_names, labels = legend.labs) +
-        ggtheme
+       ggtheme
+  p <- ggpubr::ggpar(p, palette = palette, ...)
 
-  # if palette != hue
-  if(!("hue" %in% palette)){
-    p <- p + .ggcolor(palette)+
-      .ggfill(palette)
-  }
-
-
-  if(is.null(break.time.by)) times <- .get_x_major_breaks(p)
+  if(is.null(break.time.by)) times <- .get_default_breaks(fit$time)
   else times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
-
   p <- p + ggplot2::scale_x_continuous(breaks = times)
 
 
@@ -510,15 +514,15 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   if(conf.int){
     if(missing(conf.int.fill)) conf.int.fill <- surv.color
     if(conf.int.style == "ribbon"){
-      p <- p + .geom_exec(.geom_confint, data = d,
+      p <- p + ggpubr::geom_exec(.geom_confint, data = d,
                           ymin = "lower", ymax = "upper",
                           fill = conf.int.fill,  alpha = 0.3, na.rm = TRUE)
     }
     else if(conf.int.style == "step"){
-      p <- p + .geom_exec(ggplot2::geom_step, data = d,
+      p <- p + ggpubr::geom_exec(ggplot2::geom_step, data = d,
                           y = "lower", linetype = "dashed",
                           color = surv.color, na.rm = TRUE)+
-        .geom_exec(ggplot2::geom_step, data = d,
+        ggpubr::geom_exec(ggplot2::geom_step, data = d,
                    y = "upper", linetype = "dashed",
                    color = surv.color, na.rm = TRUE)
 
@@ -526,7 +530,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   }
   # Add cencored
   if (censor & any(d$n.censor >= 1)) {
-    p <- p + .geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
+    p <- p + ggpubr::geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
                           colour = surv.color, size = size*4.5, shape = "+")
   }
 
@@ -558,104 +562,128 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   p <- p + ggplot2::expand_limits(x = 0, y = 0)
   # Axis label and legend title
   lty.leg.title <- ifelse(linetype == "strata", legend.title, linetype)
-  p <- p + ggplot2::labs(x = xlab, y = ylab, title = main, subtitle = submain, caption = caption,
+  p <- p + ggplot2::labs(x = xlab, y = ylab, title = title,
                          color = legend.title, fill = legend.title,
                          linetype = lty.leg.title
                          )
-  graphical.params[["p"]] <- p
-  graphical.params[["ggtheme"]] <- ggtheme
-  p <- do.call(ggpubr::ggpar, graphical.params)
-  #p <-.labs(p = p,  font.submain = font.submain, font.caption = font.caption)
-  #p <-.labs(p = p, font.main = font.main, font.x = font.x, font.y = font.y, font.submain = font.submain, font.caption = font.caption)
-  #p <- .set_ticks(p, font.tickslab = font.tickslab)
-  p <- p + ggplot2::theme(legend.position = legend)
-  #p <- .set_legend_font(p, font.legend)
+  p <-  .set_general_gpar(p, legend = legend, ...) # general graphical parameters
   if(!is.null(linetype.manual)) p <- p + scale_linetype_manual(values = linetype.manual)
 
+  res <- list(plot = p)
+
+  # Extract strata colors used in survival curves
+  # Will be used to color the y.text of risk table and cumevents table
+  g <- ggplot_build(p)
+  scurve_cols <- unlist(unique(g$data[[1]]["colour"]))
+  if(length(scurve_cols)==1) scurve_cols <- rep(scurve_cols, length(legend.labs))
+  names(scurve_cols) <- legend.labs # Give every color an appropriate name
 
 
   # Add risk table
    if(risk.table){
-     # if(inherits(fit, "survfit.cox")) {
-     #   legend.labs <- "All"
-     #   risk.table.y.text.col <- FALSE
-     # }
-     risktable <- .risk_table_plot(fit, data = data, times = times,
-                                   xlim = xlim, legend.labs = legend.labs,
-                                   risk.table.col = risk.table.col, palette = palette,
-                                   ggtheme = ggtheme, risk.table.fontsize = risk.table.fontsize,
-                                   risk.table.title = risk.table.title,
-                                   risk.table.subtitle = risk.table.subtitle,
-                                   risk.table.caption = risk.table.caption,
-                                   risk.table.y.text = risk.table.y.text,
-                                   font.tickslab = font.risk.table.tickslab, type = risk.table.type
-                                   )
-     risktable <-.labs(risktable, font.main = font.risk.table.title, font.x = font.risk.table.x,
-                       font.y = font.risk.table.y, xlab = xlab, ylab = legend.title,
-                       font.submain = font.risk.table.subtitle, font.caption = font.risk.table.caption)
-
-     # risktable <- .set_ticks(risktable, font.tickslab = font.tickslab)
-     risktable <- risktable + ggplot2::labs(color = legend.title, shape = legend.title)
-     if("left" %in% legend) risktable <- risktable + ggplot2::theme(legend.position = legend)
-     else risktable <- risktable + ggplot2::theme(legend.position = "none")
+     if(risk.table.pos == "in") risk.table.col = surv.color
+     risktable <- ggrisktable(fit, data = data, type = risk.table.type, color = risk.table.col,
+                             palette = palette, break.time.by = break.time.by,
+                             xlim = xlim, title = risk.table.title,
+                             legend = legend, legend.title = legend.title, legend.labs = legend.labs,
+                             y.text = risk.table.y.text, y.text.col = risk.table.y.text.col,
+                             fontsize = risk.table.fontsize, ggtheme = ggtheme,
+                             xlab = xlab, ylab = legend.title,
+                             ...)
+     # For backward compatibility
+     risktable <-  .set_general_gpar(risktable, legend = legend, ...) # general graphical parameters
+     risktable <- .set_risktable_gpar(risktable, legend = legend, ...) # specific graphical params
+     risktable <- risktable  + tables.theme
+     if(!risk.table.y.text) risktable <- .set_large_dash_as_ytext(risktable)
      # color risk.table ticks by strata
-     if(risk.table.y.text.col){
-       g <- ggplot2::ggplot_build(p)
-       cols <- unlist(unique(g$data[[1]]["colour"]))
-       if(length(cols)==1) cols <- rep(cols, length(legend.labs))
-       names(cols) <- legend.labs # Give every color an appropriate name
-       risktable <- risktable + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
-     }
-
-    res <- list(plot = p, table = risktable)
+     if(risk.table.y.text.col)
+       risktable <- risktable + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
+     res$table <- risktable
    }
-  else res <- list(plot = p)
 
-  # Plot of censored subjects
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  if(ncensor.plot){
-    # ncensor_data <- d
-    # if(inherits(fit, "survfit.cox")){
-     # ncensor_data <- data.frame(time = fit$time, n.censor = fit$n.censor,
-     #                             strata = rep("All", length(fit$n.censor)))
-     #  surv.color <- "black"
-     #  strata_names <- legend.labs <- "All"
-  #  }
-
-    ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
-      .geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
-                 stat = "identity", position = "dodge")+
-      coord_cartesian(xlim = xlim)+
-      scale_x_continuous(breaks = times)+
-      scale_y_continuous(breaks = sort(unique(d$n.censor))) +
-      ggtheme
-    # if palette != hue
-    if(!("hue" %in% palette)){
-      ncensor_plot <- ncensor_plot +
-        .ggcolor(palette, breaks = strata_names, labels = legend.labs)+
-        .ggfill(palette, breaks = strata_names, labels = legend.labs)
-    }
-
-    ncensor_plot <-.labs(ncensor_plot, font.main = font.ncensor.plot.title, font.submain = font.ncensor.plot.subtitle,
-                         font.caption = font.ncensor.plot.caption,
-                         font.x = font.ncensor.plot.x, font.y = font.ncensor.plot.y,
-                         xlab = xlab, ylab = "n.censor")
-    ncensor_plot <- .set_ticks(ncensor_plot, font.tickslab = font.ncensor.plot.tickslab)
-    ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
-                                                 title = ncensor.plot.title, subtitle = ncensor.plot.subtitle, caption = ncensor.plot.caption)
-    if("left" %in% legend) ncensor_plot <- ncensor_plot + ggplot2::theme(legend.position = legend)
-    else ncensor_plot <- ncensor_plot + ggplot2::theme(legend.position = "none")
-    res$ncensor.plot <- ncensor_plot
+ # Add the cumulative number of events
+  if(cumevents){
+    res$cumevents <- ggcumevents (fit, data = data, color = cumevents.col,
+                                  palette = palette, break.time.by = break.time.by,
+                                  xlim = xlim, title = cumevents.title,
+                                  legend = legend, legend.title = legend.title, legend.labs = legend.labs,
+                                  y.text = cumevents.y.text, y.text.col = cumevents.y.text.col,
+                                  fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
+                                  ...)
+    res$cumevents <- res$cumevents + tables.theme
+    if(!cumevents.y.text) res$cumevents <- .set_large_dash_as_ytext(res$cumevents)
+    if(cumevents.y.text.col)
+      res$cumevents <- res$cumevents + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
   }
 
-  class(res) <- c("ggsurvplot", "list")
-  attr(res, "surv.plot.height") <- surv.plot.height
-  attr(res, "risk.table.height") <- risk.table.height
-  attr(res, "ncensor.plot.height") <- ncensor.plot.height
-  attr(res, "risk.table.y.text.col") <- risk.table.y.text.col
+  # Add ncensor.plot or cumcensor plot
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if(ncensor.plot){
+  ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
+    ggpubr::geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
+               stat = "identity", position = "dodge")+
+    coord_cartesian(xlim = xlim)+
+    scale_x_continuous(breaks = times)+
+    scale_y_continuous(breaks = sort(unique(d$n.censor))) +
+    ggtheme
 
+  ncensor_plot <- ggpubr::ggpar(ncensor_plot, palette = palette)
+  ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
+                                               x = xlab, y = "n.censor", title = ncensor.plot.title)
 
-  return(res)
+  # For backward compatibility
+  ncensor_plot <-  .set_general_gpar(ncensor_plot,  ...) # general graphical parameters
+  ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot,  ...) # specific graphical params
+  ncensor_plot <- ncensor_plot + tables.theme
+  }
+  else if(cumcensor){
+    ncensor_plot <- ggcumcensor (fit, data = data, color = cumcensor.col,
+                                  palette = palette, break.time.by = break.time.by,
+                                  xlim = xlim, title = cumcensor.title,
+                                  legend = legend, legend.title = legend.title, legend.labs = legend.labs,
+                                  y.text = cumcensor.y.text, y.text.col = cumcensor.y.text.col,
+                                  fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
+                                  ...)
+    ncensor_plot <- ncensor_plot + tables.theme
+    if(!cumcensor.y.text) ncensor_plot <- .set_large_dash_as_ytext(ncensor_plot)
+    if(cumcensor.y.text.col)
+      ncensor_plot <- ncensor_plot + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
+  }
+  if(ncensor.plot | cumcensor)
+    res$ncensor.plot <- ncensor_plot
+
+  # Defining attributs for ggsurvplot
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  heights <- list(
+    plot =  surv.plot.height,
+    table =  ifelse(risk.table, risk.table.height, 0),
+    ncensor.plot = ifelse(ncensor.plot | cumcensor, ncensor.plot.height, 0),
+    cumevents = ifelse(cumevents, cumevents.height, 0)
+  )
+  y.text <- list(
+    table =  risk.table.y.text,
+    cumevents = cumevents.y.text,
+    cumcensor = cumcensor.y.text
+  )
+  y.text.col <- list(
+    table =  risk.table.y.text.col,
+    cumevents = cumevents.y.text.col,
+    cumcensor = cumcensor.y.text.col
+  )
+
+  # Returning the data used to generate the survival plots
+  res$data.survplot <- d
+  res$data.survtable <- .get_timepoints_survsummary(fit, data, times)
+
+  class(res) <- c("ggsurvplot", "ggsurv", "list")
+  attr(res, "heights") <- heights
+  attr(res, "y.text") <- y.text
+  attr(res, "y.text.col") <- y.text.col
+  attr(res, "legend.position") <- legend
+  attr(res, "legend.labs") <- legend.labs
+  attr(res, "cumcensor") <- cumcensor
+  attr(res, "risk.table.pos") <- risk.table.pos
+  res
 }
 
 #' @param x an object of class ggsurvplot
@@ -676,69 +704,103 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
 # Build ggsurvplot for printing
 .build_ggsurvplot <- function(x, surv.plot.height = NULL,
-                              risk.table.height = NULL, ncensor.plot.height = NULL, ...)
+                              risk.table.height = NULL, ncensor.plot.height = NULL,
+                              cumevents.height = NULL, ...)
 {
   if(!inherits(x, "ggsurvplot"))
     stop("An object of class ggsurvplot is required.")
+  heights <- attr(x, "heights")
+  y.text <- attr(x, "y.text")
+  y.text.col <- attr(x, "y.text.col")
+  cumcensor <- attr(x, "cumcensor")
 
-  surv.plot.height <- ifelse(is.null(surv.plot.height), attr(x, "surv.plot.height"), surv.plot.height)
-  risk.table.height <- ifelse(is.null(risk.table.height), attr(x, "risk.table.height"), risk.table.height)
-  ncensor.plot.height <- ifelse(is.null(ncensor.plot.height), attr(x, "ncensor.plot.height"), ncensor.plot.height)
+  risk.table.pos <- attr(x, "risk.table.pos")
+  if(risk.table.pos == "in") x <- .put_risktable_in_survplot(x)
 
-  if(is.null(risk.table.height)) risk.table.height <- 0.25
-  ncensor.plot.height <- ifelse(is.null(x$ncensor.plot), 0, ncensor.plot.height)
-  if(is.null(surv.plot.height)) surv.plot.height <- 1-risk.table.height-ncensor.plot.height
+  nplot <- .count_ggplots(x)
+  # Removing data components from the list and keep only plot objects
+  x$data.survplot <- x$data.survtable <-  NULL
+  # Extract legend from the survival plot
+  legend.position <- attr(x, "legend.position")[1]
+  legend.grob <- .get_legend(x$plot)
+
+  # Update heights
+  if(!is.null(surv.plot.height))  heights$plot <- surv.plot.height
+  if(!is.null(risk.table.height))  heights$table <- risk.table.height
+  if(!is.null(ncensor.plot.height))  heights$ncensor.plot <- ncensor.plot.height
+  if(!is.null(cumevents.height))  heights$cumevents <- cumevents.height
+  heights$plot <- 1 - heights$table - heights$ncensor.plot - heights$cumevents
+
+  # Extract strata colors for survival curves
+  legend.labs <- attr(x, "legend.labs")
+  g <- ggplot_build(x$plot)
+  cols <- unlist(unique(g$data[[1]]["colour"]))
+  if(length(cols)==1) cols <- rep(cols, length(legend.labs))
+  names(cols) <- legend.labs # Give every color an appropriate name
+
+  if(nplot > 1 & legend.position %in% c("left", "right", "bottom")) x$plot <- .hide_legend(x$plot)
 
   if(!is.null(x$table)){
-    # Hide legende: don't use  theme(legend.position = "none") because awkward legend when position = "left"
     x$table <- .hide_legend(x$table)
+    if(!y.text$table) x$table <- .set_large_dash_as_ytext(x$table)
     # Make sure that risk.table.y.text.col will be the same as the plot legend colors
-    risk.table.y.text.col <- attr(x, 'risk.table.y.text.col')
-    if(risk.table.y.text.col){
-      g <- ggplot2::ggplot_build(x$plot)
-      cols <- unlist(unique(g$data[[1]]["colour"]))
-      legend.labs <- levels(g$plot$data$strata)
-      if(length(cols)==1) cols <- rep(cols, length(legend.labs))
-      names(cols) <- legend.labs # Give every color an appropriate name
+    if(y.text.col$table)
       x$table <- x$table + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+  }
+
+
+  if(!is.null(x$cumevents)){
+    x$cumevents <- .hide_legend(x$cumevents)
+    if(!y.text$cumevents) x$cumevents <- .set_large_dash_as_ytext(x$cumevents)
+    # Make sure that y.text.col will be the same as the plot legend colors
+    if(y.text.col$cumevents)
+      x$cumevents <- x$cumevents + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+  }
+
+
+  if(!is.null(x$ncensor.plot)){
+    x$ncensor.plot <- x$ncensor.plot + theme (legend.position = "none")
+    if(cumcensor){
+      if(!y.text$cumcensor) x$ncensor.plot <- .set_large_dash_as_ytext(x$ncensor.plot)
+      if(y.text.col$cumcensor)
+        x$ncensor.plot <- x$ncensor.plot + theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
     }
   }
 
-  res <- NULL
-  if(is.null(x$table) & is.null(x$ncensor.plot)) res <- x$plot
-  else{
-    if(is.null(x$ncensor.plot))
-      heights = list(c(surv.plot.height, risk.table.height))
-    else if(is.null(x$table)){
-      heights = list(c(surv.plot.height, ncensor.plot.height))
-    }
-    else  heights = list(c(surv.plot.height, risk.table.height, ncensor.plot.height))
+  if(is.null(x$table) & is.null(x$ncensor.plot) & is.null(x$cumevents)) return(x$plot)
 
-    nplot <- length(heights[[1]])
-
-    plots <- x
-    grobs <- widths <- list()
-    for (i in 1:length(plots)) {
+  heights <- unlist(heights)[names(x)] # get the height of each component in x
+  plots <- x
+  grobs <- widths <- list()
+  for (i in 1:length(plots)) {
+    if(is.ggplot(plots[[i]])){
       grobs[[i]] <- ggplotGrob(plots[[i]])
       widths[[i]] <- grobs[[i]]$widths[2:5]
     }
-    maxwidth <- do.call(grid::unit.pmax, widths)
-    for (i in 1:length(grobs)) {
-      grobs[[i]]$widths[2:5] <- as.list(maxwidth)
-    }
-
-    res <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
-    # res <- do.call(gridExtra::grid.arrange, c(grobs, nrow = nplot, heights = heights, newpage = newpage))
   }
-  return(res)
+  maxwidth <- do.call(grid::unit.pmax, widths)
+  for (i in 1:length(grobs)) {
+    grobs[[i]]$widths[2:5] <- as.list(maxwidth)
+  }
+
+  ggsurv <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
+
+  # Set legend
+  if(nplot > 1 & legend.position %in% c("left", "right", "bottom")){
+    ggsurv <- switch(legend.position,
+                   bottom = gridExtra::arrangeGrob(grobs = list(ggsurv, legend.grob), nrow = 2, heights = c(0.9, 0.1)),
+                   top = gridExtra::arrangeGrob(grobs = list(legend.grob, ggsurv), nrow = 2, heights = c(0.1, 0.9)),
+                   right = gridExtra::arrangeGrob(grobs = list(ggsurv, legend.grob), ncol = 2, widths = c(0.75, 0.25)),
+                   left = gridExtra::arrangeGrob(grobs = list(legend.grob, ggsurv), ncol = 2, widths = c(0.25, 0.75)),
+                   ggsurv
+                  )
+  }
+
+  return(ggsurv)
 }
 
 .hide_legend <- function(p){
-p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
-                           legend.key = element_rect(colour = NA, fill = NA),
-                           legend.text = element_text(colour = NA),
-                           legend.title = element_text(colour = NA)) +
-  guides(color = FALSE)
+p <- p + theme(legend.position = "none")
 }
 
 
@@ -823,96 +885,7 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
   }
 }
 
-# Draw risk table
-# on the left
-.risk_table_plot <- function(fit, data = NULL, times, legend.labs = NULL,
-                             xlim = c(0, max(fit$time)),
-                             risk.table.col = "black",
-                             palette = NULL, ggtheme = ggplot2::theme_classic(),
-                             risk.table.fontsize = 5, risk.table.title = "Number at risk by time",
-                             risk.table.subtitle = NULL, risk.table.caption = NULL,
-                             risk.table.y.text = TRUE,
-                             font.tickslab = c(12, "plain", "black"), type = "absolute"
-)
-  {
 
-  ntimes <- length(summary(fit, times = times, extend = TRUE)$time)
-
-  if (is.null(fit$strata)) {
-    .strata <- factor(rep("All", length(times)))
-    strata_names <- "All"
-    strata_size <- rep(fit$n, length(.strata))
-  }
-  else {
-    .strata <- factor(summary(fit, times = times, extend = TRUE)$strata)
-    strata_names <- names(fit$strata)
-    nstrata = length(strata_names)
-    strata_size <- rep(fit$n, each = length(.strata)/nstrata)
-  }
-  risk.data <- data.frame(
-    strata = .clean_strata(as.factor(.strata)),
-    time = summary(fit, times = times, extend = TRUE)$time,
-    n.risk = round(summary(fit, times = times, extend = TRUE)$n.risk),
-    strata_size = strata_size
-  )
-  risk.data$pct.risk <- round(risk.data$n.risk*100/risk.data$strata_size)
-  risk.data$abs_pct.risk <- paste0(risk.data$n.risk, " (", risk.data$pct.risk, ")")
-
-  if(!is.null(fit$strata)){
-    variables <- .get_variables(risk.data$strata, fit, data)
-    for(variable in variables) risk.data[[variable]] <- .get_variable_value(variable, risk.data$strata, fit, data)
-  }
-
-
-  if (!is.null(legend.labs))
-    risk.data$strata <- factor(risk.data$strata, labels = legend.labs)
-
-  time <- strata <- label <- n.risk <- pct.risk <- abs_pct.risk <- NULL
-
-  # Adjust risk table labels in case of long strata
-  risk.table.text.y <- rev(levels(risk.data$strata))
-  n_strata <- length(risk.table.text.y)
-#   max_char <- max(nchar(risk.table.text.y))
-#   is_long_strata <- max_char > 5
-#   if(is_long_strata) risk.table.text.y <- rep("-", n_strata)
-   if(!risk.table.y.text) risk.table.text.y <- rep("-", n_strata)
-
-  if(type == "percentage")
-    dtp <- ggplot2::ggplot(risk.data,
-                           aes(x = time, y = rev(strata), label = pct.risk, shape = rev(strata)))
-  else if(type == "abs_pct")
-    dtp <- ggplot2::ggplot(risk.data,
-                           aes(x = time, y = rev(strata), label = abs_pct.risk, shape = rev(strata)))
-  else
-  dtp <- ggplot2::ggplot(risk.data,
-                         ggplot2::aes(x = time, y = rev(strata), label = n.risk, shape = rev(strata)))
-
-  dtp <- dtp + scale_shape_manual(values = 1:length(levels(risk.data$strata)))+
-    # ggplot2::geom_point(size = 0)+
-    .geom_exec(ggplot2::geom_text, data = risk.data, size = risk.table.fontsize, color = risk.table.col) +
-    ggtheme +
-    ggplot2::scale_y_discrete(breaks = as.character(levels(risk.data$strata)),
-                              labels = risk.table.text.y ) +
-    ggplot2::coord_cartesian(xlim = xlim) +
-    ggplot2::scale_x_continuous(breaks = times) +
-    # .ggcolor(palette)+
-    labs(title = risk.table.title, caption = risk.table.caption, subtitle = risk.table.subtitle) +
-    ggplot2::theme(legend.position = "none")
-
-  # if palette != hue
-  if(!("hue" %in% palette)){
-    dtp <- dtp + .ggcolor(palette, breaks = strata_names, labels = legend.labs)
-  }
-
-  dtp <- .set_ticks(dtp, font.tickslab = font.tickslab)
-  if(!risk.table.y.text)
-    dtp <- dtp + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
-                       axis.ticks.y = element_blank())
-
-
-
-  return(dtp)
-}
 
 
 # Check user defined legend labels
@@ -958,19 +931,6 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
   d
 }
 
-# Ge x axis major breaks
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%
-.get_x_major_breaks <- function(p){
-  vv <- as.character(utils::packageVersion("ggplot2"))
-  cc <- utils::compareVersion(vv, "2.1.0") > 0
-  if(cc){
-    # "v>2.1.0"
-    breaks <- ggplot_build(p)$layout$panel_ranges[[1]]$x.major_source
-  }
-  # v<=2.1.0
-  else breaks <- ggplot_build(p)$panel$ranges[[1]]$x.major_source
-  breaks
-}
 
 # Adjust linetype manually
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1002,9 +962,9 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 .parse_risk_table_arg <- function(risk.table){
   res <- list(display = risk.table, type = "absolute")
   if(inherits(risk.table, "character") ){
-    if(risk.table %in% c("absolute", "percentage", "abs_pct") )
+    if(risk.table %in% c("absolute", "percentage", "abs_pct", "nrisk_cumcensor", "nrisk_cumevents") )
       res <- list(display = TRUE, type = risk.table)
-    else stop("Allowed values for risk.table are: TRUE, FALSE, 'absolute', 'percentage'")
+    else stop("Allowed values for risk.table are: TRUE, FALSE, 'absolute', 'percentage', 'nrisk_cumcensor', 'nrisk_cumevents' ")
   }
   res
 }
@@ -1058,3 +1018,86 @@ p <- p + theme(legend.key.height = NULL, legend.key.width = NULL,
 }
 
 
+# Graphical parameters
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# general graphical parameters to be applied to
+# survival curves, risk.table, ncensor.plot
+.set_general_gpar <- function(p, legend = "top", ...){
+  extra.params <- list(...)
+  ggpubr::ggpar(p = p, font.main = extra.params$font.main, font.x = extra.params$font.x,
+                font.y = extra.params$font.y, font.submain = extra.params$font.submain,
+                font.caption = extra.params$font.caption,
+                font.tickslab = extra.params$font.tickslab,
+                legend = legend, font.legend = extra.params$font.legend)
+}
+
+# Specific graphical params to risk.table
+.set_risktable_gpar <- function(p, legend = "none",  ...){
+  extra.params <- list(...)
+  ggpubr::ggpar(p,
+                 subtitle = extra.params$risk.table.subtitle,
+                 caption = extra.params$risk.table.caption,
+                 font.title = extra.params$font.risk.table.title,
+                 font.x = extra.params$font.risk.table.x,
+                 font.y = extra.params$font.risk.table.y,
+                 font.submain = extra.params$font.risk.table.subtitle,
+                 font.caption = extra.params$font.risk.table.caption,
+                 legend = legend
+  )
+}
+
+# Specific graphical params to ncensor_plot
+.set_ncensorplot_gpar <- function(p, legend = "none", ...){
+  extra.params <- list(...)
+  ggpubr::ggpar(p,
+             subtitle = extra.params$ncensor.plot.subtitle,
+             caption = extra.params$ncensor.plot.caption,
+             font.main = extra.params$font.ncensor.plot.title,
+             font.submain = extra.params$font.ncensor.plot.subtitle,
+             font.caption = extra.params$font.ncensor.plot.caption,
+             font.tickslab = extra.params$font.ncensor.plot.tickslab,
+             font.x = extra.params$font.ncensor.plot.x,
+             font.y = extra.params$font.ncensor.plot.y,
+             legend = legend)
+
+}
+
+# Put risk table inside main plot
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+.put_risktable_in_survplot <- function(ggsurv){
+
+  if(is.null(ggsurv$table)) return(ggsurv)
+
+  if(is.null(ggsurv$table))
+    stop("You can't put risk table inside the main plot because risk.table = FALSE. Use risk.table = TRUE")
+
+  # Create a transparent theme object
+  theme_transparent<- function() {
+    theme(
+    title = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank(),
+    axis.line = element_blank(),
+    panel.background = element_rect(fill = "transparent",colour = NA),
+    plot.background = element_rect(fill = "transparent",colour = NA),
+    plot.margin=unit(c(0,0,0,0),"mm"),
+    panel.border = element_blank(),
+    legend.position = "none")
+  }
+
+  survplot <- ggsurv$plot
+  risktable <- ggsurv$table + theme_transparent()
+  nstrata <- length(levels(survplot$data$strata))
+  .time <- survplot$data$time
+  ymax <- nstrata*0.05
+  risktable_grob = ggplotGrob(risktable)
+  survplot <- survplot + annotation_custom(grob = risktable_grob, xmin = -max(.time)/20,
+                                           ymin = -0.05, ymax = ymax)
+  ggsurv$plot <- survplot
+  ggsurv$table <- NULL
+  ggsurv
+}

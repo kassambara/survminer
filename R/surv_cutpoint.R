@@ -235,7 +235,7 @@ plot.surv_cutpoint <- function(x, variables = NULL, ggtheme = theme_classic2(), 
 
     attr(res, "name") <- variable
     attr(res, "cutpoint") <- max_stat$estimate
-    res <- structure(res, class = c("list", "plot_surv_cutpoint"))
+    res <- structure(res, class = c("list", "plot_surv_cutpoint", "ggsurv"))
 
     p[[variable]] <- res
   }

@@ -50,3 +50,6 @@ attr(res.sum, "table")
 
 
 }
+\author{
+Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
+}

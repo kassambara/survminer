@@ -25,7 +25,10 @@ reference:
     contents: myeloma
   - title: Others
     contents:
-      - theme_survminer
+      - ggrisktable
+      - ggcumevents
+      - ggcumcensor
+      - ggsurvtheme
       - theme_classic2
 
 

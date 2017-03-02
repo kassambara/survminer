@@ -1,8 +1,33 @@
 # survminer 0.2.4.999
    
 ## New features
+    
+- New argument `risk.table.pos` in `ggsurvplot()` for placing risk table inside survival curves ([#69](https://github.com/kassambara/survminer/issues/69)). Allowed options are one of c("out", "in") indicating 'outside' or 'inside' the main plot, respectively. Default value is "out".  
    
-- New function `+.gglist()` to add component - `theme()`, `labs()` -  to a ggplot or to a list of ggplots. ([#151](https://github.com/kassambara/survminer/issues/151)). For example:
+- Now, `ggsurvplot()` can display both the number at risk and the cumulative number of censored in the same table using the option `risk.table = 'nrisk_cumcenor'` ([#96](https://github.com/kassambara/survminer/issues/96)). It's also possible to display the number at risk and the cumulative number of events using the option `risk.table = 'nrisk_cumevents'`.
+   
+- Now, `ggsurvplot()` returns an object of class ggsurvplot which is list containing the following components ([#158](https://github.com/kassambara/survminer/issues/158)):
+    - **plot**: the survival plot (ggplot object)
+    - **table**: the number of subjects at risk table per time (ggplot object).
+    - **cumevents**: the cumulative number of events table (ggplot object).
+    - **ncensor.plot**: the number of censoring (ggplot object).
+    - **data.survplot**: the data used to plot the survival curves (data.frame).
+    - **data.survtable**: the data used to plot the tables under the main survival curves (data.frame).
+   
+   
+- New arguments in the `ggsurvplot()` function for customizing tables under the main survival plot: `tables.height, tables.y.text, tables.theme` ([#156](https://github.com/kassambara/survminer/issues/156)). 
+   
+- New arguments in the `ggsurvplot()` function:
+    - `cumevents` logical value for displaying the cumulative number of events table ([#117](https://github.com/kassambara/survminer/issues/117)).
+    - `cumcensor` logical value for displaying the cumulative number of censoring table ([#155](https://github.com/kassambara/survminer/issues/155)).
+    
+- New heper functions `ggrisktable()`, `ggcumevents()`, `ggcumcensor()`. Normally, users don't need to use these function directly. Internally used by the function `ggsurvplot()`.
+    - `ggrisktable()` for plotting number of subjects at risk by time. ([#154](https://github.com/kassambara/survminer/issues/154)).
+    - `ggcumevents()` for plotting the cumulative number of events table ([#117](https://github.com/kassambara/survminer/issues/117)).
+    - `ggcumcensor()` for plotting the cumulative number of censoring table ([#155](https://github.com/kassambara/survminer/issues/155)).
+
+
+- New function `+.ggsurv()` to add ggplot components - `theme()`, `labs()` -  to an object of class ggsurv, which is a list of ggplots. ([#151](https://github.com/kassambara/survminer/issues/151)). For example:
 
 ```r
 # Fit survival curves
@@ -26,6 +51,8 @@ p %+% theme_survminer(
 
 ```
   
+- New function `theme_cleantable()`: theme for drawing a clean risk table and cumulative number of events table. A theme similar to theme_survminer() without i) axis lines and, ii) x axis ticks and title ([#117](https://github.com/kassambara/survminer/issues/117) & [#156](https://github.com/kassambara/survminer/issues/156)).
+   
 - New function `theme_survminer()` to change easily the graphical parameters of plots generated with survminer ([#151](https://github.com/kassambara/survminer/issues/151)).
   
 - New function `arrange_ggsurvplots()` to arrange multiple ggsurvplots on the same page ([#66](https://github.com/kassambara/survminer/issues/66)).
@@ -61,6 +88,8 @@ p %+% theme_survminer(
      
      
 ## Minor changes
+  
+- New argument `tables.height` in `ggsurvplot()` to apply the same height to all the tables under the main survival plots ([#157](https://github.com/kassambara/survminer/issues/157)).
 
 - It is possible to secify `title` and `caption` for `ggcoxfunctional` ([@MarcinKosinski, #138](https://github.com/kassambara/survminer/issues/138)) (`font.main` was removed as it was unused.)
 
@@ -102,6 +131,8 @@ writeDoc(doc, "test.pptx")
     
 ## Bug fixes
     
+- Now, risk table align with survival plots when legend = "right" ([@jonlehrer, #102](https://github.com/kassambara/survminer/issues/102)).
+
 - Now, `ggcoxzph()` works for univariate Cox analysis ([#103](https://github.com/kassambara/survminer/issues/103)). 
    
 - Now, `ggcoxdiagnostics()` works properly for schoenfeld residuals ([@pbiecek, #119](https://github.com/kassambara/survminer/issues/122)).  

@@ -143,29 +143,32 @@ ggsurvplot(
 ### Uber customized survival curves
 
 ``` r
-ggsurvplot(
-   fit,                     # survfit object with calculated statistics.
-   data = lung,             # data used to fit survival curves.
-   risk.table = TRUE,       # show risk table.
-   pval = TRUE,             # show p-value of log-rank test.
-   conf.int = TRUE,         # show confidence intervals for 
-                            # point estimates of survival curves.
-   xlim = c(0,500),         # present narrower X axis, but not affect
-                            # survival estimates.
-   xlab = "Time in days",   # customize X axis label.
-   break.time.by = 100,     # break X axis in time intervals by 500.
-   ggtheme = theme_light(), # customize plot and risk table with a theme.
-  risk.table.y.text.col = T,# colour risk table text annotations.
-  risk.table.y.text = FALSE,# show bars instead of names in text annotations
-                            # in legend of risk table.
-  ncensor.plot = TRUE,      # plot the number of censored subjects at time t
-  conf.int.style = "step",  # customize style of confidence intervals
-  surv.median.line = "hv",  # add the median survival pointer.
-  legend.labs = 
-    c("Male", "Female"),    # change legend labels.
-  palette = 
-    c("#E7B800", "#2E9FDF") # custom color palettes.
-)
+ggsurv <- ggsurvplot(
+           fit,                     # survfit object with calculated statistics.
+           data = lung,             # data used to fit survival curves.
+           risk.table = TRUE,       # show risk table.
+           pval = TRUE,             # show p-value of log-rank test.
+           conf.int = TRUE,         # show confidence intervals for 
+                                    # point estimates of survival curves.
+           xlim = c(0,500),         # present narrower X axis, but not affect
+                                    # survival estimates.
+           xlab = "Time in days",   # customize X axis label.
+           break.time.by = 100,     # break X axis in time intervals by 500.
+           ggtheme = theme_light(), # customize plot and risk table with a theme.
+          risk.table.y.text.col = T,# colour risk table text annotations.
+          risk.table.height = 0.35, # the height of the risk table
+          risk.table.y.text = FALSE,# show bars instead of names in text annotations
+                                    # in legend of risk table.
+          ncensor.plot = TRUE,      # plot the number of censored subjects at time t
+          ncensor.plot.height = 0.35,
+          conf.int.style = "step",  # customize style of confidence intervals
+          surv.median.line = "hv",  # add the median survival pointer.
+          legend.labs = 
+            c("Male", "Female")    # change legend labels.
+        )
+
+# Apply custom color palettes and print
+ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
 ```
 
 ![](README-ggplot2-uber-customized-survival-plot-1.png)
@@ -173,48 +176,46 @@ ggsurvplot(
 ### Uber platinum customized survival curves
 
 ``` r
-ggsurvplot(
-   fit,                     # survfit object with calculated statistics.
-   data = lung,             # data used to fit survival curves.
-   risk.table = TRUE,       # show risk table.
-   pval = TRUE,             # show p-value of log-rank test.
-   conf.int = TRUE,         # show confidence intervals for 
-                            # point estimates of survival curves.
-   xlim = c(0,500),         # present narrower X axis, but not affect
-                            # survival estimates.
-   xlab = "Time in days",   # customize X axis label.
-   break.time.by = 100,     # break X axis in time intervals by 500.
-   ggtheme = theme_light(), # customize plot and risk table with a theme.
-  risk.table.y.text.col = T,# colour risk table text annotations.
-  risk.table.y.text = FALSE,# show bars instead of names in text annotations
-                            # in legend of risk table.
-  ncensor.plot = TRUE,      # plot the number of censored subjects at time t
-  conf.int.style = "step",  # customize style of confidence intervals
-  surv.median.line = "hv",  # add the median survival pointer.
-  legend.labs = 
-    c("Male", "Female"),    # change legend labels.
-  palette = 
-    c("#E7B800", "#2E9FDF"),# custom color palettes.
-  main = "Survival curves",                       # specify the title of the plot
-  submain = "Based on Kaplan-Meier estimates",    # the subtitle of the plot 
-  caption = "created with survminer",             # the caption of the plot
-  font.main = c(16, "bold", "darkblue"),          # font for titles of the plot, the table and censor part
-  font.submain = c(15, "bold.italic", "purple"),  # font for subtitles in the plot, the table and censor part
-  font.caption = c(14, "plain", "orange"),        # font for captions in the plot, the table and censor part
-  font.x = c(14, "bold.italic", "red"),           # font for x axises in the plot, the table and censor part
-  font.y = c(14, "bold.italic", "darkred"),       # font for y axises in the plot, the table and censor part
-  font.tickslab = c(12, "plain", "darkgreen"),    # font for ticklabs in the plot, the table and censor part
-  ########## risk table #########,
-  risk.table.title = "Note the risk set sizes",          # the title of the risk table
-  risk.table.subtitle = "and remember about censoring.", # the subtitle of the risk table
-  risk.table.caption = "source code: website.com",       # the caption of the risk table
-  risk.table.height = 0.35,                              # the height of the risk table
-  ########## ncensor plot ######
-  ncensor.plot.title = "Number of censorings",           # as above but for the censoring plot
-  ncensor.plot.subtitle = "over the time.",
-  ncensor.plot.caption = "data available at data.com",
-  ncensor.plot.height = 0.35
-)
+# Changing Labels
+# %%%%%%%%%%%%%%%%%%%%%%%%%%
+# Labels for Survival Curves (plot)
+ggsurv$plot <- ggsurv$plot + labs(
+  title = "Survival curves",                     
+  subtitle = "Based on Kaplan-Meier estimates",  
+  caption = "created with survminer"             
+  )
+
+# Labels for Risk Table 
+ggsurv$table <- ggsurv$table + labs(
+  title = "Note the risk set sizes",          
+  subtitle = "and remember about censoring.", 
+  caption = "source code: website.com"        
+  )
+
+# Labels for ncensor plot 
+ggsurv$ncensor.plot <- ggsurv$ncensor.plot + labs( 
+  title = "Number of censorings", 
+  subtitle = "over the time.",
+  caption = "source code: website.com"
+  )
+
+# Changing the font size, style and color
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Applying the same font style to all the components of ggsurv:
+# survival curves, risk table and censor part
+
+ggsurv <- ggpar(ggsurv,
+          font.title = c(16, "bold", "darkblue"),          # font for titles of the plot, the table and censor part
+          font.subtitle = c(15, "bold.italic", "purple"),  # font for subtitles in the plot, the table and censor part
+          font.caption = c(14, "plain", "orange"),        # font for captions in the plot, the table and censor part
+          font.x = c(14, "bold.italic", "red"),           # font for x axises in the plot, the table and censor part
+          font.y = c(14, "bold.italic", "darkred"),       # font for y axises in the plot, the table and censor part
+          font.tickslab = c(12, "plain", "darkgreen"),    # font for ticklabs in the plot, the table and censor part
+          legend = "top"
+          )
+
+# Apply custom color palettes and print
+ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
 ```
 
 ![](README-ggplot2-uber-platinium-customized-survival-plot-1.png)
@@ -223,39 +224,30 @@ Uber platinum premium customized survival curves
 ------------------------------------------------
 
 ``` r
-ggsurvplot(fit, data = lung, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
-  caption = "created with survminer",
-  font.main = c(16, "bold", "darkblue"),
-  font.submain = c(15, "bold.italic", "purple"),
-  font.caption = c(14, "plain", "orange"),
-  font.x = c(14, "bold.italic", "red"),
-  font.y = c(14, "bold.italic", "darkred"),
-  font.tickslab = c(12, "plain", "darkgreen"),
-  ########## risk table #########,
-  risk.table = TRUE,
-  risk.table.title = "Note the risk set sizes",
-  risk.table.subtitle = "and remember about censoring.",
-  risk.table.caption = "source code: website.com",
-  risk.table.height = 0.35,
-  font.risk.table.title = c(13, "bold.italic", "green"),
-  font.risk.table.subtitle = c(15, "bold", "pink"),
-  font.risk.table.caption = c(11, "plain", "darkgreen"),
-  font.risk.table.x = c(8, "bold.italic", "orange"),
-  font.risk.table.y = c(11, "bold.italic", "darkgreen"),
-  font.risk.table.tickslab = c(9, "bold", "red"),
-  ######### ncensor plot ###################
-  ncensor.plot = TRUE,
-  ncensor.plot.title = "Number of censorings",
-  ncensor.plot.subtitle = "over the time.",
-  ncensor.plot.caption = "data available at data.com",
-  ncensor.plot.height = 0.35,
-  font.ncensor.plot.title = c(13, "bold.italic", "green"),
-  font.ncensor.plot.subtitle = c(15, "bold", "pink"),
-  font.ncensor.plot.caption = c(11, "plain", "darkgreen"),
-  font.ncensor.plot.x = c(8, "bold.italic", "orange"),
-  font.ncensor.plot.y = c(11, "bold.italic", "darkgreen"),
-  font.ncensor.plot.tickslab = c(9, "bold", "red")
-)
+# Using specific fonts for risk table and ncensor plots
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Font for Risk Table
+ggsurv$table <- ggpar(ggsurv$table,
+                      font.title = c(13, "bold.italic", "green"),
+                      font.subtitle = c(15, "bold", "pink"),
+                      font.caption = c(11, "plain", "darkgreen"),
+                      font.x = c(8, "bold.italic", "orange"),
+                      font.y = c(11, "bold.italic", "darkgreen"),
+                      font.tickslab = c(9, "bold", "red")
+                      )
+
+
+# Font for ncensor plot
+ggsurv$ncensor.plot <- ggpar(ggsurv$ncensor.plot,
+                            font.title = c(13, "bold.italic", "green"),
+                            font.subtitle = c(15, "bold", "pink"),
+                            font.caption = c(11, "plain", "darkgreen"),
+                            font.x = c(8, "bold.italic", "orange"),
+                            font.y = c(11, "bold.italic", "darkgreen"),
+                            font.tickslab = c(9, "bold", "red")
+                            )
+
+print(ggsurv)
 ```
 
 ![](README-ggplot2-uber-platinium-premium-customized-survival-plot-1.png)
