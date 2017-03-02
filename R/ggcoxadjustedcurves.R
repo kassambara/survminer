@@ -5,7 +5,7 @@
 #' @importFrom survival survfit
 #' @description This function plots adjusted survival curves for coxph model.
 #' The idea behind this function is described in \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
-#' For every observation in the dataset a prediction for survival cure is made.
+#' For every observation in the dataset a prediction for survival curve is made.
 #' Then the predictions are averaged with respect to a selected variable.
 #'@param fit an object of class \link{coxph.object} - created with \link{coxph} function.
 #'@param data a dataset for predictions. If not supplied then data will be extracted from `fit` object.
@@ -31,8 +31,8 @@
 #' fit2 <- coxph( Surv(stop, event) ~ rx + size, data = bladder )
 #' ggcoxadjustedcurves(fit2, data = bladder)
 #' ggcoxadjustedcurves(fit2, individual.curves = TRUE, data = bladder, curve.alpha=0.01)
-#' ggcoxadjustedcurves(fit2, data = bladder, variable=factor( bladder[,"rx"]))
-#' ggcoxadjustedcurves(fit2, data = bladder, variable=factor(bladder[,"rx"]),
+#' ggcoxadjustedcurves(fit2, data = bladder, variable= bladder[,"rx"])
+#' ggcoxadjustedcurves(fit2, data = bladder, variable= bladder[,"rx"],
 #'    individual.curves=TRUE, curve.alpha=0.01)
 #'
 #'@export
@@ -66,6 +66,7 @@ ggcoxadjustedcurves <- function(fit,
       geom_step(size=curve.size)
   } else {
     # one per level
+    variable <- factor(variable)
     both <- cbind(.id = seq(data[,1]), variable, adj_surv)
     curves <- gather(both, time, value, -.id, -variable)
     curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
@@ -75,8 +76,9 @@ ggcoxadjustedcurves <- function(fit,
   }
   if (individual.curves)
     pl <- pl + geom_step(data = curves, aes(group=.id), alpha=curve.alpha)
-  pl <- ggpubr::ggpar(pl, legend = "right", ...)
-  pl +
+  pl <- pl + ggtheme +
     scale_y_continuous(limits = c(0, 1)) +
     ylab(ylab)
+  ggpubr::ggpar(p, legend = "right", ...)
+
 }
