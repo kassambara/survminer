@@ -101,12 +101,12 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
     invisible(round(x$table[i, 3],4) -> pval)
     ggplot() + labs(title = paste0('Schoenfeld Individual Test p: ', pval)) + ggtheme -> gplot
     y <- yy[, i]
-    yhat <- pmat %*% qr.coef(qmat, y)
+    yhat <- as.vector(pmat %*% qr.coef(qmat, y))
     if (resid)
       yr <- range(yhat, y)
     else yr <- range(yhat)
     if (se) {
-      temp <- 2 * sqrt(x$var[i, i] * seval)
+      temp <- as.vector(2 * sqrt(x$var[i, i] * seval))
       yup <- yhat + temp
       ylow <- yhat - temp
       yr <- range(yr, yup, ylow)
@@ -139,7 +139,7 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
         geom_line(aes( x = pred.x, y = ylow), lty = "dashed")
     }
 
-    gplot <- ggpubr::ggpar(gplot, ...)
+    ggpubr::ggpar(gplot, ...)
 
 
   }) -> plots
