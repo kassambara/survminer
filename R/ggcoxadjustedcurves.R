@@ -79,6 +79,6 @@ ggcoxadjustedcurves <- function(fit,
   pl <- pl + ggtheme +
     scale_y_continuous(limits = c(0, 1)) +
     ylab(ylab)
-  ggpubr::ggpar(p, legend = "right", ...)
+  ggpubr::ggpar(pl, legend = "right", ...)
 
 }
