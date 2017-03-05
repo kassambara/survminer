@@ -17,7 +17,7 @@
 #'  \code{ncensor.plot = TRUE}.
 #'@param ... not used
 #'
-#'@return returns an inviible object of class arrangelist (see
+#'@return returns an invisible object of class arrangelist (see
 #'  \link[gridExtra]{marrangeGrob}), which can be saved into a pdf file using
 #'  the function \link[ggplot2]{ggsave}.
 #'

@@ -32,7 +32,7 @@ risk.table = FALSE.}
 \item{...}{not used}
 }
 \value{
-returns an inviible object of class arrangelist (see
+returns an invisible object of class arrangelist (see
  \link[gridExtra]{marrangeGrob}), which can be saved into a pdf file using
  the function \link[ggplot2]{ggsave}.
 }
