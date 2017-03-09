@@ -540,16 +540,16 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     pvaltxt <- ifelse(pval$val < 1e-04, "p < 0.0001",
                     paste("p =", signif(pval$val, 2)))
 
-    pval.x <- ifelse(is.null(pval.coord[1]), 0.1*max(fit$time), pval.coord[1])
+    pval.x <- ifelse(is.null(pval.coord[1]), max(fit$time)/50, pval.coord[1])
     pval.y <- ifelse(is.null(pval.coord[2]), 0.2, pval.coord[2])
     p <- p + ggplot2::annotate("text", x = pval.x, y = pval.y,
-                               label = pvaltxt, size = pval.size)
+                               label = pvaltxt, size = pval.size, hjust = 0)
     if(pval.method){
       pvalmethod <- pval$method
-      pval.method.x <- ifelse(is.null(pval.method.coord[1]), 0.1*max(fit$time), pval.method.coord[1])
+      pval.method.x <- ifelse(is.null(pval.method.coord[1]), max(fit$time)/50, pval.method.coord[1])
       pval.method.y <- ifelse(is.null(pval.method.coord[2]), 0.3, pval.method.coord[2])
       p <- p + ggplot2::annotate("text", x = pval.method.x, y = pval.method.y,
-                                 label = pvalmethod, size = pval.method.size)
+                                 label = pvalmethod, size = pval.method.size, hjust = 0)
     }
   }
 
