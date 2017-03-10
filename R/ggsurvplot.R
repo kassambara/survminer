@@ -868,7 +868,7 @@ p <- p + theme(legend.position = "none")
       sdiff <- survival::survdiff(eval(fit$call$formula), data = data,
                                      subset = eval(fit$call$subset))
     pvalue <- stats::pchisq(sdiff$chisq, length(sdiff$n) - 1, lower.tail = FALSE)
-    return(list(val = pvalue, method = "Log-rank (survdiff)"))
+    return(list(val = pvalue, method = "Log-rank"))
   } else {
     tenfit <- ten(eval(fit$call$formula), data = data)
     capture.output(comp(tenfit)) -> null_dev
@@ -877,9 +877,9 @@ p <- p + theme(legend.position = "none")
     attributes(tenfit)$lrt -> tests
     # check str(tests) -> W:weights / pNorm:p-values
     pvalue <- round(tests$pNorm[tests$W == method], 4)
-    test_name <- c("Log-rank (comp)", "Gehan-Breslow (generalized Wilcoxon)",
-                   "Tarone-Ware", "Peto-Peto's modified survival estimate",
-                   "modified Peto-Peto (by Andersen)", "Fleming-Harrington (p=1, q=1)")
+    test_name <- c("Log-rank", "Gehan-Breslow",
+                   "Tarone-Ware", "Peto-Peto",
+                   "modified Peto-Peto", "Fleming-Harrington (p=1, q=1)")
     # taken from ?survMisc::comp
     return(list(val = pvalue, method = test_name[tests$W == method]))
   }
