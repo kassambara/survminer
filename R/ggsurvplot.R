@@ -59,9 +59,7 @@
 #'@param risk.table.pos character vector specifying the risk table position.
 #'  Allowed options are one of c("out", "in") indicating 'outside' or 'inside'
 #'  the main plot, respectively. Default value is "out".
-#'@param risk.table.col color to be used for risk table. Default value is
-#'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
-#'  "strata".
+#'@param risk.table.col same as tables.col but for risk table only.
 #'@param risk.table.fontsize,fontsize font size to be used for the risk table
 #'  and the cumulative events table.
 #'@param risk.table.y.text logical. Default is TRUE. If FALSE, risk table y axis
@@ -72,6 +70,9 @@
 #'  of all tables under the main survival plot.
 #'@param tables.y.text logical. Default is TRUE. If FALSE, the y axis tick
 #'  labels of tables will be hidden.
+#'@param tables.col color to be used for all tables under the main plot. Default value is
+#'  "black". If you want to color by strata (i.e. groups), use tables.col =
+#'  "strata".
 #'@param tables.theme function, ggplot2 theme name. Default value is
 #'  \link{theme_survminer}. Allowed values include ggplot2 official themes: see
 #'  \code{\link[ggplot2]{theme}}.
@@ -91,9 +92,7 @@
 #'@param cumevents logical value specifying whether to show or not the table of
 #'  the cumulative number of events. Default is FALSE.
 #'@param cumevents.title The title to be used for the cumulative events table.
-#'@param cumevents.col color to be used for cumulative events table. Default
-#'  value is "black". If you want to color by strata (i.e. groups), use
-#'  cumevents.col = "strata".
+#'@param cumevents.col same as tables.col but for the cumulative events table only.
 #'@param cumevents.y.text logical. Default is TRUE. If FALSE, the y axis tick
 #'  labels of the cumulative events table  will be hidden.
 #'@param cumevents.y.text.col logical. Default value is FALSE. If TRUE, the y
@@ -103,9 +102,7 @@
 #'@param cumcensor logical value specifying whether to show or not the table of
 #'  the cumulative number of censoring. Default is FALSE.
 #'@param cumcensor.title The title to be used for the cumcensor table.
-#'@param cumcensor.col color to be used for cumcensor table. Default value is
-#'  "black". If you want to color by strata (i.e. groups), use cumcensor.col =
-#'  "strata".
+#'@param cumcensor.col same as tables.col but for cumcensor table only.
 #'@param cumcensor.y.text logical. Default is TRUE. If FALSE, the y axis tick
 #'  labels of the cumcensor table will be hidden.
 #'@param cumcensor.y.text.col logical. Default value is FALSE. If TRUE, the y
@@ -383,9 +380,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                         xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
-                       tables.height = 0.25, tables.y.text = TRUE,
+                       tables.height = 0.25, tables.y.text = TRUE, tables.col = "black",
                        risk.table = FALSE, risk.table.pos = c("out", "in"), risk.table.title = NULL,
-                       risk.table.col = "black", risk.table.fontsize = 4.5, fontsize = 4.5,
+                       risk.table.col = tables.col, risk.table.fontsize = 4.5, fontsize = 4.5,
                        risk.table.y.text = tables.y.text,
                        risk.table.y.text.col = TRUE,
                        risk.table.height = tables.height, surv.plot.height = 0.75,
@@ -393,9 +390,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        cumcensor.height = tables.height,
                        ncensor.plot = FALSE,
                        ncensor.plot.title = NULL,
-                       cumevents = FALSE, cumevents.col = "black", cumevents.title = NULL,
+                       cumevents = FALSE, cumevents.col = tables.col, cumevents.title = NULL,
                        cumevents.y.text = tables.y.text, cumevents.y.text.col = TRUE,
-                       cumcensor = FALSE, cumcensor.col = "black", cumcensor.title = NULL,
+                       cumcensor = FALSE, cumcensor.col = tables.col, cumcensor.title = NULL,
                        cumcensor.y.text = tables.y.text, cumcensor.y.text.col = TRUE,
                        surv.median.line = c("none", "hv", "h", "v"),
                        ggtheme = theme_survminer(),
