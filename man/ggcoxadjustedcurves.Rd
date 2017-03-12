@@ -39,7 +39,7 @@ Returns an object of class \code{gg}.
 \description{
 This function plots adjusted survival curves for coxph model.
 The idea behind this function is described in \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
-For every observation in the dataset a prediction for survival cure is made.
+For every observation in the dataset a prediction for survival curve is made.
 Then the predictions are averaged with respect to a selected variable.
 }
 \examples{
@@ -52,8 +52,8 @@ ggcoxadjustedcurves(fit, data = colon)
 fit2 <- coxph( Surv(stop, event) ~ rx + size, data = bladder )
 ggcoxadjustedcurves(fit2, data = bladder)
 ggcoxadjustedcurves(fit2, individual.curves = TRUE, data = bladder, curve.alpha=0.01)
-ggcoxadjustedcurves(fit2, data = bladder, variable=factor( bladder[,"rx"]))
-ggcoxadjustedcurves(fit2, data = bladder, variable=factor(bladder[,"rx"]),
+ggcoxadjustedcurves(fit2, data = bladder, variable= bladder[,"rx"])
+ggcoxadjustedcurves(fit2, data = bladder, variable= bladder[,"rx"],
    individual.curves=TRUE, curve.alpha=0.01)
 
 }

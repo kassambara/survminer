@@ -73,6 +73,8 @@ p %+% theme_survminer(
 ## Major changes
    
 - Additional `data` argument added to the `ggsurvplot()` function ([@kassambara, #142](https://github.com/kassambara/survminer/issues/142)). Now, it's recommended to pass to the function, the data used to fit survival curves. This will avoid the error generated when trying to use the `ggsurvplot()` function inside another functions ([@zzawadz, #125](https://github.com/kassambara/survminer/issues/125)).
+   
+- New argument `tables.col` in `ggsurvplot()` to change the color of all tables under the main plot, at once.
 
 - New fonts and texts customization features for `ggsurvplot` ([@MarcinKosinski, #105](https://github.com/kassambara/survminer/issues/105)) ([@MarcinKosinski, #106](https://github.com/kassambara/survminer/issues/106))
     - It is possible to specify subtitle (param `submain`) and caption (param `caption`) for the `curve` part of the `ggsurvplot`.

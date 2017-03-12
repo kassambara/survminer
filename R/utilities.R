@@ -15,7 +15,8 @@
 .get_legend <- function(myggplot){
   tmp <- ggplot_gtable(ggplot_build(myggplot))
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  leg <- tmp$grobs[[leg]]
+  if(length(leg) > 0) leg <- tmp$grobs[[leg]] # if legend
+  else leg <- NULL
   return(leg)
 }
 

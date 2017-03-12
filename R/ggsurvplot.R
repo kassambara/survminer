@@ -59,9 +59,7 @@
 #'@param risk.table.pos character vector specifying the risk table position.
 #'  Allowed options are one of c("out", "in") indicating 'outside' or 'inside'
 #'  the main plot, respectively. Default value is "out".
-#'@param risk.table.col color to be used for risk table. Default value is
-#'  "black". If you want to color by strata (i.e. groups), use risk.table.col =
-#'  "strata".
+#'@param risk.table.col same as tables.col but for risk table only.
 #'@param risk.table.fontsize,fontsize font size to be used for the risk table
 #'  and the cumulative events table.
 #'@param risk.table.y.text logical. Default is TRUE. If FALSE, risk table y axis
@@ -72,6 +70,9 @@
 #'  of all tables under the main survival plot.
 #'@param tables.y.text logical. Default is TRUE. If FALSE, the y axis tick
 #'  labels of tables will be hidden.
+#'@param tables.col color to be used for all tables under the main plot. Default value is
+#'  "black". If you want to color by strata (i.e. groups), use tables.col =
+#'  "strata".
 #'@param tables.theme function, ggplot2 theme name. Default value is
 #'  \link{theme_survminer}. Allowed values include ggplot2 official themes: see
 #'  \code{\link[ggplot2]{theme}}.
@@ -91,9 +92,7 @@
 #'@param cumevents logical value specifying whether to show or not the table of
 #'  the cumulative number of events. Default is FALSE.
 #'@param cumevents.title The title to be used for the cumulative events table.
-#'@param cumevents.col color to be used for cumulative events table. Default
-#'  value is "black". If you want to color by strata (i.e. groups), use
-#'  cumevents.col = "strata".
+#'@param cumevents.col same as tables.col but for the cumulative events table only.
 #'@param cumevents.y.text logical. Default is TRUE. If FALSE, the y axis tick
 #'  labels of the cumulative events table  will be hidden.
 #'@param cumevents.y.text.col logical. Default value is FALSE. If TRUE, the y
@@ -103,9 +102,7 @@
 #'@param cumcensor logical value specifying whether to show or not the table of
 #'  the cumulative number of censoring. Default is FALSE.
 #'@param cumcensor.title The title to be used for the cumcensor table.
-#'@param cumcensor.col color to be used for cumcensor table. Default value is
-#'  "black". If you want to color by strata (i.e. groups), use cumcensor.col =
-#'  "strata".
+#'@param cumcensor.col same as tables.col but for cumcensor table only.
 #'@param cumcensor.y.text logical. Default is TRUE. If FALSE, the y axis tick
 #'  labels of the cumcensor table will be hidden.
 #'@param cumcensor.y.text.col logical. Default value is FALSE. If TRUE, the y
@@ -150,10 +147,10 @@
 #'  legend.\cr\cr \strong{Customizing the plots}: The plot can be easily
 #'  customized using additional arguments to be passed to the function ggpar().
 #'  Read ?ggpubr::ggpar. These arguments include
-#'  \emph{font.title,font.subtitle,font.caption,font.x,font.y,font.tickslab,font.legend}:
+#'  \emph{font.title, font.subtitle, font.caption, font.x, font.y, font.tickslab and font.legend}:
 #'   a vector of length 3 indicating respectively the size (e.g.: 14), the style
 #'  (e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
-#'  of main title, subtitle, caption, xlab and ylab and axis tick labels,
+#'  of main title, subtitle, caption, xlab and ylab, axis tick labels and legend,
 #'  respectively. For example \emph{font.x = c(14, "bold", "red")}.  Use font.x
 #'  = 14, to change only font size; or use font.x = "bold", to change only font
 #'  face.
@@ -383,9 +380,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                         xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
-                       tables.height = 0.25, tables.y.text = TRUE,
+                       tables.height = 0.25, tables.y.text = TRUE, tables.col = "black",
                        risk.table = FALSE, risk.table.pos = c("out", "in"), risk.table.title = NULL,
-                       risk.table.col = "black", risk.table.fontsize = 4.5, fontsize = 4.5,
+                       risk.table.col = tables.col, risk.table.fontsize = 4.5, fontsize = 4.5,
                        risk.table.y.text = tables.y.text,
                        risk.table.y.text.col = TRUE,
                        risk.table.height = tables.height, surv.plot.height = 0.75,
@@ -393,9 +390,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        cumcensor.height = tables.height,
                        ncensor.plot = FALSE,
                        ncensor.plot.title = NULL,
-                       cumevents = FALSE, cumevents.col = "black", cumevents.title = NULL,
+                       cumevents = FALSE, cumevents.col = tables.col, cumevents.title = NULL,
                        cumevents.y.text = tables.y.text, cumevents.y.text.col = TRUE,
-                       cumcensor = FALSE, cumcensor.col = "black", cumcensor.title = NULL,
+                       cumcensor = FALSE, cumcensor.col = tables.col, cumcensor.title = NULL,
                        cumcensor.y.text = tables.y.text, cumcensor.y.text.col = TRUE,
                        surv.median.line = c("none", "hv", "h", "v"),
                        ggtheme = theme_survminer(),
@@ -540,16 +537,16 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     pvaltxt <- ifelse(pval$val < 1e-04, "p < 0.0001",
                     paste("p =", signif(pval$val, 2)))
 
-    pval.x <- ifelse(is.null(pval.coord[1]), 0.1*max(fit$time), pval.coord[1])
+    pval.x <- ifelse(is.null(pval.coord[1]), max(fit$time)/50, pval.coord[1])
     pval.y <- ifelse(is.null(pval.coord[2]), 0.2, pval.coord[2])
     p <- p + ggplot2::annotate("text", x = pval.x, y = pval.y,
-                               label = pvaltxt, size = pval.size)
+                               label = pvaltxt, size = pval.size, hjust = 0)
     if(pval.method){
       pvalmethod <- pval$method
-      pval.method.x <- ifelse(is.null(pval.method.coord[1]), 0.1*max(fit$time), pval.method.coord[1])
+      pval.method.x <- ifelse(is.null(pval.method.coord[1]), max(fit$time)/50, pval.method.coord[1])
       pval.method.y <- ifelse(is.null(pval.method.coord[2]), 0.3, pval.method.coord[2])
       p <- p + ggplot2::annotate("text", x = pval.method.x, y = pval.method.y,
-                                 label = pvalmethod, size = pval.method.size)
+                                 label = pvalmethod, size = pval.method.size, hjust = 0)
     }
   }
 
@@ -786,7 +783,7 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   ggsurv <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
 
   # Set legend
-  if(nplot > 1 & legend.position %in% c("left", "right", "bottom")){
+  if(nplot > 1 & legend.position %in% c("left", "right", "bottom") & is.null(legend.grob)){
     ggsurv <- switch(legend.position,
                    bottom = gridExtra::arrangeGrob(grobs = list(ggsurv, legend.grob), nrow = 2, heights = c(0.9, 0.1)),
                    top = gridExtra::arrangeGrob(grobs = list(legend.grob, ggsurv), nrow = 2, heights = c(0.1, 0.9)),
@@ -868,7 +865,7 @@ p <- p + theme(legend.position = "none")
       sdiff <- survival::survdiff(eval(fit$call$formula), data = data,
                                      subset = eval(fit$call$subset))
     pvalue <- stats::pchisq(sdiff$chisq, length(sdiff$n) - 1, lower.tail = FALSE)
-    return(list(val = pvalue, method = "Log-rank (survdiff)"))
+    return(list(val = pvalue, method = "Log-rank"))
   } else {
     tenfit <- ten(eval(fit$call$formula), data = data)
     capture.output(comp(tenfit)) -> null_dev
@@ -877,9 +874,9 @@ p <- p + theme(legend.position = "none")
     attributes(tenfit)$lrt -> tests
     # check str(tests) -> W:weights / pNorm:p-values
     pvalue <- round(tests$pNorm[tests$W == method], 4)
-    test_name <- c("Log-rank (comp)", "Gehan-Breslow (generalized Wilcoxon)",
-                   "Tarone-Ware", "Peto-Peto's modified survival estimate",
-                   "modified Peto-Peto (by Andersen)", "Fleming-Harrington (p=1, q=1)")
+    test_name <- c("Log-rank", "Gehan-Breslow",
+                   "Tarone-Ware", "Peto-Peto",
+                   "modified Peto-Peto", "Fleming-Harrington (p=1, q=1)")
     # taken from ?survMisc::comp
     return(list(val = pvalue, method = test_name[tests$W == method]))
   }

@@ -16,19 +16,20 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
   ylab = "Survival probability", xlim = NULL, ylim = NULL,
   legend = c("top", "bottom", "left", "right", "none"),
   legend.title = "Strata", legend.labs = NULL, tables.height = 0.25,
-  tables.y.text = TRUE, risk.table = FALSE, risk.table.pos = c("out",
-  "in"), risk.table.title = NULL, risk.table.col = "black",
-  risk.table.fontsize = 4.5, fontsize = 4.5,
+  tables.y.text = TRUE, tables.col = "black", risk.table = FALSE,
+  risk.table.pos = c("out", "in"), risk.table.title = NULL,
+  risk.table.col = tables.col, risk.table.fontsize = 4.5, fontsize = 4.5,
   risk.table.y.text = tables.y.text, risk.table.y.text.col = TRUE,
   risk.table.height = tables.height, surv.plot.height = 0.75,
   ncensor.plot.height = tables.height, cumevents.height = tables.height,
   cumcensor.height = tables.height, ncensor.plot = FALSE,
-  ncensor.plot.title = NULL, cumevents = FALSE, cumevents.col = "black",
-  cumevents.title = NULL, cumevents.y.text = tables.y.text,
-  cumevents.y.text.col = TRUE, cumcensor = FALSE, cumcensor.col = "black",
-  cumcensor.title = NULL, cumcensor.y.text = tables.y.text,
-  cumcensor.y.text.col = TRUE, surv.median.line = c("none", "hv", "h", "v"),
-  ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
+  ncensor.plot.title = NULL, cumevents = FALSE,
+  cumevents.col = tables.col, cumevents.title = NULL,
+  cumevents.y.text = tables.y.text, cumevents.y.text.col = TRUE,
+  cumcensor = FALSE, cumcensor.col = tables.col, cumcensor.title = NULL,
+  cumcensor.y.text = tables.y.text, cumcensor.y.text.col = TRUE,
+  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_survminer(),
+  tables.theme = ggtheme, ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
   risk.table.height = NULL, ncensor.plot.height = NULL, newpage = TRUE,
@@ -121,6 +122,10 @@ of all tables under the main survival plot.}
 \item{tables.y.text}{logical. Default is TRUE. If FALSE, the y axis tick
 labels of tables will be hidden.}
 
+\item{tables.col}{color to be used for all tables under the main plot. Default value is
+"black". If you want to color by strata (i.e. groups), use tables.col =
+"strata".}
+
 \item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
 specifying whether to show or not the risk table. Default is FALSE. \item
 "absolute" or "percentage": to show the \bold{absolute number} and the
@@ -135,9 +140,7 @@ the main plot, respectively. Default value is "out".}
 
 \item{risk.table.title}{The title to be used for the risk table.}
 
-\item{risk.table.col}{color to be used for risk table. Default value is
-"black". If you want to color by strata (i.e. groups), use risk.table.col =
-"strata".}
+\item{risk.table.col}{same as tables.col but for risk table only.}
 
 \item{risk.table.fontsize, fontsize}{font size to be used for the risk table
 and the cumulative events table.}
@@ -175,9 +178,7 @@ time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.}
 \item{cumevents}{logical value specifying whether to show or not the table of
 the cumulative number of events. Default is FALSE.}
 
-\item{cumevents.col}{color to be used for cumulative events table. Default
-value is "black". If you want to color by strata (i.e. groups), use
-cumevents.col = "strata".}
+\item{cumevents.col}{same as tables.col but for the cumulative events table only.}
 
 \item{cumevents.title}{The title to be used for the cumulative events table.}
 
@@ -190,9 +191,7 @@ tick labels of the cumulative events will be colored by strata.}
 \item{cumcensor}{logical value specifying whether to show or not the table of
 the cumulative number of censoring. Default is FALSE.}
 
-\item{cumcensor.col}{color to be used for cumcensor table. Default value is
-"black". If you want to color by strata (i.e. groups), use cumcensor.col =
-"strata".}
+\item{cumcensor.col}{same as tables.col but for cumcensor table only.}
 
 \item{cumcensor.title}{The title to be used for the cumcensor table.}
 
@@ -250,10 +249,10 @@ Drawing survival curves using ggplot2
  legend.\cr\cr \strong{Customizing the plots}: The plot can be easily
  customized using additional arguments to be passed to the function ggpar().
  Read ?ggpubr::ggpar. These arguments include
- \emph{font.title,font.subtitle,font.caption,font.x,font.y,font.tickslab,font.legend}:
+ \emph{font.title, font.subtitle, font.caption, font.x, font.y, font.tickslab and font.legend}:
   a vector of length 3 indicating respectively the size (e.g.: 14), the style
  (e.g.: "plain", "bold", "italic", "bold.italic") and the color (e.g.: "red")
- of main title, subtitle, caption, xlab and ylab and axis tick labels,
+ of main title, subtitle, caption, xlab and ylab, axis tick labels and legend,
  respectively. For example \emph{font.x = c(14, "bold", "red")}.  Use font.x
  = 14, to change only font size; or use font.x = "bold", to change only font
  face.
