@@ -46,7 +46,7 @@ The **survminer** R package provides functions for facilitating **survival analy
 The main functions, in the package, are organized in different categories as follow.  
    
    
-**Summarizing and Visualizing Survival Curves**
+**Survival Curves**
 <hr/>
     
 - **ggsurvplot**(): Draws survival curves with the 'number at risk' table and 'censoring count plot'.
@@ -63,7 +63,7 @@ The main functions, in the package, are organized in different categories as fol
         
 <br/> 
              
- **Visual Examinations of Cox Model Assumptions**
+ **Diagnostics of Cox Model**
 <hr/>
      
 - **ggcoxzph**(): Graphical test of proportional hazards. Displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ggplot2. Wrapper around plot.cox.zph().
@@ -74,7 +74,7 @@ The main functions, in the package, are organized in different categories as fol
      
 <br/>           
      
-**Visual Representation of Cox Model Coefficients**
+**Summary of Cox Model**
 <hr/>
    
 - **ggforest**(): Draws forest plot for CoxPH model.

@@ -12,12 +12,12 @@ reference:
       - surv_summary
       - surv_cutpoint
       - pairwise_survdiff
-  - title: Visual Examinations of Cox Model Assumptions
+  - title: Diagnostics of Cox Model
     contents:
       - ggcoxdiagnostics
       - ggcoxfunctional
       - ggcoxzph
-  - title: Visual Representation of Cox Model Coefficients
+  - title: VSummary of Cox Model
     contents:
       - ggforest
       - ggcoxadjustedcurves
