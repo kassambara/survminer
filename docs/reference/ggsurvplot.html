@@ -363,97 +363,93 @@ the plots. See details section.</dd>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Example 1: Survival curves with two groups
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<span class='co'>#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class='co'># Example 1: Survival curves with two groups</span>
+<span class='co'>#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 
-# Fit survival curves
-#++++++++++++++++++++++++++++++++++++
-require("survival")
-fit<- survfit(Surv(time, status) ~ sex, data = lung)
+<span class='co'># Fit survival curves</span>
+<span class='co'>#++++++++++++++++++++++++++++++++++++</span>
+<span class='fu'>require</span>(<span class='st'>"survival"</span>)
+<span class='no'>fit</span><span class='kw'>&lt;-</span> <span class='fu'>survfit</span>(<span class='fu'>Surv</span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>)
 
-# Basic survival curves
-ggsurvplot(fit, data = lung)
+<span class='co'># Basic survival curves</span>
+<span class='fu'>ggsurvplot</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>)</div><img src='ggsurvplot-2.png' alt='' width='540' height='400' /><div class='input'>
+<span class='co'># Customized survival curves</span>
+<span class='fu'>ggsurvplot</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>,
+ <span class='kw'>surv.median.line</span> <span class='kw'>=</span> <span class='st'>"hv"</span>, <span class='co'># Add medians survival</span>
 
-# Customized survival curves
-ggsurvplot(fit, data = lung,
- surv.median.line = "hv", # Add medians survival
- # Change legends: title & labels
- legend.title = "Sex",
- legend.labs = c("Male", "Female")
- # Add p-value and confidence intervals
- pval = TRUE,
- conf.int = TRUE,
- # Add risk table
- risk.table = TRUE,
- tables.height = 0.2,
- themes.table = theme_cleantable(),
- # Color palettes. Use custom color: c("#E7B800", "#2E9FDF"),
- # or brewer color (e.g.: "Dark2"), or ggsci color (e.g.: "jco")
- palette = c("#E7B800", "#2E9FDF"),
- ggtheme = theme_bw() # Change ggplot2 theme
-)
+ <span class='co'># Change legends: title &amp; labels</span>
+ <span class='kw'>legend.title</span> <span class='kw'>=</span> <span class='st'>"Sex"</span>,
+ <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Male"</span>, <span class='st'>"Female"</span>),
+ <span class='co'># Add p-value and confidence intervals</span>
+ <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
 
-# Change font size, style and color
-#++++++++++++++++++++++++++++++++++++
-## Not run: ------------------------------------
-# # Change font size, style and color at the same time
-# ggsurvplot(fit, data = lung,  main = "Survival curve",
-#    font.main = c(16, "bold", "darkblue"),
-#    font.x = c(14, "bold.italic", "red"),
-#    font.y = c(14, "bold.italic", "darkred"),
-#    font.tickslab = c(12, "plain", "darkgreen"))
-## ---------------------------------------------
+ <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+ <span class='co'># Add risk table</span>
+ <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+ <span class='kw'>tables.height</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
+ <span class='kw'>tables.theme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_cleantable</a></span>(),
+
+ <span class='co'># Color palettes. Use custom color: c("#E7B800", "#2E9FDF"),</span>
+ <span class='co'># or brewer color (e.g.: "Dark2"), or ggsci color (e.g.: "jco")</span>
+ <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"#E7B800"</span>, <span class='st'>"#2E9FDF"</span>),
+ <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'>theme_bw</span>() <span class='co'># Change ggplot2 theme</span>
+)</div><img src='ggsurvplot-4.png' alt='' width='540' height='400' /><div class='input'>
+<span class='co'># Change font size, style and color</span>
+<span class='co'>#++++++++++++++++++++++++++++++++++++</span>
+<span class='co'>## Not run: ------------------------------------</span>
+<span class='co'># # Change font size, style and color at the same time</span>
+<span class='co'># ggsurvplot(fit, data = lung,  main = "Survival curve",</span>
+<span class='co'>#    font.main = c(16, "bold", "darkblue"),</span>
+<span class='co'>#    font.x = c(14, "bold.italic", "red"),</span>
+<span class='co'>#    font.y = c(14, "bold.italic", "darkred"),</span>
+<span class='co'>#    font.tickslab = c(12, "plain", "darkgreen"))</span>
+<span class='co'>## ---------------------------------------------</span>
 
 
 
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Example 2: Facet ggsurvplot() output by
-# a combination of factors
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<span class='co'>#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class='co'># Example 2: Facet ggsurvplot() output by</span>
+<span class='co'># a combination of factors</span>
+<span class='co'>#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 
-# Fit (complexe) survival curves
-#++++++++++++++++++++++++++++++++++++
-## Not run: ------------------------------------
-# require("survival")
-# fit3 <- survfit( Surv(time, status) ~ sex + rx + adhere,
-#                 data = colon )
-# 
-# # Visualize
-# #++++++++++++++++++++++++++++++++++++
-# ggsurv <- ggsurvplot(fit3, data = colon,
-#   fun = "cumhaz", conf.int = TRUE,
-#   risk.table = TRUE, risk.table.col="strata",
-#   ggtheme = theme_bw())
-# 
-# # Faceting survival curves
-# curv_facet <- ggsurv$plot + facet_grid(rx ~ adhere)
-# curv_facet
-# 
-# # Faceting risk tables:
-# # Generate risk table for each facet plot item
-# ggsurv$table + facet_grid(rx ~ adhere, scales = "free")+
-#  theme(legend.position = "none")
-# 
-#  # Generate risk table for each facet columns
-# tbl_facet <- ggsurv$table + facet_grid(.~ adhere, scales = "free")
-# tbl_facet + theme(legend.position = "none")
-# 
-# # Arrange faceted survival curves and risk tables
-# g2 <- ggplotGrob(curv_facet)
-# g3 <- ggplotGrob(tbl_facet)
-# min_ncol <- min(ncol(g2), ncol(g3))
-# g <- gridExtra::rbind.gtable(g2[, 1:min_ncol], g3[, 1:min_ncol], size="last")
-# g$widths <- grid::unit.pmax(g2$widths, g3$widths)
-# grid::grid.newpage()
-# grid::grid.draw(g)
-# 
-## ---------------------------------------------
-
-</div><div class='output co'>#&gt; <span class='error'>Error: &lt;text&gt;:21:2: unexpected symbol</span>
-#&gt; <span class='error'>20:  # Add p-value and confidence intervals</span>
-#&gt; <span class='error'>21:  pval</span>
-#&gt; <span class='error'>     ^</span></div></pre>
+<span class='co'># Fit (complexe) survival curves</span>
+<span class='co'>#++++++++++++++++++++++++++++++++++++</span>
+<span class='co'>## Not run: ------------------------------------</span>
+<span class='co'># require("survival")</span>
+<span class='co'># fit3 &lt;- survfit( Surv(time, status) ~ sex + rx + adhere,</span>
+<span class='co'>#                 data = colon )</span>
+<span class='co'># </span>
+<span class='co'># # Visualize</span>
+<span class='co'># #++++++++++++++++++++++++++++++++++++</span>
+<span class='co'># ggsurv &lt;- ggsurvplot(fit3, data = colon,</span>
+<span class='co'>#   fun = "cumhaz", conf.int = TRUE,</span>
+<span class='co'>#   risk.table = TRUE, risk.table.col="strata",</span>
+<span class='co'>#   ggtheme = theme_bw())</span>
+<span class='co'># </span>
+<span class='co'># # Faceting survival curves</span>
+<span class='co'># curv_facet &lt;- ggsurv$plot + facet_grid(rx ~ adhere)</span>
+<span class='co'># curv_facet</span>
+<span class='co'># </span>
+<span class='co'># # Faceting risk tables:</span>
+<span class='co'># # Generate risk table for each facet plot item</span>
+<span class='co'># ggsurv$table + facet_grid(rx ~ adhere, scales = "free")+</span>
+<span class='co'>#  theme(legend.position = "none")</span>
+<span class='co'># </span>
+<span class='co'>#  # Generate risk table for each facet columns</span>
+<span class='co'># tbl_facet &lt;- ggsurv$table + facet_grid(.~ adhere, scales = "free")</span>
+<span class='co'># tbl_facet + theme(legend.position = "none")</span>
+<span class='co'># </span>
+<span class='co'># # Arrange faceted survival curves and risk tables</span>
+<span class='co'># g2 &lt;- ggplotGrob(curv_facet)</span>
+<span class='co'># g3 &lt;- ggplotGrob(tbl_facet)</span>
+<span class='co'># min_ncol &lt;- min(ncol(g2), ncol(g3))</span>
+<span class='co'># g &lt;- gridExtra::rbind.gtable(g2[, 1:min_ncol], g3[, 1:min_ncol], size="last")</span>
+<span class='co'># g$widths &lt;- grid::unit.pmax(g2$widths, g3$widths)</span>
+<span class='co'># grid::grid.newpage()</span>
+<span class='co'># grid::grid.draw(g)</span>
+<span class='co'># </span>
+<span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
