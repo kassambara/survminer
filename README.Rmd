@@ -46,7 +46,7 @@ The **survminer** R package provides functions for facilitating **survival analy
 The main functions, in the package, are organized in different categories as follow.  
    
    
-**Summarizing and Visualizing Survival Curves**
+**Survival Curves**
 <hr/>
     
 - **ggsurvplot**(): Draws survival curves with the 'number at risk' table and 'censoring count plot'.
@@ -63,7 +63,7 @@ The main functions, in the package, are organized in different categories as fol
         
 <br/> 
              
- **Visual Examinations of Cox Model Assumptions**
+ **Diagnostics of Cox Model**
 <hr/>
      
 - **ggcoxzph**(): Graphical test of proportional hazards. Displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ggplot2. Wrapper around plot.cox.zph().
@@ -74,7 +74,7 @@ The main functions, in the package, are organized in different categories as fol
      
 <br/>           
      
-**Visual Representation of Cox Model Coefficients**
+**Summary of Cox Model**
 <hr/>
    
 - **ggforest**(): Draws forest plot for CoxPH model.
@@ -195,11 +195,11 @@ ggsurv <- ggsurvplot(
            break.time.by = 100,     # break X axis in time intervals by 500.
            ggtheme = theme_light(), # customize plot and risk table with a theme.
           risk.table.y.text.col = T,# colour risk table text annotations.
-          risk.table.height = 0.35, # the height of the risk table
+          risk.table.height = 0.25, # the height of the risk table
           risk.table.y.text = FALSE,# show bars instead of names in text annotations
                                     # in legend of risk table.
           ncensor.plot = TRUE,      # plot the number of censored subjects at time t
-          ncensor.plot.height = 0.35,
+          ncensor.plot.height = 0.25,
           conf.int.style = "step",  # customize style of confidence intervals
           surv.median.line = "hv",  # add the median survival pointer.
           legend.labs = 
@@ -242,12 +242,12 @@ ggsurv$ncensor.plot <- ggsurv$ncensor.plot + labs(
 # survival curves, risk table and censor part
 
 ggsurv <- ggpar(ggsurv,
-          font.title = c(16, "bold", "darkblue"),          # font for titles of the plot, the table and censor part
-          font.subtitle = c(15, "bold.italic", "purple"),  # font for subtitles in the plot, the table and censor part
-          font.caption = c(14, "plain", "orange"),        # font for captions in the plot, the table and censor part
-          font.x = c(14, "bold.italic", "red"),           # font for x axises in the plot, the table and censor part
-          font.y = c(14, "bold.italic", "darkred"),       # font for y axises in the plot, the table and censor part
-          font.tickslab = c(12, "plain", "darkgreen"),    # font for ticklabs in the plot, the table and censor part
+          font.title = c(16, "bold", "darkblue"),         
+          font.subtitle = c(15, "bold.italic", "purple"), 
+          font.caption = c(14, "plain", "orange"),        
+          font.x = c(14, "bold.italic", "red"),          
+          font.y = c(14, "bold.italic", "darkred"),      
+          font.tickslab = c(12, "plain", "darkgreen"),
           legend = "top"
           )
 

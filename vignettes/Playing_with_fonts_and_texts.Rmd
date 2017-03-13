@@ -55,10 +55,10 @@ with the plot where every possible text on a `plot` is specified
 
 ```{r}
 ggsurvplot(fit, data = lung,
-   main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+   title = "Survival curves", subtitle = "Based on Kaplan-Meier estimates",
    caption = "created with survminer",
-   font.main = c(16, "bold", "darkblue"),
-   font.submain = c(15, "bold.italic", "purple"),
+   font.title = c(16, "bold", "darkblue"),
+   font.subtitle = c(15, "bold.italic", "purple"),
    font.caption = c(14, "plain", "orange"),
    font.x = c(14, "bold.italic", "red"),
    font.y = c(14, "bold.italic", "darkred"),
@@ -83,10 +83,10 @@ with the plot where every possible text on a `plot` and `table` is specified
 
 ```{r}
 ggsurvplot(fit, data = lung, 
-   main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+   title = "Survival curves", subtitle = "Based on Kaplan-Meier estimates",
    caption = "created with survminer",
-   font.main = c(16, "bold", "darkblue"),
-   font.submain = c(15, "bold.italic", "purple"),
+   font.title = c(16, "bold", "darkblue"),
+   font.subtitle = c(15, "bold.italic", "purple"),
    font.caption = c(14, "plain", "orange"),
    font.x = c(14, "bold.italic", "red"),
    font.y = c(14, "bold.italic", "darkred"),
@@ -118,10 +118,10 @@ with the full customization
 
 ```{r, fig.height = 7.5, fig.width = 6}
 ggsurvplot(fit, data = lung,
-   main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+   title = "Survival curves", subtitle = "Based on Kaplan-Meier estimates",
    caption = "created with survminer",
-   font.main = c(16, "bold", "darkblue"),
-   font.submain = c(15, "bold.italic", "purple"),
+   font.title = c(16, "bold", "darkblue"),
+   font.subtitle = c(15, "bold.italic", "purple"),
    font.caption = c(14, "plain", "orange"),
    font.x = c(14, "bold.italic", "red"),
    font.y = c(14, "bold.italic", "darkred"),
@@ -144,5 +144,5 @@ ggsurvplot(fit, data = lung,
 # Notes
 
 - Note that you will probably need to extend the default risk table height and ncens plot height after those customizations.
-- Distinct between `main` and `submain` for the `curve_plot` and `risk.table.title` and `risk.table.subtitle` for the `table` / `ncens.plot.title` and `ncens.plot.subtitle` for the `ncens`.
+- Distinct between `title` and `subtitle` for the `curve_plot` and `risk.table.title` and `risk.table.subtitle` for the `table` / `ncens.plot.title` and `ncens.plot.subtitle` for the `ncens`.
 - Fonts are set simultaneously for the `curve_plot`, for the `table` and for the `ncens` parts. This might change in the future.

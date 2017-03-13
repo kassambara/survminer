@@ -49,6 +49,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -60,7 +63,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -73,7 +81,7 @@
   <div class="col-md-9">
     <div class="page-header">
       <h1>Function reference</h1>
-      <h4>version&nbsp;0.2.4.999</h4>
+      <h4>version&nbsp;0.3.0</h4>
     </div>
 
     <div class="contents">
@@ -103,14 +111,14 @@
       
       <p><a href="surv_cutpoint.html">Determine the Optimal Cutpoint for Continuous Variables</a></p>
       <ul>
-        <li><code><a href="surv_cutpoint.html">plot.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">print.plot_surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">print.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">summary.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">surv_categorize</a></code></li><li><code><a href="surv_cutpoint.html">surv_cutpoint</a></code></li>
+        <li><code><a href="surv_cutpoint.html">surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">surv_categorize</a></code></li><li><code><a href="surv_cutpoint.html">summary.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">print.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">plot.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">print.plot_surv_cutpoint</a></code></li>
       </ul>
       
       <p><a href="surv_summary.html">Nice Summary of a Survival Curve</a></p>
       <ul>
         <li><code><a href="surv_summary.html">surv_summary</a></code></li>
       </ul>
-          <h2 id="section-visual-examinations-of-cox-model-assumptions" class="hasAnchor"><a href="#section-visual-examinations-of-cox-model-assumptions" class="anchor"></a>Visual Examinations of Cox Model Assumptions</h2>
+          <h2 id="section-diagnostics-of-cox-model" class="hasAnchor"><a href="#section-diagnostics-of-cox-model" class="anchor"></a>Diagnostics of Cox Model</h2>
       <p class="section-desc"></p>
 
       
@@ -128,7 +136,7 @@
       <ul>
         <li><code><a href="ggcoxzph.html">ggcoxzph</a></code></li><li><code><a href="ggcoxzph.html">print.ggcoxzph</a></code></li>
       </ul>
-          <h2 id="section-visual-representation-of-cox-model-coefficients" class="hasAnchor"><a href="#section-visual-representation-of-cox-model-coefficients" class="anchor"></a>Visual Representation of Cox Model Coefficients</h2>
+          <h2 id="section-vsummary-of-cox-model" class="hasAnchor"><a href="#section-vsummary-of-cox-model" class="anchor"></a>VSummary of Cox Model</h2>
       <p class="section-desc"></p>
 
       
@@ -153,6 +161,21 @@
       <p class="section-desc"></p>
 
       
+      <p><a href="ggcumcensor.html">Cumulative Number of Censored Subjects</a></p>
+      <ul>
+        <li><code><a href="ggcumcensor.html">ggcumcensor</a></code></li>
+      </ul>
+      
+      <p><a href="ggcumevents.html">Cumulative Number of Events Table</a></p>
+      <ul>
+        <li><code><a href="ggcumevents.html">ggcumevents</a></code></li>
+      </ul>
+      
+      <p><a href="ggrisktable.html">Number at Risk Table</a></p>
+      <ul>
+        <li><code><a href="ggrisktable.html">ggrisktable</a></code></li>
+      </ul>
+      
       <p><a href="theme_classic2.html">ggplot2 classic theme with axis lines</a></p>
       <ul>
         <li><code><a href="theme_classic2.html">theme_classic2</a></code></li>
@@ -165,8 +188,8 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#section-survival-curves">Survival Curves</a></li>
-      <li><a href="#section-visual-examinations-of-cox-model-assumptions">Visual Examinations of Cox Model Assumptions</a></li>
-      <li><a href="#section-visual-representation-of-cox-model-coefficients">Visual Representation of Cox Model Coefficients</a></li>
+      <li><a href="#section-diagnostics-of-cox-model">Diagnostics of Cox Model</a></li>
+      <li><a href="#section-vsummary-of-cox-model">VSummary of Cox Model</a></li>
       <li><a href="#section-data">Data</a></li>
       <li><a href="#section-others">Others</a></li>
     </ul>

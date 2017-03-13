@@ -12,12 +12,12 @@ reference:
       - surv_summary
       - surv_cutpoint
       - pairwise_survdiff
-  - title: Visual Examinations of Cox Model Assumptions
+  - title: Diagnostics of Cox Model
     contents:
       - ggcoxdiagnostics
       - ggcoxfunctional
       - ggcoxzph
-  - title: Visual Representation of Cox Model Coefficients
+  - title: VSummary of Cox Model
     contents:
       - ggforest
       - ggcoxadjustedcurves
@@ -30,6 +30,23 @@ reference:
       - ggcumcensor
       - ggsurvtheme
       - theme_classic2
+      - add_ggsurvplot
+
+
+navbar:
+  title: "survminer"
+  left:
+  - text: Cheatseet
+    href: survminer_cheatsheet.pdf
+  - text: Reference
+    href: reference/index.html
+  - text: Articles
+    href: articles/index.html
+  - text: News
+    href: news/index.html
+  right:
+    - icon: fa-github
+      href: https://github.com/kassambara/survminer
 
 
 
