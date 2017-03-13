@@ -176,8 +176,27 @@
 #'require("survival")
 #'fit<- survfit(Surv(time, status) ~ sex, data = lung)
 #'
-#'# Drawing survival curves
+#'# Basic survival curves
 #'ggsurvplot(fit, data = lung)
+#'
+#'# Customized survival curves
+#'ggsurvplot(fit, data = lung,
+#'  surv.median.line = "hv", # Add medians survival
+#'  # Change legends: title & labels
+#'  legend.title = "Sex",
+#'  legend.labs = c("Male", "Female")
+#'  # Add p-value and confidence intervals
+#'  pval = TRUE,
+#'  conf.int = TRUE,
+#'  # Add risk table
+#'  risk.table = TRUE,
+#'  tables.height = 0.2,
+#'  themes.table = theme_cleantable(),
+#'  # Color palettes. Use custom color: c("#E7B800", "#2E9FDF"),
+#'  # or brewer color (e.g.: "Dark2"), or ggsci color (e.g.: "jco")
+#'  palette = c("#E7B800", "#2E9FDF"),
+#'  ggtheme = theme_bw() # Change ggplot2 theme
+#')
 #'
 #'# Change font size, style and color
 #'#++++++++++++++++++++++++++++++++++++
@@ -190,76 +209,10 @@
 #'    font.tickslab = c(12, "plain", "darkgreen"))
 #'}
 #'
-#'# Legend: title, labels and position
-#'#++++++++++++++++++++++++++++++++++++
-#'
-#'# Change the legend title and labels
-#'ggsurvplot(fit, data = lung, legend = "bottom",
-#'           legend.title = "Sex",
-#'           legend.labs = c("Male", "Female"))
-#'
-#'# Specify legend position by its coordinates
-#'ggsurvplot(fit, data = lung, legend = c(0.2, 0.2))
-#'
-#'
-#'# format
-#'#++++++++++++++++++++++++++++++++++++
-#'# change line size --> 1
-#'# Change line types by groups (i.e. "strata")
-#'# and change color palette
-#'ggsurvplot(fit, data = lung, size = 1,  # change line size
-#'           linetype = "strata", # change line type by groups
-#'           break.time.by = 250, # break time axis by 250
-#'           palette = c("#E7B800", "#2E9FDF"), # custom color palette
-#'           conf.int = TRUE, # Add confidence interval
-#'           pval = TRUE # Add p-value
-#')
-#'
-#'# Use brewer color palette "Dark2"
-#'# Add risk table
-#'ggsurvplot(fit, data = lung, linetype = "strata",
-#'           conf.int = TRUE, pval = TRUE,
-#'           palette = "Dark2", risk.table = TRUE)
-#'
-#'
-#'# Change color, linetype by strata, risk.table color by strata
-#'ggsurvplot(fit, data = lung,
-#'           pval = TRUE, conf.int = TRUE,
-#'           risk.table = TRUE, # Add risk table
-#'           risk.table.col = "strata", # Change risk table color by groups
-#'           linetype = "strata", # Change line type by groups
-#'           ggtheme = theme_bw(), # Change ggplot2 theme
-#'           palette = c("#E7B800", "#2E9FDF"))
 #'
 #'
 #'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#'# Example 3: Survival curve with multiple group
-#'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#'
-#'# Fit (complexe) survival curves
-#'#++++++++++++++++++++++++++++++++++++
-#' \dontrun{
-#'require("survival")
-#'fit2 <- survfit( Surv(time, status) ~ rx + adhere,
-#'                 data = colon )
-#'
-#'# Visualize
-#'#++++++++++++++++++++++++++++++++++++
-#'
-#'# Visualize: add p-value, chang y limits
-#'# change color using brewer palette
-#'# Adjust risk table and survival plot heights
-#'ggsurvplot(fit2, data = colon, pval = TRUE,
-#'           break.time.by = 400,
-#'           risk.table = TRUE,
-#'           risk.table.col = "strata",
-#'           risk.table.height = 0.5, # Useful when you have multiple groups
-#'           palette = "Dark2")
-#'}
-#'
-#'
-#'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#'# Example 4: Facet ggsurvplot() output by
+#'# Example 2: Facet ggsurvplot() output by
 #' # a combination of factors
 #'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #'
@@ -299,72 +252,7 @@
 #' grid::grid.newpage()
 #' grid::grid.draw(g)
 #'
-#'
-#'
-#'
 #'}
-#'
-#'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#'# Example 5: Playing with fonts and texts
-#'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#'
-#'ggsurvplot(fit, data = lung,
-#'   main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
-#'   caption = "created with survminer",
-#'   font.main = c(16, "bold", "darkblue"),
-#'   font.submain = c(15, "bold.italic", "purple"),
-#'   font.caption = c(14, "plain", "orange"),
-#'   font.x = c(14, "bold.italic", "red"),
-#'   font.y = c(14, "bold.italic", "darkred"),
-#'   font.tickslab = c(12, "plain", "darkgreen"),
-#'   ########## risk table #########,
-#'   risk.table = TRUE,
-#'   risk.table.title = "Note the risk set sizes",
-#'   risk.table.subtitle = "and remember about censoring.",
-#'   risk.table.caption = "source code: website.com",
-#'   risk.table.height = 0.35,
-#'   ######### ncensor plot #######
-#'   ncensor.plot = TRUE,
-#'   ncensor.plot.title = "Number of censorings",
-#'   ncensor.plot.subtitle = "over the time.",
-#'   ncensor.plot.caption = "data available at data.com",
-#'   ncensor.plot.height = 0.35)
-#'
-#' ggsurvplot(fit, data = lung,
-#'   main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
-#'   caption = "created with survminer",
-#'   font.main = c(16, "bold", "darkblue"),
-#'   font.submain = c(15, "bold.italic", "purple"),
-#'   font.caption = c(14, "plain", "orange"),
-#'   font.x = c(14, "bold.italic", "red"),
-#'   font.y = c(14, "bold.italic", "darkred"),
-#'   font.tickslab = c(12, "plain", "darkgreen"),
-#'   ########## risk table #########,
-#'   risk.table = TRUE,
-#'   risk.table.title = "Note the risk set sizes",
-#'   risk.table.subtitle = "and remember about censoring.",
-#'   risk.table.caption = "source code: website.com",
-#'   risk.table.height = 0.35,
-#'   font.risk.table.title = c(13, "bold.italic", "green"),
-#'   font.risk.table.subtitle = c(15, "bold", "pink"),
-#'   font.risk.table.caption = c(11, "plain", "darkgreen"),
-#'   font.risk.table.x = c(8, "bold.italic", "orange"),
-#'   font.risk.table.y = c(11, "bold.italic", "darkgreen"),
-#'   font.risk.table.tickslab = c(9, "bold", "red"),
-#'   ######### ncensor plot ###################
-#'   ncensor.plot = TRUE,
-#'   ncensor.plot.title = "Number of censorings",
-#'   ncensor.plot.subtitle = "over the time.",
-#'   ncensor.plot.caption = "data available at data.com",
-#'   ncensor.plot.height = 0.35,
-#'   font.ncensor.plot.title = c(13, "bold.italic", "green"),
-#'   font.ncensor.plot.subtitle = c(15, "bold", "pink"),
-#'   font.ncensor.plot.caption = c(11, "plain", "darkgreen"),
-#'   font.ncensor.plot.x = c(8, "bold.italic", "orange"),
-#'   font.ncensor.plot.y = c(11, "bold.italic", "darkgreen"),
-#'   font.ncensor.plot.tickslab = c(9, "bold", "red"))
-#'
-#'
 #'
 #'@describeIn ggsurvplot Draws survival curves using ggplot2.
 #'@export
