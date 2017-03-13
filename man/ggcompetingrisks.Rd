@@ -8,7 +8,7 @@ ggcompetingrisks(fit, gnames = NULL, gsep = " ", multiple_panels = TRUE,
   ggtheme = theme_survminer())
 }
 \arguments{
-\item{fit}{an object of class \link{cuminc} - created with \link{cuminc} function.}
+\item{fit}{an object of class \link{cuminc} - created with \link{cuminc} function or \link{survfitms} created with \link{survfit}.}
 
 \item{gnames}{a vector with group names. If not suplied then will be extracted from \code{fit} object.}
 
@@ -26,16 +26,24 @@ Returns an object of class \code{gg}.
 This function plots Cumulative Incidence Curves
 }
 \examples{
-
 set.seed(2)
 ss <- rexp(100)
 gg <- factor(sample(1:3,100,replace=TRUE),1:3,c('BRCA','LUNG','OV'))
 cc <- factor(sample(0:2,100,replace=TRUE),0:2,c('no event', 'death', 'progression'))
 strt <- sample(1:2,100,replace=TRUE)
+
+# handles cuminc objects
 print(fit <- cmprsk::cuminc(ss,cc,gg,strt))
 ggcompetingrisks(fit)
 ggcompetingrisks(fit, multiple_panels = FALSE)
 
+# handles survfitms objects
+library(survival)
+df <- data.frame(time = ss, group = gg, status = cc, strt)
+fit2 <- survfit(Surv(time, status, type="mstate") ~ 1, data=df)
+ggcompetingrisks(fit2)
+fit2 <- survfit(Surv(time, status, type="mstate") ~ group, data=df)
+ggcompetingrisks(fit3)
 }
 \author{
 Przemyslaw Biecek, \email{przemyslaw.biecek@gmail.com}
