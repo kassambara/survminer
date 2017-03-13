@@ -8,15 +8,15 @@ ggcompetingrisks(fit, gnames = NULL, gsep = " ", multiple_panels = TRUE,
   ggtheme = theme_survminer())
 }
 \arguments{
-\item{fit}{an object of class \link{cuminc} - created with \link{cuminc} function or \link{survfitms} created with \link{survfit}.}
+\item{fit}{an object of a class \link{cuminc} - created with \link{cuminc} function or \link{survfitms} created with \link{survfit} function.}
 
-\item{gnames}{a vector with group names. If not suplied then will be extracted from \code{fit} object.}
+\item{gnames}{a vector with group names. If not suplied then will be extracted from \code{fit} object (\code{cuminc} only).}
 
-\item{gsep}{a separator that extracts group names and event names from \code{gnames} object.}
+\item{gsep}{a separator that extracts group names and event names from \code{gnames} object (\code{cuminc} only).}
 
-\item{multiple_panels}{if \code{TRUE} then groups will be plotted in different panels.}
+\item{multiple_panels}{if \code{TRUE} then groups will be plotted in different panels (\code{cuminc} only).}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
+\item{ggtheme}{function, \code{ggplot2} theme name. Default value is \link{theme_survminer}.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
 }
 \value{
@@ -42,8 +42,13 @@ library(survival)
 df <- data.frame(time = ss, group = gg, status = cc, strt)
 fit2 <- survfit(Surv(time, status, type="mstate") ~ 1, data=df)
 ggcompetingrisks(fit2)
-fit2 <- survfit(Surv(time, status, type="mstate") ~ group, data=df)
+fit3 <- survfit(Surv(time, status, type="mstate") ~ group, data=df)
 ggcompetingrisks(fit3)
+\dontrun{
+  library(ggsci)
+  library(cowplot)
+  ggcompetingrisks(fit3) + theme_cowplot() + scale_fill_jco()
+}
 }
 \author{
 Przemyslaw Biecek, \email{przemyslaw.biecek@gmail.com}

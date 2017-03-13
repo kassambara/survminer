@@ -1,11 +1,12 @@
 #' Cumulative Incidence Curves for Competing Risks
 #' @importFrom cmprsk cuminc
+#' @importFrom survival survfit
 #' @description This function plots Cumulative Incidence Curves
-#' @param fit an object of class \link{cuminc} - created with \link{cuminc} function or \link{survfitms} created with \link{survfit}.
-#' @param gnames a vector with group names. If not suplied then will be extracted from \code{fit} object.
-#' @param gsep a separator that extracts group names and event names from \code{gnames} object.
-#' @param multiple_panels if \code{TRUE} then groups will be plotted in different panels.
-#' @param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
+#' @param fit an object of a class \link{cuminc} - created with \link{cuminc} function or \link{survfitms} created with \link{survfit} function.
+#' @param gnames a vector with group names. If not suplied then will be extracted from \code{fit} object (\code{cuminc} only).
+#' @param gsep a separator that extracts group names and event names from \code{gnames} object (\code{cuminc} only).
+#' @param multiple_panels if \code{TRUE} then groups will be plotted in different panels (\code{cuminc} only).
+#' @param ggtheme function, \code{ggplot2} theme name. Default value is \link{theme_survminer}.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #' @return Returns an object of class \code{gg}.
 #'
@@ -30,6 +31,11 @@
 #' ggcompetingrisks(fit2)
 #' fit3 <- survfit(Surv(time, status, type="mstate") ~ group, data=df)
 #' ggcompetingrisks(fit3)
+#' \dontrun{
+#'   library(ggsci)
+#'   library(cowplot)
+#'   ggcompetingrisks(fit3) + theme_cowplot() + scale_fill_jco()
+#' }
 #' @export
 
 ggcompetingrisks <- function(fit, gnames = NULL, gsep=" ",
@@ -42,8 +48,7 @@ ggcompetingrisks <- function(fit, gnames = NULL, gsep=" ",
                                   gsep=gsep, multiple_panels=multiple_panels)
   }
   if (any(class(fit) == "survfitms")) {
-    pl <- ggcompetingrisks.survfitms(fit = fit, gnames=gnames,
-                                  gsep=gsep, multiple_panels=multiple_panels)
+    pl <- ggcompetingrisks.survfitms(fit = fit)
   }
 
   pl + ggtheme +
@@ -76,8 +81,7 @@ ggcompetingrisks.cuminc <- function(fit, gnames = NULL, gsep=" ",
     geom_line()
 }
 
-ggcompetingrisks.survfitms <- function(fit, gnames = NULL, gsep=" ",
-                                       multiple_panels = TRUE) {
+ggcompetingrisks.survfitms <- function(fit) {
   times <- fit$time
   psta <- as.data.frame(fit$pstate)
   colnames(psta) <- fit$states
