@@ -29,6 +29,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
+  <a href="survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="reference/index.html">Reference</a>
 </li>
 <li>
@@ -38,7 +41,14 @@
   <a href="news/index.html">News</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -80,13 +90,36 @@
 <div id="survminer-survival-analysis-and-visualization" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#survminer-survival-analysis-and-visualization" class="anchor"> </a>survminer: Survival Analysis and Visualization</h1></div>
-<p>The <strong>survminer</strong> R package provides functions for facilitating <strong>survival analysis</strong> and <strong>visualization</strong>. The current version contains three main functions including:</p>
+<p>The <strong>survminer</strong> R package provides functions for facilitating <strong>survival analysis</strong> and <strong>visualization</strong>.</p>
+<p>The main functions, in the package, are organized in different categories as follow.</p>
+<strong>Survival Curves</strong>
+<hr>
 <ul>
 <li><p><strong>ggsurvplot</strong>(): Draws survival curves with the ‘number at risk’ table and ‘censoring count plot’.</p></li>
-<li><p><strong>ggcoxzph</strong>(): Graphical test of proportional hazards.</p></li>
+<li><p><strong>arrange_ggsurvplots</strong>(): Arranges multiple ggsurvplots on the same page.</p></li>
+<li><p><strong>ggsurvevents</strong>(): Plots the distribution of event’s times.</p></li>
+<li><p><strong>surv_summary</strong>(): Summary of a survival curve. Compared to the default summary() function, surv_summary() creates a data frame containing a nice summary from survfit results.</p></li>
+<li><p><strong>surv_cutpoint</strong>(): Determines the optimal cutpoint for one or multiple continuous variables at once. Provides a value of a cutpoint that correspond to the most significant relation with survival.</p></li>
+<li><p><strong>pairwise_survdiff</strong>(): Multiple comparisons of survival curves. Calculate pairwise comparisons between group levels with corrections for multiple testing.</p></li>
+</ul>
+<p><br></p>
+<strong>Diagnostics of Cox Model</strong>
+<hr>
+<ul>
+<li><p><strong>ggcoxzph</strong>(): Graphical test of proportional hazards. Displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ggplot2. Wrapper around plot.cox.zph().</p></li>
+<li><p><strong>ggcoxdiagnostics</strong>(): Displays diagnostics graphs presenting goodness of Cox Proportional Hazards Model fit.</p></li>
 <li><p><strong>ggcoxfunctional</strong>(): Displays graphs of continuous explanatory variable against martingale residuals of null cox proportional hazards model. It helps to properly choose the functional form of continuous variable in cox model.</p></li>
 </ul>
+<p><br></p>
+<strong>Summary of Cox Model</strong>
+<hr>
+<ul>
+<li><p><strong>ggforest</strong>(): Draws forest plot for CoxPH model.</p></li>
+<li><p><strong>ggcoxadjustedcurves</strong>(): Plots adjusted survival curves for coxph model.</p></li>
+</ul>
+<blockquote>
 <p>Find out more at <a href="http://www.sthda.com/english/rpkgs/survminer/" class="uri">http://www.sthda.com/english/rpkgs/survminer/</a>, and check out the documentation and usage examples of each of the functions in survminer package.</p>
+</blockquote>
 <div id="installation-and-loading" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation-and-loading" class="anchor"> </a>Installation and loading</h2>
@@ -154,115 +187,107 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <div id="uber-customized-survival-curves" class="section level3">
 <h3 class="hasAnchor">
 <a href="#uber-customized-survival-curves" class="anchor"> </a>Uber customized survival curves</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(
-   fit,                     <span class="co"># survfit object with calculated statistics.</span>
-   <span class="dt">data =</span> lung,             <span class="co"># data used to fit survival curves.</span>
-   <span class="dt">risk.table =</span> <span class="ot">TRUE</span>,       <span class="co"># show risk table.</span>
-   <span class="dt">pval =</span> <span class="ot">TRUE</span>,             <span class="co"># show p-value of log-rank test.</span>
-   <span class="dt">conf.int =</span> <span class="ot">TRUE</span>,         <span class="co"># show confidence intervals for </span>
-                            <span class="co"># point estimates of survival curves.</span>
-   <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">500</span>),         <span class="co"># present narrower X axis, but not affect</span>
-                            <span class="co"># survival estimates.</span>
-   <span class="dt">xlab =</span> <span class="st">"Time in days"</span>,   <span class="co"># customize X axis label.</span>
-   <span class="dt">break.time.by =</span> <span class="dv">100</span>,     <span class="co"># break X axis in time intervals by 500.</span>
-   <span class="dt">ggtheme =</span> <span class="kw">theme_light</span>(), <span class="co"># customize plot and risk table with a theme.</span>
-  <span class="dt">risk.table.y.text.col =</span> T,<span class="co"># colour risk table text annotations.</span>
-  <span class="dt">risk.table.y.text =</span> <span class="ot">FALSE</span>,<span class="co"># show bars instead of names in text annotations</span>
-                            <span class="co"># in legend of risk table.</span>
-  <span class="dt">ncensor.plot =</span> <span class="ot">TRUE</span>,      <span class="co"># plot the number of censored subjects at time t</span>
-  <span class="dt">conf.int.style =</span> <span class="st">"step"</span>,  <span class="co"># customize style of confidence intervals</span>
-  <span class="dt">surv.median.line =</span> <span class="st">"hv"</span>,  <span class="co"># add the median survival pointer.</span>
-  <span class="dt">legend.labs =</span> 
-    <span class="kw">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>),    <span class="co"># change legend labels.</span>
-  <span class="dt">palette =</span> 
-    <span class="kw">c</span>(<span class="st">"#E7B800"</span>, <span class="st">"#2E9FDF"</span>) <span class="co"># custom color palettes.</span>
-)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ggsurv &lt;-<span class="st"> </span><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(
+           fit,                     <span class="co"># survfit object with calculated statistics.</span>
+           <span class="dt">data =</span> lung,             <span class="co"># data used to fit survival curves.</span>
+           <span class="dt">risk.table =</span> <span class="ot">TRUE</span>,       <span class="co"># show risk table.</span>
+           <span class="dt">pval =</span> <span class="ot">TRUE</span>,             <span class="co"># show p-value of log-rank test.</span>
+           <span class="dt">conf.int =</span> <span class="ot">TRUE</span>,         <span class="co"># show confidence intervals for </span>
+                                    <span class="co"># point estimates of survival curves.</span>
+           <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">500</span>),         <span class="co"># present narrower X axis, but not affect</span>
+                                    <span class="co"># survival estimates.</span>
+           <span class="dt">xlab =</span> <span class="st">"Time in days"</span>,   <span class="co"># customize X axis label.</span>
+           <span class="dt">break.time.by =</span> <span class="dv">100</span>,     <span class="co"># break X axis in time intervals by 500.</span>
+           <span class="dt">ggtheme =</span> <span class="kw">theme_light</span>(), <span class="co"># customize plot and risk table with a theme.</span>
+          <span class="dt">risk.table.y.text.col =</span> T,<span class="co"># colour risk table text annotations.</span>
+          <span class="dt">risk.table.height =</span> <span class="fl">0.25</span>, <span class="co"># the height of the risk table</span>
+          <span class="dt">risk.table.y.text =</span> <span class="ot">FALSE</span>,<span class="co"># show bars instead of names in text annotations</span>
+                                    <span class="co"># in legend of risk table.</span>
+          <span class="dt">ncensor.plot =</span> <span class="ot">TRUE</span>,      <span class="co"># plot the number of censored subjects at time t</span>
+          <span class="dt">ncensor.plot.height =</span> <span class="fl">0.25</span>,
+          <span class="dt">conf.int.style =</span> <span class="st">"step"</span>,  <span class="co"># customize style of confidence intervals</span>
+          <span class="dt">surv.median.line =</span> <span class="st">"hv"</span>,  <span class="co"># add the median survival pointer.</span>
+          <span class="dt">legend.labs =</span> 
+            <span class="kw">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>)    <span class="co"># change legend labels.</span>
+        )
+
+<span class="co"># Apply custom color palettes and print</span>
+<span class="kw">ggpar</span>(ggsurv, <span class="dt">palette =</span> <span class="kw">c</span>(<span class="st">"#E7B800"</span>, <span class="st">"#2E9FDF"</span>))</code></pre></div>
 <p><img src="README-ggplot2-uber-customized-survival-plot-1.png" width="576"></p>
 </div>
 <div id="uber-platinum-customized-survival-curves" class="section level3">
 <h3 class="hasAnchor">
 <a href="#uber-platinum-customized-survival-curves" class="anchor"> </a>Uber platinum customized survival curves</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(
-   fit,                     <span class="co"># survfit object with calculated statistics.</span>
-   <span class="dt">data =</span> lung,             <span class="co"># data used to fit survival curves.</span>
-   <span class="dt">risk.table =</span> <span class="ot">TRUE</span>,       <span class="co"># show risk table.</span>
-   <span class="dt">pval =</span> <span class="ot">TRUE</span>,             <span class="co"># show p-value of log-rank test.</span>
-   <span class="dt">conf.int =</span> <span class="ot">TRUE</span>,         <span class="co"># show confidence intervals for </span>
-                            <span class="co"># point estimates of survival curves.</span>
-   <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">500</span>),         <span class="co"># present narrower X axis, but not affect</span>
-                            <span class="co"># survival estimates.</span>
-   <span class="dt">xlab =</span> <span class="st">"Time in days"</span>,   <span class="co"># customize X axis label.</span>
-   <span class="dt">break.time.by =</span> <span class="dv">100</span>,     <span class="co"># break X axis in time intervals by 500.</span>
-   <span class="dt">ggtheme =</span> <span class="kw">theme_light</span>(), <span class="co"># customize plot and risk table with a theme.</span>
-  <span class="dt">risk.table.y.text.col =</span> T,<span class="co"># colour risk table text annotations.</span>
-  <span class="dt">risk.table.y.text =</span> <span class="ot">FALSE</span>,<span class="co"># show bars instead of names in text annotations</span>
-                            <span class="co"># in legend of risk table.</span>
-  <span class="dt">ncensor.plot =</span> <span class="ot">TRUE</span>,      <span class="co"># plot the number of censored subjects at time t</span>
-  <span class="dt">conf.int.style =</span> <span class="st">"step"</span>,  <span class="co"># customize style of confidence intervals</span>
-  <span class="dt">surv.median.line =</span> <span class="st">"hv"</span>,  <span class="co"># add the median survival pointer.</span>
-  <span class="dt">legend.labs =</span> 
-    <span class="kw">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>),    <span class="co"># change legend labels.</span>
-  <span class="dt">palette =</span> 
-    <span class="kw">c</span>(<span class="st">"#E7B800"</span>, <span class="st">"#2E9FDF"</span>),<span class="co"># custom color palettes.</span>
-  <span class="dt">main =</span> <span class="st">"Survival curves"</span>,                       <span class="co"># specify the title of the plot</span>
-  <span class="dt">submain =</span> <span class="st">"Based on Kaplan-Meier estimates"</span>,    <span class="co"># the subtitle of the plot </span>
-  <span class="dt">caption =</span> <span class="st">"created with survminer"</span>,             <span class="co"># the caption of the plot</span>
-  <span class="dt">font.main =</span> <span class="kw">c</span>(<span class="dv">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),          <span class="co"># font for titles of the plot, the table and censor part</span>
-  <span class="dt">font.submain =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),  <span class="co"># font for subtitles in the plot, the table and censor part</span>
-  <span class="dt">font.caption =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"plain"</span>, <span class="st">"orange"</span>),        <span class="co"># font for captions in the plot, the table and censor part</span>
-  <span class="dt">font.x =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"red"</span>),           <span class="co"># font for x axises in the plot, the table and censor part</span>
-  <span class="dt">font.y =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkred"</span>),       <span class="co"># font for y axises in the plot, the table and censor part</span>
-  <span class="dt">font.tickslab =</span> <span class="kw">c</span>(<span class="dv">12</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>),    <span class="co"># font for ticklabs in the plot, the table and censor part</span>
-  ########## risk table #########,
-  <span class="dt">risk.table.title =</span> <span class="st">"Note the risk set sizes"</span>,          <span class="co"># the title of the risk table</span>
-  <span class="dt">risk.table.subtitle =</span> <span class="st">"and remember about censoring."</span>, <span class="co"># the subtitle of the risk table</span>
-  <span class="dt">risk.table.caption =</span> <span class="st">"source code: website.com"</span>,       <span class="co"># the caption of the risk table</span>
-  <span class="dt">risk.table.height =</span> <span class="fl">0.35</span>,                              <span class="co"># the height of the risk table</span>
-  ########## ncensor plot ######
-  <span class="dt">ncensor.plot.title =</span> <span class="st">"Number of censorings"</span>,           <span class="co"># as above but for the censoring plot</span>
-  <span class="dt">ncensor.plot.subtitle =</span> <span class="st">"over the time."</span>,
-  <span class="dt">ncensor.plot.caption =</span> <span class="st">"data available at data.com"</span>,
-  <span class="dt">ncensor.plot.height =</span> <span class="fl">0.35</span>
-)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Changing Labels</span>
+<span class="co"># %%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="co"># Labels for Survival Curves (plot)</span>
+ggsurv$plot &lt;-<span class="st"> </span>ggsurv$plot +<span class="st"> </span><span class="kw">labs</span>(
+  <span class="dt">title =</span> <span class="st">"Survival curves"</span>,                     
+  <span class="dt">subtitle =</span> <span class="st">"Based on Kaplan-Meier estimates"</span>,  
+  <span class="dt">caption =</span> <span class="st">"created with survminer"</span>             
+  )
+
+<span class="co"># Labels for Risk Table </span>
+ggsurv$table &lt;-<span class="st"> </span>ggsurv$table +<span class="st"> </span><span class="kw">labs</span>(
+  <span class="dt">title =</span> <span class="st">"Note the risk set sizes"</span>,          
+  <span class="dt">subtitle =</span> <span class="st">"and remember about censoring."</span>, 
+  <span class="dt">caption =</span> <span class="st">"source code: website.com"</span>        
+  )
+
+<span class="co"># Labels for ncensor plot </span>
+ggsurv$ncensor.plot &lt;-<span class="st"> </span>ggsurv$ncensor.plot +<span class="st"> </span><span class="kw">labs</span>( 
+  <span class="dt">title =</span> <span class="st">"Number of censorings"</span>, 
+  <span class="dt">subtitle =</span> <span class="st">"over the time."</span>,
+  <span class="dt">caption =</span> <span class="st">"source code: website.com"</span>
+  )
+
+<span class="co"># Changing the font size, style and color</span>
+<span class="co"># %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="co"># Applying the same font style to all the components of ggsurv:</span>
+<span class="co"># survival curves, risk table and censor part</span>
+
+ggsurv &lt;-<span class="st"> </span><span class="kw">ggpar</span>(ggsurv,
+          <span class="dt">font.title =</span> <span class="kw">c</span>(<span class="dv">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),         
+          <span class="dt">font.subtitle =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>), 
+          <span class="dt">font.caption =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"plain"</span>, <span class="st">"orange"</span>),        
+          <span class="dt">font.x =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"red"</span>),          
+          <span class="dt">font.y =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkred"</span>),      
+          <span class="dt">font.tickslab =</span> <span class="kw">c</span>(<span class="dv">12</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>),
+          <span class="dt">legend =</span> <span class="st">"top"</span>
+          )
+
+<span class="co"># Apply custom color palettes and print</span>
+<span class="kw">ggpar</span>(ggsurv, <span class="dt">palette =</span> <span class="kw">c</span>(<span class="st">"#E7B800"</span>, <span class="st">"#2E9FDF"</span>))</code></pre></div>
 <p><img src="README-ggplot2-uber-platinium-customized-survival-plot-1.png" width="576"></p>
 </div>
 </div>
 <div id="uber-platinum-premium-customized-survival-curves" class="section level2">
 <h2 class="hasAnchor">
 <a href="#uber-platinum-premium-customized-survival-curves" class="anchor"> </a>Uber platinum premium customized survival curves</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> lung, <span class="dt">main =</span> <span class="st">"Survival curves"</span>, <span class="dt">submain =</span> <span class="st">"Based on Kaplan-Meier estimates"</span>,
-  <span class="dt">caption =</span> <span class="st">"created with survminer"</span>,
-  <span class="dt">font.main =</span> <span class="kw">c</span>(<span class="dv">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),
-  <span class="dt">font.submain =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),
-  <span class="dt">font.caption =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"plain"</span>, <span class="st">"orange"</span>),
-  <span class="dt">font.x =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"red"</span>),
-  <span class="dt">font.y =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkred"</span>),
-  <span class="dt">font.tickslab =</span> <span class="kw">c</span>(<span class="dv">12</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>),
-  ########## risk table #########,
-  <span class="dt">risk.table =</span> <span class="ot">TRUE</span>,
-  <span class="dt">risk.table.title =</span> <span class="st">"Note the risk set sizes"</span>,
-  <span class="dt">risk.table.subtitle =</span> <span class="st">"and remember about censoring."</span>,
-  <span class="dt">risk.table.caption =</span> <span class="st">"source code: website.com"</span>,
-  <span class="dt">risk.table.height =</span> <span class="fl">0.35</span>,
-  <span class="dt">font.risk.table.title =</span> <span class="kw">c</span>(<span class="dv">13</span>, <span class="st">"bold.italic"</span>, <span class="st">"green"</span>),
-  <span class="dt">font.risk.table.subtitle =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold"</span>, <span class="st">"pink"</span>),
-  <span class="dt">font.risk.table.caption =</span> <span class="kw">c</span>(<span class="dv">11</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>),
-  <span class="dt">font.risk.table.x =</span> <span class="kw">c</span>(<span class="dv">8</span>, <span class="st">"bold.italic"</span>, <span class="st">"orange"</span>),
-  <span class="dt">font.risk.table.y =</span> <span class="kw">c</span>(<span class="dv">11</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkgreen"</span>),
-  <span class="dt">font.risk.table.tickslab =</span> <span class="kw">c</span>(<span class="dv">9</span>, <span class="st">"bold"</span>, <span class="st">"red"</span>),
-  ######### ncensor plot ###################
-  <span class="dt">ncensor.plot =</span> <span class="ot">TRUE</span>,
-  <span class="dt">ncensor.plot.title =</span> <span class="st">"Number of censorings"</span>,
-  <span class="dt">ncensor.plot.subtitle =</span> <span class="st">"over the time."</span>,
-  <span class="dt">ncensor.plot.caption =</span> <span class="st">"data available at data.com"</span>,
-  <span class="dt">ncensor.plot.height =</span> <span class="fl">0.35</span>,
-  <span class="dt">font.ncensor.plot.title =</span> <span class="kw">c</span>(<span class="dv">13</span>, <span class="st">"bold.italic"</span>, <span class="st">"green"</span>),
-  <span class="dt">font.ncensor.plot.subtitle =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold"</span>, <span class="st">"pink"</span>),
-  <span class="dt">font.ncensor.plot.caption =</span> <span class="kw">c</span>(<span class="dv">11</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>),
-  <span class="dt">font.ncensor.plot.x =</span> <span class="kw">c</span>(<span class="dv">8</span>, <span class="st">"bold.italic"</span>, <span class="st">"orange"</span>),
-  <span class="dt">font.ncensor.plot.y =</span> <span class="kw">c</span>(<span class="dv">11</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkgreen"</span>),
-  <span class="dt">font.ncensor.plot.tickslab =</span> <span class="kw">c</span>(<span class="dv">9</span>, <span class="st">"bold"</span>, <span class="st">"red"</span>)
-)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Using specific fonts for risk table and ncensor plots</span>
+<span class="co">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="co"># Font for Risk Table</span>
+ggsurv$table &lt;-<span class="st"> </span><span class="kw">ggpar</span>(ggsurv$table,
+                      <span class="dt">font.title =</span> <span class="kw">c</span>(<span class="dv">13</span>, <span class="st">"bold.italic"</span>, <span class="st">"green"</span>),
+                      <span class="dt">font.subtitle =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold"</span>, <span class="st">"pink"</span>),
+                      <span class="dt">font.caption =</span> <span class="kw">c</span>(<span class="dv">11</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>),
+                      <span class="dt">font.x =</span> <span class="kw">c</span>(<span class="dv">8</span>, <span class="st">"bold.italic"</span>, <span class="st">"orange"</span>),
+                      <span class="dt">font.y =</span> <span class="kw">c</span>(<span class="dv">11</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkgreen"</span>),
+                      <span class="dt">font.tickslab =</span> <span class="kw">c</span>(<span class="dv">9</span>, <span class="st">"bold"</span>, <span class="st">"red"</span>)
+                      )
+
+
+<span class="co"># Font for ncensor plot</span>
+ggsurv$ncensor.plot &lt;-<span class="st"> </span><span class="kw">ggpar</span>(ggsurv$ncensor.plot,
+                            <span class="dt">font.title =</span> <span class="kw">c</span>(<span class="dv">13</span>, <span class="st">"bold.italic"</span>, <span class="st">"green"</span>),
+                            <span class="dt">font.subtitle =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold"</span>, <span class="st">"pink"</span>),
+                            <span class="dt">font.caption =</span> <span class="kw">c</span>(<span class="dv">11</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>),
+                            <span class="dt">font.x =</span> <span class="kw">c</span>(<span class="dv">8</span>, <span class="st">"bold.italic"</span>, <span class="st">"orange"</span>),
+                            <span class="dt">font.y =</span> <span class="kw">c</span>(<span class="dv">11</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkgreen"</span>),
+                            <span class="dt">font.tickslab =</span> <span class="kw">c</span>(<span class="dv">9</span>, <span class="st">"bold"</span>, <span class="st">"red"</span>)
+                            )
+
+<span class="kw">print</span>(ggsurv)</code></pre></div>
 <p><img src="README-ggplot2-uber-platinium-premium-customized-survival-plot-1.png" width="576"></p>
 </div>
 <div id="blog-posts" class="section level2">
@@ -297,6 +322,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <ul class="list-unstyled">
 <li>Alboukadel Kassambara <br><small class="roles"> Author, maintainer </small> </li>
 <li>Marcin Kosinski <br><small class="roles"> Author </small> </li>
+<li><a href="authors.html">All authors...</a></li>
 </ul>
 <html><body>
 <h2>Dev status</h2>

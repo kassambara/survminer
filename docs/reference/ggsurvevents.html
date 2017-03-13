@@ -49,6 +49,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -60,7 +63,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -80,11 +88,8 @@
     
 
     <pre><span class='fu'>ggsurvevents</span>(<span class='kw'>surv</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"fraction"</span>,
-  <span class='kw'>normalized</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>censored.on.top</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_classic2.html'>theme_classic2</a></span>(),
-  <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"grey75"</span>, <span class='st'>"grey25"</span>), <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
-  <span class='kw'>font.submain</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>15</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.caption</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>15</span>, <span class='st'>"plain"</span>,
-  <span class='st'>"black"</span>), <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>,
-  <span class='st'>"black"</span>), <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>))</pre>
+  <span class='kw'>normalized</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>censored.on.top</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(),
+  <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"grey75"</span>, <span class='st'>"grey25"</span>), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -104,13 +109,8 @@
       <dd>function, ggplot2 theme name. Default value is theme_classic2. Allowed values include ggplot2 official themes: see theme.</dd>
       <dt>palette</dt>
       <dd>the color palette to be used for coloring of significant variables.</dd>
-      <dt>font.main, font.submain, font.caption, font.x, font.y, font.tickslab</dt>
-      <dd>a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: &quot;plain&quot;,
-&quot;bold&quot;, &quot;italic&quot;, &quot;bold.italic&quot;) and the color (e.g.: &quot;red&quot;) of main title, subtitle, caption,
-xlab and ylab and axis tick labels, respectively. For example <em>font.x =
-c(14, &quot;bold&quot;, &quot;red&quot;)</em>.  Use font.x = 14, to change only font size; or use
-font.x = &quot;bold&quot;, to change only font face.</dd>
+      <dt>...</dt>
+      <dd>other graphical parameters to be passed to the function <a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggpar'>ggpar</a>.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -127,10 +127,10 @@ font.x = &quot;bold&quot;, to change only font face.</dd>
 <span class='fu'>ggsurvevents</span>(<span class='no'>surv2</span>)</div><img src='ggsurvevents-4.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggsurvevents</span>(<span class='no'>surv2</span>, <span class='kw'>normalized</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><img src='ggsurvevents-6.png' alt='' width='540' height='400' /><div class='input'>
 <span class='co'># from survfit</span>
 <span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>survfit</span>(<span class='fu'>Surv</span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>)
-<span class='fu'>ggsurvevents</span>(<span class='kw'>fit</span> <span class='kw'>=</span> <span class='no'>fit</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `surv` argument is not provided. The censored variable will be extracted from model fit.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The `data` argument is not provided. Data will be extracted from model fit.</span></div><img src='ggsurvevents-10.png' alt='' width='540' height='400' /><div class='input'>
+<span class='fu'>ggsurvevents</span>(<span class='kw'>fit</span> <span class='kw'>=</span> <span class='no'>fit</span>)</div><img src='ggsurvevents-8.png' alt='' width='540' height='400' /><div class='input'>
 <span class='co'># from coxph</span>
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>coxph</span>( <span class='fu'>Surv</span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span> + <span class='no'>rx</span> + <span class='no'>adhere</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span> )
-<span class='fu'>ggsurvevents</span>(<span class='kw'>fit</span> <span class='kw'>=</span> <span class='no'>model</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `surv` argument is not provided. The censored variable will be extracted from model fit.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The `data` argument is not provided. Data will be extracted from model fit.</span></div><img src='ggsurvevents-14.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggsurvevents</span>(<span class='no'>surv2</span>, <span class='kw'>normalized</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"radius"</span>)</div><img src='ggsurvevents-16.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggsurvevents</span>(<span class='no'>surv2</span>, <span class='kw'>normalized</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"fraction"</span>)</div><img src='ggsurvevents-18.png' alt='' width='540' height='400' /><div class='input'>
+<span class='fu'>ggsurvevents</span>(<span class='kw'>fit</span> <span class='kw'>=</span> <span class='no'>model</span>)</div><img src='ggsurvevents-10.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggsurvevents</span>(<span class='no'>surv2</span>, <span class='kw'>normalized</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"radius"</span>)</div><img src='ggsurvevents-12.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggsurvevents</span>(<span class='no'>surv2</span>, <span class='kw'>normalized</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"fraction"</span>)</div><img src='ggsurvevents-14.png' alt='' width='540' height='400' /><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

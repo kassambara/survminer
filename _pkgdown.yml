@@ -33,5 +33,21 @@ reference:
       - add_ggsurvplot
 
 
+navbar:
+  title: "survminer"
+  left:
+  - text: Cheatseet
+    href: survminer_cheatsheet.pdf
+  - text: Reference
+    href: reference/index.html
+  - text: Articles
+    href: articles/index.html
+  - text: News
+    href: news/index.html
+  right:
+    - icon: fa-github
+      href: https://github.com/kassambara/survminer
+
+
 
 

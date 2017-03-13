@@ -29,6 +29,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
+  <a href="../survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -38,7 +41,14 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -81,10 +91,10 @@ fit&lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw
 <html><body><a href="#customized" class="anchor"> </a></body></html>Customized</h2>
 <p>with the plot where every possible text on a <code>plot</code> is specified</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> lung,
-   <span class="dt">main =</span> <span class="st">"Survival curves"</span>, <span class="dt">submain =</span> <span class="st">"Based on Kaplan-Meier estimates"</span>,
+   <span class="dt">title =</span> <span class="st">"Survival curves"</span>, <span class="dt">subtitle =</span> <span class="st">"Based on Kaplan-Meier estimates"</span>,
    <span class="dt">caption =</span> <span class="st">"created with survminer"</span>,
-   <span class="dt">font.main =</span> <span class="kw">c</span>(<span class="dv">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),
-   <span class="dt">font.submain =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),
+   <span class="dt">font.title =</span> <span class="kw">c</span>(<span class="dv">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),
+   <span class="dt">font.subtitle =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),
    <span class="dt">font.caption =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"plain"</span>, <span class="st">"orange"</span>),
    <span class="dt">font.x =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"red"</span>),
    <span class="dt">font.y =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkred"</span>),
@@ -108,10 +118,10 @@ fit&lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw
 <html><body><a href="#customized-1" class="anchor"> </a></body></html>Customized</h2>
 <p>with the plot where every possible text on a <code>plot</code> and <code>table</code> is specified</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> lung, 
-   <span class="dt">main =</span> <span class="st">"Survival curves"</span>, <span class="dt">submain =</span> <span class="st">"Based on Kaplan-Meier estimates"</span>,
+   <span class="dt">title =</span> <span class="st">"Survival curves"</span>, <span class="dt">subtitle =</span> <span class="st">"Based on Kaplan-Meier estimates"</span>,
    <span class="dt">caption =</span> <span class="st">"created with survminer"</span>,
-   <span class="dt">font.main =</span> <span class="kw">c</span>(<span class="dv">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),
-   <span class="dt">font.submain =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),
+   <span class="dt">font.title =</span> <span class="kw">c</span>(<span class="dv">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),
+   <span class="dt">font.subtitle =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),
    <span class="dt">font.caption =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"plain"</span>, <span class="st">"orange"</span>),
    <span class="dt">font.x =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"red"</span>),
    <span class="dt">font.y =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkred"</span>),
@@ -141,10 +151,10 @@ fit&lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw
 <html><body><a href="#customized-2" class="anchor"> </a></body></html>Customized</h2>
 <p>with the full customization</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> lung,
-   <span class="dt">main =</span> <span class="st">"Survival curves"</span>, <span class="dt">submain =</span> <span class="st">"Based on Kaplan-Meier estimates"</span>,
+   <span class="dt">title =</span> <span class="st">"Survival curves"</span>, <span class="dt">subtitle =</span> <span class="st">"Based on Kaplan-Meier estimates"</span>,
    <span class="dt">caption =</span> <span class="st">"created with survminer"</span>,
-   <span class="dt">font.main =</span> <span class="kw">c</span>(<span class="dv">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),
-   <span class="dt">font.submain =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),
+   <span class="dt">font.title =</span> <span class="kw">c</span>(<span class="dv">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),
+   <span class="dt">font.subtitle =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),
    <span class="dt">font.caption =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"plain"</span>, <span class="st">"orange"</span>),
    <span class="dt">font.x =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"red"</span>),
    <span class="dt">font.y =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkred"</span>),
@@ -168,7 +178,7 @@ fit&lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw
 <html><body><a href="#notes" class="anchor"> </a></body></html>Notes</h1>
 <ul>
 <li>Note that you will probably need to extend the default risk table height and ncens plot height after those customizations.</li>
-<li>Distinct between <code>main</code> and <code>submain</code> for the <code>curve_plot</code> and <code>risk.table.title</code> and <code>risk.table.subtitle</code> for the <code>table</code> / <code>ncens.plot.title</code> and <code>ncens.plot.subtitle</code> for the <code>ncens</code>.</li>
+<li>Distinct between <code>title</code> and <code>subtitle</code> for the <code>curve_plot</code> and <code>risk.table.title</code> and <code>risk.table.subtitle</code> for the <code>table</code> / <code>ncens.plot.title</code> and <code>ncens.plot.subtitle</code> for the <code>ncens</code>.</li>
 <li>Fonts are set simultaneously for the <code>curve_plot</code>, for the <code>table</code> and for the <code>ncens</code> parts. This might change in the future.</li>
 </ul>
 </div>

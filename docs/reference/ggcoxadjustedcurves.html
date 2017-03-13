@@ -49,6 +49,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -60,7 +63,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -78,15 +86,13 @@
     
     <p>This function plots adjusted survival curves for coxph model.
 The idea behind this function is described in <code>https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf</code>.
-For every observation in the dataset a prediction for survival cure is made.
+For every observation in the dataset a prediction for survival curve is made.
 Then the predictions are averaged with respect to a selected variable.</p>
     
 
     <pre><span class='fu'>ggcoxadjustedcurves</span>(<span class='no'>fit</span>, <span class='kw'>variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>individual.curves</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"hue"</span>, <span class='kw'>curve.size</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>curve.alpha</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-  <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
-  <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival rate"</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_classic2.html'>theme_classic2</a></span>())</pre>
+  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival rate"</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -107,18 +113,13 @@ palettes e.g. &quot;RdBu&quot;, &quot;Blues&quot;, ...; or custom color palette 
 &quot;rickandmorty&quot;.</dd>
       <dt>curve.size, curve.alpha</dt>
       <dd>size and alpha for individual survival curves</dd>
-      <dt>font.main, font.x, font.y, font.tickslab</dt>
-      <dd>a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: &quot;plain&quot;,
-&quot;bold&quot;, &quot;italic&quot;, &quot;bold.italic&quot;) and the color (e.g.: &quot;red&quot;) of main title,
-xlab and ylab and axis tick labels, respectively. For example <em>font.x =
-c(14, &quot;bold&quot;, &quot;red&quot;)</em>.  Use font.x = 14, to change only font size; or use
-font.x = &quot;bold&quot;, to change only font face.</dd>
       <dt>ylab</dt>
       <dd>y axis label.</dd>
       <dt>ggtheme</dt>
       <dd>function, ggplot2 theme name. Default value is <a href='theme_classic2.html'>theme_classic2</a>.
 Allowed values include ggplot2 official themes: see <code><a href='http://www.rdocumentation.org/packages/ggplot2/topics/theme'>theme</a></code>.</dd>
+      <dt>...</dt>
+      <dd>further arguments passed to the function <code><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggpar'>ggpar</a></code> for customizing the plot.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -133,7 +134,7 @@ Allowed values include ggplot2 official themes: see <code><a href='http://www.rd
 
 <span class='fu'>ggcoxadjustedcurves</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span>)</div><img src='ggcoxadjustedcurves-2.png' alt='' width='540' height='400' /><div class='input'>
 <span class='no'>fit2</span> <span class='kw'>&lt;-</span> <span class='fu'>coxph</span>( <span class='fu'>Surv</span>(<span class='no'>stop</span>, <span class='no'>event</span>) ~ <span class='no'>rx</span> + <span class='no'>size</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bladder</span> )
-<span class='fu'>ggcoxadjustedcurves</span>(<span class='no'>fit2</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bladder</span>)</div><img src='ggcoxadjustedcurves-4.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggcoxadjustedcurves</span>(<span class='no'>fit2</span>, <span class='kw'>individual.curves</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bladder</span>, <span class='kw'>curve.alpha</span><span class='kw'>=</span><span class='fl'>0.01</span>)</div><img src='ggcoxadjustedcurves-6.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggcoxadjustedcurves</span>(<span class='no'>fit2</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bladder</span>, <span class='kw'>variable</span><span class='kw'>=</span><span class='fu'>factor</span>( <span class='no'>bladder</span>[,<span class='st'>"rx"</span>]))</div><img src='ggcoxadjustedcurves-8.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggcoxadjustedcurves</span>(<span class='no'>fit2</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bladder</span>, <span class='kw'>variable</span><span class='kw'>=</span><span class='fu'>factor</span>(<span class='no'>bladder</span>[,<span class='st'>"rx"</span>]),
+<span class='fu'>ggcoxadjustedcurves</span>(<span class='no'>fit2</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bladder</span>)</div><img src='ggcoxadjustedcurves-4.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggcoxadjustedcurves</span>(<span class='no'>fit2</span>, <span class='kw'>individual.curves</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bladder</span>, <span class='kw'>curve.alpha</span><span class='kw'>=</span><span class='fl'>0.01</span>)</div><img src='ggcoxadjustedcurves-6.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggcoxadjustedcurves</span>(<span class='no'>fit2</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bladder</span>, <span class='kw'>variable</span><span class='kw'>=</span> <span class='no'>bladder</span>[,<span class='st'>"rx"</span>])</div><img src='ggcoxadjustedcurves-8.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggcoxadjustedcurves</span>(<span class='no'>fit2</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bladder</span>, <span class='kw'>variable</span><span class='kw'>=</span> <span class='no'>bladder</span>[,<span class='st'>"rx"</span>],
    <span class='kw'>individual.curves</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>curve.alpha</span><span class='kw'>=</span><span class='fl'>0.01</span>)</div><img src='ggcoxadjustedcurves-10.png' alt='' width='540' height='400' /><div class='input'>
 </div></pre>
   </div>

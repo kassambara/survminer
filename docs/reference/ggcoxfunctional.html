@@ -49,6 +49,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -60,7 +63,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -84,10 +92,9 @@ should be linear to satisfy cox proportional hazards model assumptions.</p>
 
     <pre><span class='fu'>ggcoxfunctional</span>(<span class='no'>formula</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>fit</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>f</span> <span class='kw'>=</span> <span class='fl'>0.6</span>,
   <span class='kw'>point.col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>point.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>point.shape</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>point.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
-  <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Martingale Residuals \nof Null Cox Model"</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_classic2.html'>theme_classic2</a></span>())
+  <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for ggcoxfunctional</span>
 <span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>newpage</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
@@ -106,12 +113,6 @@ should be linear to satisfy cox proportional hazards model assumptions.</p>
       <dd>parameter of lowess.</dd>
       <dt>point.col, point.size, point.shape, point.alpha</dt>
       <dd>color, size, shape and visibility to be used for points.</dd>
-      <dt>font.x, font.y, font.tickslab</dt>
-      <dd>a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: &quot;plain&quot;,
-&quot;bold&quot;, &quot;italic&quot;, &quot;bold.italic&quot;) and the color (e.g.: &quot;red&quot;) of xlab and ylab and axis tick labels, respectively. For example <em>font.x =
-c(14, &quot;bold&quot;, &quot;red&quot;)</em>.  Use font.x = 14, to change only font size; or use
-font.x = &quot;bold&quot;, to change only font face.</dd>
       <dt>xlim, ylim</dt>
       <dd>x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).</dd>
       <dt>ylab</dt>
@@ -123,10 +124,10 @@ font.x = &quot;bold&quot;, to change only font face.</dd>
       <dt>ggtheme</dt>
       <dd>function, ggplot2 theme name. Default value is <a href='theme_classic2.html'>theme_classic2</a>.
 Allowed values include ggplot2 official themes: see <code><a href='http://www.rdocumentation.org/packages/ggplot2/topics/theme'>theme</a></code>.</dd>
+      <dt>...</dt>
+      <dd>further arguments passed to the function <code><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggpar'>ggpar</a></code> for customizing the plot.</dd>
       <dt>x</dt>
       <dd>an object of class ggcoxfunctional</dd>
-      <dt>...</dt>
-      <dd>further arguments passed to print, but really it&#39;s unused</dd>
       <dt>newpage</dt>
       <dd>open a new page. See <code>grid.arrange</code>.</dd>
     </dl>

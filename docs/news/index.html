@@ -49,6 +49,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -60,7 +63,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -83,45 +91,117 @@
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"> </a>New features</h2>
+<div id="new-options-in-ggsurvplot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-options-in-ggsurvplot" class="anchor"> </a>New options in ggsurvplot()</h3>
+<ul>
+<li><p>Additional <code>data</code> argument added to the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function (<a href="https://github.com/kassambara/survminer/issues/142">\@kassambara, #142</a>). Now, it’s recommended to pass to the function, the data used to fit survival curves. This will avoid the error generated when trying to use the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function inside another functions (<a href="https://github.com/kassambara/survminer/issues/125">\@zzawadz, #125</a>).</p></li>
+<li><p>New argument <code>risk.table.pos</code>, for placing risk table inside survival curves (<a href="https://github.com/kassambara/survminer/issues/69">#69</a>). Allowed options are one of c(“out”, “in”) indicating ‘outside’ or ‘inside’ the main plot, respectively. Default value is “out”.</p></li>
+<li><p>New arguments <code>tables.height, tables.y.text, tables.theme, tables.col</code>: for customizing tables under the main survival plot: (<a href="https://github.com/kassambara/survminer/issues/156">#156</a>).</p></li>
+<li><p>New arguments <code>cumevents</code> and <code>cumcensor</code>: logical value for displaying the cumulative number of events table (<a href="https://github.com/kassambara/survminer/issues/117">#117</a>) and the cumulative number of censored subject (<a href="https://github.com/kassambara/survminer/issues/155">#155</a>), respectively.</p></li>
+<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can display both the number at risk and the cumulative number of censored in the same table using the option <code>risk.table = 'nrisk_cumcenor'</code> (<a href="https://github.com/kassambara/survminer/issues/96">#96</a>). It’s also possible to display the number at risk and the cumulative number of events using the option <code>risk.table = 'nrisk_cumevents'</code>.</p></li>
+<li><p>New arguments <code>pval.method</code> and <code>log.rank.weights</code>: New possibilities to compare survival curves. Functionality based on <code>survMisc::comp</code>.</p></li>
+<li>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> returns an object of class ggsurvplot which is list containing the following components (<a href="https://github.com/kassambara/survminer/issues/158">#158</a>):
+<ul>
+<li>
+<strong>plot</strong>: the survival plot (ggplot object)</li>
+<li>
+<strong>table</strong>: the number of subjects at risk table per time (ggplot object). Returned only when risk.table = TRUE.</li>
+<li>
+<strong>cumevents</strong>: the cumulative number of events table (ggplot object). Returned only when cumevents = TRUE.</li>
+<li>
+<strong>ncensor.plot</strong>: the number of censoring (ggplot object). Returned only when ncensor.plot = TRUE or cumcensor = TRUE.</li>
+<li>
+<strong>data.survplot</strong>: the data used to plot the survival curves (data.frame).</li>
+<li>
+<strong>data.survtable</strong>: the data used to plot the tables under the main survival curves (data.frame).</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="themes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#themes" class="anchor"> </a>Themes</h3>
+<ul>
+<li><p>New function <code><a href="../reference/theme_survminer.html">theme_survminer()</a></code> to change easily the graphical parameters of plots generated with survminer (<a href="https://github.com/kassambara/survminer/issues/151">#151</a>). A theme similar to theme_classic() with large font size. Used as default theme in survminer functions.</p></li>
+<li><p>New function <code><a href="../reference/theme_survminer.html">theme_cleantable()</a></code> to draw a clean risk table and cumulative number of events table. Remove axis lines, x axis ticks and title (<a href="https://github.com/kassambara/survminer/issues/117">#117</a> &amp; <a href="https://github.com/kassambara/survminer/issues/156">#156</a>).</p></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit survival curves</span>
+<span class="kw">require</span>(<span class="st">"survival"</span>)
+fit&lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw">Surv</span>(time, status) ~<span class="st"> </span>sex, <span class="dt">data =</span> lung)
+
+<span class="co"># Survival curves</span>
+<span class="kw">require</span>(<span class="st">"survminer"</span>)
+<span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> lung, <span class="dt">risk.table =</span> <span class="ot">TRUE</span>,
+    <span class="dt">tables.theme =</span> <span class="kw"><a href="../reference/theme_survminer.html">theme_cleantable</a></span>()
+    )</code></pre></div>
+</div>
+<div id="new-functions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-functions" class="anchor"> </a>New functions</h3>
+<ul>
+<li>New function <code>+.ggsurv()</code> to add ggplot components - <code>theme()</code>, <code>labs()</code> - to an object of class ggsurv, which is a list of ggplots. (<a href="https://github.com/kassambara/survminer/issues/151">#151</a>). For example:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit survival curves</span>
+<span class="kw">require</span>(<span class="st">"survival"</span>)
+fit&lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw">Surv</span>(time, status) ~<span class="st"> </span>sex, <span class="dt">data =</span> lung)
+
+<span class="co"># Basic survival curves</span>
+<span class="kw">require</span>(<span class="st">"survminer"</span>)
+p &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> lung, <span class="dt">risk.table =</span> <span class="ot">TRUE</span>)
+p
+
+<span class="co"># Customizing the plots</span>
+p %+%<span class="st"> </span><span class="kw"><a href="../reference/theme_survminer.html">theme_survminer</a></span>(
+     <span class="dt">font.main =</span> <span class="kw">c</span>(<span class="dv">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),
+     <span class="dt">font.submain =</span> <span class="kw">c</span>(<span class="dv">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),
+     <span class="dt">font.caption =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"plain"</span>, <span class="st">"orange"</span>),
+     <span class="dt">font.x =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"red"</span>),
+     <span class="dt">font.y =</span> <span class="kw">c</span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkred"</span>),
+     <span class="dt">font.tickslab =</span> <span class="kw">c</span>(<span class="dv">12</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>)
+)</code></pre></div>
 <ul>
 <li><p>New function <code><a href="../reference/arrange_ggsurvplots.html">arrange_ggsurvplots()</a></code> to arrange multiple ggsurvplots on the same page (<a href="https://github.com/kassambara/survminer/issues/66">#66</a>).</p></li>
-<li><p>New function <code><a href="../reference/ggsurvevents.html">ggsurvevents()</a></code>. Calculates and plots distribution for events (both status=0 and status1); with <code>type</code> parameter one can plot cumulative distribution of locally smooth density; with normalised distributions are normalised. This function helps to notice when censorings are more common (<a href="https://github.com/kassambara/survminer/issues/116">@pbiecek, #116</a>).</p></li>
-<li><p>New function <code><a href="../reference/ggcoxadjustedcurves.html">ggcoxadjustedcurves()</a></code> added to plot adjusted survival curves for Cox proportional hazards model (<a href="https://github.com/kassambara/survminer/issues/133">@pbiecek, #133</a> &amp; <a href="https://github.com/kassambara/survminer/issues/67">@markdanese, #67</a>).</p></li>
-<li>New possibilities to compare survival curves with <code>pval.method</code> and <code>log.rank.weights</code> parameters in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, by specifing weights in Log-rank test. Functionality based on <code>survMisc::comp</code>.</li>
-<li>New function <code><a href="../reference/ggforest.html">ggforest()</a></code> added for drawing forest plot for the Cox model.</li>
-<li>New argument <code>sline</code> in the <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> function for adding loess smoothed trend on the residual plots. This will make it easier to spot some problems with residuals (like quadratic relation). (<a href="https://github.com/kassambara/survminer/issues/119">@pbiecek, #119</a>).</li>
+<li><p>New function <code><a href="../reference/ggsurvevents.html">ggsurvevents()</a></code> to calculate and plot the distribution for events (both status = 0 and status = 1); with <code>type</code> parameter one can plot cumulative distribution of locally smooth density; with normalised, distributions are normalised. This function helps to notice when censorings are more common (<a href="https://github.com/kassambara/survminer/issues/116">\@pbiecek, #116</a>).</p></li>
+<li><p>New function <code><a href="../reference/ggcoxadjustedcurves.html">ggcoxadjustedcurves()</a></code> to plot adjusted survival curves for Cox proportional hazards model (<a href="https://github.com/kassambara/survminer/issues/133">\@pbiecek, #133</a> &amp; <a href="https://github.com/kassambara/survminer/issues/67">\@markdanese, #67</a>).</p></li>
+<li><p>New function <code><a href="../reference/ggforest.html">ggforest()</a></code> for drawing forest plot for the Cox model.</p></li>
 <li><p>New function <code><a href="../reference/pairwise_survdiff.html">pairwise_survdiff()</a></code> for multiple comparisons of survival Curves (<a href="https://github.com/kassambara/survminer/issues/97">#97</a>).</p></li>
 </ul>
+</div>
+<div id="helper-functions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#helper-functions" class="anchor"> </a>Helper functions</h3>
+<p>New heper functions <code><a href="../reference/ggrisktable.html">ggrisktable()</a></code>, <code><a href="../reference/ggcumevents.html">ggcumevents()</a></code>, <code><a href="../reference/ggcumcensor.html">ggcumcensor()</a></code>. Normally, users don’t need to use these function directly. Internally used by the function <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>.</p>
+<ul>
+<li>
+<code><a href="../reference/ggrisktable.html">ggrisktable()</a></code> for plotting number of subjects at risk by time. (<a href="https://github.com/kassambara/survminer/issues/154">#154</a>).</li>
+<li>
+<code><a href="../reference/ggcumevents.html">ggcumevents()</a></code> for plotting the cumulative number of events table (<a href="https://github.com/kassambara/survminer/issues/117">#117</a>).</li>
+<li>
+<code><a href="../reference/ggcumcensor.html">ggcumcensor()</a></code> for plotting the cumulative number of censored subjects table (<a href="https://github.com/kassambara/survminer/issues/155">#155</a>).</li>
+</ul>
+</div>
 </div>
 <div id="major-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#major-changes" class="anchor"> </a>Major changes</h2>
 <ul>
-<li><p>Additional <code>data</code> argument added to the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function (<a href="https://github.com/kassambara/survminer/issues/142">@kassambara, #142</a>). Now, it’s recommended to pass to the function, the data used to fit survival curves. This will avoid the error generated when trying to use the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function inside another functions (<a href="https://github.com/kassambara/survminer/issues/125">@zzawadz, #125</a>).</p></li>
-<li>New fonts and texts customization features for <code>ggsurvplot</code> (<a href="https://github.com/kassambara/survminer/issues/105">@MarcinKosinski, #105</a>) (<a href="https://github.com/kassambara/survminer/issues/106">@MarcinKosinski, #106</a>)
-<ul>
-<li>It is possible to specify subtitle (param <code>submain</code>) and caption (param <code>caption</code>) for the <code>curve</code> part of the <code>ggsurvplot</code>.</li>
-<li>It is possible to specify subtitle (param <code>risk.table.subtitle</code>) and caption (param <code>risk.table.caption</code>) for the <code>table</code> part of the <code>ggsurvplot</code>.</li>
-<li>It is possible to specify title (param <code>ncens.plot.title</code>), subtitle (param <code>ncens.plot.subtitle</code>) and caption (param <code>ncens.plot.caption</code>) for the <code>ncens</code> part of the <code>ggsurvplot</code>.</li>
-<li>ncens.plot part of the <code>ggsurvplot</code> has no integer values on y axis (not real as before), as it only can take integer values.</li>
-<li>Fonts can be specified directly for <code>curve</code>, <code>risk.table</code> and <code>ncensor.plot</code> elements (<a href="https://github.com/kassambara/survminer/issues/106">@MarcinKosinski, #106</a>).</li>
-<li>README was extended with <code>uber platinium (premium) customization</code> examples.</li>
-</ul>
-</li>
-<li><p>The design of <code><a href="../reference/ggcoxfunctional.html">ggcoxfunctional()</a></code> has been changed to be consistent with the other functions in the survminer package. Now, <code><a href="../reference/ggcoxfunctional.html">ggcoxfunctional()</a></code> works with coxph objects not formulas. The arguments formula is now deprecated (<a href="https://github.com/kassambara/survminer/issues/115">@pbiecek, #115</a>).</p></li>
-<li><p>In the <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> function, it’s now possible to plot Time in the OX axis (<a href="https://github.com/kassambara/survminer/issues/124">@pbiecek, #124</a>). This is convenient for some residuals like Schoenfeld. The <code>linear.predictions</code> parameter has been replaced with <code>ox.scale = c("linear.predictions", "time", "observation.id")</code>.</p></li>
+<li><p>New argument <code>sline</code> in the <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> function for adding loess smoothed trend on the residual plots. This will make it easier to spot some problems with residuals (like quadratic relation). (<a href="https://github.com/kassambara/survminer/issues/119">\@pbiecek, #119</a>).</p></li>
+<li><p>The design of <code><a href="../reference/ggcoxfunctional.html">ggcoxfunctional()</a></code> has been changed to be consistent with the other functions in the survminer package. Now, <code><a href="../reference/ggcoxfunctional.html">ggcoxfunctional()</a></code> works with coxph objects not formulas. The arguments formula is now deprecated (<a href="https://github.com/kassambara/survminer/issues/115">\@pbiecek, #115</a>).</p></li>
+<li><p>In the <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> function, it’s now possible to plot Time in the OX axis (<a href="https://github.com/kassambara/survminer/issues/124">\@pbiecek, #124</a>). This is convenient for some residuals like Schoenfeld. The <code>linear.predictions</code> parameter has been replaced with <code>ox.scale = c("linear.predictions", "time", "observation.id")</code>.</p></li>
 </ul>
 </div>
 <div id="minor-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#minor-changes" class="anchor"> </a>Minor changes</h2>
 <ul>
-<li><p>It is possible to secify <code>title</code> and <code>caption</code> for <code>ggcoxfunctional</code> (<a href="https://github.com/kassambara/survminer/issues/138">@MarcinKosinski, #138</a>) (<code>font.main</code> was removed as it was unused.)</p></li>
-<li><p>It is possible to secify <code>title</code>, <code>subtitle</code> and <code>caption</code> for <code>ggcoxdiagnostics</code> (<a href="https://github.com/kassambara/survminer/issues/139">@MarcinKosinski, #139</a>) and <code>font</code>s for them.</p></li>
-<li><p>It is possible to secify global <code>caption</code> for <code>ggcoxzph</code> (<a href="https://github.com/kassambara/survminer/issues/140">@MarcinKosinski, #140</a>).</p></li>
+<li><p>New argument <code>tables.height</code> in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to apply the same height to all the tables under the main survival plots (<a href="https://github.com/kassambara/survminer/issues/157">#157</a>).</p></li>
+<li><p>It is possible to specify <code>title</code> and <code>caption</code> for <code>ggcoxfunctional</code> (<a href="https://github.com/kassambara/survminer/issues/138">\@MarcinKosinski, #138</a>) (<code>font.main</code> was removed as it was unused.)</p></li>
+<li><p>It is possible to specify <code>title</code>, <code>subtitle</code> and <code>caption</code> for <code>ggcoxdiagnostics</code> (<a href="https://github.com/kassambara/survminer/issues/139">\@MarcinKosinski, #139</a>) and <code>fonts</code> for them.</p></li>
+<li><p>It is possible to specify global <code>caption</code> for <code>ggcoxzph</code> (<a href="https://github.com/kassambara/survminer/issues/140">\@MarcinKosinski, #140</a>).</p></li>
 <li><p>In <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, more information, about color palettes, have been added in the details section of the documentation (<a href="https://github.com/kassambara/survminer/issues/100">#100</a>).</p></li>
-<li><p>The R package <code>maxstat</code> doesn’t support very well an object of class <code>tbl_df</code>. To fix this issue, now, in the <code><a href="../reference/surv_cutpoint.html">surv_cutpoint()</a></code> function, the input data is systematically transformed into a standard data.frame format (<a href="https://github.com/kassambara/survminer/issues/104">@MarcinKosinski, #104</a>).</p></li>
-<li><p>It’s now possible to print the output the survminer packages in a powerpoint created with the ReporteRs package. Thanks to (<a href="https://github.com/kassambara/survminer/issues/110">@abossenbroek, #110</a>) and (<a href="https://github.com/kassambara/survminer/issues/110">@zzawadz, #111</a>). You should use the argument <em>newpage = FALSE</em> in the <code>print()</code> function when printing the output in the powerpoint. For instance:</p></li>
+<li><p>The R package <code>maxstat</code> doesn’t support very well an object of class <code>tbl_df</code>. To fix this issue, now, in the <code><a href="../reference/surv_cutpoint.html">surv_cutpoint()</a></code> function, the input data is systematically transformed into a standard data.frame format (<a href="https://github.com/kassambara/survminer/issues/104">\@MarcinKosinski, #104</a>).</p></li>
+<li><p>It’s now possible to print the output of the survminer packages in a powerpoint created with the ReporteRs package. You should use the argument <em>newpage = FALSE</em> in the <code>print()</code> function when printing the output in the powerpoint. Thanks to (<a href="https://github.com/kassambara/survminer/issues/110">\@abossenbroek, #110</a>) and (<a href="https://github.com/kassambara/survminer/issues/111">\@zzawadz, #111</a>). For instance:</p></li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(survival)
 <span class="kw">require</span>(ReporteRs)
@@ -150,8 +230,9 @@ doc =<span class="st"> </span><span class="kw">addPlot</span>(doc, function() <s
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"> </a>Bug fixes</h2>
 <ul>
+<li><p>Now, risk table align with survival plots when legend = “right” (<a href="https://github.com/kassambara/survminer/issues/102">\@jonlehrer, #102</a>).</p></li>
 <li><p>Now, <code><a href="../reference/ggcoxzph.html">ggcoxzph()</a></code> works for univariate Cox analysis (<a href="https://github.com/kassambara/survminer/issues/103">#103</a>).</p></li>
-<li><p>Now, <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> works properly for schoenfeld residuals (<a href="https://github.com/kassambara/survminer/issues/122">@pbiecek, #119</a>).</p></li>
+<li><p>Now, <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> works properly for schoenfeld residuals (<a href="https://github.com/kassambara/survminer/issues/122">\@pbiecek, #119</a>).</p></li>
 <li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> works properly in the situation where <code>strata()</code> is included in the cox formula (<a href="https://github.com/kassambara/survminer/issues/109">#109</a>).</p></li>
 </ul>
 </div>
@@ -159,8 +240,8 @@ doc =<span class="st"> </span><span class="kw">addPlot</span>(doc, function() <s
 <h2 class="hasAnchor">
 <a href="#vignettes-and-examples" class="anchor"> </a>Vignettes and examples</h2>
 <ul>
-<li>A new vignette and a <code>ggsurvplot</code> example was added to present new functionalities of possible texts and fonts customizations.</li>
-<li>A new vignette and a <code>ggsurvplot</code> example was added to present new functionalities of possible weights specification in a Log-rank test.</li>
+<li><p>A new vignette and a <code>ggsurvplot</code> example was added to present new functionalities of possible texts and fonts customizations.</p></li>
+<li><p>A new vignette and a <code>ggsurvplot</code> example was added to present new functionalities of possible weights specification in a Log-rank test.</p></li>
 </ul>
 </div>
 </div>

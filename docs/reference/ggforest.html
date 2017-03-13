@@ -49,6 +49,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -60,7 +63,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -80,11 +88,8 @@
     
 
     <pre><span class='fu'>ggforest</span>(<span class='no'>model</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>plot.title</span> <span class='kw'>=</span> <span class='st'>"Forest plot for coxph model"</span>,
-  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_classic2.html'>theme_classic2</a></span>(), <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"black"</span>, <span class='st'>"red4"</span>),
-  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Hazard ratio"</span>, <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
-  <span class='kw'>font.submain</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>15</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.caption</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>15</span>, <span class='st'>"plain"</span>,
-  <span class='st'>"black"</span>), <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>,
-  <span class='st'>"black"</span>), <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>))</pre>
+  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"black"</span>, <span class='st'>"red4"</span>),
+  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Hazard ratio"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -100,13 +105,8 @@
       <dd>the color palette to be used for coloring of significant variables.</dd>
       <dt>xlab</dt>
       <dd>Label in OX axis.</dd>
-      <dt>font.main, font.submain, font.caption, font.x, font.y, font.tickslab</dt>
-      <dd>a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: &quot;plain&quot;,
-&quot;bold&quot;, &quot;italic&quot;, &quot;bold.italic&quot;) and the color (e.g.: &quot;red&quot;) of main title, subtitle, caption,
-xlab and ylab and axis tick labels, respectively. For example <em>font.x =
-c(14, &quot;bold&quot;, &quot;red&quot;)</em>.  Use font.x = 14, to change only font size; or use
-font.x = &quot;bold&quot;, to change only font face.</dd>
+      <dt>...</dt>
+      <dd>further arguments passed to the function <code><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggpar'>ggpar</a></code> for customizing the plot.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
