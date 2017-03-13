@@ -10,7 +10,7 @@ ggcompetingrisks(fit, gnames = NULL, gsep = " ", multiple_panels = TRUE,
 \arguments{
 \item{fit}{an object of a class \link{cuminc} - created with \link{cuminc} function or \link{survfitms} created with \link{survfit} function.}
 
-\item{gnames}{a vector with group names. If not suplied then will be extracted from \code{fit} object (\code{cuminc} only).}
+\item{gnames}{a vector with group names. If not supplied then will be extracted from \code{fit} object (\code{cuminc} only).}
 
 \item{gsep}{a separator that extracts group names and event names from \code{gnames} object (\code{cuminc} only).}
 
@@ -23,7 +23,8 @@ Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}
 Returns an object of class \code{gg}.
 }
 \description{
-This function plots Cumulative Incidence Curves
+This function plots Cumulative Incidence Curves. For \code{cuminc} objects it's a \code{ggplot2} version of \code{plot.cuminc}.
+For \code{survfitms} objects a different geometry is used, as suggested by \code{@teigentler}.
 }
 \examples{
 set.seed(2)
