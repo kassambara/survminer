@@ -30,6 +30,7 @@ reference:
       - ggcumcensor
       - ggsurvtheme
       - theme_classic2
+      - add_ggsurvplot
 
 
 
