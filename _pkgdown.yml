@@ -17,10 +17,13 @@ reference:
       - ggcoxdiagnostics
       - ggcoxfunctional
       - ggcoxzph
-  - title: VSummary of Cox Model
+  - title: Summary of Cox Model
     contents:
       - ggforest
       - ggcoxadjustedcurves
+  - title: Competing Risks
+    contents:
+      - ggcompetingrisks
   - title: Data
     contents: myeloma
   - title: Others
