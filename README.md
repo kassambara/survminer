@@ -60,6 +60,8 @@ The main functions, in the package, are organized in different categories as fol
 <hr/>
 -   **ggcompetingrisks**(): Plots cumulative incidence curves for competing risks.
 
+<br/>
+
 > Find out more at <http://www.sthda.com/english/rpkgs/survminer/>, and check out the documentation and usage examples of each of the functions in survminer package.
 
 Installation and loading
@@ -100,7 +102,7 @@ fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ggsurvplot(fit, data = lung)
 ```
 
-![](README-ggplot2-basic-survival-plot-1.png)
+![](tools/README-ggplot2-basic-survival-plot-1.png)
 
 ### Customized survival curves
 
@@ -117,7 +119,7 @@ ggsurvplot(fit, data = lung, size = 1,  # change line size
            )
 ```
 
-![](README-ggplot2-customized-survival-plot-1.png)
+![](tools/README-ggplot2-customized-survival-plot-1.png)
 
 Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table.
 
@@ -144,7 +146,7 @@ ggsurvplot(
 )
 ```
 
-![](README-ggplot2-more-customized-survival-plot-1.png)
+![](tools/README-ggplot2-more-customized-survival-plot-1.png)
 
 ### Uber customized survival curves
 
@@ -177,7 +179,7 @@ ggsurv <- ggsurvplot(
 ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
 ```
 
-![](README-ggplot2-uber-customized-survival-plot-1.png)
+![](tools/README-ggplot2-uber-customized-survival-plot-1.png)
 
 ### Uber platinum customized survival curves
 
@@ -224,7 +226,7 @@ ggsurv <- ggpar(ggsurv,
 ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
 ```
 
-![](README-ggplot2-uber-platinium-customized-survival-plot-1.png)
+![](tools/README-ggplot2-uber-platinium-customized-survival-plot-1.png)
 
 Uber platinum premium customized survival curves
 ------------------------------------------------
@@ -256,7 +258,7 @@ ggsurv$ncensor.plot <- ggpar(ggsurv$ncensor.plot,
 print(ggsurv)
 ```
 
-![](README-ggplot2-uber-platinium-premium-customized-survival-plot-1.png)
+![](tools/README-ggplot2-uber-platinium-premium-customized-survival-plot-1.png)
 
 Blog posts
 ----------
