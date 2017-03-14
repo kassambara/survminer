@@ -42,14 +42,14 @@ VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'add_ggsurvplot.R'
     'utilities.R'
     'surv_summary.R'
     'theme_classic2.R'
     'ggsurvplot.R'
     'arrange_ggsurvplots.R'
-    'cic.R'
+    'ggcompetingrisks.R'
     'ggcoxadjustedcurves.R'
     'ggcoxdiagnostics.R'
     'ggcoxfunctional.R'
