@@ -8,7 +8,7 @@ ggcompetingrisks(fit, gnames = NULL, gsep = " ", multiple_panels = TRUE,
   ggtheme = theme_survminer())
 }
 \arguments{
-\item{fit}{an object of a class \link{cuminc} - created with \link{cuminc} function or \link{survfitms} created with \link{survfit} function.}
+\item{fit}{an object of a class \link{cuminc} - created with \link{cuminc} function or \code{survfitms} created with \link{survfit} function.}
 
 \item{gnames}{a vector with group names. If not supplied then will be extracted from \code{fit} object (\code{cuminc} only).}
 
