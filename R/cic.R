@@ -3,7 +3,7 @@
 #' @importFrom survival survfit
 #' @description This function plots Cumulative Incidence Curves. For \code{cuminc} objects it's a \code{ggplot2} version of \code{plot.cuminc}.
 #' For \code{survfitms} objects a different geometry is used, as suggested by \code{@@teigentler}.
-#' @param fit an object of a class \link{cuminc} - created with \link{cuminc} function or \link{survfitms} created with \link{survfit} function.
+#' @param fit an object of a class \link{cuminc} - created with \link{cuminc} function or \code{survfitms} created with \link{survfit} function.
 #' @param gnames a vector with group names. If not supplied then will be extracted from \code{fit} object (\code{cuminc} only).
 #' @param gsep a separator that extracts group names and event names from \code{gnames} object (\code{cuminc} only).
 #' @param multiple_panels if \code{TRUE} then groups will be plotted in different panels (\code{cuminc} only).
@@ -69,6 +69,7 @@ ggcompetingrisks.cuminc <- function(fit, gnames = NULL, gsep=" ",
     df$name <- gnames[ind]
     df
   })
+  time <- est <- event <- group <- NULL
   df <- do.call(rbind, fit2_list)
   df$event <- sapply(strsplit(df$name, split=gsep), `[`, 2)
   df$group <- sapply(strsplit(df$name, split=gsep), `[`, 1)
@@ -92,7 +93,8 @@ ggcompetingrisks.survfitms <- function(fit) {
     psta$strata <- rep(names(fit$strata), fit$strata)
   }
   psta$times <- times
-
+  
+  event <- value <- strata <- NULL
   pstal <- gather(psta, event, value, -strata, -times)
 
   ggplot(pstal, aes(times, value, fill=event)) +
