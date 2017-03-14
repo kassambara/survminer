@@ -80,7 +80,13 @@ The main functions, in the package, are organized in different categories as fol
 - **ggforest**(): Draws forest plot for CoxPH model.
    
 - **ggcoxadjustedcurves**(): Plots adjusted survival curves for coxph model.
+   
+<br/>
 
+**Competing Risks**
+<hr/>
+   
+- **ggcompetingrisks**(): Plots cumulative incidence curves for competing risks.
     
    
 > Find out more at http://www.sthda.com/english/rpkgs/survminer/, and check out the documentation and usage examples of each of the functions in survminer package. 
