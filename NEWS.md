@@ -84,6 +84,7 @@ p %+% theme_survminer(
     
 - New function `pairwise_survdiff()` for multiple comparisons of survival Curves ([#97](https://github.com/kassambara/survminer/issues/97)).
      
+New function `ggcompetingrisks()` to plot the cumulative incidence curves for competing risks ([\@pbiecek, #168](https://github.com/kassambara/survminer/issues/168).
     
 ### Helper functions
     
