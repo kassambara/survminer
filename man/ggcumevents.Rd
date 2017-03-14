@@ -26,8 +26,7 @@ the default hue color scale; "grey" for grey color palettes; brewer palettes
 e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
 See details section for more information.}
 
-\item{break.time.by}{numeric value controlling time axis breaks. Default value
-is NULL.}
+\item{break.time.by}{numeric value controlling time axis breaks. Default value is NULL.}
 
 \item{xlim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
 

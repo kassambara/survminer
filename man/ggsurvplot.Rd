@@ -6,11 +6,11 @@
 \title{Drawing Survival Curves Using ggplot2}
 \usage{
 ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
-  linetype = 1, break.time.by = NULL, break.y.by = NULL,
-  surv.scale = c("default", "percent"), conf.int = FALSE,
-  conf.int.fill = "gray", conf.int.style = "ribbon", censor = TRUE,
-  pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
-  pval.method = FALSE, pval.method.size = pval.size,
+  linetype = 1, break.x.by = NULL, break.y.by = NULL,
+  break.time.by = NULL, surv.scale = c("default", "percent"),
+  conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
+  censor = TRUE, pval = FALSE, pval.size = 5, pval.coord = c(NULL,
+  NULL), pval.method = FALSE, pval.method.size = pval.size,
   pval.method.coord = c(NULL, NULL), log.rank.weights = c("survdiff", "1",
   "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"), title = NULL, xlab = "Time",
   ylab = "Survival probability", xlim = NULL, ylim = NULL,
@@ -60,10 +60,11 @@ See details section for more information.}
 linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
 character vector c("solid", "dashed").}
 
-\item{break.time.by}{numeric value controlling time axis breaks. Default value
-is NULL.}
+\item{break.x.by}{alias of break.time.by. Numeric value controlling x axis breaks. Default value is NULL.}
 
-\item{break.y.by}{numeric value controlling y axis breaks. Default value is NULL.}
+\item{break.y.by}{same as break.x.by but for y axis.}
+
+\item{break.time.by}{numeric value controlling time axis breaks. Default value is NULL.}
 
 \item{surv.scale}{scale transformation of survival curves. Allowed values are
 "default" or "percent".}

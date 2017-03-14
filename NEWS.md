@@ -18,7 +18,7 @@
     
 - New arguments `pval.method` and `log.rank.weights`: New possibilities to compare survival curves. Functionality based on `survMisc::comp`.
    
-- New arguments `break.y.by`, numeric value controlling time axis breaks. 
+- New arguments `break.x.by` and `break.y.by`, numeric value controlling x and y axis breaks, respectively. 
    
 - Now, `ggsurvplot()` returns an object of class ggsurvplot which is list containing the following components ([#158](https://github.com/kassambara/survminer/issues/158)):
     - **plot**: the survival plot (ggplot object)
