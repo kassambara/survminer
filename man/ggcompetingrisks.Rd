@@ -5,7 +5,7 @@
 \title{Cumulative Incidence Curves for Competing Risks}
 \usage{
 ggcompetingrisks(fit, gnames = NULL, gsep = " ", multiple_panels = TRUE,
-  ggtheme = theme_survminer())
+  ggtheme = theme_survminer(), ...)
 }
 \arguments{
 \item{fit}{an object of a class \link{cuminc} - created with \link{cuminc} function or \code{survfitms} created with \link{survfit} function.}
@@ -18,6 +18,8 @@ ggcompetingrisks(fit, gnames = NULL, gsep = " ", multiple_panels = TRUE,
 
 \item{ggtheme}{function, \code{ggplot2} theme name. Default value is \link{theme_survminer}.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
+
+\item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.}
 }
 \value{
 Returns an object of class \code{gg}.

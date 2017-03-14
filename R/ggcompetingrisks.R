@@ -9,6 +9,7 @@
 #' @param multiple_panels if \code{TRUE} then groups will be plotted in different panels (\code{cuminc} only).
 #' @param ggtheme function, \code{ggplot2} theme name. Default value is \link{theme_survminer}.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
+#'@param ... further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.
 #' @return Returns an object of class \code{gg}.
 #'
 #' @author Przemyslaw Biecek, \email{przemyslaw.biecek@@gmail.com}
@@ -41,7 +42,7 @@
 
 ggcompetingrisks <- function(fit, gnames = NULL, gsep=" ",
                              multiple_panels = TRUE,
-                             ggtheme = theme_survminer()) {
+                             ggtheme = theme_survminer(), ...) {
   stopifnot(any(class(fit) %in% c("cuminc", "survfitms")))
 
   if (any(class(fit) == "cuminc")) {
@@ -52,9 +53,10 @@ ggcompetingrisks <- function(fit, gnames = NULL, gsep=" ",
     pl <- ggcompetingrisks.survfitms(fit = fit)
   }
 
-  pl + ggtheme +
+  pl <- pl + ggtheme +
     ylab("Probability of an event") + xlab("Time") +
     ggtitle("Cumulative incidence functions")
+  ggpubr::ggpar(pl, ...)
 }
 
 
