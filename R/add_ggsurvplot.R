@@ -26,8 +26,8 @@
 #'      font.y = c(14, "bold.italic", "darkred"),
 #'      font.tickslab = c(12, "plain", "darkgreen")
 #')
-#'
-#'@rdname add-ggsurvplot
+#'@name add_ggsurvplot
+#'@rdname add_ggsurvplot
 #'@method + ggsurv
 #'@export
 "+.ggsurv" <- function (e1, e2)
@@ -50,6 +50,6 @@
 }
 
 
-#' @rdname add-ggsurvplot
+#' @rdname add_ggsurvplot
 #' @export
 "%+%" <- `+.ggsurv`
