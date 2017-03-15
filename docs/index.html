@@ -117,6 +117,14 @@
 <li><p><strong>ggforest</strong>(): Draws forest plot for CoxPH model.</p></li>
 <li><p><strong>ggcoxadjustedcurves</strong>(): Plots adjusted survival curves for coxph model.</p></li>
 </ul>
+<p><br></p>
+<strong>Competing Risks</strong>
+<hr>
+<ul>
+<li>
+<strong>ggcompetingrisks</strong>(): Plots cumulative incidence curves for competing risks.</li>
+</ul>
+<p><br></p>
 <blockquote>
 <p>Find out more at <a href="http://www.sthda.com/english/rpkgs/survminer/" class="uri">http://www.sthda.com/english/rpkgs/survminer/</a>, and check out the documentation and usage examples of each of the functions in survminer package.</p>
 </blockquote>
@@ -144,7 +152,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <h3 class="hasAnchor">
 <a href="#basic-plots" class="anchor"> </a>Basic plots</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> lung)</code></pre></div>
-<p><img src="README-ggplot2-basic-survival-plot-1.png" width="480"></p>
+<p><img src="tools/README-ggplot2-basic-survival-plot-1.png" width="480"></p>
 </div>
 <div id="customized-survival-curves" class="section level3">
 <h3 class="hasAnchor">
@@ -159,7 +167,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
            <span class="dt">risk.table.height =</span> <span class="fl">0.25</span>, <span class="co"># Useful to change when you have multiple groups</span>
            <span class="dt">ggtheme =</span> <span class="kw">theme_bw</span>() <span class="co"># Change ggplot2 theme</span>
            )</code></pre></div>
-<p><img src="README-ggplot2-customized-survival-plot-1.png" width="576"></p>
+<p><img src="tools/README-ggplot2-customized-survival-plot-1.png" width="576"></p>
 <p>Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table.</p>
 </div>
 <div id="more-customized-survival-curves" class="section level3">
@@ -182,7 +190,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
   <span class="dt">risk.table.y.text =</span> <span class="ot">FALSE</span> <span class="co"># show bars instead of names in text annotations</span>
                             <span class="co"># in legend of risk table</span>
 )</code></pre></div>
-<p><img src="README-ggplot2-more-customized-survival-plot-1.png" width="576"></p>
+<p><img src="tools/README-ggplot2-more-customized-survival-plot-1.png" width="576"></p>
 </div>
 <div id="uber-customized-survival-curves" class="section level3">
 <h3 class="hasAnchor">
@@ -213,7 +221,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 
 <span class="co"># Apply custom color palettes and print</span>
 <span class="kw">ggpar</span>(ggsurv, <span class="dt">palette =</span> <span class="kw">c</span>(<span class="st">"#E7B800"</span>, <span class="st">"#2E9FDF"</span>))</code></pre></div>
-<p><img src="README-ggplot2-uber-customized-survival-plot-1.png" width="576"></p>
+<p><img src="tools/README-ggplot2-uber-customized-survival-plot-1.png" width="576"></p>
 </div>
 <div id="uber-platinum-customized-survival-curves" class="section level3">
 <h3 class="hasAnchor">
@@ -258,7 +266,7 @@ ggsurv &lt;-<span class="st"> </span><span class="kw">ggpar</span>(ggsurv,
 
 <span class="co"># Apply custom color palettes and print</span>
 <span class="kw">ggpar</span>(ggsurv, <span class="dt">palette =</span> <span class="kw">c</span>(<span class="st">"#E7B800"</span>, <span class="st">"#2E9FDF"</span>))</code></pre></div>
-<p><img src="README-ggplot2-uber-platinium-customized-survival-plot-1.png" width="576"></p>
+<p><img src="tools/README-ggplot2-uber-platinium-customized-survival-plot-1.png" width="576"></p>
 </div>
 </div>
 <div id="uber-platinum-premium-customized-survival-curves" class="section level2">
@@ -288,7 +296,7 @@ ggsurv$ncensor.plot &lt;-<span class="st"> </span><span class="kw">ggpar</span>(
                             )
 
 <span class="kw">print</span>(ggsurv)</code></pre></div>
-<p><img src="README-ggplot2-uber-platinium-premium-customized-survival-plot-1.png" width="576"></p>
+<p><img src="tools/README-ggplot2-uber-platinium-premium-customized-survival-plot-1.png" width="576"></p>
 </div>
 <div id="blog-posts" class="section level2">
 <h2 class="hasAnchor">
