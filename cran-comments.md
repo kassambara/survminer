@@ -8,20 +8,21 @@ There were no ERRORs or WARNINGs.
 
 There were two notes:
 
-1) note concerning the subdirectory "doc", which contains vignette files.  
+1) one note concerning the subdirectory "doc", which contains vignette files.  
    
 checking installed package size ... NOTE
   installed size is  5.5Mb
   sub-directories of 1Mb or more:
     doc   5.4Mb
     
-2)  note concerning Examples with CPU or elapsed time > 5s
+2)  one note concerning Examples with CPU or elapsed time > 5s:
+  
                      user system elapsed
 ggcoxadjustedcurves 6.815  0.501   7.479
 ggcoxdiagnostics    4.562  0.306   5.042
    
    
-Please, ignore these notes.
+Would you be so kind to ignore these notes.
     
     
 ## win-builder check results
