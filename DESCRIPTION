@@ -36,8 +36,6 @@ Suggests:
     RTCGA(>= 1.4.0),
     RTCGA.clinical(>= 20151101.4.0),
     KMsurv
-Remotes:
-    kassambara/ggpubr
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
