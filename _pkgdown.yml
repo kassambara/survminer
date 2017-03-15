@@ -24,14 +24,17 @@ reference:
   - title: Competing Risks
     contents:
       - ggcompetingrisks
-  - title: Data
-    contents: myeloma
-  - title: Others
+  - title: Helpers
     contents:
       - ggrisktable
       - ggcumevents
       - ggcumcensor
+  - title: Data
+    contents: myeloma
+  - title: Others
+    contents:
       - ggsurvtheme
+      - theme_survminer
       - theme_classic2
       - add_ggsurvplot
 
