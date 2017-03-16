@@ -85,9 +85,9 @@
     </div>
 
     <div class="contents">
-    <div id="survminer-0-2-4-999" class="section level1">
+    <div id="survminer-0-3-0" class="section level1">
 <h1 class="hasAnchor">
-<a href="#survminer-0-2-4-999" class="anchor"> </a>survminer 0.2.4.999</h1>
+<a href="#survminer-0-3-0" class="anchor"> </a>survminer 0.3.0</h1>
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"> </a>New features</h2>
@@ -101,6 +101,7 @@
 <li><p>New arguments <code>cumevents</code> and <code>cumcensor</code>: logical value for displaying the cumulative number of events table (<a href="https://github.com/kassambara/survminer/issues/117">#117</a>) and the cumulative number of censored subject (<a href="https://github.com/kassambara/survminer/issues/155">#155</a>), respectively.</p></li>
 <li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can display both the number at risk and the cumulative number of censored in the same table using the option <code>risk.table = 'nrisk_cumcenor'</code> (<a href="https://github.com/kassambara/survminer/issues/96">#96</a>). It’s also possible to display the number at risk and the cumulative number of events using the option <code>risk.table = 'nrisk_cumevents'</code>.</p></li>
 <li><p>New arguments <code>pval.method</code> and <code>log.rank.weights</code>: New possibilities to compare survival curves. Functionality based on <code>survMisc::comp</code>.</p></li>
+<li><p>New arguments <code>break.x.by</code> and <code>break.y.by</code>, numeric value controlling x and y axis breaks, respectively.</p></li>
 <li>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> returns an object of class ggsurvplot which is list containing the following components (<a href="https://github.com/kassambara/survminer/issues/158">#158</a>):
 <ul>
 <li>
@@ -166,6 +167,7 @@ p %+%<span class="st"> </span><span class="kw"><a href="../reference/theme_survm
 <li><p>New function <code><a href="../reference/ggcoxadjustedcurves.html">ggcoxadjustedcurves()</a></code> to plot adjusted survival curves for Cox proportional hazards model (<a href="https://github.com/kassambara/survminer/issues/133">\@pbiecek, #133</a> &amp; <a href="https://github.com/kassambara/survminer/issues/67">\@markdanese, #67</a>).</p></li>
 <li><p>New function <code><a href="../reference/ggforest.html">ggforest()</a></code> for drawing forest plot for the Cox model.</p></li>
 <li><p>New function <code><a href="../reference/pairwise_survdiff.html">pairwise_survdiff()</a></code> for multiple comparisons of survival Curves (<a href="https://github.com/kassambara/survminer/issues/97">#97</a>).</p></li>
+<li><p>New function <code><a href="../reference/ggcompetingrisks.html">ggcompetingrisks()</a></code> to plot the cumulative incidence curves for competing risks (<a href="https://github.com/kassambara/survminer/issues/168">\@pbiecek, #168</a>.</p></li>
 </ul>
 </div>
 <div id="helper-functions" class="section level3">
@@ -442,7 +444,7 @@ print(res)</code></pre>
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#survminer-0-2-4-999">0.2.4.999</a></li>
+        <li><a href="#survminer-0-3-0">0.3.0</a></li>
         <li><a href="#survminer-0-2-4">0.2.4</a></li>
         <li><a href="#survminer-0-2-3">0.2.3</a></li>
         <li><a href="#survminer-0-2-2">0.2.2</a></li>

@@ -26,8 +26,9 @@
 #'@param linetype line types. Allowed values includes i) "strata" for changing
 #'  linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
 #'  character vector c("solid", "dashed").
-#'@param break.time.by numeric value controlling time axis breaks. Default value
-#'  is NULL.
+#'@param break.time.by numeric value controlling time axis breaks. Default value is NULL.
+#'@param break.x.by alias of break.time.by. Numeric value controlling x axis breaks. Default value is NULL.
+#'@param break.y.by same as break.x.by but for y axis.
 #'@param conf.int logical value. If TRUE, plots confidence interval.
 #'@param conf.int.fill fill color to be used for confidence interval.
 #'@param conf.int.style confidence interval style. Allowed values include
@@ -260,7 +261,8 @@
 #'@describeIn ggsurvplot Draws survival curves using ggplot2.
 #'@export
 ggsurvplot <- function(fit, data = NULL, fun = NULL,
-                       color = NULL, palette = NULL, linetype = 1, break.time.by = NULL,
+                       color = NULL, palette = NULL, linetype = 1,
+                       break.x.by = NULL, break.y.by = NULL,  break.time.by = NULL,
                        surv.scale = c("default", "percent"),
                        conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                        censor = TRUE,
@@ -380,6 +382,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   scale_labels <-  ggplot2::waiver()
   if (surv.scale == "percent") scale_labels <- scales::percent
 
+  y.breaks <- ggplot2::waiver()
+  if(!is.null(break.y.by)) y.breaks <- seq(0, 1, by = break.y.by)
+
 
   # Drawing survival curves
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -388,11 +393,12 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   surv.color <- ifelse(n.strata > 1, "strata", color)
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
        ggpubr::geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
-       ggplot2::scale_y_continuous(labels = scale_labels, limits = ylim) +
+       ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim) +
        ggplot2::coord_cartesian(xlim = xlim)+
        ggtheme
   p <- ggpubr::ggpar(p, palette = palette, ...)
 
+  if(!is.null(break.x.by)) break.time.by <- break.x.by
   if(is.null(break.time.by)) times <- .get_default_breaks(fit$time)
   else times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
   p <- p + ggplot2::scale_x_continuous(breaks = times)

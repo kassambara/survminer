@@ -1,4 +1,15 @@
-# survminer 0.2.4.999
+# survminer 0.3.0.999
+
+## New features
+
+## Major changes
+
+## Minor changes
+
+## Bug fixes
+
+
+# survminer 0.3.0
    
 ## New features
     
@@ -17,7 +28,8 @@
 - Now, `ggsurvplot()` can display both the number at risk and the cumulative number of censored in the same table using the option `risk.table = 'nrisk_cumcenor'` ([#96](https://github.com/kassambara/survminer/issues/96)). It's also possible to display the number at risk and the cumulative number of events using the option `risk.table = 'nrisk_cumevents'`.
     
 - New arguments `pval.method` and `log.rank.weights`: New possibilities to compare survival curves. Functionality based on `survMisc::comp`.
-
+   
+- New arguments `break.x.by` and `break.y.by`, numeric value controlling x and y axis breaks, respectively. 
    
 - Now, `ggsurvplot()` returns an object of class ggsurvplot which is list containing the following components ([#158](https://github.com/kassambara/survminer/issues/158)):
     - **plot**: the survival plot (ggplot object)
@@ -84,6 +96,7 @@ p %+% theme_survminer(
     
 - New function `pairwise_survdiff()` for multiple comparisons of survival Curves ([#97](https://github.com/kassambara/survminer/issues/97)).
      
+- New function `ggcompetingrisks()` to plot the cumulative incidence curves for competing risks ([\@pbiecek, #168](https://github.com/kassambara/survminer/issues/168).
     
 ### Helper functions
     

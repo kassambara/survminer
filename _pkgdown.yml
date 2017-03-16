@@ -17,18 +17,24 @@ reference:
       - ggcoxdiagnostics
       - ggcoxfunctional
       - ggcoxzph
-  - title: VSummary of Cox Model
+  - title: Summary of Cox Model
     contents:
       - ggforest
       - ggcoxadjustedcurves
-  - title: Data
-    contents: myeloma
-  - title: Others
+  - title: Competing Risks
+    contents:
+      - ggcompetingrisks
+  - title: Helpers
     contents:
       - ggrisktable
       - ggcumevents
       - ggcumcensor
+  - title: Data
+    contents: myeloma
+  - title: Others
+    contents:
       - ggsurvtheme
+      - theme_survminer
       - theme_classic2
       - add_ggsurvplot
 

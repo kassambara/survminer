@@ -88,13 +88,13 @@
     
 
     <pre><span class='fu'>ggsurvplot</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>linetype</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>break.time.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>surv.scale</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"default"</span>,
-  <span class='st'>"percent"</span>), <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conf.int.fill</span> <span class='kw'>=</span> <span class='st'>"gray"</span>,
-  <span class='kw'>conf.int.style</span> <span class='kw'>=</span> <span class='st'>"ribbon"</span>, <span class='kw'>censor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pval.size</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>pval.coord</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>NULL</span>, <span class='kw'>NULL</span>), <span class='kw'>pval.method</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>pval.method.size</span> <span class='kw'>=</span> <span class='no'>pval.size</span>, <span class='kw'>pval.method.coord</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>NULL</span>, <span class='kw'>NULL</span>),
-  <span class='kw'>log.rank.weights</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"survdiff"</span>, <span class='st'>"1"</span>, <span class='st'>"n"</span>, <span class='st'>"sqrtN"</span>, <span class='st'>"S1"</span>, <span class='st'>"S2"</span>,
-  <span class='st'>"FH_p=1_q=1"</span>), <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>,
+  <span class='kw'>linetype</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>break.x.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>break.y.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>break.time.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>surv.scale</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"default"</span>, <span class='st'>"percent"</span>),
+  <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conf.int.fill</span> <span class='kw'>=</span> <span class='st'>"gray"</span>, <span class='kw'>conf.int.style</span> <span class='kw'>=</span> <span class='st'>"ribbon"</span>,
+  <span class='kw'>censor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pval.size</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>pval.coord</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>NULL</span>,
+  <span class='kw'>NULL</span>), <span class='kw'>pval.method</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pval.method.size</span> <span class='kw'>=</span> <span class='no'>pval.size</span>,
+  <span class='kw'>pval.method.coord</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>NULL</span>, <span class='kw'>NULL</span>), <span class='kw'>log.rank.weights</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"survdiff"</span>, <span class='st'>"1"</span>,
+  <span class='st'>"n"</span>, <span class='st'>"sqrtN"</span>, <span class='st'>"S1"</span>, <span class='st'>"S2"</span>, <span class='st'>"FH_p=1_q=1"</span>), <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>,
   <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival probability"</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"top"</span>, <span class='st'>"bottom"</span>, <span class='st'>"left"</span>, <span class='st'>"right"</span>, <span class='st'>"none"</span>),
   <span class='kw'>legend.title</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>, <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tables.height</span> <span class='kw'>=</span> <span class='fl'>0.25</span>,
@@ -144,9 +144,12 @@ See details section for more information.</dd>
       <dd>line types. Allowed values includes i) &quot;strata&quot; for changing
 linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
 character vector c(&quot;solid&quot;, &quot;dashed&quot;).</dd>
+      <dt>break.x.by</dt>
+      <dd>alias of break.time.by. Numeric value controlling x axis breaks. Default value is NULL.</dd>
+      <dt>break.y.by</dt>
+      <dd>same as break.x.by but for y axis.</dd>
       <dt>break.time.by</dt>
-      <dd>numeric value controlling time axis breaks. Default value
-is NULL.</dd>
+      <dd>numeric value controlling time axis breaks. Default value is NULL.</dd>
       <dt>surv.scale</dt>
       <dd>scale transformation of survival curves. Allowed values are
 &quot;default&quot; or &quot;percent&quot;.</dd>
