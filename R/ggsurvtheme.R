@@ -75,7 +75,7 @@ theme_survminer <-
     font.caption <- ggpubr:::.parse_font(font.caption)
     font.tickslab <- ggpubr:::.parse_font(font.tickslab)
     font.legend <- ggpubr:::.parse_font(font.legend)
-    legend <- match.arg(legend)
+    if(!is(legend, "numeric")) legend <- match.arg(legend)
 
     tickslab <-
       element_text(
