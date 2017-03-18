@@ -6,6 +6,8 @@
 
 ## Minor changes
 
+- New example dataset `BMT` added for competing risk analysis.
+
 ## Bug fixes
    
 - Now, `palette` argument works in `ggcoxadjustedcurves() ([#174](https://github.com/kassambara/survminer/issues/174))

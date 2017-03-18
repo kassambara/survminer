@@ -30,7 +30,9 @@ reference:
       - ggcumevents
       - ggcumcensor
   - title: Data
-    contents: myeloma
+    contents:
+      - myeloma
+      - BMT
   - title: Others
     contents:
       - ggsurvtheme
