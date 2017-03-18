@@ -7,7 +7,8 @@
 ## Minor changes
 
 ## Bug fixes
-
+   
+- Now, `palette` argument works in `ggcoxadjustedcurves() ([#174](https://github.com/kassambara/survminer/issues/174))
 
 # survminer 0.3.0
    
