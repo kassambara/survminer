@@ -729,7 +729,7 @@ p <- p + theme(legend.position = "none")
 # Adapt ylab according to the value of the argument fun
 #%%%%%%%%%%%%%%%%%%%%%%%%%
 .check_ylab <- function(ylab, fun){
-  if(!is.null(fun)){
+  if(!is.null(fun) & is.character(fun)){
     if(ylab == "Survival probability"){
       ylab <- switch(fun, log = "log(Survival probability)",
                     event = "Cumulative event",
