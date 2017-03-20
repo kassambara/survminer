@@ -481,9 +481,10 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                              xlim = xlim, title = risk.table.title,
                              legend = legend, legend.title = legend.title, legend.labs = legend.labs,
                              y.text = risk.table.y.text, y.text.col = risk.table.y.text.col,
-                             fontsize = risk.table.fontsize, ggtheme = tables.theme,
+                             fontsize = risk.table.fontsize, ggtheme = ggtheme,
                              xlab = xlab, ylab = legend.title,
                              ...)
+     risktable <- risktable + tables.theme
      if(!risk.table.y.text) risktable <- .set_large_dash_as_ytext(risktable)
      # color risk.table ticks by strata
      if(risk.table.y.text.col)
@@ -498,9 +499,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                                   xlim = xlim, title = cumevents.title,
                                   legend = legend, legend.title = legend.title, legend.labs = legend.labs,
                                   y.text = cumevents.y.text, y.text.col = cumevents.y.text.col,
-                                  fontsize = fontsize, ggtheme = tables.theme, xlab = xlab, ylab = legend.title,
+                                  fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
                                   ...)
-    # res$cumevents <- res$cumevents + tables.theme
+    res$cumevents <- res$cumevents + tables.theme
     if(!cumevents.y.text) res$cumevents <- .set_large_dash_as_ytext(res$cumevents)
     if(cumevents.y.text.col)
       res$cumevents <- res$cumevents + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
@@ -532,9 +533,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                                   xlim = xlim, title = cumcensor.title,
                                   legend = legend, legend.title = legend.title, legend.labs = legend.labs,
                                   y.text = cumcensor.y.text, y.text.col = cumcensor.y.text.col,
-                                  fontsize = fontsize, ggtheme = tables.theme, xlab = xlab, ylab = legend.title,
+                                  fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
                                   ...)
-    # ncensor_plot <- ncensor_plot + tables.theme
+    ncensor_plot <- ncensor_plot + tables.theme
     if(!cumcensor.y.text) ncensor_plot <- .set_large_dash_as_ytext(ncensor_plot)
     if(cumcensor.y.text.col)
       ncensor_plot <- ncensor_plot + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
