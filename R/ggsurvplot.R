@@ -481,13 +481,13 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                              xlim = xlim, title = risk.table.title,
                              legend = legend, legend.title = legend.title, legend.labs = legend.labs,
                              y.text = risk.table.y.text, y.text.col = risk.table.y.text.col,
-                             fontsize = risk.table.fontsize, ggtheme = ggtheme,
+                             fontsize = risk.table.fontsize, ggtheme = tables.theme,
                              xlab = xlab, ylab = legend.title,
                              ...)
      # For backward compatibility
      risktable <-  .set_general_gpar(risktable, legend = legend, ...) # general graphical parameters
      risktable <- .set_risktable_gpar(risktable, legend = legend, ...) # specific graphical params
-     risktable <- risktable  + tables.theme
+     risktable <- risktable  #+ tables.theme
      if(!risk.table.y.text) risktable <- .set_large_dash_as_ytext(risktable)
      # color risk.table ticks by strata
      if(risk.table.y.text.col)
