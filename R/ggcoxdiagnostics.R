@@ -34,27 +34,6 @@
 #'@importFrom stats residuals
 #'@examples
 #'
-#'if(require(RTCGA.clinical)){
-#' # TCGA data exmaple (http://cancergenome.nih.gov/)
-#' # source("https://bioconductor.org/biocLite.R")
-#' # biocLite("RTCGA.clinical") # data for examples
-#' # library(RTCGA.clinical) # also loads 'RTCGA' package
-#' survivalTCGA(BRCA.clinical, OV.clinical,
-#'             extract.cols = c("admin.disease_code", "patient.days_to_birth")) -> BRCAOV.survInfo
-#' BRCAOV.survInfo$age  <- round((-as.numeric(BRCAOV.survInfo$patient.days_to_birth))/365,2)
-#'
-#' library(survival)
-#' coxph.fit <- coxph(Surv(times, patient.vital_status) ~ admin.disease_code + age,
-#'               data = BRCAOV.survInfo)
-#'
-#' ggcoxdiagnostics(coxph.fit, ggtheme = theme_dark(), point.col = "white", point.aplha = 0.3)
-#' ggcoxdiagnostics(coxph.fit, ggtheme = theme_RTCGA(), # library(RTCGA.clinical)
-#'  type = "deviance") + ylab('Deviance Residuals')
-#' ggcoxdiagnostics(coxph.fit, ggtheme = theme_light(), linear.predictions = FALSE)
-#' # ggcoxdiagnostics(coxph.fit, ggtheme = theme_void(), type = "deviance", linear.predictions = FALSE)
-#' }
-#'
-#' # traditional example
 #' library(survival)
 #' coxph.fit2 <- coxph(Surv(futime, fustat) ~ age + ecog.ps, data=ovarian)
 #' ggcoxdiagnostics(coxph.fit2, type = "deviance")
