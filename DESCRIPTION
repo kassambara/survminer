@@ -33,8 +33,6 @@ Imports:
     cmprsk
 Suggests:
     knitr,
-    RTCGA(>= 1.4.0),
-    RTCGA.clinical(>= 20151101.4.0),
     KMsurv
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
@@ -42,6 +40,7 @@ BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 6.0.1
 Collate: 
     'BMT.R'
+    'BRCAOV.survInfo.R'
     'add_ggsurvplot.R'
     'utilities.R'
     'surv_summary.R'
