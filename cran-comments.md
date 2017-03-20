@@ -9,9 +9,9 @@ There were no ERRORs or WARNINGs.
 There was one concerning the subdirectory "doc", which contains vignette files.  
    
 checking installed package size ... NOTE
-  installed size is  5.5Mb
+  installed size is  5.6Mb
   sub-directories of 1Mb or more:
-    doc   5.4Mb
+    doc   5.3Mb
    
 Would you be so kind to ignore these notes.
     
