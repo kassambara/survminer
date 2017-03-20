@@ -484,10 +484,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                              fontsize = risk.table.fontsize, ggtheme = tables.theme,
                              xlab = xlab, ylab = legend.title,
                              ...)
-     # For backward compatibility
-     risktable <-  .set_general_gpar(risktable, legend = legend, ...) # general graphical parameters
-     risktable <- .set_risktable_gpar(risktable, legend = legend, ...) # specific graphical params
-     risktable <- risktable  #+ tables.theme
      if(!risk.table.y.text) risktable <- .set_large_dash_as_ytext(risktable)
      # color risk.table ticks by strata
      if(risk.table.y.text.col)
@@ -502,9 +498,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                                   xlim = xlim, title = cumevents.title,
                                   legend = legend, legend.title = legend.title, legend.labs = legend.labs,
                                   y.text = cumevents.y.text, y.text.col = cumevents.y.text.col,
-                                  fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
+                                  fontsize = fontsize, ggtheme = tables.theme, xlab = xlab, ylab = legend.title,
                                   ...)
-    res$cumevents <- res$cumevents + tables.theme
+    # res$cumevents <- res$cumevents + tables.theme
     if(!cumevents.y.text) res$cumevents <- .set_large_dash_as_ytext(res$cumevents)
     if(cumevents.y.text.col)
       res$cumevents <- res$cumevents + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
@@ -536,9 +532,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                                   xlim = xlim, title = cumcensor.title,
                                   legend = legend, legend.title = legend.title, legend.labs = legend.labs,
                                   y.text = cumcensor.y.text, y.text.col = cumcensor.y.text.col,
-                                  fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
+                                  fontsize = fontsize, ggtheme = tables.theme, xlab = xlab, ylab = legend.title,
                                   ...)
-    ncensor_plot <- ncensor_plot + tables.theme
+    # ncensor_plot <- ncensor_plot + tables.theme
     if(!cumcensor.y.text) ncensor_plot <- .set_large_dash_as_ytext(ncensor_plot)
     if(cumcensor.y.text.col)
       ncensor_plot <- ncensor_plot + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
@@ -925,20 +921,6 @@ p <- p + theme(legend.position = "none")
                 legend = legend, font.legend = extra.params$font.legend)
 }
 
-# Specific graphical params to risk.table
-.set_risktable_gpar <- function(p, legend = "none",  ...){
-  extra.params <- list(...)
-  ggpubr::ggpar(p,
-                 subtitle = extra.params$risk.table.subtitle,
-                 caption = extra.params$risk.table.caption,
-                 font.title = extra.params$font.risk.table.title,
-                 font.x = extra.params$font.risk.table.x,
-                 font.y = extra.params$font.risk.table.y,
-                 font.submain = extra.params$font.risk.table.subtitle,
-                 font.caption = extra.params$font.risk.table.caption,
-                 legend = legend
-  )
-}
 
 # Specific graphical params to ncensor_plot
 .set_ncensorplot_gpar <- function(p, legend = "none", ...){

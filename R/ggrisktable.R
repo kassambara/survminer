@@ -98,7 +98,9 @@ ggrisktable <- function (fit, data = NULL, type = c("absolute", "percentage", "a
     scale_x_continuous(breaks = times) +
     labs(title = title, x = xlab, y = ylab, color = legend.title, shape = legend.title)
 
+  p <- .set_risktable_gpar(p, ...)
   p <- ggpubr::ggpar(p, legend = legend, palette = palette,...)
+
 
   if(!y.text) p <- .set_large_dash_as_ytext(p)
 
@@ -113,6 +115,20 @@ ggrisktable <- function (fit, data = NULL, type = c("absolute", "percentage", "a
 
   p
 
+}
+
+# For backward compatibility
+# Specific graphical params to risk.table
+.set_risktable_gpar <- function(p,  ...){
+  extra.params <- list(...)
+  ggpubr:::.labs(p,
+        font.main = extra.params$font.risk.table.title,
+        font.x = extra.params$font.risk.table.x,
+        font.y = extra.params$font.risk.table.y,
+        submain = extra.params$risk.table.subtitle,
+        caption = extra.params$risk.table.caption,
+        font.submain = extra.params$font.risk.table.subtitle,
+        font.caption = extra.params$font.risk.table.caption)
 }
 
 
