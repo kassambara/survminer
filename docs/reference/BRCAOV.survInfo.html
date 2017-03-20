@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • survminer</title>
+<title>Breast and Ovarian Cancers Survival Information — BRCAOV.survInfo • survminer</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -34,7 +34,7 @@
   </head>
 
   <body>
-    <div class="container template-vignette-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -77,22 +77,62 @@
       
       </header>
 
-      <div class="page-header">
-  <h1>Vignette reference <small>version&nbsp;0.3.1</small></h1>
-</div>
-
-<div class="row">
-  <div class="col-md-9">
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <ul>
-        <li><a href="Informative_Survival_Plots.html">Survival plots have never been so informative</a></li>
-        <li><a href="Playing_with_fonts_and_texts.html">Playing with fonts and texts</a></li>
-        <li><a href="Specifiying_weights_in_log-rank_comparisons.html">Specifiyng weights in Log-rank comparisons</a></li>
-      </ul>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Breast and Ovarian Cancers Survival Information</h1>
     </div>
+
+    
+    <p>Breat and Ovarian cancers survival information from the
+ RTCGA.clinical R/Bioconductor package.http://rtcga.github.io/RTCGA/.</p>
+    
+
+    <pre><span class='fu'>data</span>(<span class='st'>"BRCAOV.survInfo"</span>)</pre>
+        
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>A data frame with 1674 rows and 4 columns.
+<pre>
+ - times: follow-up time;
+ - bcr_patient_barcode: Patient bar code;
+ - patient.vital_status = survival status. 0 = alive, 1 = dead;
+ - admin.disease_code: disease code. brca = breast cancer, ov = ovarian
+ cancer.
+ </pre></p>
+    
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p>From the RTCGA.clinical R/Bioconductor package. The data is generated as follow:</p>
+    <p><pre>
+# Installing RTCGA.clinical
+source(&quot;https://bioconductor.org/biocLite.R&quot;)
+biocLite(&quot;RTCGA.clinical&quot;)</p>
+    <p># Generating the BRCAOV survival information
+library(RTCGA.clinical)
+survivalTCGA(BRCA.clinical, OV.clinical,
+extract.cols = &quot;admin.disease_code&quot;) -&gt; BRCAOV.survInfo
+</pre></p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>BRCAOV.survInfo</span>)
+<span class='fu'>library</span>(<span class='no'>survival</span>)
+<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>survfit</span>(<span class='fu'>Surv</span>(<span class='no'>times</span>, <span class='no'>patient.vital_status</span>) ~ <span class='no'>admin.disease_code</span>,
+           <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>BRCAOV.survInfo</span>)
+<span class='fu'><a href='ggsurvplot.html'>ggsurvplot</a></span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>BRCAOV.survInfo</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><img src='BRCAOV.survInfo-2.png' alt='' width='540' height='400' /></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      
+      <li><a href="#format">Format</a></li>
+
+      <li><a href="#source">Source</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
   </div>
 </div>
 

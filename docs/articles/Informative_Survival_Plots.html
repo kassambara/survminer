@@ -95,7 +95,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
                <span class="dt">data =</span> BRCAOV.survInfo)
 <span class="co"># Visualize with survminer</span>
 <span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> BRCAOV.survInfo, <span class="dt">risk.table =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-3-1.png" width="960"></p>
+<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-4-1.png" width="960"></p>
 <p>This simple plot presents, in an elegant way, estimates of survival probability depending on days from cancer diagnostics grouped by cancer types and an informative risk set table, which shows the number of patients that were under observation in the specific period of time. Survival analysis is a specific field of data analysis because of the censored time to event data, so risk set size is a must in visual inference.</p>
 <p>After few improvements (<a href="https://github.com/kassambara/survminer/issues/1">#1</a>, <a href="https://github.com/kassambara/survminer/issues/2">#2</a>, <a href="https://github.com/kassambara/survminer/issues/3">#3</a>, <a href="https://github.com/kassambara/survminer/issues/4">#4</a>, <a href="https://github.com/kassambara/survminer/issues/7">#7</a>, <a href="https://github.com/kassambara/survminer/issues/8">#8</a>, <a href="https://github.com/kassambara/survminer/issues/12">#12</a>, <a href="https://github.com/kassambara/survminer/issues/28">#28</a>), made by Alboukadel in version 0.2.0, one can create a powerful, informative survival plot with such specification of parameters</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(
@@ -108,12 +108,12 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
    <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">2000</span>),        <span class="co"># present narrower X axis, but not affect</span>
                             <span class="co"># survival estimates.</span>
    <span class="dt">break.time.by =</span> <span class="dv">500</span>,     <span class="co"># break X axis in time intervals by 500.</span>
-   <span class="dt">ggtheme =</span> <span class="kw">theme_RTCGA</span>(), <span class="co"># customize plot and risk table with a theme.</span>
+   <span class="dt">ggtheme =</span> <span class="kw">theme_minimal</span>(), <span class="co"># customize plot and risk table with a theme.</span>
  <span class="dt">risk.table.y.text.col =</span> T, <span class="co"># colour risk table text annotations.</span>
   <span class="dt">risk.table.y.text =</span> <span class="ot">FALSE</span> <span class="co"># show bars instead of names in text annotations</span>
                             <span class="co"># in legend of risk table</span>
 )</code></pre></div>
-<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-4-1.png" width="960"></p>
+<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-5-1.png" width="960"></p>
 <p>Each parameter is described in the correspoding comment, but I would like to emphasize the <code>xlim</code> parameter which controls limits of the X axis but does not affect the survival curves, that are taking into account all possible times. Another brilliant parameter is <code>break.time.by</code> that affects survival plots and the risk set table - this would not be so easy to create it by yourself. Also a <code>ggtheme</code> parameter is beneficial for simple plot customization. Finally, <code>risk.table.y.text</code> and <code>risk.table.y.text.col</code> (for which I have provided a user requests) are useful parameters that change text (often too long and redundand) from risk table legend into narrow, coloured bar. This saves a lot of space in the final plot.</p>
 </div>
 <div id="comparisons" class="section level1">
@@ -124,14 +124,14 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <h3 class="hasAnchor">
 <html><body><a href="#base-package" class="anchor"> </a></body></html>base package</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(fit) <span class="co"># base</span></code></pre></div>
-<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-5-1.png" width="960"></p>
+<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-6-1.png" width="960"></p>
 <p>It looks pretty… base…</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(fit, <span class="dt">col=</span><span class="kw">c</span>(<span class="st">"orange"</span>,<span class="st">"purple"</span>), <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">2</span>), <span class="dt">lwd=</span><span class="dv">3</span>, <span class="co"># base with some customization</span>
      <span class="dt">conf.int =</span> <span class="ot">TRUE</span>, <span class="dt">xmax =</span> <span class="dv">2000</span>)
 <span class="co"># add a legend</span>
 <span class="kw">legend</span>(<span class="dv">100</span>, .<span class="dv">2</span>, <span class="kw">c</span>(<span class="st">"Ovarian Cancer"</span>, <span class="st">"Breast Cancer"</span>), 
        <span class="dt">lty =</span> <span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">2</span>), <span class="dt">col=</span><span class="kw">c</span>(<span class="st">"orange"</span>,<span class="st">"purple"</span>))</code></pre></div>
-<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-6-1.png" width="960"></p>
+<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-7-1.png" width="960"></p>
 <p>I haven’t seen examples with risk table and adding legend isn’t so quick as in survminer. Moreover, there are no minor axis breaks lines.</p>
 </div>
 <div id="survmisc-package" class="section level3">
@@ -140,7 +140,7 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages('survMisc')</span>
 <span class="kw">library</span>(survMisc)
 survMisc:::<span class="kw">autoplot.survfit</span>(fit) <span class="co"># no customization</span></code></pre></div>
-<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-7-1.png" width="960"></p>
+<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
 <p><em>Why colours are not asigned to any group? Where is the legend? Why there is so much white space to the right?</em> (Those were questions for the version of survMisc where this was an issue.) Where is OX axis?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">survMisc:::<span class="kw">autoplot.survfit</span>( <span class="co"># with some hard customization</span>
    fit,
@@ -148,13 +148,13 @@ survMisc:::<span class="kw">autoplot.survfit</span>(fit) <span class="co"># no c
    <span class="dt">pVal=</span><span class="ot">TRUE</span>
 ) -&gt;<span class="st"> </span>fit.survMisc 
 fit.survMisc$table &lt;-<span class="st"> </span>fit.survMisc$table +
-<span class="st">   </span><span class="kw">theme_RTCGA</span>() +<span class="st"> </span><span class="co"># theme(legend.position = "top")</span>
+<span class="st">   </span><span class="kw">theme_minimal</span>() +<span class="st"> </span><span class="co"># theme(legend.position = "top")</span>
 <span class="st">   </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">2000</span>))
 fit.survMisc$plot &lt;-<span class="st"> </span>fit.survMisc$plot +
-<span class="st">   </span><span class="kw">theme_RTCGA</span>() +<span class="st"> </span>
+<span class="st">   </span><span class="kw">theme_minimal</span>() +<span class="st"> </span>
 <span class="st">   </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">2000</span>))
 survMisc:::<span class="kw">print.tableAndPlot</span>(fit.survMisc)</code></pre></div>
-<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
+<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-9-1.png" width="960"></p>
 <p>Where is risk table? Why I can’t pass <code>break.by.time</code> to have informative minor X axis breaks? Why the plot gets narrower when the legend in risk table gets wider and why I can’t do anything to workaround this?</p>
 <blockquote>
 <p>Never mind -&gt; <code>install.packages('survminer')</code></p>
