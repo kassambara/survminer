@@ -24,10 +24,6 @@
 #'@examples
 #'
 #' library(survival)
-#' fit <- coxph( Surv(time, status) ~ rx + adhere, data = colon )
-#'
-#' ggcoxadjustedcurves(fit, data = colon)
-#'
 #' fit2 <- coxph( Surv(stop, event) ~ rx + size, data = bladder )
 #' ggcoxadjustedcurves(fit2, data = bladder)
 #' ggcoxadjustedcurves(fit2, individual.curves = TRUE, data = bladder, curve.alpha=0.01)
