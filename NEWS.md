@@ -7,6 +7,7 @@
 ## Minor changes
 
 - New example dataset `BMT` added for competing risk analysis.
+- New data set `BRCAOV.survInfo` added, used in vignette files
 
 ## Bug fixes
    
