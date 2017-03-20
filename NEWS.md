@@ -1,13 +1,11 @@
-# survminer 0.3.0.999
-
-## New features
-
-## Major changes
+# survminer 0.3.1
 
 ## Minor changes
 
+- The example section of the `ggcoxdiagnostics()` function and the vignette file `Informative_Survival_Plots.Rmd` have been updated so that `survminer` can pass CRAN check under R-oldrelease.
 - New example dataset `BMT` added for competing risk analysis.
 - New data set `BRCAOV.survInfo` added, used in vignette files
+
 
 ## Bug fixes
    
