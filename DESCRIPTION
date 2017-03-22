@@ -16,7 +16,7 @@ License: GPL-2
 LazyData: TRUE
 Depends:
     ggplot2,
-    ggpubr
+    ggpubr(>=0.1.2)
 Imports:
     grid,
     gridExtra(>= 2.0),
