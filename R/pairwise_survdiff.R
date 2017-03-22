@@ -45,8 +45,8 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
 {
   if(missing(na.action)) na.action <- options()$na.omit
   group_var <- attr(stats::terms(formula), "term.labels")
-  if(!is.factor(data[, group_var])) data[, group_var] <- as.factor(data[, group_var])
-  group <- data[, group_var]
+  group <- unlist(data[, group_var])
+  if(!is.factor(group)) group <- as.factor(group)
   ngroup <- length(levels(group))
 
   DNAME <- paste(deparse(substitute(data)), "and", group_var)
