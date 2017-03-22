@@ -1,3 +1,20 @@
+# survminer 0.3.1.999
+
+## New features
+
+
+## Major changes
+
+
+## Minor changes
+
+- Now, the function `pairwise_survdiff()` checks whether the grouping variable is a factor. If this is not th case, the grouping variable is automatically converted into a factor.
+
+## Bug fixes
+
+
+
+
 # survminer 0.3.1
 
 ## Minor changes
