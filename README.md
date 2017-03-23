@@ -24,7 +24,7 @@ The main functions, in the package, are organized in different categories as fol
 
 **Survival Curves**
 <hr/>
--   **ggsurvplot**(): Draws survival curves with the 'number at risk' table and 'censoring count plot'.
+-   **ggsurvplot**(): Draws survival curves with the 'number at risk' table, the cumulative number of events table and the cumulative number of censored subjects table.
 
 -   **arrange\_ggsurvplots**(): Arranges multiple ggsurvplots on the same page.
 
