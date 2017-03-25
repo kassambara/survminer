@@ -296,8 +296,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   if(!inherits(fit, "survfit"))
     stop("Can't handle an object of class ", class(fit))
   size <- ifelse(is.null(list(...)$size), 1, list(...)$size)
-  if(is.null(xlim)) xlim <- c(0, max(fit$time))
-  if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
   if(!is(legend, "numeric")) legend <- match.arg(legend)
   surv.median.line <- match.arg(surv.median.line)
   stopifnot(log.rank.weights %in% c("survdiff", "1", "n", "sqrtN", "S1", "S2","FH_p=1_q=1"))
@@ -370,7 +368,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   # Connect surv data to the origin for plotting
   # time = 0, surv = 1
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  d <- .connect2origin(d, fit, data)
+  if(!.is_cloglog(fun)) d <- .connect2origin(d, fit, data)
 
   #  Transformation of the survival curve
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -381,9 +379,14 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   surv.scale <- match.arg(surv.scale)
   scale_labels <-  ggplot2::waiver()
   if (surv.scale == "percent") scale_labels <- scales::percent
+  xlog <- .is_cloglog(fun)
 
   y.breaks <- ggplot2::waiver()
   if(!is.null(break.y.by)) y.breaks <- seq(0, 1, by = break.y.by)
+  # Axis limits
+  xmin <- ifelse(.is_cloglog(fun), min(c(1, d$time)), 0)
+  if(is.null(xlim)) xlim <- c(xmin, max(d$time))
+  if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
 
 
   # Drawing survival curves
@@ -399,9 +402,14 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   p <- ggpubr::ggpar(p, palette = palette, ...)
 
   if(!is.null(break.x.by)) break.time.by <- break.x.by
-  if(is.null(break.time.by)) times <- .get_default_breaks(fit$time)
-  else times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
-  p <- p + ggplot2::scale_x_continuous(breaks = times)
+  times <- .get_default_breaks(d$time, .log = xlog)
+  if(!is.null(break.time.by) & !xlog) times <- seq(0, max(c(d$time, xlim)), by = break.time.by)
+
+  if(!.is_cloglog(fun)) {
+    p <- p + ggplot2::scale_x_continuous(breaks = times) +
+      ggplot2::expand_limits(x = 0, y = 0)
+  }
+  else p <- p + ggplot2::scale_x_continuous(breaks = times, trans = "log10")
 
 
   # Add confidence interval
@@ -452,8 +460,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   if(surv.median.line %in% c("hv", "h", "v"))
     p <- .add_surv_median(p, fit, type = surv.median.line, fun = fun, data = data)
 
-  # Axis limits
-  p <- p + ggplot2::expand_limits(x = 0, y = 0)
   # Axis label and legend title
   lty.leg.title <- ifelse(linetype == "strata", legend.title, linetype)
   p <- p + ggplot2::labs(x = xlab, y = ylab, title = title,
@@ -482,7 +488,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                              legend = legend, legend.title = legend.title, legend.labs = legend.labs,
                              y.text = risk.table.y.text, y.text.col = risk.table.y.text.col,
                              fontsize = risk.table.fontsize, ggtheme = ggtheme,
-                             xlab = xlab, ylab = legend.title,
+                             xlab = xlab, ylab = legend.title, xlog = xlog,
                              ...)
      risktable <- risktable + tables.theme
      if(!risk.table.y.text) risktable <- .set_large_dash_as_ytext(risktable)
@@ -500,7 +506,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                                   legend = legend, legend.title = legend.title, legend.labs = legend.labs,
                                   y.text = cumevents.y.text, y.text.col = cumevents.y.text.col,
                                   fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
-                                  ...)
+                                  xlog = xlog, ...)
     res$cumevents <- res$cumevents + tables.theme
     if(!cumevents.y.text) res$cumevents <- .set_large_dash_as_ytext(res$cumevents)
     if(cumevents.y.text.col)
@@ -514,7 +520,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     ggpubr::geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
                stat = "identity", position = "dodge")+
     coord_cartesian(xlim = xlim)+
-    scale_x_continuous(breaks = times)+
     scale_y_continuous(breaks = sort(unique(d$n.censor))) +
     ggtheme
 
@@ -526,6 +531,10 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   ncensor_plot <-  .set_general_gpar(ncensor_plot,  ...) # general graphical parameters
   ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot,  ...) # specific graphical params
   ncensor_plot <- ncensor_plot + tables.theme
+
+  if(!xlog) ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = times)
+  else ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = times, trans = "log10")
+
   }
   else if(cumcensor){
     ncensor_plot <- ggcumcensor (fit, data = data, color = cumcensor.col,
@@ -534,7 +543,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                                   legend = legend, legend.title = legend.title, legend.labs = legend.labs,
                                   y.text = cumcensor.y.text, y.text.col = cumcensor.y.text.col,
                                   fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
-                                  ...)
+                                 xlog = xlog, ...)
     ncensor_plot <- ncensor_plot + tables.theme
     if(!cumcensor.y.text) ncensor_plot <- .set_large_dash_as_ytext(ncensor_plot)
     if(cumcensor.y.text.col)
@@ -977,4 +986,13 @@ p <- p + theme(legend.position = "none")
   ggsurv$plot <- survplot
   ggsurv$table <- NULL
   ggsurv
+}
+
+# Check if fun is cloglog
+.is_cloglog <- function(fun){
+  res <- FALSE
+  if(is.character(fun)){
+    res <- fun == "cloglog"
+  }
+  res
 }

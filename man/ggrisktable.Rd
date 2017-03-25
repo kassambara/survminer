@@ -7,9 +7,9 @@
 ggrisktable(fit, data = NULL, type = c("absolute", "percentage", "abs_pct",
   "nrisk_cumcensor", "nrisk_cumevents"), color = "black", palette = NULL,
   break.time.by = NULL, xlim = NULL, title = NULL, xlab = "Time",
-  ylab = "Strata", legend = "top", legend.title = "Strata",
-  legend.labs = NULL, y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
-  ggtheme = theme_light(), ...)
+  ylab = "Strata", xlog = FALSE, legend = "top",
+  legend.title = "Strata", legend.labs = NULL, y.text = TRUE,
+  y.text.col = TRUE, fontsize = 4.5, ggtheme = theme_light(), ...)
 }
 \arguments{
 \item{fit}{an object of class survfit.}
@@ -40,6 +40,8 @@ See details section for more information.}
 \item{xlab}{main title and axis labels}
 
 \item{ylab}{main title and axis labels}
+
+\item{xlog}{logical value. If TRUE, x axis is tansformed into log scale.}
 
 \item{legend}{character specifying legend position. Allowed values are one of
 c("top", "bottom", "left", "right", "none"). Default is "top" side position.

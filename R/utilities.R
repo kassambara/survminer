@@ -97,8 +97,9 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
 # Compute default axis breaks as ggplot2
 #-------------------------------------
 # Return a vector of axis labels
-.get_default_breaks <- function(x){
-  scales::extended_breaks()(x)
+.get_default_breaks <- function(x, .log = FALSE){
+  if(!.log) scales::extended_breaks()(x)
+  else scales::log_breaks()(x)
 }
 
 
