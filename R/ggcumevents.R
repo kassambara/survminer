@@ -32,6 +32,7 @@ NULL
 #'
 #'@export
 ggcumevents <- function (fit, data = NULL, color = "black", palette = NULL, break.time.by = NULL,  xlim = NULL,
+                         xscale = 1,
                          title = "Cumulative number of events", xlab = "Time", ylab = "Strata",
                          xlog = FALSE, legend = "top",
                          legend.title = "Strata", legend.labs = NULL, y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
@@ -72,8 +73,9 @@ ggcumevents <- function (fit, data = NULL, color = "black", palette = NULL, brea
 
   p <- ggpubr::ggpar(p, legend = legend, palette = palette,...)
 
-  if(!xlog) p <- p + ggplot2::scale_x_continuous(breaks = times)
-  else p <- p + ggplot2::scale_x_continuous(breaks = times, trans = "log10")
+  xticklabels <- .format_xticklabels(labels = times, xscale = xscale)
+  if(!xlog) p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels)
+  else p <- p + ggplot2::scale_x_continuous(breaks = times, trans = "log10", labels = xticklabels)
 
   if(!y.text) p <- .set_large_dash_as_ytext(p)
   # color table tick labels by strata

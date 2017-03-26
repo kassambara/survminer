@@ -36,7 +36,7 @@ NULL
 #'
 #'@export
 ggrisktable <- function (fit, data = NULL, type = c("absolute", "percentage", "abs_pct", "nrisk_cumcensor", "nrisk_cumevents"),
-                         color = "black", palette = NULL, break.time.by = NULL,  xlim = NULL,
+                         color = "black", palette = NULL, break.time.by = NULL,  xlim = NULL, xscale = 1,
                          title = NULL, xlab = "Time", ylab = "Strata",
                          xlog = FALSE,
                          legend = "top",
@@ -103,8 +103,9 @@ ggrisktable <- function (fit, data = NULL, type = c("absolute", "percentage", "a
   p <- .set_risktable_gpar(p, ...)
   p <- ggpubr::ggpar(p, legend = legend, palette = palette,...)
 
-  if(!xlog) p <- p + ggplot2::scale_x_continuous(breaks = times)
-  else p <- p + ggplot2::scale_x_continuous(breaks = times, trans = "log10")
+  xticklabels <- .format_xticklabels(labels = times, xscale = xscale)
+  if(!xlog) p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels)
+  else p <- p + ggplot2::scale_x_continuous(breaks = times, trans = "log10", labels = xticklabels)
 
 
   if(!y.text) p <- .set_large_dash_as_ytext(p)
