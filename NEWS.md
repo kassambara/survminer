@@ -1,7 +1,10 @@
 # survminer 0.3.1.999
 
 ## New features
-
+   
+- New argument `xscale` in `ggsurvplot()`: numeric or character value specifying x-axis scale.
+    - If numeric, the value is used to divide the labels on the x axis. For example, a value of 365.25 will give labels in years instead of the original days.
+    - If character, allowed options include one of c("d_m", "d_y", "m_d", "m_y", "y_d", "y_m"), where d = days, m = months and y = years. For example, xscale = "d_m" will transform labels from days to months; xscale = "m_y", will transform labels from months to years ([#166](https://github.com/kassambara/survminer/issues/166)). 
 
 ## Major changes
 
