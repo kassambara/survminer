@@ -1,13 +1,37 @@
-# survminer 0.3.0.999
+# survminer 0.3.1.999
 
 ## New features
+   
+- New argument `xscale` in `ggsurvplot()`: numeric or character value specifying x-axis scale.
+    - If numeric, the value is used to divide the labels on the x axis. For example, a value of 365.25 will give labels in years instead of the original days.
+    - If character, allowed options include one of c("d_m", "d_y", "m_d", "m_y", "y_d", "y_m"), where d = days, m = months and y = years. For example, xscale = "d_m" will transform labels from days to months; xscale = "m_y", will transform labels from months to years ([#166](https://github.com/kassambara/survminer/issues/166)). 
 
 ## Major changes
 
+
 ## Minor changes
+
+- Now, the function `pairwise_survdiff()` checks whether the grouping variable is a factor. If this is not th case, the grouping variable is automatically converted into a factor.
+- `ggsurvplot()`: Now, log scale is used for x-axis when plotting the complementary log−log function (argument `fun = "cloglog") ([#171](https://github.com/kassambara/survminer/issues/171)).
 
 ## Bug fixes
 
+
+
+
+# survminer 0.3.1
+
+## Minor changes
+
+- The example section of the `ggcoxdiagnostics()` function and the vignette file `Informative_Survival_Plots.Rmd` have been updated so that `survminer` can pass CRAN check under R-oldrelease.
+- New example dataset `BMT` added for competing risk analysis.
+- New data set `BRCAOV.survInfo` added, used in vignette files
+
+
+## Bug fixes
+   
+- Now, `palette` argument works in `ggcoxadjustedcurves() ([#174](https://github.com/kassambara/survminer/issues/174))
+- Now `ggsurvplot()` works when the `fun` argument is an arbitrary function ([#176](https://github.com/kassambara/survminer/issues/176)).
 
 # survminer 0.3.0
    

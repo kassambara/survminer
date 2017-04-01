@@ -51,7 +51,7 @@ biocLite("RTCGA.clinical") # data for examples
 
 we can create simple estimates of survival curves just after we put `survfit` (survival package) object into `ggsurvplot()` function. Let's have a look at differences in survival times between patients suffering from Ovarian Cancer (*Ovarian serous cystadenocarcinoma*) and patients suffering from Breast Cancer (*Breast invasive carcinoma*), where data were collected by [The Cancer Genome Atlas Project](http://cancergenome.nih.gov/).
 
-```{r, fig.width=10}
+```{r, fig.width=10, eval = FALSE}
 library(survminer)
 library(RTCGA.clinical)
 survivalTCGA(BRCA.clinical, OV.clinical,
@@ -60,6 +60,15 @@ library(survival)
 fit <- survfit(Surv(times, patient.vital_status) ~ admin.disease_code,
                data = BRCAOV.survInfo)
 # Visualize with survminer
+ggsurvplot(fit, data = BRCAOV.survInfo, risk.table = TRUE)
+```
+    
+```{r, echo = FALSE, fig.width=10}
+library(survminer)
+data(BRCAOV.survInfo)
+library(survival)
+fit <- survfit(Surv(times, patient.vital_status) ~ admin.disease_code,
+               data = BRCAOV.survInfo)
 ggsurvplot(fit, data = BRCAOV.survInfo, risk.table = TRUE)
 ```
 
@@ -79,7 +88,7 @@ ggsurvplot(
    xlim = c(0,2000),        # present narrower X axis, but not affect
                             # survival estimates.
    break.time.by = 500,     # break X axis in time intervals by 500.
-   ggtheme = theme_RTCGA(), # customize plot and risk table with a theme.
+   ggtheme = theme_minimal(), # customize plot and risk table with a theme.
  risk.table.y.text.col = T, # colour risk table text annotations.
   risk.table.y.text = FALSE # show bars instead of names in text annotations
                             # in legend of risk table
@@ -128,10 +137,10 @@ survMisc:::autoplot.survfit( # with some hard customization
    pVal=TRUE
 ) -> fit.survMisc 
 fit.survMisc$table <- fit.survMisc$table +
-   theme_RTCGA() + # theme(legend.position = "top")
+   theme_minimal() + # theme(legend.position = "top")
    coord_cartesian(xlim = c(0,2000))
 fit.survMisc$plot <- fit.survMisc$plot +
-   theme_RTCGA() + 
+   theme_minimal() + 
    coord_cartesian(xlim = c(0,2000))
 survMisc:::print.tableAndPlot(fit.survMisc)
 ```

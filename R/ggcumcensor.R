@@ -7,6 +7,7 @@ NULL
 #'  \code{\link{ggsurvplot}}.
 #'@inheritParams ggsurvplot
 #'@param title the title of the plot.
+#'@param xlog logical value. If TRUE, x axis is tansformed into log scale.
 #'@param y.text logical. Default is TRUE. If FALSE, the table y axis. tick
 #'  labels will be hidden.
 #'@param y.text.col logical. Default value is FALSE. If TRUE, the table tick
@@ -32,21 +33,23 @@ NULL
 #'
 #'@export
 ggcumcensor <- function (fit, data = NULL, color = "black", palette = NULL, break.time.by = NULL,  xlim = NULL,
+                         xscale = 1,
                          title = "Number of cenored subjects", xlab = "Time", ylab = "Strata",
-                         legend = "top",
+                         xlog = FALSE, legend = "top",
                          legend.title = "Strata", legend.labs = NULL, y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
                          ggtheme = theme_survminer(), ...)
   {
 
   if(!inherits(fit, "survfit"))
     stop("Can't handle an object of class ", class(fit))
-  if(is.null(xlim)) xlim <- c(0, max(fit$time))
   .check_legend_labs(fit, legend.labs)
 
   data <- .get_data(fit, data = data)
   # Define time axis breaks
-  if(is.null(break.time.by)) times <- .get_default_breaks(fit$time)
-  else times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
+  xmin <- ifelse(xlog, min(c(1, fit$time)), 0)
+  if(is.null(xlim)) xlim <- c(xmin, max(fit$time))
+  times <- .get_default_breaks(fit$time, .log = xlog)
+  if(!is.null(break.time.by) &!xlog) times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
 
   survsummary <- .get_timepoints_survsummary(fit, data, times)
   survsummary$cum.ncensor <- unlist(by(survsummary$n.censor, survsummary$strata, cumsum))
@@ -67,10 +70,13 @@ ggcumcensor <- function (fit, data = NULL, color = "black", palette = NULL, brea
     ggtheme +
     scale_y_discrete(breaks = as.character(levels(survsummary$strata)),labels = yticklabs ) +
     coord_cartesian(xlim = xlim) +
-    scale_x_continuous(breaks = times)+
     labs(title = title, x = xlab, y = ylab, color = legend.title, shape = legend.title)
 
   p <- ggpubr::ggpar(p, legend = legend, palette = palette,...)
+
+  xticklabels <- .format_xticklabels(labels = times, xscale = xscale)
+  if(!xlog) p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels)
+  else p <- p + ggplot2::scale_x_continuous(breaks = times, trans = "log10", labels = xticklabels)
 
   if(!y.text) p <- .set_large_dash_as_ytext(p)
   # color table tick labels by strata

@@ -1,8 +1,8 @@
 Package: survminer
 Type: Package
 Title: Drawing Survival Curves using 'ggplot2'
-Version: 0.3.0.999
-Date: 2017-03-16
+Version: 0.3.1.999
+Date: 2017-03-21
 Authors@R: c(
     person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"),
     person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@@gmail.com"),
@@ -16,7 +16,7 @@ License: GPL-2
 LazyData: TRUE
 Depends:
     ggplot2,
-    ggpubr
+    ggpubr(>= 0.1.2)
 Imports:
     grid,
     gridExtra(>= 2.0),
@@ -33,14 +33,14 @@ Imports:
     cmprsk
 Suggests:
     knitr,
-    RTCGA(>= 1.4.0),
-    RTCGA.clinical(>= 20151101.4.0),
     KMsurv
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 6.0.1
 Collate: 
+    'BMT.R'
+    'BRCAOV.survInfo.R'
     'add_ggsurvplot.R'
     'utilities.R'
     'surv_summary.R'

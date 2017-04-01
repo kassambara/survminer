@@ -5,10 +5,10 @@
 \title{Cumulative Number of Events Table}
 \usage{
 ggcumevents(fit, data = NULL, color = "black", palette = NULL,
-  break.time.by = NULL, xlim = NULL,
+  break.time.by = NULL, xlim = NULL, xscale = 1,
   title = "Cumulative number of events", xlab = "Time", ylab = "Strata",
-  legend = "top", legend.title = "Strata", legend.labs = NULL,
-  y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
+  xlog = FALSE, legend = "top", legend.title = "Strata",
+  legend.labs = NULL, y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
   ggtheme = theme_survminer(), ...)
 }
 \arguments{
@@ -26,15 +26,26 @@ the default hue color scale; "grey" for grey color palettes; brewer palettes
 e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
 See details section for more information.}
 
-\item{break.time.by}{numeric value controlling time axis breaks. Default value is NULL.}
+\item{break.time.by}{numeric value controlling time axis breaks. Default value
+is NULL.}
 
 \item{xlim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
+
+\item{xscale}{numeric or character value specifying x-axis scale. \itemize{
+\item If numeric, the value is used to divide the labels on the x axis. For
+example, a value of 365.25 will give labels in years instead of the original
+days. \item If character, allowed options include one of c("d_m", "d_y",
+"m_d", "m_y", "y_d", "y_m"), where d = days, m = months and y = years. For
+example, xscale = "d_m" will transform labels from days to months; xscale =
+"m_y", will transform labels from months to years.}}
 
 \item{title}{the title of the plot.}
 
 \item{xlab}{main title and axis labels}
 
 \item{ylab}{main title and axis labels}
+
+\item{xlog}{logical value. If TRUE, x axis is tansformed into log scale.}
 
 \item{legend}{character specifying legend position. Allowed values are one of
 c("top", "bottom", "left", "right", "none"). Default is "top" side position.
