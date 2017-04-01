@@ -4,14 +4,10 @@
 #' @param model an object of class coxph.
 #' @param data a dataset used to fit survival curves. If not supplied then data
 #'  will be extracted from 'fit' object.
-#' @param alpha significance level for coloring.
-#' @param ggtheme function, ggplot2 theme name. Default value is theme_classic2. Allowed values include ggplot2 official themes: see theme.
-#' @param plot.title legend title.
-#' @param palette the color palette to be used for coloring of significant variables.
 #' @param xlab Label in OX axis.
-#'@param ... further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.
+#' @param cpositions positions of first three columns
 #'
-#' @return return an object of class ggplot
+#' @return return an grid object
 #'
 #' @author Przemyslaw Biecek, \email{przemyslaw.biecek@@gmail.com}
 #'
@@ -27,20 +23,7 @@
 #' @import gridExtra
 
 ggforest <- function(model, data = NULL, alpha = 0.05,
-                     plot.title = "Forest plot for coxph model",
-                     ggtheme = theme_survminer(),
-                     palette = c("black", "red4"),
-                     xlab = "Hazard ratio", ...) {
-  coef <- tidy(model)
-  coef$p.val <- sapply(coef$p.value, function(x) as.character(signif(x, digits = 2)))
-  coef$est <- sapply(exp(coef$estimate), function(x) as.character(signif(x, digits = 2)))
-  stars <- paste0(ifelse(coef$p.value < 0.05, "*",""),
-                  ifelse(coef$p.value < 0.01, "*",""),
-                  ifelse(coef$p.value < 0.001, "*",""))
-  coef$p.val <- paste0(coef$est, " (p.value ", coef$p.val, stars,")")
-  coef$issig <- coef$p.value < alpha
-
-  ##
+                     xlab = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4)) {
   data <- .get_data(model, data = data)
   terms <- attr(model$terms, "dataClasses")[-1]
   terms <- terms[intersect(names(terms),
@@ -91,7 +74,7 @@ ggforest <- function(model, data = NULL, alpha = 0.05,
     geom_hline(yintercept=1, linetype=3) +
     coord_flip() +
     scale_y_log10(
-      name = "Hazard Ratio",
+      name = xlab,
       labels = sprintf("%g", breaks),
       expand = c(0.02, 0.02),
       breaks = breaks) +
@@ -106,18 +89,19 @@ ggforest <- function(model, data = NULL, alpha = 0.05,
     xlab("")
 
   r <- nrow(toShowExpClean)
+  coord1 <- cpositions[1]
+  coord2 <- cpositions[2]
+  coord3 <- cpositions[3]
 
   # hazard plots
   grid.arrange(grid.points(1, 1, gp = gpar(col="white")),
                p2, ncol=2)
   # vnames
-  coord1 <- 0.02
-  coord2 <- 0.16
-  coord3 <- 0.4
   for(i in 1:r) {
     if (toShowExpClean[i,"pos"] == 1)
       grid.text(toShowExpClean[i,"var"], coord1, 0.083 + 0.91*(i-0.5)/r, just = c(0,0), gp=gpar(cex=0.7, fontface="bold"))
-    grid.text(toShowExpClean[i,"level"], coord2, 0.083 + 0.91*(i-0.5)/r, just = c(0,0), gp=gpar(cex=0.7))
+    grid.text(toShowExpClean[i,"level"], coord2, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,-0.5), gp=gpar(cex=0.7))
+    grid.text(paste0("(N=",toShowExpClean[i,"N"],")"), coord2, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,1), gp=gpar(cex=0.7,fontface="italic"))
     grid.text(toShowExpClean[i,"estimate.1"], coord3, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,-0.5), gp=gpar(cex=0.7))
     grid.text(toShowExpClean[i,"ci"],
               coord3, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,1), gp=gpar(cex=0.7, fontface = "italic"))
@@ -125,8 +109,13 @@ ggforest <- function(model, data = NULL, alpha = 0.05,
               0.99, 0.083 + 0.91*(i-0.5)/r, just = c(1,-0.5), gp=gpar(cex=0.7, fontface = "italic"))
   }
   # grey bands
-  for(i in seq(1,r,2))
+  for (i in seq(1,r,2))
     grid.rect(0.5, 0.083 + 0.91*(i-0.5)/r, 1, 0.91/r,
               gp = gpar(fill="black", col=NA, alpha=0.1))
+
+  gmodel <- glance(model)
+
+  grid.text(paste0("n.events: ", gmodel$nevent, ", p.value.log: ", signif(gmodel$p.value.log, 2), " \nAIC:", round(gmodel$AIC,2), ", concordance:", round(gmodel$concordance,2)),
+            0.02, 0.02, just = c(0,0), gp=gpar(cex=0.7, fontface = "italic"))
 
 }
