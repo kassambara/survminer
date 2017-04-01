@@ -4,8 +4,8 @@
 \alias{ggforest}
 \title{Forest Plot for Cox Proportional Hazards Model}
 \usage{
-ggforest(model, data = NULL, alpha = 0.05, xlab = "Hazard ratio",
-  cpositions = c(0.02, 0.22, 0.4))
+ggforest(model, data = NULL, xlab = "Hazard ratio", cpositions = c(0.02,
+  0.22, 0.4))
 }
 \arguments{
 \item{model}{an object of class coxph.}

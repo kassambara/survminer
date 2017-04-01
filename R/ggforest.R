@@ -21,14 +21,21 @@
 #' @import broom
 #' @import grid
 #' @import gridExtra
+#' @importFrom grDevices axisTicks
+#' @importFrom stats anova var
 
-ggforest <- function(model, data = NULL, alpha = 0.05,
+ggforest <- function(model, data = NULL,
                      xlab = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4)) {
-  data <- .get_data(model, data = data)
+  conf.high <- conf.low <- estimate <- NULL
+  stopifnot(class(model) == "coxph")
+
+  # get data and variables/terms from cox model
+  data  <- .get_data(model, data = data)
   terms <- attr(model$terms, "dataClasses")[-1]
   terms <- terms[intersect(names(terms),
                            gsub(rownames(anova(model))[-1], pattern = "`", replacement = ""))]
 
+  # extract statistics for every variable
   allTerms <- lapply(seq_along(terms), function(i){
     var <- names(terms)[i]
     if (terms[i] == "factor") {
@@ -42,6 +49,7 @@ ggforest <- function(model, data = NULL, alpha = 0.05,
   colnames(allTermsDF) <- c("var", "level", "N", "pos")
   inds <- apply(allTermsDF[,1:2], 1, paste0, collapse="")
 
+  # use broom to get all required statistics
   coef <- tidy(model)
   rownames(coef) <- gsub(coef$term, pattern = "`", replacement = "")
   toShow <- cbind(allTermsDF, coef[inds,])[,c("var", "level", "N", "p.value", "estimate", "conf.low", "conf.high", "pos")]
@@ -62,7 +70,7 @@ ggforest <- function(model, data = NULL, alpha = 0.05,
   toShowExpClean$ci[is.na(toShowExpClean$estimate)] = ""
   toShowExpClean$estimate[is.na(toShowExpClean$estimate)] = 0
 
-  # revert
+  # revert order of rows
   toShowExpClean <- toShowExpClean[nrow(toShowExpClean):1,]
 
   breaks <- axisTicks(range(c(toShowExpClean$conf.high, toShowExpClean$conf.low), na.rm = TRUE),
@@ -88,6 +96,7 @@ ggforest <- function(model, data = NULL, alpha = 0.05,
           axis.ticks.y=element_blank()) +
     xlab("")
 
+  # add left panel
   r <- nrow(toShowExpClean)
   coord1 <- cpositions[1]
   coord2 <- cpositions[2]
