@@ -124,7 +124,7 @@ ggforest <- function(model, data = NULL,
 
   gmodel <- glance(model)
 
-  grid.text(paste0("n.events: ", gmodel$nevent, ", p.value.log: ", signif(gmodel$p.value.log, 2), " \nAIC:", round(gmodel$AIC,2), ", concordance:", round(gmodel$concordance,2)),
+  grid.text(paste0("n.events: ", gmodel$nevent, ", p.value.log: ", signif(gmodel$p.value.log, 2), " \nAIC: ", round(gmodel$AIC,2), ", concordance: ", round(gmodel$concordance,2)),
             0.02, 0.02, just = c(0,0), gp=gpar(cex=0.7, fontface = "italic"))
 
 }
