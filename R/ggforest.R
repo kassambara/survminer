@@ -32,7 +32,7 @@
 
 ggforest <- function(model, data = NULL,
                      main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
-                     fontsize = 0.7, refLabel = "reference") {
+                     fontsize = 0.7, refLabel = "reference", noDigits=2) {
   conf.high <- conf.low <- estimate <- NULL
   stopifnot(class(model) == "coxph")
 
