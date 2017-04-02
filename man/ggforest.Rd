@@ -29,6 +29,9 @@ model <- coxph( Surv(time, status) ~ sex + rx + adhere,
                 data = colon )
 ggforest(model)
 
+model <- coxph( Surv(time, status) ~ sex+rx, data = colon )
+ggforest(model)
+
 }
 \author{
 Przemyslaw Biecek, \email{przemyslaw.biecek@gmail.com}

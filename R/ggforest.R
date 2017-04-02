@@ -17,6 +17,9 @@
 #'                 data = colon )
 #' ggforest(model)
 #'
+#' model <- coxph( Surv(time, status) ~ sex+rx, data = colon )
+#' ggforest(model)
+#'
 #' @export
 #' @import broom
 #' @import grid
@@ -73,14 +76,14 @@ ggforest <- function(model, data = NULL,
   # revert order of rows
   toShowExpClean <- toShowExpClean[nrow(toShowExpClean):1,]
 
-  breaks <- axisTicks(range(c(toShowExpClean$conf.high, toShowExpClean$conf.low), na.rm = TRUE),
-            log=TRUE, nint=11)
+  rangeb <- range(c(toShowExpClean$conf.high, toShowExpClean$conf.low), na.rm = TRUE)
+  breaks <- axisTicks(rangeb/2, log=TRUE, nint=7)
 
   p2 <- ggplot(toShowExpClean, aes(seq_along(var), exp(estimate))) +
     geom_point(pch=15, size=4) +
     geom_errorbar(aes(ymin=exp(conf.low), ymax=exp(conf.high)), width=0.15) +
     geom_hline(yintercept=1, linetype=3) +
-    coord_flip() +
+    coord_flip(ylim = exp(rangeb)) +
     scale_y_log10(
       name = xlab,
       labels = sprintf("%g", breaks),
@@ -88,6 +91,7 @@ ggforest <- function(model, data = NULL,
       breaks = breaks) +
     theme_light() +
     theme(panel.grid.minor.y = element_blank(),
+          panel.grid.minor.x = element_blank(),
           panel.grid.major.y = element_blank(),
           legend.position = "none",
           panel.border=element_blank(),
