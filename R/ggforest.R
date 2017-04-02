@@ -4,8 +4,11 @@
 #' @param model an object of class coxph.
 #' @param data a dataset used to fit survival curves. If not supplied then data
 #'  will be extracted from 'fit' object.
-#' @param xlab Label in OX axis.
-#' @param cpositions positions of first three columns
+#' @param main title of the plot.
+#' @param cpositions relative positions of first three columns in the OX scale.
+#' @param fontsize relative size of annotations in the plot. Default value: 0.7.
+#' @param refLabel label for reference levels of factor variables.
+#' @param noDigits number of digits for estimates and p-values in the plot.
 #'
 #' @return return an grid object
 #'
@@ -28,7 +31,8 @@
 #' @importFrom stats anova var
 
 ggforest <- function(model, data = NULL,
-                     xlab = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4)) {
+                     main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
+                     fontsize = 0.7, refLabel = "reference") {
   conf.high <- conf.low <- estimate <- NULL
   stopifnot(class(model) == "coxph")
 
@@ -58,16 +62,16 @@ ggforest <- function(model, data = NULL,
   toShow <- cbind(allTermsDF, coef[inds,])[,c("var", "level", "N", "p.value", "estimate", "conf.low", "conf.high", "pos")]
   toShowExp <- toShow[,5:7]
   toShowExp[is.na(toShowExp)] <- 0
-  toShowExp <- format(exp(toShowExp), digits=2)
+  toShowExp <- format(exp(toShowExp), digits=noDigits)
   toShowExpClean <- data.frame(toShow,
-                               pvalue = signif(toShow[,4],3),
+                               pvalue = signif(toShow[,4],noDigits+1),
                                toShowExp)
-  toShowExpClean$stars <- paste0(round(toShowExpClean$p.value, 3), " ",
+  toShowExpClean$stars <- paste0(round(toShowExpClean$p.value, noDigits+1), " ",
                   ifelse(toShowExpClean$p.value < 0.05, "*",""),
                   ifelse(toShowExpClean$p.value < 0.01, "*",""),
                   ifelse(toShowExpClean$p.value < 0.001, "*",""))
   toShowExpClean$ci <- paste0("(",toShowExpClean[,"conf.low.1"]," - ",toShowExpClean[,"conf.high.1"],")")
-  toShowExpClean$estimate.1[is.na(toShowExpClean$estimate)] = "reference"
+  toShowExpClean$estimate.1[is.na(toShowExpClean$estimate)] = refLabel
   toShowExpClean$stars[which(toShowExpClean$p.value < 0.001)] = "<0.001 ***"
   toShowExpClean$stars[is.na(toShowExpClean$estimate)] = ""
   toShowExpClean$ci[is.na(toShowExpClean$estimate)] = ""
@@ -84,8 +88,9 @@ ggforest <- function(model, data = NULL,
     geom_errorbar(aes(ymin=exp(conf.low), ymax=exp(conf.high)), width=0.15) +
     geom_hline(yintercept=1, linetype=3) +
     coord_flip(ylim = exp(rangeb)) +
+    ggtitle(main) +
     scale_y_log10(
-      name = xlab,
+      name = "",
       labels = sprintf("%g", breaks),
       expand = c(0.02, 0.02),
       breaks = breaks) +
@@ -112,23 +117,23 @@ ggforest <- function(model, data = NULL,
   # vnames
   for(i in 1:r) {
     if (toShowExpClean[i,"pos"] == 1)
-      grid.text(toShowExpClean[i,"var"], coord1, 0.083 + 0.91*(i-0.5)/r, just = c(0,0), gp=gpar(cex=0.7, fontface="bold"))
-    grid.text(toShowExpClean[i,"level"], coord2, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,-0.5), gp=gpar(cex=0.7))
-    grid.text(paste0("(N=",toShowExpClean[i,"N"],")"), coord2, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,1), gp=gpar(cex=0.7,fontface="italic"))
-    grid.text(toShowExpClean[i,"estimate.1"], coord3, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,-0.5), gp=gpar(cex=0.7))
+      grid.text(toShowExpClean[i,"var"], coord1, 0.083 + 0.91*(i-0.5)/r, just = c(0,0), gp=gpar(cex=fontsize, fontface="bold"))
+    grid.text(toShowExpClean[i,"level"], coord2, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,-0.5), gp=gpar(cex=fontsize))
+    grid.text(paste0("(N=",toShowExpClean[i,"N"],")"), coord2, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,1), gp=gpar(cex=fontsize,fontface="italic"))
+    grid.text(toShowExpClean[i,"estimate.1"], coord3, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,-0.5), gp=gpar(cex=fontsize))
     grid.text(toShowExpClean[i,"ci"],
-              coord3, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,1), gp=gpar(cex=0.7, fontface = "italic"))
+              coord3, 0.083 + 0.91*(i-0.5)/r, just = c(0.5,1), gp=gpar(cex=fontsize, fontface = "italic"))
     grid.text(toShowExpClean[i,"stars"],
-              0.99, 0.083 + 0.91*(i-0.5)/r, just = c(1,-0.5), gp=gpar(cex=0.7, fontface = "italic"))
+              0.99, 0.083 + 0.91*(i-0.5)/r, just = c(1,-0.5), gp=gpar(cex=fontsize, fontface = "italic"))
   }
   # grey bands
   for (i in seq(1,r,2))
-    grid.rect(0.5, 0.083 + 0.91*(i-0.5)/r, 1, 0.91/r,
+    grid.rect(0.5, 0.083 + 0.87*(i-0.5)/r, 1, 0.87/r,
               gp = gpar(fill="black", col=NA, alpha=0.1))
 
   gmodel <- glance(model)
 
   grid.text(paste0("n.events: ", gmodel$nevent, ", p.value.log: ", signif(gmodel$p.value.log, 2), " \nAIC: ", round(gmodel$AIC,2), ", concordance: ", round(gmodel$concordance,2)),
-            0.02, 0.02, just = c(0,0), gp=gpar(cex=0.7, fontface = "italic"))
+            0.02, 0.02, just = c(0,0), gp=gpar(cex=fontsize, fontface = "italic"))
 
 }

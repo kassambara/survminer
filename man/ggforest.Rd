@@ -4,8 +4,8 @@
 \alias{ggforest}
 \title{Forest Plot for Cox Proportional Hazards Model}
 \usage{
-ggforest(model, data = NULL, xlab = "Hazard ratio", cpositions = c(0.02,
-  0.22, 0.4))
+ggforest(model, data = NULL, main = "Hazard ratio", cpositions = c(0.02,
+  0.22, 0.4), fontsize = 0.7, refLabel = "reference")
 }
 \arguments{
 \item{model}{an object of class coxph.}
@@ -13,9 +13,15 @@ ggforest(model, data = NULL, xlab = "Hazard ratio", cpositions = c(0.02,
 \item{data}{a dataset used to fit survival curves. If not supplied then data
 will be extracted from 'fit' object.}
 
-\item{xlab}{Label in OX axis.}
+\item{main}{title of the plot.}
 
-\item{cpositions}{positions of first three columns}
+\item{cpositions}{relative positions of first three columns in the OX scale.}
+
+\item{fontsize}{relative size of annotations in the plot. Default value: 0.7.}
+
+\item{refLabel}{label for reference levels of factor variables.}
+
+\item{noDigits}{number of digits for estimates and p-values in the plot.}
 }
 \value{
 return an grid object
