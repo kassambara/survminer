@@ -2,32 +2,26 @@
 % Please edit documentation in R/ggforest.R
 \name{ggforest}
 \alias{ggforest}
-\title{Drawing Forest Plot for CoxPH model}
+\title{Forest Plot for Cox Proportional Hazards Model}
 \usage{
-ggforest(model, alpha = 0.05, plot.title = "Forest plot for coxph model",
-  ggtheme = theme_survminer(), palette = c("black", "red4"),
-  xlab = "Hazard ratio", ...)
+ggforest(model, data = NULL, xlab = "Hazard ratio", cpositions = c(0.02,
+  0.22, 0.4))
 }
 \arguments{
 \item{model}{an object of class coxph.}
 
-\item{alpha}{significance level for coloring.}
-
-\item{plot.title}{legend title.}
-
-\item{ggtheme}{function, ggplot2 theme name. Default value is theme_classic2. Allowed values include ggplot2 official themes: see theme.}
-
-\item{palette}{the color palette to be used for coloring of significant variables.}
+\item{data}{a dataset used to fit survival curves. If not supplied then data
+will be extracted from 'fit' object.}
 
 \item{xlab}{Label in OX axis.}
 
-\item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.}
+\item{cpositions}{positions of first three columns}
 }
 \value{
-return an object of class ggplot
+return an grid object
 }
 \description{
-Drawing Forest Plot for CoxPH model
+Drawing Forest Plot for Cox proportional hazards model. In two panels the model structure is presented.
 }
 \examples{
 require("survival")
