@@ -9,10 +9,11 @@ ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
   linetype = 1, break.x.by = NULL, break.y.by = NULL,
   break.time.by = NULL, surv.scale = c("default", "percent"), xscale = 1,
   conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
-  censor = TRUE, pval = FALSE, pval.size = 5, pval.coord = c(NULL,
-  NULL), pval.method = FALSE, pval.method.size = pval.size,
-  pval.method.coord = c(NULL, NULL), log.rank.weights = c("survdiff", "1",
-  "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"), title = NULL, xlab = "Time",
+  censor = TRUE, censor.shape = "+", censor.size = 4.5, pval = FALSE,
+  pval.size = 5, pval.coord = c(NULL, NULL), pval.method = FALSE,
+  pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
+  log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2",
+  "FH_p=1_q=1"), title = NULL, xlab = "Time",
   ylab = "Survival probability", xlim = NULL, ylim = NULL,
   legend = c("top", "bottom", "left", "right", "none"),
   legend.title = "Strata", legend.labs = NULL, tables.height = 0.25,
@@ -51,10 +52,10 @@ probability in percentage.}
 number of strata/group (n.strata) = 1, the expected value is the color name.
 For example color = "blue". \item If n.strata > 1, the expected value is the
 grouping variable name. By default, survival curves are colored by strata
-using the argument color = "strata",  but you can also color survival
-curves by any other grouping variables used to fit the survival curves. In
-this case, it's possible to specify a custom color palette by using the
-argument palette.}}
+using the argument color = "strata",  but you can also color survival curves
+by any other grouping variables used to fit the survival curves. In this
+case, it's possible to specify a custom color palette by using the argument
+palette.}}
 
 \item{palette}{the color palette to be used. Allowed values include "hue" for
 the default hue color scale; "grey" for grey color palettes; brewer palettes
@@ -92,6 +93,11 @@ example, xscale = "d_m" will transform labels from days to months; xscale =
 c("ribbon", "step").}
 
 \item{censor}{logical value. If TRUE, censors will be drawn.}
+
+\item{censor.shape}{character or numeric value specifying the point shape of
+censors. Default is "+" (3), a sensible choice is "|" (124).}
+
+\item{censor.size}{numveric value specifying the point size of censors. Default is 4.5.}
 
 \item{pval}{logical value. If TRUE, the p-value is added on the plot.}
 

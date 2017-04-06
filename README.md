@@ -104,6 +104,14 @@ ggsurvplot(fit, data = lung)
 
 ![](tools/README-ggplot2-basic-survival-plot-1.png)
 
+Censor shape can be changed as follow:
+
+``` r
+ggsurvplot(fit, data = lung, censor.shape="|", censor.size = 4)
+```
+
+![](tools/README-ggplot2-basic-survival-plot-censor-1.png)
+
 ### Customized survival curves
 
 ``` r

@@ -27,10 +27,10 @@
 #'  number of strata/group (n.strata) = 1, the expected value is the color name.
 #'  For example color = "blue". \item If n.strata > 1, the expected value is the
 #'  grouping variable name. By default, survival curves are colored by strata
-#'  using the argument color = "strata",  but you can also color survival
-#'  curves by any other grouping variables used to fit the survival curves. In
-#'  this case, it's possible to specify a custom color palette by using the
-#'  argument palette.}
+#'  using the argument color = "strata",  but you can also color survival curves
+#'  by any other grouping variables used to fit the survival curves. In this
+#'  case, it's possible to specify a custom color palette by using the argument
+#'  palette.}
 #'@param palette the color palette to be used. Allowed values include "hue" for
 #'  the default hue color scale; "grey" for grey color palettes; brewer palettes
 #'  e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
@@ -48,7 +48,9 @@
 #'@param conf.int.style confidence interval style. Allowed values include
 #'  c("ribbon", "step").
 #'@param censor logical value. If TRUE, censors will be drawn.
-#'@param censor.shape character or numeric value specifying the point shape of censored subjects. Default is "+" (3), a sensible choice is "|" (124).
+#'@param censor.shape character or numeric value specifying the point shape of
+#'  censors. Default is "+" (3), a sensible choice is "|" (124).
+#'@param censor.size numveric value specifying the point size of censors. Default is 4.5.
 #'@param pval logical value. If TRUE, the p-value is added on the plot.
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
@@ -281,8 +283,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        break.x.by = NULL, break.y.by = NULL,  break.time.by = NULL,
                        surv.scale = c("default", "percent"), xscale = 1,
                        conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
-                       censor = TRUE,
-                       censor.shape = "+",
+                       censor = TRUE, censor.shape = "+", censor.size = 4.5,
                        pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
                        pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                        log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
@@ -455,7 +456,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   # Add cencored
   if (censor & any(d$n.censor >= 1)) {
     p <- p + ggpubr::geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
-                          colour = surv.color, size = size*4.5, shape = censor.shape)
+                          colour = surv.color, size = censor.size, shape = censor.shape)
   }
 
   # Add pvalue
