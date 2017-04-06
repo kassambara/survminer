@@ -49,7 +49,7 @@
 #'  c("ribbon", "step").
 #'@param censor logical value. If TRUE, censors will be drawn.
 #'@param censor.shape character or numeric value specifying the point shape of
-#'  censors. Default is "+" (3), a sensible choice is "|" (124).
+#'  censors. Default value is "+" (3), a sensible choice is "|" (124).
 #'@param censor.size numveric value specifying the point size of censors. Default is 4.5.
 #'@param pval logical value. If TRUE, the p-value is added on the plot.
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.

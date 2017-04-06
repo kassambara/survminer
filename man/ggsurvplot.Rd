@@ -95,7 +95,7 @@ c("ribbon", "step").}
 \item{censor}{logical value. If TRUE, censors will be drawn.}
 
 \item{censor.shape}{character or numeric value specifying the point shape of
-censors. Default is "+" (3), a sensible choice is "|" (124).}
+censors. Default value is "+" (3), a sensible choice is "|" (124).}
 
 \item{censor.size}{numveric value specifying the point size of censors. Default is 4.5.}
 
