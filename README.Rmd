@@ -146,15 +146,12 @@ fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ggsurvplot(fit, data = lung)
 ```
 
-Censor shape can be changed: 
+Censor shape can be changed as follow: 
 
 ```{r ggplot2-basic-survival-plot-censor, fig.height = 4, fig.width = 5}
-ggsurvplot(fit, data = lung, censor.shape=124)
+ggsurvplot(fit, data = lung, censor.shape="|")
 ```   
     
-Shape values need to be passed numerically, see http://sape.inf.usi.ch/quick-reference/ggplot2/shape
-
-"|", which is a sensible shape for a censor, has the value 124.
 
 ### Customized survival curves
     
