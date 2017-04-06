@@ -48,7 +48,7 @@
 #'@param conf.int.style confidence interval style. Allowed values include
 #'  c("ribbon", "step").
 #'@param censor logical value. If TRUE, censors will be drawn.
-#'@param censor.shape numeric value. Default is 3 ("+"), a sensible choice is 124 ("|").
+#'@param censor.shape character or numeric value. Default is "+" (3), a sensible choice is "|" (124).
 #'@param pval logical value. If TRUE, the p-value is added on the plot.
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
@@ -282,7 +282,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        surv.scale = c("default", "percent"), xscale = 1,
                        conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                        censor = TRUE,
-                       censor.shape=3,
+                       censor.shape = "+",
                        pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
                        pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                        log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
@@ -454,7 +454,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   }
   # Add cencored
   if (censor & any(d$n.censor >= 1)) {
-    p <- p + scale_shape_identity() + ggpubr::geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
+    p <- p + ggpubr::geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
                           colour = surv.color, size = size*4.5, shape = censor.shape)
   }
 
