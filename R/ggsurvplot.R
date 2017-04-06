@@ -48,7 +48,7 @@
 #'@param conf.int.style confidence interval style. Allowed values include
 #'  c("ribbon", "step").
 #'@param censor logical value. If TRUE, censors will be drawn.
-#'@param censor.shape character or numeric value. Default is "+" (3), a sensible choice is "|" (124).
+#'@param censor.shape character or numeric value specifying the point shape of censored subjects. Default is "+" (3), a sensible choice is "|" (124).
 #'@param pval logical value. If TRUE, the p-value is added on the plot.
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
