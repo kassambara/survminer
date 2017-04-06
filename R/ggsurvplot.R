@@ -23,9 +23,14 @@
 #'  "m_d", "m_y", "y_d", "y_m"), where d = days, m = months and y = years. For
 #'  example, xscale = "d_m" will transform labels from days to months; xscale =
 #'  "m_y", will transform labels from months to years.}
-#'@param color color to be used for the survival curves. This argument is
-#'  ignored when the number of strata (groups > 1). In this case, use the
-#'  argument palette.
+#'@param color color to be used for the survival curves. \itemize{ \item If the
+#'  number of strata/group (n.strata) = 1, the expected value is the color name.
+#'  For example color = "blue". \item If n.strata > 1, the expected value is the
+#'  grouping variable name. By default, survival curves are colored by strata
+#'  using the argument color = "strata",  but you can also color survival
+#'  curves by any other grouping variables used to fit the survival curves. In
+#'  this case, it's possible to specify a custom color palette by using the
+#'  argument palette.}
 #'@param palette the color palette to be used. Allowed values include "hue" for
 #'  the default hue color scale; "grey" for grey color palettes; brewer palettes
 #'  e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
@@ -405,7 +410,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   d$strata <- factor(d$strata, levels = strata_names, labels = legend.labs)
   d <- d[order(d$strata), , drop = FALSE]
-  surv.color <- ifelse(n.strata > 1, "strata", color)
+  if(color %in% colnames(d)) surv.color <- color
+  else surv.color <- ifelse(n.strata > 1, "strata", color)
+  #surv.color <- color
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
        ggpubr::geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
        ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim) +
@@ -486,10 +493,12 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 
   # Extract strata colors used in survival curves
   # Will be used to color the y.text of risk table and cumevents table
+  if(risk.table | cumevents | cumcensor | ncensor.plot){
   g <- ggplot_build(p)
   scurve_cols <- unlist(unique(g$data[[1]]["colour"]))
   if(length(scurve_cols)==1) scurve_cols <- rep(scurve_cols, length(legend.labs))
   names(scurve_cols) <- legend.labs # Give every color an appropriate name
+  }
 
 
   # Add risk table
@@ -646,10 +655,12 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
   # Extract strata colors for survival curves
   legend.labs <- attr(x, "legend.labs")
-  g <- ggplot_build(x$plot)
-  cols <- unlist(unique(g$data[[1]]["colour"]))
-  if(length(cols)==1) cols <- rep(cols, length(legend.labs))
-  names(cols) <- legend.labs # Give every color an appropriate name
+  if(!is.null(x$table) | !is.null(x$ncensor.plot) | !is.null(x$cumevents)){
+    g <- ggplot_build(x$plot)
+    cols <- unlist(unique(g$data[[1]]["colour"]))
+    if(length(cols)==1) cols <- rep(cols, length(legend.labs))
+    names(cols) <- legend.labs # Give every color an appropriate name
+  }
 
   if(nplot > 1 & legend.position %in% c("left", "right", "bottom")) x$plot <- .hide_legend(x$plot)
 

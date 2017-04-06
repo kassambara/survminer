@@ -17,9 +17,14 @@ ggcumcensor(fit, data = NULL, color = "black", palette = NULL,
 \item{data}{a dataset used to fit survival curves. If not supplied then data
 will be extracted from 'fit' object.}
 
-\item{color}{color to be used for the survival curves. This argument is
-ignored when the number of strata (groups > 1). In this case, use the
-argument palette.}
+\item{color}{color to be used for the survival curves. \itemize{ \item If the
+number of strata/group (n.strata) = 1, the expected value is the color name.
+For example color = "blue". \item If n.strata > 1, the expected value is the
+grouping variable name. By default, survival curves are colored by strata
+using the argument color = "strata",  but you can also color survival
+curves by any other grouping variables used to fit the survival curves. In
+this case, it's possible to specify a custom color palette by using the
+argument palette.}}
 
 \item{palette}{the color palette to be used. Allowed values include "hue" for
 the default hue color scale; "grey" for grey color palettes; brewer palettes
