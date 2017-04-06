@@ -281,6 +281,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        surv.scale = c("default", "percent"), xscale = 1,
                        conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                        censor = TRUE,
+                       censor.shape=3,
                        pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
                        pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                        log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
@@ -452,8 +453,8 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   }
   # Add cencored
   if (censor & any(d$n.censor >= 1)) {
-    p <- p + ggpubr::geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
-                          colour = surv.color, size = size*4.5, shape = "+")
+    p <- p + scale_shape_identity() + ggpubr::geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
+                          colour = surv.color, size = size*4.5, shape = censor.shape)
   }
 
   # Add pvalue
