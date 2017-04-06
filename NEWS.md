@@ -12,6 +12,25 @@
 
 ## Minor changes
 
+- The argument `color` are updated allowing to assign the same color for same groups accross facets ([#99](https://github.com/kassambara/survminer/issues/99) & [#185](https://github.com/kassambara/survminer/issues/185)).
+    - If the number of strata/group (n.strata) = 1, the expected value is the color name. For example color = "blue".
+    - If n.strata > 1, the expected value is the grouping variable name. By default, survival curves are colored by strata using the argument color = "strata", but you can also color survival curves by any other grouping variables used to fit the survival curves.
+    
+For example, in the following script, survival curves are colored by the grouping variable `sex` in all facets:  
+   
+```r
+library(survminer)
+library(survival)
+fit <- survfit( Surv(time, status) ~ sex + rx + adhere,
+                 data = colon )
+ggsurv <- ggsurvplot(fit, data = colon,
+               color = "sex",
+               legend.title = "Sex",
+               palette = "jco")
+ggsurv$plot + facet_grid(rx ~ adhere)
+```
+
+   
 - Now, the function `pairwise_survdiff()` checks whether the grouping variable is a factor. If this is not th case, the grouping variable is automatically converted into a factor.
 - `ggsurvplot()`: Now, log scale is used for x-axis when plotting the complementary log−log function (argument `fun = "cloglog") ([#171](https://github.com/kassambara/survminer/issues/171)).
 
