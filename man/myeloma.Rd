@@ -28,4 +28,3 @@ data(myeloma)
 head(myeloma)
 
 }
-

@@ -2,40 +2,32 @@
 % Please edit documentation in R/ggforest.R
 \name{ggforest}
 \alias{ggforest}
-\title{Drawing Forest Plot for CoxPH model}
+\title{Forest Plot for Cox Proportional Hazards Model}
 \usage{
-ggforest(model, alpha = 0.05, plot.title = "Forest plot for coxph model",
-  ggtheme = theme_classic2(), palette = c("black", "red4"),
-  xlab = "Hazard ratio", font.main = c(16, "plain", "black"),
-  font.submain = c(15, "plain", "black"), font.caption = c(15, "plain",
-  "black"), font.x = c(14, "plain", "black"), font.y = c(14, "plain",
-  "black"), font.tickslab = c(12, "plain", "black"))
+ggforest(model, data = NULL, main = "Hazard ratio", cpositions = c(0.02,
+  0.22, 0.4), fontsize = 0.7, refLabel = "reference", noDigits = 2)
 }
 \arguments{
 \item{model}{an object of class coxph.}
 
-\item{alpha}{significance level for coloring.}
+\item{data}{a dataset used to fit survival curves. If not supplied then data
+will be extracted from 'fit' object.}
 
-\item{plot.title}{legend title.}
+\item{main}{title of the plot.}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is theme_classic2. Allowed values include ggplot2 official themes: see theme.}
+\item{cpositions}{relative positions of first three columns in the OX scale.}
 
-\item{palette}{the color palette to be used for coloring of significant variables.}
+\item{fontsize}{relative size of annotations in the plot. Default value: 0.7.}
 
-\item{xlab}{Label in OX axis.}
+\item{refLabel}{label for reference levels of factor variables.}
 
-\item{font.main, font.submain, font.caption, font.x, font.y, font.tickslab}{a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
-xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
-c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-font.x = "bold", to change only font face.}
+\item{noDigits}{number of digits for estimates and p-values in the plot.}
 }
 \value{
-return an object of class ggplot
+return an grid object
 }
 \description{
-Drawing Forest Plot for CoxPH model
+Drawing Forest Plot for Cox proportional hazards model. In two panels the model structure is presented.
 }
 \examples{
 require("survival")
@@ -43,8 +35,10 @@ model <- coxph( Surv(time, status) ~ sex + rx + adhere,
                 data = colon )
 ggforest(model)
 
+model <- coxph( Surv(time, status) ~ sex+rx, data = colon )
+ggforest(model)
+
 }
 \author{
 Przemyslaw Biecek, \email{przemyslaw.biecek@gmail.com}
 }
-

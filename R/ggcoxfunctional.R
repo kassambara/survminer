@@ -20,13 +20,9 @@ NULL
 #'@param title the title of the final \link{grob} (\code{top} in \link{arrangeGrob})
 #'@param caption the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
-#'@param font.x,font.y,font.tickslab a vector of length 3
-#'  indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-#'  "bold", "italic", "bold.italic") and the color (e.g.: "red") of xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
-#'  c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-#'  font.x = "bold", to change only font face.
 #'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
+#'@param ... further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.
 #'@return Returns an object of class \code{ggcoxfunctional} which is a list of ggplots.
 #'
 #'@author Marcin Kosinski , \email{m.p.kosinski@@gmail.com}
@@ -37,34 +33,31 @@ NULL
 #' data(mgus)
 #' res.cox <- coxph(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
 #'     age + I(log(age)^2) + I(sqrt(age)), data = mgus)
-#' ggcoxfunctional(res.cox, point.col = "blue", point.alpha = 0.5)
-#' ggcoxfunctional(res.cox, point.col = "blue", point.alpha = 0.5,
+#' ggcoxfunctional(res.cox,  data = mgus, point.col = "blue", point.alpha = 0.5)
+#' ggcoxfunctional(res.cox, data = mgus, point.col = "blue", point.alpha = 0.5,
 #'                 title = "Pass the title", caption = "Pass the caption")
 #'
 #'
 #'@describeIn ggcoxfunctional Functional Form of Continuous Variable in Cox Proportional Hazards Model.
 #'@export
-ggcoxfunctional <- function (formula, data, fit, iter = 0, f = 0.6,
+ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6,
                              point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
-                             #font.title = c(16, "plain", "black"),
-                             font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-                             font.tickslab = c(12, "plain", "black"),
                              xlim = NULL, ylim = NULL,
                              ylab = "Martingale Residuals \nof Null Cox Model",
                              title = NULL, caption = NULL,
-                             ggtheme = theme_classic2()){
+                             ggtheme = theme_survminer(), ...){
 
-  if(!missing(formula) & !missing(data) ){
-    warning("arguments formula and data are deprecated; ",
-            "will be removed in the next version; ",
-            "please use fit instead.", call. = FALSE)
-    fit <- list(formula = formula, call = list(data = data))
-  }
-  else if(!missing(formula)){
+  if(!missing(formula)){
     if(inherits(formula, "coxph")) fit <- formula
+    else{
+      warning("arguments formula is deprecated; ",
+              "will be removed in the next version; ",
+              "please use fit instead.", call. = FALSE)
+      fit <- list(formula = formula, call = list(data = data))
+    }
   }
   formula <- fit$formula
-  data <- eval(fit$call$data)
+  data <- .get_data(fit, data)
 
   attr(stats::terms(formula), "term.labels") -> explanatory.variables.names
   stats::model.matrix(formula, data = data) -> explanatory.variables.values
@@ -98,12 +91,11 @@ ggcoxfunctional <- function (formula, data, fit, iter = 0, f = 0.6,
       ylab(NULL) +
       ggplot2::coord_cartesian(xlim = xlim, ylim = ylim) -> gplot
 
-    gplot <-.labs(p = gplot, font.x = font.x, font.y = font.y)
-    gplot <- .set_ticks(gplot, font.tickslab = font.tickslab)
+    gplot <- ggpubr::ggpar(gplot, ...)
   }) -> plots
 
   names(plots) <- explanatory.variables.names
-  class(plots) <- c("ggcoxfunctional", "list")
+  class(plots) <- c("ggcoxfunctional", "ggsurv", "list")
   attr(plots, "y.text") <- ylab
   attr(plots, "caption") <- caption
   attr(plots, "title") <- title
@@ -112,7 +104,6 @@ ggcoxfunctional <- function (formula, data, fit, iter = 0, f = 0.6,
 }
 
 #' @param x an object of class ggcoxfunctional
-#' @param ... further arguments passed to print, but really it's unused
 #' @param newpage open a new page. See \code{\link{grid.arrange}}.
 #' @method print ggcoxfunctional
 #' @rdname ggcoxfunctional

@@ -49,6 +49,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -60,7 +63,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -212,7 +220,7 @@ using &#39;maxstat&#39;</p>
 <span class='co'># 4. Fit survival curves and visualize</span>
 <span class='fu'>library</span>(<span class='st'>"survival"</span>)
 <span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>survfit</span>(<span class='fu'>Surv</span>(<span class='no'>time</span>, <span class='no'>event</span>) ~<span class='no'>DEPDC1</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>res.cat</span>)
-<span class='fu'><a href='ggsurvplot.html'>ggsurvplot</a></span>(<span class='no'>fit</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><img src='surv_cutpoint-12.png' alt='' width='540' height='400' /><div class='input'>
+<span class='fu'><a href='ggsurvplot.html'>ggsurvplot</a></span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>res.cat</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><img src='surv_cutpoint-12.png' alt='' width='540' height='400' /><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

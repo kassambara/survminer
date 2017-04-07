@@ -1,23 +1,28 @@
 ## Test environments
-* local OS X install, R 3.2.4
+* local OS X install, R 3.3.2
 * win-builder 
 * Travis
 
 ## R CMD check results
-There were no ERRORs, WARNINGs or NOTEs. 
+There were no ERRORs or WARNINGs.
 
+There was one concerning the subdirectory "doc", which contains vignette files.  
+   
+checking installed package size ... NOTE
+  installed size is  5.6Mb
+  sub-directories of 1Mb or more:
+    doc   5.3Mb
+   
+Would you be so kind to ignore these notes.
+    
+    
 ## win-builder check results
-
-There was 1 warning affecting particularly the vignette files: Informative_Survival_Plots.Rmd.
-
-Before submitting the update version (v0.2.4) of survminer, I did a
-check on winbulder that generated the following error:
-"there is no package called 'RTCGA.clinical". (RTCGA.clinical is a bioconductor package.)
-Could you, please, make sure that RTCGA.clinical is installed on winbulder.
-
+   
+As in the R CMD check results, there was one note concerning the subdirectory "doc", which contains vignette files.
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package
 
 ## Update
-This is an update version 0.2.4 (see NEWS.md). Three days after v0.2.3 released on CRAN, users detected substantial bugs in the main function of the survminer package (ggsurvplot()). I know that CRAN policy suggests a new version once every 1-2 months at most. As we detected a major issue in the package, would you be so kind to release version 0.2.4?
+
+This is an update version 0.3.1 so that the package can pass CRAN check under R-oldrelease (https://www.r-project.org/nosvn/R.check/r-oldrel-windows-ix86+x86_64/survminer-00check.html).

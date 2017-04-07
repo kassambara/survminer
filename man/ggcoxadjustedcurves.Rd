@@ -4,32 +4,34 @@
 \alias{ggcoxadjustedcurves}
 \title{Adjusted Survival Curves for Cox Proportional Hazards Model}
 \usage{
-ggcoxadjustedcurves(fit, split_var = NULL, plot_all = FALSE,
-  curve.size = 2, curve.alpha = 0.2, font.main = c(16, "plain", "black"),
-  font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-  font.tickslab = c(12, "plain", "black"), ylab = "Survival rate",
-  ggtheme = theme_classic2())
+ggcoxadjustedcurves(fit, variable = NULL, individual.curves = FALSE,
+  data = NULL, palette = "hue", curve.size = 2, curve.alpha = 0.2,
+  ylab = "Survival rate", ggtheme = theme_survminer(), ...)
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
 
-\item{split_var}{a variable (vector) with values corresponding to groups to be plotted}
+\item{variable}{a variable (vector) with values corresponding to groups to be plotted}
 
-\item{plot_all}{if TRUE then all individual predicted survival curves will be plotted}
+\item{individual.curves}{if TRUE then all individual predicted survival curves will be plotted}
+
+\item{data}{a dataset for predictions. If not supplied then data will be extracted from `fit` object.}
+
+\item{palette}{the color palette to be used for coloring or filling by
+groups. Allowed values include "grey" for grey color palettes; brewer
+palettes e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue",
+"red"); and scientific journal palettes from ggsci R package, e.g.: "npg",
+"aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and
+"rickandmorty".}
 
 \item{curve.size, curve.alpha}{size and alpha for individual survival curves}
-
-\item{font.main, font.x, font.y, font.tickslab}{a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title,
-xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
-c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-font.x = "bold", to change only font face.}
 
 \item{ylab}{y axis label.}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
+
+\item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.}
 }
 \value{
 Returns an object of class \code{gg}.
@@ -37,25 +39,20 @@ Returns an object of class \code{gg}.
 \description{
 This function plots adjusted survival curves for coxph model.
 The idea behind this function is described in \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
-For every observation in the dataset a prediction for survival cure is made.
+For every observation in the dataset a prediction for survival curve is made.
 Then the predictions are averaged with respect to a selected variable.
 }
 \examples{
 
 library(survival)
-fit <- coxph( Surv(time, status) ~ rx + adhere, data = colon )
-
-ggcoxadjustedcurves(fit)
-ggcoxadjustedcurves(fit, plot_all=TRUE)
-
 fit2 <- coxph( Surv(stop, event) ~ rx + size, data = bladder )
-ggcoxadjustedcurves(fit2)
-ggcoxadjustedcurves(fit2, plot_all=TRUE, curve.alpha=0.01)
-ggcoxadjustedcurves(fit2, split_var = factor( bladder[,"rx"]))
-ggcoxadjustedcurves(fit2, split_var = factor(bladder[,"rx"]), plot_all=TRUE, curve.alpha=0.01)
+ggcoxadjustedcurves(fit2, data = bladder)
+ggcoxadjustedcurves(fit2, individual.curves = TRUE, data = bladder, curve.alpha=0.01)
+ggcoxadjustedcurves(fit2, data = bladder, variable= bladder[,"rx"])
+ggcoxadjustedcurves(fit2, data = bladder, variable= bladder[,"rx"],
+   individual.curves=TRUE, curve.alpha=0.01)
 
 }
 \author{
 Przemyslaw Biecek, \email{przemyslaw.biecek@gmail.com}
 }
-

@@ -46,7 +46,7 @@ library("survival")
 fit<- survfit(Surv(time, status) ~ sex, data = lung)
 
 # Drawing survival curves
-ggsurvplot(fit)
+ggsurvplot(fit, data = lung)
 ```
 
 ## Customized
@@ -54,10 +54,11 @@ ggsurvplot(fit)
 with the plot where every possible text on a `plot` is specified
 
 ```{r}
-ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+ggsurvplot(fit, data = lung,
+   title = "Survival curves", subtitle = "Based on Kaplan-Meier estimates",
    caption = "created with survminer",
-   font.main = c(16, "bold", "darkblue"),
-   font.submain = c(15, "bold.italic", "purple"),
+   font.title = c(16, "bold", "darkblue"),
+   font.subtitle = c(15, "bold.italic", "purple"),
    font.caption = c(14, "plain", "orange"),
    font.x = c(14, "bold.italic", "red"),
    font.y = c(14, "bold.italic", "darkred"),
@@ -73,7 +74,7 @@ Now allow `risk.table` to be displayed.
 Please compare basic plot with a risk table
 
 ```{r}
-ggsurvplot(fit, risk.table = TRUE)
+ggsurvplot(fit, data = lung, risk.table = TRUE)
 ```
 
 ## Customized
@@ -81,10 +82,11 @@ ggsurvplot(fit, risk.table = TRUE)
 with the plot where every possible text on a `plot` and `table` is specified
 
 ```{r}
-ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+ggsurvplot(fit, data = lung, 
+   title = "Survival curves", subtitle = "Based on Kaplan-Meier estimates",
    caption = "created with survminer",
-   font.main = c(16, "bold", "darkblue"),
-   font.submain = c(15, "bold.italic", "purple"),
+   font.title = c(16, "bold", "darkblue"),
+   font.subtitle = c(15, "bold.italic", "purple"),
    font.caption = c(14, "plain", "orange"),
    font.x = c(14, "bold.italic", "red"),
    font.y = c(14, "bold.italic", "darkred"),
@@ -107,7 +109,7 @@ Finally, allow `ncens.plot` to be displayed.
 Please compare basic plot with a risk table and a `ncens` plot
 
 ```{r, fig.height = 7.5, fig.width = 6}
-ggsurvplot(fit, risk.table = TRUE, ncensor.plot = TRUE)
+ggsurvplot(fit, data = lung, risk.table = TRUE, ncensor.plot = TRUE)
 ```
 
 ## Customized
@@ -115,10 +117,11 @@ ggsurvplot(fit, risk.table = TRUE, ncensor.plot = TRUE)
 with the full customization
 
 ```{r, fig.height = 7.5, fig.width = 6}
-ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
+ggsurvplot(fit, data = lung,
+   title = "Survival curves", subtitle = "Based on Kaplan-Meier estimates",
    caption = "created with survminer",
-   font.main = c(16, "bold", "darkblue"),
-   font.submain = c(15, "bold.italic", "purple"),
+   font.title = c(16, "bold", "darkblue"),
+   font.subtitle = c(15, "bold.italic", "purple"),
    font.caption = c(14, "plain", "orange"),
    font.x = c(14, "bold.italic", "red"),
    font.y = c(14, "bold.italic", "darkred"),
@@ -141,5 +144,5 @@ ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estim
 # Notes
 
 - Note that you will probably need to extend the default risk table height and ncens plot height after those customizations.
-- Distinct between `main` and `submain` for the `curve_plot` and `risk.table.title` and `risk.table.subtitle` for the `table` / `ncens.plot.title` and `ncens.plot.subtitle` for the `ncens`.
+- Distinct between `title` and `subtitle` for the `curve_plot` and `risk.table.title` and `risk.table.subtitle` for the `table` / `ncens.plot.title` and `ncens.plot.subtitle` for the `ncens`.
 - Fonts are set simultaneously for the `curve_plot`, for the `table` and for the `ncens` parts. This might change in the future.

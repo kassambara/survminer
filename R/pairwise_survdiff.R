@@ -43,15 +43,22 @@ NULL
 pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, rho = 0)
 
 {
-  if(missing(na.action)) na.action <- options()$na.omit
+  if(missing(na.action)) na.action <- options()$na.action
   group_var <- attr(stats::terms(formula), "term.labels")
-  group <- data[, group_var]
-  ngroup <- length(levels(group))
 
   DNAME <- paste(deparse(substitute(data)), "and", group_var)
   METHOD <- "Log-Rank"
   METHOD <- if (rho == 0) "Log-Rank test"
   else if(rho==1) "Peto & Peto test"
+
+  # Removing missing value
+  group <- unlist(data[, group_var])
+  if(sum(is.na(group)) > 0) data <- data[!is.na(group), ]
+  group <- unlist(data[, group_var])
+
+  if(!is.factor(group)) group <- as.factor(group)
+  ngroup <- length(levels(group))
+
 
   compare.levels <- function(i, j) {
     .subset = group %in% (unique(group))[c(i,j)]

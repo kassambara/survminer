@@ -7,21 +7,54 @@ reference:
     desc:  Summarize and visualize survival curves.
     contents:
       - ggsurvplot
+      - arrange_ggsurvplots
+      - ggsurvevents
       - surv_summary
       - surv_cutpoint
       - pairwise_survdiff
-  - title: Visual Examinations of Cox Model Assumptions
+  - title: Diagnostics of Cox Model
     contents:
       - ggcoxdiagnostics
       - ggcoxfunctional
       - ggcoxzph
-  - title: Visual Representation of Cox Model Coefficients
+  - title: Summary of Cox Model
     contents:
       - ggforest
+      - ggcoxadjustedcurves
+  - title: Competing Risks
+    contents:
+      - ggcompetingrisks
+  - title: Helpers
+    contents:
+      - ggrisktable
+      - ggcumevents
+      - ggcumcensor
   - title: Data
-    contents: myeloma
+    contents:
+      - myeloma
+      - BMT
   - title: Others
-    contents: theme_classic2
+    contents:
+      - ggsurvtheme
+      - theme_survminer
+      - theme_classic2
+      - add_ggsurvplot
+
+
+navbar:
+  title: "survminer"
+  left:
+  - text: Cheatseet
+    href: survminer_cheatsheet.pdf
+  - text: Reference
+    href: reference/index.html
+  - text: Articles
+    href: articles/index.html
+  - text: News
+    href: news/index.html
+  right:
+    - icon: fa-github
+      href: https://github.com/kassambara/survminer
 
 
 

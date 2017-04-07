@@ -5,43 +5,42 @@
 \alias{print.ggsurvplot}
 \title{Drawing Survival Curves Using ggplot2}
 \usage{
-ggsurvplot(fit, fun = NULL, color = NULL, palette = "hue", linetype = 1,
-  break.time.by = NULL, surv.scale = c("default", "percent"),
+ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
+  linetype = 1, break.x.by = NULL, break.y.by = NULL,
+  break.time.by = NULL, surv.scale = c("default", "percent"), xscale = 1,
   conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
-  censor = TRUE, pval = FALSE, pval.size = 5, pval.coord = c(NULL,
-  NULL), pval.method = FALSE, pval.method.size = pval.size,
-  pval.method.coord = c(NULL, NULL), log.rank.weights = c("survdiff", "1",
-  "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"), main = NULL, submain = NULL,
-  caption = NULL, xlab = "Time", ylab = "Survival probability",
-  font.main = c(16, "plain", "black"), font.submain = c(15, "plain",
-  "black"), font.caption = c(15, "plain", "black"), font.x = c(14, "plain",
-  "black"), font.y = c(14, "plain", "black"), font.tickslab = c(12, "plain",
-  "black"), xlim = NULL, ylim = NULL, legend = c("top", "bottom", "left",
-  "right", "none"), legend.title = "Strata", legend.labs = NULL,
-  font.legend = c(10, "plain", "black"), risk.table = FALSE,
-  risk.table.title = NULL, risk.table.subtitle = NULL,
-  risk.table.caption = NULL, risk.table.col = "black",
-  risk.table.fontsize = 4.5, font.risk.table.title = font.main,
-  font.risk.table.subtitle = font.submain,
-  font.risk.table.caption = font.caption, font.risk.table.x = font.x,
-  font.risk.table.y = font.y, font.risk.table.tickslab = font.tickslab,
-  risk.table.y.text = TRUE, risk.table.y.text.col = TRUE,
-  risk.table.height = 0.25, surv.plot.height = 0.75,
-  ncensor.plot.height = 0.25, ncensor.plot = FALSE,
-  ncensor.plot.title = NULL, ncensor.plot.subtitle = NULL,
-  ncensor.plot.caption = NULL, font.ncensor.plot.title = font.main,
-  font.ncensor.plot.subtitle = font.submain,
-  font.ncensor.plot.caption = font.caption, font.ncensor.plot.x = font.x,
-  font.ncensor.plot.y = font.y, font.ncensor.plot.tickslab = font.tickslab,
-  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_classic2(),
-  ...)
+  censor = TRUE, censor.shape = "+", censor.size = 4.5, pval = FALSE,
+  pval.size = 5, pval.coord = c(NULL, NULL), pval.method = FALSE,
+  pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
+  log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2",
+  "FH_p=1_q=1"), title = NULL, xlab = "Time",
+  ylab = "Survival probability", xlim = NULL, ylim = NULL,
+  legend = c("top", "bottom", "left", "right", "none"),
+  legend.title = "Strata", legend.labs = NULL, tables.height = 0.25,
+  tables.y.text = TRUE, tables.col = "black", risk.table = FALSE,
+  risk.table.pos = c("out", "in"), risk.table.title = NULL,
+  risk.table.col = tables.col, risk.table.fontsize = 4.5, fontsize = 4.5,
+  risk.table.y.text = tables.y.text, risk.table.y.text.col = TRUE,
+  risk.table.height = tables.height, surv.plot.height = 0.75,
+  ncensor.plot.height = tables.height, cumevents.height = tables.height,
+  cumcensor.height = tables.height, ncensor.plot = FALSE,
+  ncensor.plot.title = NULL, cumevents = FALSE,
+  cumevents.col = tables.col, cumevents.title = NULL,
+  cumevents.y.text = tables.y.text, cumevents.y.text.col = TRUE,
+  cumcensor = FALSE, cumcensor.col = tables.col, cumcensor.title = NULL,
+  cumcensor.y.text = tables.y.text, cumcensor.y.text.col = TRUE,
+  surv.median.line = c("none", "hv", "h", "v"), ggtheme = theme_survminer(),
+  tables.theme = ggtheme, ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
-  risk.table.height = NULL, ncensor.plot.height = NULL, ...,
-  newpage = TRUE)
+  risk.table.height = NULL, ncensor.plot.height = NULL, newpage = TRUE,
+  ...)
 }
 \arguments{
 \item{fit}{an object of class survfit.}
+
+\item{data}{a dataset used to fit survival curves. If not supplied then data
+will be extracted from 'fit' object.}
 
 \item{fun}{an arbitrary function defining a transformation of the survival
 curve.  Often used transformations can be specified with a character
@@ -49,9 +48,14 @@ argument: "event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the
 cumulative hazard function (f(y) = -log(y)), and "pct" for survival
 probability in percentage.}
 
-\item{color}{color to be used for the survival curves. This argument is
-ignored when the number of strata (groups > 1). In this case, use the
-argument palette.}
+\item{color}{color to be used for the survival curves. \itemize{ \item If the
+number of strata/group (n.strata) = 1, the expected value is the color name.
+For example color = "blue". \item If n.strata > 1, the expected value is the
+grouping variable name. By default, survival curves are colored by strata
+using the argument color = "strata",  but you can also color survival curves
+by any other grouping variables used to fit the survival curves. In this
+case, it's possible to specify a custom color palette by using the argument
+palette.}}
 
 \item{palette}{the color palette to be used. Allowed values include "hue" for
 the default hue color scale; "grey" for grey color palettes; brewer palettes
@@ -62,11 +66,24 @@ See details section for more information.}
 linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
 character vector c("solid", "dashed").}
 
+\item{break.x.by}{alias of break.time.by. Numeric value controlling x axis
+breaks. Default value is NULL.}
+
+\item{break.y.by}{same as break.x.by but for y axis.}
+
 \item{break.time.by}{numeric value controlling time axis breaks. Default value
 is NULL.}
 
 \item{surv.scale}{scale transformation of survival curves. Allowed values are
 "default" or "percent".}
+
+\item{xscale}{numeric or character value specifying x-axis scale. \itemize{
+\item If numeric, the value is used to divide the labels on the x axis. For
+example, a value of 365.25 will give labels in years instead of the original
+days. \item If character, allowed options include one of c("d_m", "d_y",
+"m_d", "m_y", "y_d", "y_m"), where d = days, m = months and y = years. For
+example, xscale = "d_m" will transform labels from days to months; xscale =
+"m_y", will transform labels from months to years.}}
 
 \item{conf.int}{logical value. If TRUE, plots confidence interval.}
 
@@ -77,6 +94,11 @@ c("ribbon", "step").}
 
 \item{censor}{logical value. If TRUE, censors will be drawn.}
 
+\item{censor.shape}{character or numeric value specifying the point shape of
+censors. Default value is "+" (3), a sensible choice is "|" (124).}
+
+\item{censor.size}{numveric value specifying the point size of censors. Default is 4.5.}
+
 \item{pval}{logical value. If TRUE, the p-value is added on the plot.}
 
 \item{pval.size}{numeric value specifying the p-value text size. Default is 5.}
@@ -84,25 +106,26 @@ c("ribbon", "step").}
 \item{pval.coord}{numeric vector, of length 2, specifying the x and y
 coordinates of the p-value. Default values are NULL.}
 
-\item{pval.method}{whether to add a text with the test name used for calculating the pvalue, that corresponds to survival curves' comparison - used only when \code{pval=TRUE}}
+\item{pval.method}{whether to add a text with the test name used for
+calculating the pvalue, that corresponds to survival curves' comparison -
+used only when \code{pval=TRUE}}
 
-\item{pval.method.size}{the same as \code{pval.size} but for displaying \code{log.rank.weights} name}
+\item{pval.method.size}{the same as \code{pval.size} but for displaying
+\code{log.rank.weights} name}
 
-\item{pval.method.coord}{the same as \code{pval.coord} but for displaying \code{log.rank.weights} name}
+\item{pval.method.coord}{the same as \code{pval.coord} but for displaying
+\code{log.rank.weights} name}
 
-\item{log.rank.weights}{The name for the type of weights to be used in computing the p-value for log-rank test.
-By default \code{survdiff} is used to calculate regular log-rank test (with weights == 1). A user can specify
-\code{"1", "n", "sqrtN", "S1", "S2", "FH"} to use weights specified in \link[survMisc]{comp}, so that weight correspond to the test as
-: 1 - log-rank, n - Gehan-Breslow (generalized Wilcoxon), sqrtN - Tarone-Ware, S1 - Peto-Peto's modified survival estimate, S2 - modified Peto-Peto (by Andersen), FH - Fleming-Harrington(p=1, q=1).}
+\item{log.rank.weights}{The name for the type of weights to be used in
+computing the p-value for log-rank test. By default \code{survdiff} is used
+to calculate regular log-rank test (with weights == 1). A user can specify
+\code{"1", "n", "sqrtN", "S1", "S2", "FH"} to use weights specified in
+\link[survMisc]{comp}, so that weight correspond to the test as : 1 -
+log-rank, n - Gehan-Breslow (generalized Wilcoxon), sqrtN - Tarone-Ware, S1
+- Peto-Peto's modified survival estimate, S2 - modified Peto-Peto (by
+Andersen), FH - Fleming-Harrington(p=1, q=1).}
 
-\item{main, submain, caption, xlab, ylab}{main title, subtitle, caption and axis labels}
-
-\item{font.main, font.submain, font.caption, font.x, font.y, font.tickslab, font.legend}{a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
-xlab and ylab and axis tick labels, respectively. For example \emph{font.x =
-c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-font.x = "bold", to change only font face.}
+\item{title, xlab, ylab}{main title and axis labels}
 
 \item{xlim, ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
 
@@ -117,30 +140,34 @@ specified using a numeric vector c(x, y); see details section.}
 the names of the strata from the fit. Should be given in the same order as
 those strata.}
 
+\item{tables.height}{numeric value (in [0 - 1]) specifying the general height
+of all tables under the main survival plot.}
+
+\item{tables.y.text}{logical. Default is TRUE. If FALSE, the y axis tick
+labels of tables will be hidden.}
+
+\item{tables.col}{color to be used for all tables under the main plot. Default
+value is "black". If you want to color by strata (i.e. groups), use
+tables.col = "strata".}
+
 \item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
 specifying whether to show or not the risk table. Default is FALSE. \item
 "absolute" or "percentage": to show the \bold{absolute number} and the
-\bold{percentage} of subjects at risk by time, respectively. Use "abs_pct"
-to show both absolute number and percentage.}}
+\bold{percentage} of subjects at risk by time, respectively. Use i)
+"abs_pct" to show both absolute number and percentage. ii) "nrisk_cumcensor"
+and "nrisk_cumevents" to show the number at risk and, the cumulative number
+of censoring and events, respectively. }}
+
+\item{risk.table.pos}{character vector specifying the risk table position.
+Allowed options are one of c("out", "in") indicating 'outside' or 'inside'
+the main plot, respectively. Default value is "out".}
 
 \item{risk.table.title}{The title to be used for the risk table.}
 
-\item{risk.table.subtitle}{The subtitle to be used for the risk table.}
+\item{risk.table.col}{same as tables.col but for risk table only.}
 
-\item{risk.table.caption}{The caption to be used for the risk table.}
-
-\item{risk.table.col}{color to be used for risk table. Default value is
-"black". If you want to color by strata (i.e. groups), use risk.table.col =
-"strata".}
-
-\item{risk.table.fontsize}{font size to be used for the risk table.}
-
-\item{font.risk.table.title, font.risk.table.subtitle, font.risk.table.caption, font.risk.table.x, font.risk.table.y, font.risk.table.tickslab}{a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
-xlab and ylab and axis tick labels for the \code{risk.table = TRUE}, respectively.
-For example \emph{font.x = c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-font.x = "bold", to change only font face.}
+\item{risk.table.fontsize, fontsize}{font size to be used for the risk table
+and the cumulative events table.}
 
 \item{risk.table.y.text}{logical. Default is TRUE. If FALSE, risk table y axis
 tick labels will be hidden.}
@@ -153,66 +180,113 @@ the value when you have many strata. Default is 0.25. Ignored when
 risk.table = FALSE.}
 
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
-is 0.75. Ignored when risk.table = FALSE. \code{1-risk.table.height - ncensor.plot.height} when \code{risk.table = TRUE} and \code{ncensor.plot = TRUE}}
+is 0.75. Ignored when risk.table = FALSE. \code{1-risk.table.height -
+ncensor.plot.height} when \code{risk.table = TRUE} and \code{ncensor.plot =
+TRUE}}
 
-\item{ncensor.plot.height}{The height of the censor plot. Used when \code{ncensor.plot = TRUE}.}
+\item{ncensor.plot.height}{The height of the censor plot. Used when
+\code{ncensor.plot = TRUE}.}
+
+\item{cumevents.height}{the height of the cumulative events table on the grid.
+Default is 0.25. Ignored when cumevents = FALSE.}
+
+\item{cumcensor.height}{the height of the cumcensor table on the grid. Default
+is 0.25. Ignored when cumcensor = FALSE.}
 
 \item{ncensor.plot}{logical value. If TRUE, the number of censored subjects at
-time t is plotted. Default is FALSE.}
+time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.}
 
-\item{ncensor.plot.title}{The title to be used for the censor plot. Used when \code{ncensor.plot = TRUE}.}
+\item{ncensor.plot.title}{The title to be used for the censor plot. Used when
+\code{ncensor.plot = TRUE}.}
 
-\item{ncensor.plot.subtitle}{The subtitle to be used for the censor plot. Used when \code{ncensor.plot = TRUE}.}
+\item{cumevents}{logical value specifying whether to show or not the table of
+the cumulative number of events. Default is FALSE.}
 
-\item{ncensor.plot.caption}{The caption to be used for the censor plot. Used when \code{ncensor.plot = TRUE}.}
+\item{cumevents.col}{same as tables.col but for the cumulative events table
+only.}
 
-\item{font.ncensor.plot.title, font.ncensor.plot.subtitle, font.ncensor.plot.caption, font.ncensor.plot.x, font.ncensor.plot.y, font.ncensor.plot.tickslab}{a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: "plain",
-"bold", "italic", "bold.italic") and the color (e.g.: "red") of main title, subtitle, caption,
-xlab and ylab and axis tick labels for the \code{ncensor.plot = TRUE}, respectively.
-For example \emph{font.x = c(14, "bold", "red")}.  Use font.x = 14, to change only font size; or use
-font.x = "bold", to change only font face.}
+\item{cumevents.title}{The title to be used for the cumulative events table.}
+
+\item{cumevents.y.text}{logical. Default is TRUE. If FALSE, the y axis tick
+labels of the cumulative events table  will be hidden.}
+
+\item{cumevents.y.text.col}{logical. Default value is FALSE. If TRUE, the y
+tick labels of the cumulative events will be colored by strata.}
+
+\item{cumcensor}{logical value specifying whether to show or not the table of
+the cumulative number of censoring. Default is FALSE.}
+
+\item{cumcensor.col}{same as tables.col but for cumcensor table only.}
+
+\item{cumcensor.title}{The title to be used for the cumcensor table.}
+
+\item{cumcensor.y.text}{logical. Default is TRUE. If FALSE, the y axis tick
+labels of the cumcensor table will be hidden.}
+
+\item{cumcensor.y.text.col}{logical. Default value is FALSE. If TRUE, the y
+tick labels of the cumcensor will be colored by strata.}
 
 \item{surv.median.line}{character vector for drawing a horizontal/vertical
 line at median survival. Allowed values include one of c("none", "hv", "h",
 "v"). v: vertical, h:horizontal.}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is
-\link{theme_classic2}. Allowed values include ggplot2 official themes: see
+\link{theme_survminer}. Allowed values include ggplot2 official themes: see
 \code{\link[ggplot2]{theme}}.}
 
-\item{...}{other arguments to be passed to ggplot2 geom_*() functions such as
-linetype, size, ...}
+\item{tables.theme}{function, ggplot2 theme name. Default value is
+\link{theme_survminer}. Allowed values include ggplot2 official themes: see
+\code{\link[ggplot2]{theme}}.}
+
+\item{...}{other arguments to be passed i) to ggplot2 geom_*() functions such
+as linetype, size, ii) or to the function ggpubr::ggpar() for customizing
+the plots. See details section.}
 
 \item{x}{an object of class ggsurvplot}
 
-\item{newpage}{open a new page. See \code{\link{grid.arrange}}.}
+\item{newpage}{open a new page. See \code{\link{grid.arrange}}}
 }
 \value{
-return an object of class ggsurvplot which is list containing two
- ggplot objects, including: \itemize{ \item plot: the survival plot \item
- table: the number at risk table per time }
+return an object of class ggsurvplot which is list containing the
+ following components: \itemize{ \item plot: the survival plot (ggplot
+ object) \item table: the number of subjects at risk table per time (ggplot
+ object). \item cumevents: the cumulative number of events table (ggplot
+ object). \item ncensor.plot: the number of censoring (ggplot object). \item
+ data.survplot: the data used to plot the survival curves (data.frame). \item
+ data.survtable: the data used to plot the tables under the main survival
+ curves (data.frame). }
 }
 \description{
 Drawing survival curves using ggplot2
 }
 \details{
-\strong{legend position}: The argument \strong{legend} can be also a
- numeric vector c(x,y). In this case it is possible to position the legend
- inside the plotting area. x and y are the coordinates of the legend box.
- Their values should be between 0 and 1. c(0,0) corresponds to the "bottom
- left" and c(1,1) corresponds to the "top right" position. For instance use
- legend = c(0.8, 0.2).\cr\cr \strong{Color palettes}: The argument
- \strong{palette} can be used to specify the color to be used for each group.
- By default, the first color in the palette is used to color the first level
- of the factor variable. This default behavior can be changed by assigning
- correctly a named vector. That is, the names of colors should match the
- strata names as generated by the \code{ggsurvplot()} function in the legend.
+\itemize{ \item \strong{legend position}: The argument
+ \strong{legend} can be also a numeric vector c(x,y). In this case it is
+ possible to position the legend inside the plotting area. x and y are the
+ coordinates of the legend box. Their values should be between 0 and 1.
+ c(0,0) corresponds to the "bottom left" and c(1,1) corresponds to the "top
+ right" position. For instance use legend = c(0.8, 0.2).\cr \item
+ \strong{Color palettes}: The argument \strong{palette} can be used to
+ specify the color to be used for each group. By default, the first color in
+ the palette is used to color the first level of the factor variable. This
+ default behavior can be changed by assigning correctly a named vector. That
+ is, the names of colors should match the strata names as generated by the
+ \code{ggsurvplot()} function in the legend.\cr \item \strong{Customizing the
+ plots}: The plot can be easily customized using additional arguments to be
+ passed to the function ggpar(). Read ?ggpubr::ggpar. These arguments include
+ \emph{font.title, font.subtitle, font.caption, font.x, font.y, font.tickslab
+ and font.legend}: a vector of length 3 indicating respectively the size
+ (e.g.: 14), the style (e.g.: "plain", "bold", "italic", "bold.italic") and
+ the color (e.g.: "red") of main title, subtitle, caption, xlab and ylab,
+ axis tick labels and legend, respectively. For example \emph{font.x = c(14,
+ "bold", "red")}.  Use font.x = 14, to change only font size; or use font.x =
+ "bold", to change only font face.}
 }
 \section{Functions}{
 \itemize{
 \item \code{ggsurvplot}: Draws survival curves using ggplot2.
 }}
+
 \examples{
 
 #\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
@@ -224,90 +298,46 @@ Drawing survival curves using ggplot2
 require("survival")
 fit<- survfit(Surv(time, status) ~ sex, data = lung)
 
-# Drawing survival curves
-ggsurvplot(fit)
+# Basic survival curves
+ggsurvplot(fit, data = lung)
+
+# Customized survival curves
+ggsurvplot(fit, data = lung,
+ surv.median.line = "hv", # Add medians survival
+
+ # Change legends: title & labels
+ legend.title = "Sex",
+ legend.labs = c("Male", "Female"),
+ # Add p-value and confidence intervals
+ pval = TRUE,
+
+ conf.int = TRUE,
+ # Add risk table
+ risk.table = TRUE,
+ tables.height = 0.2,
+ tables.theme = theme_cleantable(),
+
+ # Color palettes. Use custom color: c("#E7B800", "#2E9FDF"),
+ # or brewer color (e.g.: "Dark2"), or ggsci color (e.g.: "jco")
+ palette = c("#E7B800", "#2E9FDF"),
+ ggtheme = theme_bw() # Change ggplot2 theme
+)
 
 # Change font size, style and color
 #++++++++++++++++++++++++++++++++++++
 \dontrun{
 # Change font size, style and color at the same time
-ggsurvplot(fit, main = "Survival curve",
+ggsurvplot(fit, data = lung,  main = "Survival curve",
    font.main = c(16, "bold", "darkblue"),
    font.x = c(14, "bold.italic", "red"),
    font.y = c(14, "bold.italic", "darkred"),
    font.tickslab = c(12, "plain", "darkgreen"))
 }
 
-# Legend: title, labels and position
-#++++++++++++++++++++++++++++++++++++
-
-# Change the legend title and labels
-ggsurvplot(fit, legend = "bottom",
-          legend.title = "Sex",
-          legend.labs = c("Male", "Female"))
-
-# Specify legend position by its coordinates
-ggsurvplot(fit, legend = c(0.2, 0.2))
-
-
-# format
-#++++++++++++++++++++++++++++++++++++
-# change line size --> 1
-# Change line types by groups (i.e. "strata")
-# and change color palette
-ggsurvplot(fit,  size = 1,  # change line size
-          linetype = "strata", # change line type by groups
-          break.time.by = 250, # break time axis by 250
-          palette = c("#E7B800", "#2E9FDF"), # custom color palette
-          conf.int = TRUE, # Add confidence interval
-          pval = TRUE # Add p-value
-)
-
-# Use brewer color palette "Dark2"
-# Add risk table
-ggsurvplot(fit, linetype = "strata",
-          conf.int = TRUE, pval = TRUE,
-          palette = "Dark2", risk.table = TRUE)
-
-
-# Change color, linetype by strata, risk.table color by strata
-ggsurvplot(fit,
-          pval = TRUE, conf.int = TRUE,
-          risk.table = TRUE, # Add risk table
-          risk.table.col = "strata", # Change risk table color by groups
-          linetype = "strata", # Change line type by groups
-          ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("#E7B800", "#2E9FDF"))
 
 
 #\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
-# Example 3: Survival curve with multiple group
-#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
-
-# Fit (complexe) survival curves
-#++++++++++++++++++++++++++++++++++++
-\dontrun{
-require("survival")
-fit2 <- survfit( Surv(time, status) ~ rx + adhere,
-                data = colon )
-
-# Visualize
-#++++++++++++++++++++++++++++++++++++
-
-# Visualize: add p-value, chang y limits
-# change color using brewer palette
-# Adjust risk table and survival plot heights
-ggsurvplot(fit2, pval = TRUE,
-          break.time.by = 400,
-          risk.table = TRUE,
-          risk.table.col = "strata",
-          risk.table.height = 0.5, # Useful when you have multiple groups
-          palette = "Dark2")
-}
-
-
-#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
-# Example 4: Facet ggsurvplot() output by
+# Example 2: Facet ggsurvplot() output by
 # a combination of factors
 #\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
 
@@ -320,7 +350,8 @@ fit3 <- survfit( Surv(time, status) ~ sex + rx + adhere,
 
 # Visualize
 #++++++++++++++++++++++++++++++++++++
-ggsurv <- ggsurvplot(fit3, fun = "cumhaz", conf.int = TRUE,
+ggsurv <- ggsurvplot(fit3, data = colon,
+  fun = "cumhaz", conf.int = TRUE,
   risk.table = TRUE, risk.table.col="strata",
   ggtheme = theme_bw())
 
@@ -346,73 +377,9 @@ g$widths <- grid::unit.pmax(g2$widths, g3$widths)
 grid::grid.newpage()
 grid::grid.draw(g)
 
-
-
-
 }
-
-#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
-# Example 5: Playing with fonts and texts
-#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
-
-ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
-  caption = "created with survminer",
-  font.main = c(16, "bold", "darkblue"),
-  font.submain = c(15, "bold.italic", "purple"),
-  font.caption = c(14, "plain", "orange"),
-  font.x = c(14, "bold.italic", "red"),
-  font.y = c(14, "bold.italic", "darkred"),
-  font.tickslab = c(12, "plain", "darkgreen"),
-  ########## risk table #########,
-  risk.table = TRUE,
-  risk.table.title = "Note the risk set sizes",
-  risk.table.subtitle = "and remember about censoring.",
-  risk.table.caption = "source code: website.com",
-  risk.table.height = 0.35,
-  ######### ncensor plot #######
-  ncensor.plot = TRUE,
-  ncensor.plot.title = "Number of censorings",
-  ncensor.plot.subtitle = "over the time.",
-  ncensor.plot.caption = "data available at data.com",
-  ncensor.plot.height = 0.35)
-
-ggsurvplot(fit, main = "Survival curves", submain = "Based on Kaplan-Meier estimates",
-  caption = "created with survminer",
-  font.main = c(16, "bold", "darkblue"),
-  font.submain = c(15, "bold.italic", "purple"),
-  font.caption = c(14, "plain", "orange"),
-  font.x = c(14, "bold.italic", "red"),
-  font.y = c(14, "bold.italic", "darkred"),
-  font.tickslab = c(12, "plain", "darkgreen"),
-  ########## risk table #########,
-  risk.table = TRUE,
-  risk.table.title = "Note the risk set sizes",
-  risk.table.subtitle = "and remember about censoring.",
-  risk.table.caption = "source code: website.com",
-  risk.table.height = 0.35,
-  font.risk.table.title = c(13, "bold.italic", "green"),
-  font.risk.table.sutitle = c(15, "bold", "pink"),
-  font.risk.table.caption = c(11, "plain", "darkgreen"),
-  font.risk.table.x = c(8, "bold.italic", "orange"),
-  font.risk.table.y = c(11, "bold.italic", "darkgreen"),
-  font.risk.table.tickslab = c(9, "bold", "red"),
-  ######### ncensor plot ###################
-  ncensor.plot = TRUE,
-  ncensor.plot.title = "Number of censorings",
-  ncensor.plot.subtitle = "over the time.",
-  ncensor.plot.caption = "data available at data.com",
-  ncensor.plot.height = 0.35,
-  font.ncensor.plot.title = c(13, "bold.italic", "green"),
-  font.ncensor.plot.sutitle = c(15, "bold", "pink"),
-  font.ncensor.plot.caption = c(11, "plain", "darkgreen"),
-  font.ncensor.plot.x = c(8, "bold.italic", "orange"),
-  font.ncensor.plot.y = c(11, "bold.italic", "darkgreen"),
-  font.ncensor.plot.tickslab = c(9, "bold", "red"))
-
-
 
 }
 \author{
 Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
 }
-

@@ -49,6 +49,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -60,7 +63,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -82,9 +90,7 @@
 
     <pre><span class='fu'>ggcoxzph</span>(<span class='no'>fit</span>, <span class='kw'>resid</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>se</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>nsmo</span> <span class='kw'>=</span> <span class='fl'>40</span>, <span class='no'>var</span>,
   <span class='kw'>point.col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>point.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>point.shape</span> <span class='kw'>=</span> <span class='fl'>19</span>, <span class='kw'>point.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
-  <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>), <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"black"</span>),
-  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_classic2.html'>theme_classic2</a></span>())
+  <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for ggcoxzph</span>
 <span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>newpage</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
@@ -109,20 +115,15 @@ a linear fit.</dd>
 are produced in turn for each variable of a model.</dd>
       <dt>point.col, point.size, point.shape, point.alpha</dt>
       <dd>color, size, shape and visibility to be used for points.</dd>
-      <dt>font.main, font.x, font.y, font.tickslab</dt>
-      <dd>a vector of length 3
-indicating respectively the size (e.g.: 14), the style (e.g.: &quot;plain&quot;,
-&quot;bold&quot;, &quot;italic&quot;, &quot;bold.italic&quot;) and the color (e.g.: &quot;red&quot;) of main title,
-xlab and ylab and axis tick labels, respectively. For example <em>font.x =
-c(14, &quot;bold&quot;, &quot;red&quot;)</em>.  Use font.x = 14, to change only font size; or use
-font.x = &quot;bold&quot;, to change only font face.</dd>
+      <dt>caption</dt>
+      <dd>the caption of the final grob (<code>bottom</code> in arrangeGrob)</dd>
       <dt>ggtheme</dt>
       <dd>function, ggplot2 theme name. Default value is <a href='theme_classic2.html'>theme_classic2</a>.
 Allowed values include ggplot2 official themes: see <code><a href='http://www.rdocumentation.org/packages/ggplot2/topics/theme'>theme</a></code>.</dd>
+      <dt>...</dt>
+      <dd>further arguments passed to either the print() function or to the <code><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggpar'>ggpar</a></code> function for customizing the plot (see Details section).</dd>
       <dt>x</dt>
       <dd>an object of class ggcoxzph</dd>
-      <dt>...</dt>
-      <dd>further arguments passed to print, but really it&#39;s unused</dd>
       <dt>newpage</dt>
       <dd>open a new page. See <code>grid.arrange</code>.</dd>
     </dl>
@@ -130,6 +131,19 @@ Allowed values include ggplot2 official themes: see <code><a href='http://www.rd
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Returns an object of class <code>ggcoxzph</code> which is a list of ggplots.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><strong>Customizing the plots</strong>: The plot can be easily
+ customized using additional arguments to be passed to the function ggpar().
+ Read ?ggpubr::ggpar. These arguments include
+ <em>font.main,font.submain,font.caption,font.x,font.y,font.tickslab,font.legend</em>:
+ a vector of length 3 indicating respectively the size (e.g.: 14), the style
+ (e.g.: &quot;plain&quot;, &quot;bold&quot;, &quot;italic&quot;, &quot;bold.italic&quot;) and the color (e.g.: &quot;red&quot;)
+ of main title, subtitle, caption, xlab and ylab and axis tick labels,
+ respectively. For example <em>font.x = c(14, &quot;bold&quot;, &quot;red&quot;)</em>.  Use font.x
+ = 14, to change only font size; or use font.x = &quot;bold&quot;, to change only font
+ face.</p>
     
     <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
 
@@ -146,8 +160,8 @@ Allowed values include ggplot2 official themes: see <code><a href='http://www.rd
 <span class='no'>cox.zph.fit</span> <span class='kw'>&lt;-</span> <span class='fu'>cox.zph</span>(<span class='no'>fit</span>)
 <span class='co'># plot all variables</span>
 <span class='fu'>ggcoxzph</span>(<span class='no'>cox.zph.fit</span>)</div><img src='ggcoxzph-2.png' alt='' width='540' height='400' /><div class='input'><span class='co'># plot all variables in specified order</span>
-<span class='fu'>ggcoxzph</span>(<span class='no'>cox.zph.fit</span>, <span class='kw'>var</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ecog.ps"</span>, <span class='st'>"rx"</span>, <span class='st'>"age"</span>))</div><img src='ggcoxzph-4.png' alt='' width='540' height='400' /><div class='input'><span class='co'># plot specified variables in specified order</span>
-<span class='fu'>ggcoxzph</span>(<span class='no'>cox.zph.fit</span>, <span class='kw'>var</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ecog.ps"</span>, <span class='st'>"rx"</span>))</div><img src='ggcoxzph-6.png' alt='' width='540' height='400' /><div class='input'>
+<span class='fu'>ggcoxzph</span>(<span class='no'>cox.zph.fit</span>, <span class='kw'>var</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ecog.ps"</span>, <span class='st'>"rx"</span>, <span class='st'>"age"</span>), <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fl'>12</span>)</div><img src='ggcoxzph-4.png' alt='' width='540' height='400' /><div class='input'><span class='co'># plot specified variables in specified order</span>
+<span class='fu'>ggcoxzph</span>(<span class='no'>cox.zph.fit</span>, <span class='kw'>var</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"ecog.ps"</span>, <span class='st'>"rx"</span>), <span class='kw'>font.main</span> <span class='kw'>=</span> <span class='fl'>12</span>, <span class='kw'>caption</span> <span class='kw'>=</span> <span class='st'>"Caption goes here"</span>)</div><img src='ggcoxzph-6.png' alt='' width='540' height='400' /><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -156,6 +170,8 @@ Allowed values include ggplot2 official themes: see <code><a href='http://www.rd
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
 
       <li><a href="#functions">Functions</a></li>
       

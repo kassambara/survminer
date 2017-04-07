@@ -49,6 +49,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -60,7 +63,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -73,13 +81,23 @@
   <div class="col-md-9">
     <div class="page-header">
       <h1>Function reference</h1>
-      <h4>version&nbsp;0.2.4.999</h4>
+      <h4>version&nbsp;0.3.1</h4>
     </div>
 
     <div class="contents">
       <h2 id="section-survival-curves" class="hasAnchor"><a href="#section-survival-curves" class="anchor"></a>Survival Curves</h2>
       <p class="section-desc"><p>Summarize and visualize survival curves.</p></p>
 
+      
+      <p><a href="arrange_ggsurvplots.html">Arranging Multiple ggsurvplots</a></p>
+      <ul>
+        <li><code><a href="arrange_ggsurvplots.html">arrange_ggsurvplots</a></code></li>
+      </ul>
+      
+      <p><a href="ggsurvevents.html">Distribution of Event's Times</a></p>
+      <ul>
+        <li><code><a href="ggsurvevents.html">ggsurvevents</a></code></li>
+      </ul>
       
       <p><a href="ggsurvplot.html">Drawing Survival Curves Using ggplot2</a></p>
       <ul>
@@ -93,14 +111,14 @@
       
       <p><a href="surv_cutpoint.html">Determine the Optimal Cutpoint for Continuous Variables</a></p>
       <ul>
-        <li><code><a href="surv_cutpoint.html">plot.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">print.plot_surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">print.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">summary.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">surv_categorize</a></code></li><li><code><a href="surv_cutpoint.html">surv_cutpoint</a></code></li>
+        <li><code><a href="surv_cutpoint.html">surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">surv_categorize</a></code></li><li><code><a href="surv_cutpoint.html">summary.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">print.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">plot.surv_cutpoint</a></code></li><li><code><a href="surv_cutpoint.html">print.plot_surv_cutpoint</a></code></li>
       </ul>
       
       <p><a href="surv_summary.html">Nice Summary of a Survival Curve</a></p>
       <ul>
         <li><code><a href="surv_summary.html">surv_summary</a></code></li>
       </ul>
-          <h2 id="section-visual-examinations-of-cox-model-assumptions" class="hasAnchor"><a href="#section-visual-examinations-of-cox-model-assumptions" class="anchor"></a>Visual Examinations of Cox Model Assumptions</h2>
+          <h2 id="section-diagnostics-of-cox-model" class="hasAnchor"><a href="#section-diagnostics-of-cox-model" class="anchor"></a>Diagnostics of Cox Model</h2>
       <p class="section-desc"></p>
 
       
@@ -118,17 +136,53 @@
       <ul>
         <li><code><a href="ggcoxzph.html">ggcoxzph</a></code></li><li><code><a href="ggcoxzph.html">print.ggcoxzph</a></code></li>
       </ul>
-          <h2 id="section-visual-representation-of-cox-model-coefficients" class="hasAnchor"><a href="#section-visual-representation-of-cox-model-coefficients" class="anchor"></a>Visual Representation of Cox Model Coefficients</h2>
+          <h2 id="section-summary-of-cox-model" class="hasAnchor"><a href="#section-summary-of-cox-model" class="anchor"></a>Summary of Cox Model</h2>
       <p class="section-desc"></p>
 
+      
+      <p><a href="ggcoxadjustedcurves.html">Adjusted Survival Curves for Cox Proportional Hazards Model</a></p>
+      <ul>
+        <li><code><a href="ggcoxadjustedcurves.html">ggcoxadjustedcurves</a></code></li>
+      </ul>
       
       <p><a href="ggforest.html">Drawing Forest Plot for CoxPH model</a></p>
       <ul>
         <li><code><a href="ggforest.html">ggforest</a></code></li>
       </ul>
+          <h2 id="section-competing-risks" class="hasAnchor"><a href="#section-competing-risks" class="anchor"></a>Competing Risks</h2>
+      <p class="section-desc"></p>
+
+      
+      <p><a href="ggcompetingrisks.html">Cumulative Incidence Curves for Competing Risks</a></p>
+      <ul>
+        <li><code><a href="ggcompetingrisks.html">ggcompetingrisks</a></code></li>
+      </ul>
+          <h2 id="section-helpers" class="hasAnchor"><a href="#section-helpers" class="anchor"></a>Helpers</h2>
+      <p class="section-desc"></p>
+
+      
+      <p><a href="ggcumcensor.html">Cumulative Number of Censored Subjects</a></p>
+      <ul>
+        <li><code><a href="ggcumcensor.html">ggcumcensor</a></code></li>
+      </ul>
+      
+      <p><a href="ggcumevents.html">Cumulative Number of Events Table</a></p>
+      <ul>
+        <li><code><a href="ggcumevents.html">ggcumevents</a></code></li>
+      </ul>
+      
+      <p><a href="ggrisktable.html">Number at Risk Table</a></p>
+      <ul>
+        <li><code><a href="ggrisktable.html">ggrisktable</a></code></li>
+      </ul>
           <h2 id="section-data" class="hasAnchor"><a href="#section-data" class="anchor"></a>Data</h2>
       <p class="section-desc"></p>
 
+      
+      <p><a href="BMT.html">Bone Marrow Transplant</a></p>
+      <ul>
+        <li><code><a href="BMT.html">BMT</a></code></li>
+      </ul>
       
       <p><a href="myeloma.html">Multiple Myeloma Data</a></p>
       <ul>
@@ -137,6 +191,16 @@
           <h2 id="section-others" class="hasAnchor"><a href="#section-others" class="anchor"></a>Others</h2>
       <p class="section-desc"></p>
 
+      
+      <p><a href="add_ggsurvplot.html">Add Components to a ggsurvplot</a></p>
+      <ul>
+        <li><code><a href="add_ggsurvplot.html">add_ggsurvplot</a></code></li><li><code><a href="add_ggsurvplot.html">+.ggsurv</a></code></li><li><code><a href="add_ggsurvplot.html">%+%</a></code></li>
+      </ul>
+      
+      <p><a href="ggsurvtheme.html">Theme for Survminer Plots</a></p>
+      <ul>
+        <li><code><a href="ggsurvtheme.html">theme_survminer</a></code></li><li><code><a href="ggsurvtheme.html">theme_cleantable</a></code></li>
+      </ul>
       
       <p><a href="theme_classic2.html">ggplot2 classic theme with axis lines</a></p>
       <ul>
@@ -150,8 +214,10 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#section-survival-curves">Survival Curves</a></li>
-      <li><a href="#section-visual-examinations-of-cox-model-assumptions">Visual Examinations of Cox Model Assumptions</a></li>
-      <li><a href="#section-visual-representation-of-cox-model-coefficients">Visual Representation of Cox Model Coefficients</a></li>
+      <li><a href="#section-diagnostics-of-cox-model">Diagnostics of Cox Model</a></li>
+      <li><a href="#section-summary-of-cox-model">Summary of Cox Model</a></li>
+      <li><a href="#section-competing-risks">Competing Risks</a></li>
+      <li><a href="#section-helpers">Helpers</a></li>
       <li><a href="#section-data">Data</a></li>
       <li><a href="#section-others">Others</a></li>
     </ul>

@@ -4,10 +4,13 @@
 \alias{surv_summary}
 \title{Nice Summary of a Survival Curve}
 \usage{
-surv_summary(x)
+surv_summary(x, data = NULL)
 }
 \arguments{
-\item{x}{an object of class survfit}
+\item{x}{an object of class survfit.}
+
+\item{data}{a dataset used to fit survival curves. If not supplied then data
+will be extracted from 'fit' object.}
 }
 \value{
 An object of class \bold{'surv_summary'}, which is a data frame with
@@ -39,7 +42,7 @@ require("survival")
 fit <- survfit(Surv(time, status) ~ rx + adhere, data = colon)
 
 # Summarize
-res.sum <- surv_summary(fit)
+res.sum <- surv_summary(fit, data = colon)
 head(res.sum)
 
 # Information about the survival curves
@@ -47,4 +50,6 @@ attr(res.sum, "table")
 
 
 }
-
+\author{
+Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
+}

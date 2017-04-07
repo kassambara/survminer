@@ -4,7 +4,9 @@ NULL
 #'@description Compared to the default summary() function, surv_summary()
 #'  creates a data frame containing a nice summary from
 #'  \code{\link[survival]{survfit}} results.
-#'@param x an object of class survfit
+#'@param x an object of class survfit.
+#'@param data a dataset used to fit survival curves. If not supplied then data
+#'  will be extracted from 'fit' object.
 #'@return An object of class \bold{'surv_summary'}, which is a data frame with
 #'  the following columns: \itemize{ \item time: the time points at which the
 #'  curve has a step. \item n.risk: the number of subjects at risk at t. \item
@@ -23,7 +25,7 @@ NULL
 #'  confidence intervals, as well as, the total number of subjects and the
 #'  number of event in each curve.
 #'
-#'
+#'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @examples
 #'
 #'# Fit survival curves
@@ -31,7 +33,7 @@ NULL
 #' fit <- survfit(Surv(time, status) ~ rx + adhere, data = colon)
 #'
 #' # Summarize
-#' res.sum <- surv_summary(fit)
+#' res.sum <- surv_summary(fit, data = colon)
 #' head(res.sum)
 #'
 #' # Information about the survival curves
@@ -39,7 +41,7 @@ NULL
 #'
 #'
 #'@export
-surv_summary <- function (x){
+surv_summary <- function (x, data = NULL){
   res <- as.data.frame(.compact(unclass(x)[c("time", "n.risk",
                                             "n.event", "n.censor")]))
   if (inherits(x, "survfitms")) {
@@ -65,68 +67,14 @@ surv_summary <- function (x){
                       upper = x$upper, lower = x$lower)
   }
   if (!is.null(x$strata)) {
+    data <- .get_data(x, data = data) # data used to compute survfit
     res$strata <- rep(names(x$strata), x$strata)
     res$strata <- .clean_strata(res$strata, x)
     # Add column for each variable in survival fit
-    variables <- .get_variables(res$strata, x)
-    for(variable in variables) res[[variable]] <- .get_variable_value(variable, res$strata, x)
+    variables <- .get_variables(res$strata, x, data)
+    for(variable in variables) res[[variable]] <- .get_variable_value(variable, res$strata, x, data)
   }
   structure(res, class = c("data.frame", "surv_summary"))
   attr(res, "table") <-  as.data.frame(summary(x)$table)
   res
-}
-
-
-
-# Helper functions
-# ++++++++++++++++++
-# Get variable names in strata
-# strata is a vector
-.get_variables <- function(strata, fit){
-  variables <- sapply(as.vector(strata),
-                      function(x){
-                        x <- unlist(strsplit(x, "=|,\\s+", perl=TRUE))
-                        x[seq(1, length(x), 2)]
-                        })
-  variables <- unique(as.vector(variables))
-  variables <- intersect(variables, colnames(eval(fit$call$data) ))
-  variables
-}
-
-# level of a given variable
-.get_variable_value <- function(variable, strata, fit){
-  res <- sapply(as.vector(strata), function(x){
-          x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
-          index <- grep(paste0("^", variable, "$"), x)
-          .trim(x[index+1])
-        })
-  res <- as.vector(res)
-  var_levels <- levels(eval(fit$call$data)[, variable])
-  if(!is.null(var_levels)) res <- factor(res, levels = var_levels)
-  else res <- as.factor(res)
-  res
-}
-
-
-# Take a data frame and return a flatten value
-.flat <- function(x){
-  x <- as.data.frame(x)
-  x <- tidyr::gather_(x,
-                      key_col = "key", value_col = "value",
-                      gather_cols = colnames(x))
-  x$value
-}
-
-# remove dollar sign ($) in strata, in the situation, where
-# the user uses data$variable to fit survival curves
-.clean_strata <- function(strata, fit){
-  is_dollar_sign <- grepl("$", as.character(strata)[1], fixed=TRUE)
-  if(is_dollar_sign) {
-    strata <- as.character(strata)
-    data_name <- unlist(strsplit(strata[1], "$", fixed =TRUE))[1]
-    strata <- gsub(paste0(data_name, "$"), "", strata, fixed=TRUE)
-    strata <- as.factor(strata)
-  }
-  else if(!missing(fit)) strata <- factor(strata, levels = names(fit$strata))
-  return(strata)
 }

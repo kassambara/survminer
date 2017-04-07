@@ -49,6 +49,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../survminer_cheatsheet.pdf">Cheatseet</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -60,7 +63,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kassambara/survminer">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -81,12 +89,15 @@
  <code><a href='http://www.rdocumentation.org/packages/survival/topics/survfit'>survfit</a></code> results.</p>
     
 
-    <pre><span class='fu'>surv_summary</span>(<span class='no'>x</span>)</pre>
+    <pre><span class='fu'>surv_summary</span>(<span class='no'>x</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>x</dt>
-      <dd>an object of class survfit</dd>
+      <dd>an object of class survfit.</dd>
+      <dt>data</dt>
+      <dd>a dataset used to fit survival curves. If not supplied then data
+will be extracted from &#39;fit&#39; object.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -125,7 +136,7 @@
 <span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>survfit</span>(<span class='fu'>Surv</span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>rx</span> + <span class='no'>adhere</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span>)
 
 <span class='co'># Summarize</span>
-<span class='no'>res.sum</span> <span class='kw'>&lt;-</span> <span class='fu'>surv_summary</span>(<span class='no'>fit</span>)
+<span class='no'>res.sum</span> <span class='kw'>&lt;-</span> <span class='fu'>surv_summary</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span>)
 <span class='fu'>head</span>(<span class='no'>res.sum</span>)</div><div class='output co'>#&gt;   time n.risk n.event n.censor      surv     std.err     upper     lower
 #&gt; 1   20    536       1        0 0.9981343 0.001867414 1.0000000 0.9944878
 #&gt; 2   43    535       1        0 0.9962687 0.002643394 1.0000000 0.9911204
@@ -167,6 +178,10 @@
       
       <li><a href="#examples">Examples</a></li>
     </ul>
+
+    <h2>Author</h2>
+    
+Alboukadel Kassambara, <a href='mailto:alboukadel.kassambara@gmail.com'>alboukadel.kassambara@gmail.com</a>
 
   </div>
 </div>

@@ -95,20 +95,20 @@ After preparing a functionality for this GitHub's issue [Other tests than log-ra
 
 ## Log-rank (survdiff)
 ```{r}
-ggsurvplot(fit, pval = TRUE, pval.method = TRUE)
+ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE)
 ```
 
 ## Log-rank (comp)
 
 ```{r}
-ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "1")
 ```
 
 ## Gehan-Breslow (generalized Wilcoxon)
 
 ```{r}
-ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "n", pval.method.coord = c(5, 0.1),
            pval.method.size = 3)
 ```
@@ -116,7 +116,7 @@ ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
 ## Tharone-Ware
 
 ```{r}
-ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "sqrtN", pval.method.coord = c(3, 0.1),
            pval.method.size = 4)
 ```
@@ -124,7 +124,7 @@ ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
 ## Peto-Peto's modified survival estimate
 
 ```{r}
-ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "S1", pval.method.coord = c(5, 0.1),
            pval.method.size = 3)
 ```
@@ -132,7 +132,7 @@ ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
 ## modified Peto-Peto's (by Andersen)
 
 ```{r}
-ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "S2", pval.method.coord = c(5, 0.1),
            pval.method.size = 3)
 ```
@@ -140,7 +140,7 @@ ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
 ## Fleming-Harrington (p=1, q=1)
 
 ```{r}
-ggsurvplot(fit, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "FH_p=1_q=1", 
            pval.method.coord = c(5, 0.1),
            pval.method.size = 4)
