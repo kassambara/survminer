@@ -34,6 +34,8 @@ Imports:
 Suggests:
     knitr,
     KMsurv
+Remotes:
+    kassambara/ggpubr
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
