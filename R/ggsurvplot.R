@@ -460,8 +460,10 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   }
 
   # Add pvalue
-  if(pval & !is.null(fit$strata)){
-    pval <- .get_pvalue(fit, method = log.rank.weights, data = data)
+  if(pval){
+    if(!is.numeric(pval) & !is.null(fit$strata)) pval <- .get_pvalue(fit, method = log.rank.weights, data = data)
+    else if(is.numeric(pval)) pval <- list(val = pval, method = "")
+
     pvaltxt <- ifelse(pval$val < 1e-04, "p < 0.0001",
                     paste("p =", signif(pval$val, 2)))
 
