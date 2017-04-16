@@ -99,7 +99,9 @@ censors. Default value is "+" (3), a sensible choice is "|" (124).}
 
 \item{censor.size}{numveric value specifying the point size of censors. Default is 4.5.}
 
-\item{pval}{logical value. If TRUE, the p-value is added on the plot.}
+\item{pval}{logical value, a numeric or a string. If logical and TRUE, the p-value is added on the plot.
+If numeric, than the computet p-value is substituted with the one passed with this parameter.
+If character, then the customized string appears on the plot. See examples - Example 3.}
 
 \item{pval.size}{numeric value specifying the p-value text size. Default is 5.}
 
@@ -378,6 +380,16 @@ grid::grid.newpage()
 grid::grid.draw(g)
 
 }
+
+#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
+# Example 3: CUSTOMIZED PVALUE
+#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
+# Customized p-value
+ggsurvplot(fit, data = lung, pval = TRUE)
+ggsurvplot(fit, data = lung, pval = 0.03)
+ggsurvplot(fit, data = lung, pval = "The hot p-value is: 0.031")
+
+
 
 }
 \author{

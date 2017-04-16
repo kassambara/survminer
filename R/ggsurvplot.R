@@ -3,7 +3,7 @@
 #' @importFrom stats pchisq
 #' @importFrom survMisc ten comp
 #' @importFrom utils capture.output
-  NULL
+NULL
 #'Drawing Survival Curves Using ggplot2
 #'@description Drawing survival curves using ggplot2
 #'@param fit an object of class survfit.
@@ -51,7 +51,9 @@
 #'@param censor.shape character or numeric value specifying the point shape of
 #'  censors. Default value is "+" (3), a sensible choice is "|" (124).
 #'@param censor.size numveric value specifying the point size of censors. Default is 4.5.
-#'@param pval logical value. If TRUE, the p-value is added on the plot.
+#'@param pval logical value, a numeric or a string. If logical and TRUE, the p-value is added on the plot.
+#'If numeric, than the computet p-value is substituted with the one passed with this parameter.
+#'If character, then the customized string appears on the plot. See examples - Example 3.
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
@@ -274,7 +276,17 @@
 #' grid::grid.newpage()
 #' grid::grid.draw(g)
 #'
-#'}
+#' }
+#'
+#'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#'# Example 3: CUSTOMIZED PVALUE
+#'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#' # Customized p-value
+#' ggsurvplot(fit, data = lung, pval = TRUE)
+#' ggsurvplot(fit, data = lung, pval = 0.03)
+#' ggsurvplot(fit, data = lung, pval = "The hot p-value is: 0.031")
+#'
+#'
 #'
 #'@describeIn ggsurvplot Draws survival curves using ggplot2.
 #'@export
@@ -288,7 +300,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                        log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
                        title = NULL,  xlab = "Time", ylab = "Survival probability",
-                        xlim = NULL, ylim = NULL,
+                       xlim = NULL, ylim = NULL,
                        legend = c("top", "bottom", "left", "right", "none"),
                        legend.title = "Strata", legend.labs = NULL,
                        tables.height = 0.25, tables.y.text = TRUE, tables.col = "black",
@@ -309,7 +321,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        ggtheme = theme_survminer(),
                        tables.theme = ggtheme,
                        ...
-                       ){
+){
 
   if(!inherits(fit, "survfit"))
     stop("Can't handle an object of class ", class(fit))
@@ -376,8 +388,8 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
       legend.labs <- strata_names <- "All"
     }
     else {
-    .strata <- as.factor(rep(legend.labs, nrow(d)))
-     strata_names <- legend.labs
+      .strata <- as.factor(rep(legend.labs, nrow(d)))
+      strata_names <- legend.labs
     }
 
     if(missing(conf.int)) conf.int = TRUE
@@ -417,10 +429,10 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   else surv.color <- ifelse(n.strata > 1, "strata", color)
   #surv.color <- color
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
-       ggpubr::geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
-       ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim) +
-       ggplot2::coord_cartesian(xlim = xlim)+
-       ggtheme
+    ggpubr::geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
+    ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim) +
+    ggplot2::coord_cartesian(xlim = xlim)+
+    ggtheme
   p <- ggpubr::ggpar(p, palette = palette, ...)
 
   if(!is.null(break.x.by)) break.time.by <- break.x.by
@@ -440,32 +452,38 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     if(missing(conf.int.fill)) conf.int.fill <- surv.color
     if(conf.int.style == "ribbon"){
       p <- p + ggpubr::geom_exec(.geom_confint, data = d,
-                          ymin = "lower", ymax = "upper",
-                          fill = conf.int.fill,  alpha = 0.3, na.rm = TRUE)
+                                 ymin = "lower", ymax = "upper",
+                                 fill = conf.int.fill,  alpha = 0.3, na.rm = TRUE)
     }
     else if(conf.int.style == "step"){
       p <- p + ggpubr::geom_exec(ggplot2::geom_step, data = d,
-                          y = "lower", linetype = "dashed",
-                          color = surv.color, na.rm = TRUE)+
+                                 y = "lower", linetype = "dashed",
+                                 color = surv.color, na.rm = TRUE)+
         ggpubr::geom_exec(ggplot2::geom_step, data = d,
-                   y = "upper", linetype = "dashed",
-                   color = surv.color, na.rm = TRUE)
+                          y = "upper", linetype = "dashed",
+                          color = surv.color, na.rm = TRUE)
 
     }
   }
   # Add cencored
   if (censor & any(d$n.censor >= 1)) {
     p <- p + ggpubr::geom_exec(ggplot2::geom_point, data = d[d$n.censor > 0, , drop = FALSE],
-                          colour = surv.color, size = censor.size, shape = censor.shape)
+                               colour = surv.color, size = censor.size, shape = censor.shape)
   }
 
   # Add pvalue
-  if(pval){
-    if(!is.numeric(pval) & !is.null(fit$strata)) pval <- .get_pvalue(fit, method = log.rank.weights, data = data)
-    else if(is.numeric(pval)) pval <- list(val = pval, method = "")
-
-    pvaltxt <- ifelse(pval$val < 1e-04, "p < 0.0001",
-                    paste("p =", signif(pval$val, 2)))
+  if(((is.logical(pval) && pval) | is.numeric(pval) | is.character(pval)) & !is.null(fit$strata)){
+    if(is.logical(pval) && pval) {
+      pval <- .get_pvalue(fit, method = log.rank.weights, data = data)
+      pvaltxt <- ifelse(pval$val < 1e-04, "p < 0.0001",
+                        paste("p =", signif(pval$val, 2)))
+    } else {
+      if(is.numeric(pval)) {
+        pvaltxt <- paste("p =",pval)
+      } else {
+        pvaltxt <- pval
+      }
+    }
 
     pval.x <- ifelse(is.null(pval.coord[1]), max(fit$time)/50, pval.coord[1])
     pval.y <- ifelse(is.null(pval.coord[2]), 0.2, pval.coord[2])
@@ -490,7 +508,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   p <- p + ggplot2::labs(x = xlab, y = ylab, title = title,
                          color = legend.title, fill = legend.title,
                          linetype = lty.leg.title
-                         )
+  )
   p <-  .set_general_gpar(p, legend = legend, ...) # general graphical parameters
   if(!is.null(linetype.manual)) p <- p + scale_linetype_manual(values = linetype.manual)
 
@@ -499,17 +517,17 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   # Extract strata colors used in survival curves
   # Will be used to color the y.text of risk table and cumevents table
   if(risk.table | cumevents | cumcensor | ncensor.plot){
-  g <- ggplot_build(p)
-  scurve_cols <- unlist(unique(g$data[[1]]["colour"]))
-  if(length(scurve_cols)==1) scurve_cols <- rep(scurve_cols, length(legend.labs))
-  names(scurve_cols) <- legend.labs # Give every color an appropriate name
+    g <- ggplot_build(p)
+    scurve_cols <- unlist(unique(g$data[[1]]["colour"]))
+    if(length(scurve_cols)==1) scurve_cols <- rep(scurve_cols, length(legend.labs))
+    names(scurve_cols) <- legend.labs # Give every color an appropriate name
   }
 
 
   # Add risk table
-   if(risk.table){
-     if(risk.table.pos == "in") risk.table.col = surv.color
-     risktable <- ggrisktable(fit, data = data, type = risk.table.type, color = risk.table.col,
+  if(risk.table){
+    if(risk.table.pos == "in") risk.table.col = surv.color
+    risktable <- ggrisktable(fit, data = data, type = risk.table.type, color = risk.table.col,
                              palette = palette, break.time.by = break.time.by,
                              xlim = xlim, title = risk.table.title,
                              legend = legend, legend.title = legend.title, legend.labs = legend.labs,
@@ -517,15 +535,15 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                              fontsize = risk.table.fontsize, ggtheme = ggtheme,
                              xlab = xlab, ylab = legend.title, xlog = xlog, xscale = xscale,
                              ...)
-     risktable <- risktable + tables.theme
-     if(!risk.table.y.text) risktable <- .set_large_dash_as_ytext(risktable)
-     # color risk.table ticks by strata
-     if(risk.table.y.text.col)
-       risktable <- risktable + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
-     res$table <- risktable
-   }
+    risktable <- risktable + tables.theme
+    if(!risk.table.y.text) risktable <- .set_large_dash_as_ytext(risktable)
+    # color risk.table ticks by strata
+    if(risk.table.y.text.col)
+      risktable <- risktable + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
+    res$table <- risktable
+  }
 
- # Add the cumulative number of events
+  # Add the cumulative number of events
   if(cumevents){
     res$cumevents <- ggcumevents (fit, data = data, color = cumevents.col,
                                   palette = palette, break.time.by = break.time.by,
@@ -543,33 +561,33 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   # Add ncensor.plot or cumcensor plot
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if(ncensor.plot){
-  ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
-    ggpubr::geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
-               stat = "identity", position = "dodge")+
-    coord_cartesian(xlim = xlim)+
-    scale_y_continuous(breaks = sort(unique(d$n.censor))) +
-    ggtheme
+    ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
+      ggpubr::geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
+                        stat = "identity", position = "dodge")+
+      coord_cartesian(xlim = xlim)+
+      scale_y_continuous(breaks = sort(unique(d$n.censor))) +
+      ggtheme
 
-  ncensor_plot <- ggpubr::ggpar(ncensor_plot, palette = palette)
-  ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
-                                               x = xlab, y = "n.censor", title = ncensor.plot.title)
+    ncensor_plot <- ggpubr::ggpar(ncensor_plot, palette = palette)
+    ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
+                                                 x = xlab, y = "n.censor", title = ncensor.plot.title)
 
-  # For backward compatibility
-  ncensor_plot <-  .set_general_gpar(ncensor_plot,  ...) # general graphical parameters
-  ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot,  ...) # specific graphical params
-  ncensor_plot <- ncensor_plot + tables.theme
+    # For backward compatibility
+    ncensor_plot <-  .set_general_gpar(ncensor_plot,  ...) # general graphical parameters
+    ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot,  ...) # specific graphical params
+    ncensor_plot <- ncensor_plot + tables.theme
 
-  if(!xlog) ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels)
-  else ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = times, trans = "log10", labels = xticklabels)
+    if(!xlog) ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels)
+    else ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = times, trans = "log10", labels = xticklabels)
 
   }
   else if(cumcensor){
     ncensor_plot <- ggcumcensor (fit, data = data, color = cumcensor.col,
-                                  palette = palette, break.time.by = break.time.by,
-                                  xlim = xlim, title = cumcensor.title,
-                                  legend = legend, legend.title = legend.title, legend.labs = legend.labs,
-                                  y.text = cumcensor.y.text, y.text.col = cumcensor.y.text.col,
-                                  fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
+                                 palette = palette, break.time.by = break.time.by,
+                                 xlim = xlim, title = cumcensor.title,
+                                 legend = legend, legend.title = legend.title, legend.labs = legend.labs,
+                                 y.text = cumcensor.y.text, y.text.col = cumcensor.y.text.col,
+                                 fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
                                  xlog = xlog, xscale = xscale, ...)
     ncensor_plot <- ncensor_plot + tables.theme
     if(!cumcensor.y.text) ncensor_plot <- .set_large_dash_as_ytext(ncensor_plot)
@@ -621,8 +639,8 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NULL, ncensor.plot.height = NULL, newpage = TRUE, ...){
 
   res <- .build_ggsurvplot(x = x, surv.plot.height = surv.plot.height,
-                    risk.table.height = risk.table.height,
-                    ncensor.plot.height = ncensor.plot.height)
+                           risk.table.height = risk.table.height,
+                           ncensor.plot.height = ncensor.plot.height)
   if(newpage) grid::grid.newpage()
   grid::grid.draw(res)
 
@@ -717,19 +735,19 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   # Set legend
   if(nplot > 1 & legend.position %in% c("left", "right", "bottom") & is.null(legend.grob)){
     ggsurv <- switch(legend.position,
-                   bottom = gridExtra::arrangeGrob(grobs = list(ggsurv, legend.grob), nrow = 2, heights = c(0.9, 0.1)),
-                   top = gridExtra::arrangeGrob(grobs = list(legend.grob, ggsurv), nrow = 2, heights = c(0.1, 0.9)),
-                   right = gridExtra::arrangeGrob(grobs = list(ggsurv, legend.grob), ncol = 2, widths = c(0.75, 0.25)),
-                   left = gridExtra::arrangeGrob(grobs = list(legend.grob, ggsurv), ncol = 2, widths = c(0.25, 0.75)),
-                   ggsurv
-                  )
+                     bottom = gridExtra::arrangeGrob(grobs = list(ggsurv, legend.grob), nrow = 2, heights = c(0.9, 0.1)),
+                     top = gridExtra::arrangeGrob(grobs = list(legend.grob, ggsurv), nrow = 2, heights = c(0.1, 0.9)),
+                     right = gridExtra::arrangeGrob(grobs = list(ggsurv, legend.grob), ncol = 2, widths = c(0.75, 0.25)),
+                     left = gridExtra::arrangeGrob(grobs = list(legend.grob, ggsurv), ncol = 2, widths = c(0.25, 0.75)),
+                     ggsurv
+    )
   }
 
   return(ggsurv)
 }
 
 .hide_legend <- function(p){
-p <- p + theme(legend.position = "none")
+  p <- p + theme(legend.position = "none")
 }
 
 
@@ -767,12 +785,12 @@ p <- p + theme(legend.position = "none")
   if(!is.null(fun) & is.character(fun)){
     if(ylab == "Survival probability"){
       ylab <- switch(fun, log = "log(Survival probability)",
-                    event = "Cumulative event",
-                    cumhaz = "Cumulative hazard",
-                    pct = "Survival probability (%)",
-                    identity = "Survival probability",
-                    cloglog = "log(-log(S(t)))",
-                    "Survival probability")
+                     event = "Cumulative event",
+                     cumhaz = "Cumulative hazard",
+                     pct = "Survival probability (%)",
+                     identity = "Survival probability",
+                     cloglog = "log(-log(S(t)))",
+                     "Survival probability")
     }
   }
   ylab
@@ -795,7 +813,7 @@ p <- p + theme(legend.position = "none")
       sdiff <- survival::survdiff(eval(fit$call$formula), data = data)
     else
       sdiff <- survival::survdiff(eval(fit$call$formula), data = data,
-                                     subset = eval(fit$call$subset))
+                                  subset = eval(fit$call$subset))
     pvalue <- stats::pchisq(sdiff$chisq, length(sdiff$n) - 1, lower.tail = FALSE)
     return(list(val = pvalue, method = "Log-rank"))
   } else {
@@ -852,8 +870,8 @@ p <- p + theme(legend.position = "none")
     base$strata <- factor(strata, levels = strata)
     # update variable values
     if(!inherits(fit, "survfit.cox")){
-    variables <- .get_variables(base$strata,  fit, data)
-    for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata, fit, data)
+      variables <- .get_variables(base$strata,  fit, data)
+      for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata, fit, data)
     }
   }
   d <- rbind(base, d)
@@ -874,12 +892,12 @@ p <- p + theme(legend.position = "none")
   }
   else (is.character(linetype))
   {
-  base_lty <- c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash")
-  is_base_lty <- all(linetype %in% base_lty)
-  if(is_base_lty & nlty > 1){
-    linetype.manual <-linetype
-    linetype <- "strata"
-  }
+    base_lty <- c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash")
+    is_base_lty <- all(linetype %in% base_lty)
+    if(is_base_lty & nlty > 1){
+      linetype.manual <-linetype
+      linetype <- "strata"
+    }
   }
   list(lty = linetype, lty.manual = linetype.manual)
 }
@@ -914,33 +932,33 @@ p <- p + theme(legend.position = "none")
   else if(fun == "pct") med_y <- 50
 
   if(draw_lines){
-      if(!is.null(fit$strata) | is.matrix(fit$surv)) .table <- as.data.frame(summary(fit)$table)
-      else{
-        .table <- t(as.data.frame(summary(fit)$table))
-        rownames(.table) <- "All"
-      }
-      surv_median <- as.vector(.table[,"median"])
-      df <- data.frame(x1 = surv_median, x2 = surv_median,
-                       y1 = rep(0, length(surv_median)),
-                       y2 = rep(med_y, length(surv_median)),
-                       strata = .clean_strata(rownames(.table)))
-      if(!is.null(fit$strata)){
-        variables <- .get_variables(df$strata, fit, data)
-        for(variable in variables) df[[variable]] <- .get_variable_value(variable, df$strata, fit, data)
-      }
-      df <- stats::na.omit(df)
+    if(!is.null(fit$strata) | is.matrix(fit$surv)) .table <- as.data.frame(summary(fit)$table)
+    else{
+      .table <- t(as.data.frame(summary(fit)$table))
+      rownames(.table) <- "All"
+    }
+    surv_median <- as.vector(.table[,"median"])
+    df <- data.frame(x1 = surv_median, x2 = surv_median,
+                     y1 = rep(0, length(surv_median)),
+                     y2 = rep(med_y, length(surv_median)),
+                     strata = .clean_strata(rownames(.table)))
+    if(!is.null(fit$strata)){
+      variables <- .get_variables(df$strata, fit, data)
+      for(variable in variables) df[[variable]] <- .get_variable_value(variable, df$strata, fit, data)
+    }
+    df <- stats::na.omit(df)
 
-      if(nrow(df)>0){
-        if(type %in% c("hv", "h"))
-          p <- p +
+    if(nrow(df)>0){
+      if(type %in% c("hv", "h"))
+        p <- p +
           geom_segment(aes(x = 0, y = max(y2), xend = max(x1), yend = max(y2)),
                        data = df, linetype = "dashed", size = 0.5) # horizontal segment
 
-        if(type %in% c("hv", "v"))
-          p <- p + geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2), data = df,
-                                linetype = "dashed", size = 0.5) # vertical segments
-      }
-      else warning("Median survival not reached.")
+      if(type %in% c("hv", "v"))
+        p <- p + geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2), data = df,
+                              linetype = "dashed", size = 0.5) # vertical segments
+    }
+    else warning("Median survival not reached.")
   }
 
   p
@@ -965,15 +983,15 @@ p <- p + theme(legend.position = "none")
 .set_ncensorplot_gpar <- function(p, legend = "none", ...){
   extra.params <- list(...)
   ggpubr::ggpar(p,
-             subtitle = extra.params$ncensor.plot.subtitle,
-             caption = extra.params$ncensor.plot.caption,
-             font.main = extra.params$font.ncensor.plot.title,
-             font.submain = extra.params$font.ncensor.plot.subtitle,
-             font.caption = extra.params$font.ncensor.plot.caption,
-             font.tickslab = extra.params$font.ncensor.plot.tickslab,
-             font.x = extra.params$font.ncensor.plot.x,
-             font.y = extra.params$font.ncensor.plot.y,
-             legend = legend)
+                subtitle = extra.params$ncensor.plot.subtitle,
+                caption = extra.params$ncensor.plot.caption,
+                font.main = extra.params$font.ncensor.plot.title,
+                font.submain = extra.params$font.ncensor.plot.subtitle,
+                font.caption = extra.params$font.ncensor.plot.caption,
+                font.tickslab = extra.params$font.ncensor.plot.tickslab,
+                font.x = extra.params$font.ncensor.plot.x,
+                font.y = extra.params$font.ncensor.plot.y,
+                legend = legend)
 
 }
 
@@ -989,19 +1007,19 @@ p <- p + theme(legend.position = "none")
   # Create a transparent theme object
   theme_transparent<- function() {
     theme(
-    title = element_blank(),
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
-    axis.text.x = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks = element_blank(),
-    panel.grid = element_blank(),
-    axis.line = element_blank(),
-    panel.background = element_rect(fill = "transparent",colour = NA),
-    plot.background = element_rect(fill = "transparent",colour = NA),
-    plot.margin=unit(c(0,0,0,0),"mm"),
-    panel.border = element_blank(),
-    legend.position = "none")
+      title = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_blank(),
+      axis.text.y = element_blank(),
+      axis.ticks = element_blank(),
+      panel.grid = element_blank(),
+      axis.line = element_blank(),
+      panel.background = element_rect(fill = "transparent",colour = NA),
+      plot.background = element_rect(fill = "transparent",colour = NA),
+      plot.margin=unit(c(0,0,0,0),"mm"),
+      panel.border = element_blank(),
+      legend.position = "none")
   }
 
   survplot <- ggsurv$plot
