@@ -256,23 +256,23 @@ ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
 # %%%%%%%%%%%%%%%%%%%%%%%%%%
 # Labels for Survival Curves (plot)
 ggsurv$plot <- ggsurv$plot + labs(
-  title = "Survival curves",                     
+  title    = "Survival curves",                     
   subtitle = "Based on Kaplan-Meier estimates",  
-  caption = "created with survminer"             
+  caption  = "created with survminer"             
   )
 
 # Labels for Risk Table 
 ggsurv$table <- ggsurv$table + labs(
-  title = "Note the risk set sizes",          
+  title    = "Note the risk set sizes",          
   subtitle = "and remember about censoring.", 
-  caption = "source code: website.com"        
+  caption  = "source code: website.com"        
   )
 
 # Labels for ncensor plot 
 ggsurv$ncensor.plot <- ggsurv$ncensor.plot + labs( 
-  title = "Number of censorings", 
+  title    = "Number of censorings", 
   subtitle = "over the time.",
-  caption = "source code: website.com"
+  caption  = "source code: website.com"
   )
 
 # Changing the font size, style and color
@@ -280,15 +280,16 @@ ggsurv$ncensor.plot <- ggsurv$ncensor.plot + labs(
 # Applying the same font style to all the components of ggsurv:
 # survival curves, risk table and censor part
 
-ggsurv <- ggpar(ggsurv,
-          font.title = c(16, "bold", "darkblue"),         
-          font.subtitle = c(15, "bold.italic", "purple"), 
-          font.caption = c(14, "plain", "orange"),        
-          font.x = c(14, "bold.italic", "red"),          
-          font.y = c(14, "bold.italic", "darkred"),      
-          font.tickslab = c(12, "plain", "darkgreen"),
-          legend = "top"
-          )
+ggsurv <- ggpar(
+  ggsurv,
+  font.title    = c(16, "bold", "darkblue"),         
+  font.subtitle = c(15, "bold.italic", "purple"), 
+  font.caption  = c(14, "plain", "orange"),        
+  font.x        = c(14, "bold.italic", "red"),          
+  font.y        = c(14, "bold.italic", "darkred"),      
+  font.tickslab = c(12, "plain", "darkgreen"),
+  legend = "top"
+)
 
 # Apply custom color palettes and print
 ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
@@ -303,25 +304,27 @@ Uber platinum premium customized survival curves
 # Using specific fonts for risk table and ncensor plots
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Font for Risk Table
-ggsurv$table <- ggpar(ggsurv$table,
-                      font.title = c(13, "bold.italic", "green"),
-                      font.subtitle = c(15, "bold", "pink"),
-                      font.caption = c(11, "plain", "darkgreen"),
-                      font.x = c(8, "bold.italic", "orange"),
-                      font.y = c(11, "bold.italic", "darkgreen"),
-                      font.tickslab = c(9, "bold", "red")
-                      )
+ggsurv$table <- ggpar(
+  ggsurv$table,
+  font.title    = c(13, "bold.italic", "green"),
+  font.subtitle = c(15, "bold", "pink"),
+  font.caption  = c(11, "plain", "darkgreen"),
+  font.x        = c(8, "bold.italic", "orange"),
+  font.y        = c(11, "bold.italic", "darkgreen"),
+  font.tickslab = c(9, "bold", "red")
+)
 
 
 # Font for ncensor plot
-ggsurv$ncensor.plot <- ggpar(ggsurv$ncensor.plot,
-                            font.title = c(13, "bold.italic", "green"),
-                            font.subtitle = c(15, "bold", "pink"),
-                            font.caption = c(11, "plain", "darkgreen"),
-                            font.x = c(8, "bold.italic", "orange"),
-                            font.y = c(11, "bold.italic", "darkgreen"),
-                            font.tickslab = c(9, "bold", "red")
-                            )
+ggsurv$ncensor.plot <- ggpar(
+  ggsurv$ncensor.plot,
+  font.title    = c(13, "bold.italic", "green"),
+  font.subtitle = c(15, "bold", "pink"),
+  font.caption  = c(11, "plain", "darkgreen"),
+  font.x        = c(8, "bold.italic", "orange"),
+  font.y        = c(11, "bold.italic", "darkgreen"),
+  font.tickslab = c(9, "bold", "red")
+)
 
 print(ggsurv)
 ```

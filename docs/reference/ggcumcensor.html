@@ -91,10 +91,11 @@
     
 
     <pre><span class='fu'>ggcumcensor</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>break.time.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Number of cenored subjects"</span>,
-  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='st'>"top"</span>,
-  <span class='kw'>legend.title</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>, <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>y.text</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>y.text.col</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>fontsize</span> <span class='kw'>=</span> <span class='fl'>4.5</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='no'>...</span>)</pre>
+  <span class='kw'>break.time.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xscale</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Number of cenored subjects"</span>, <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>,
+  <span class='kw'>xlog</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='st'>"top"</span>, <span class='kw'>legend.title</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>,
+  <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>y.text</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>y.text.col</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>fontsize</span> <span class='kw'>=</span> <span class='fl'>4.5</span>,
+  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -104,24 +105,47 @@
       <dd>a dataset used to fit survival curves. If not supplied then data
 will be extracted from &#39;fit&#39; object.</dd>
       <dt>color</dt>
-      <dd>color to be used for the survival curves. This argument is
-ignored when the number of strata (groups &gt; 1). In this case, use the
-argument palette.</dd>
+      <dd>color to be used for the survival curves. <ul>
+<li> If the
+number of strata/group (n.strata) = 1, the expected value is the color name.
+For example color = &quot;blue&quot;. </li>
+<li> If n.strata &gt; 1, the expected value is the
+grouping variable name. By default, survival curves are colored by strata
+using the argument color = &quot;strata&quot;,  but you can also color survival curves
+by any other grouping variables used to fit the survival curves. In this
+case, it&#39;s possible to specify a custom color palette by using the argument
+palette.</li>
+</ul>
+</dd>
       <dt>palette</dt>
       <dd>the color palette to be used. Allowed values include &quot;hue&quot; for
 the default hue color scale; &quot;grey&quot; for grey color palettes; brewer palettes
 e.g. &quot;RdBu&quot;, &quot;Blues&quot;, ...; or custom color palette e.g. c(&quot;blue&quot;, &quot;red&quot;).
 See details section for more information.</dd>
       <dt>break.time.by</dt>
-      <dd>numeric value controlling time axis breaks. Default value is NULL.</dd>
+      <dd>numeric value controlling time axis breaks. Default value
+is NULL.</dd>
       <dt>xlim</dt>
       <dd>x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).</dd>
+      <dt>xscale</dt>
+      <dd>numeric or character value specifying x-axis scale. <ul>
+<li> If numeric, the value is used to divide the labels on the x axis. For
+example, a value of 365.25 will give labels in years instead of the original
+days. </li>
+<li> If character, allowed options include one of c(&quot;d_m&quot;, &quot;d_y&quot;,
+&quot;m_d&quot;, &quot;m_y&quot;, &quot;y_d&quot;, &quot;y_m&quot;), where d = days, m = months and y = years. For
+example, xscale = &quot;d_m&quot; will transform labels from days to months; xscale =
+&quot;m_y&quot;, will transform labels from months to years.</li>
+</ul>
+</dd>
       <dt>title</dt>
       <dd>the title of the plot.</dd>
       <dt>xlab</dt>
       <dd>main title and axis labels</dd>
       <dt>ylab</dt>
       <dd>main title and axis labels</dd>
+      <dt>xlog</dt>
+      <dd>logical value. If TRUE, x axis is tansformed into log scale.</dd>
       <dt>legend</dt>
       <dd>character specifying legend position. Allowed values are one of
 c(&quot;top&quot;, &quot;bottom&quot;, &quot;left&quot;, &quot;right&quot;, &quot;none&quot;). Default is &quot;top&quot; side position.
