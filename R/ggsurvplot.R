@@ -378,7 +378,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     strata_names <- levels(.strata)
     n.strata <- length(strata_names)
     if(is.null(legend.labs)) legend.labs <- strata_names
-    if(missing(color)) color <- "strata"
+    if(missing(color) | is.null(color)) color <- "strata"
   }
   # One group
   else{
