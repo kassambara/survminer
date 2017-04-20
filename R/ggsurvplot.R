@@ -425,7 +425,10 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   d$strata <- factor(d$strata, levels = strata_names, labels = legend.labs)
   d <- d[order(d$strata), , drop = FALSE]
-  if(color %in% colnames(d)) surv.color <- color
+  if(color %in% colnames(d)) {
+    surv.color <- color
+    legend.title <- color
+  }
   else surv.color <- ifelse(n.strata > 1, "strata", color)
   #surv.color <- color
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
