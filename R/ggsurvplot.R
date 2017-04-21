@@ -427,7 +427,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   d <- d[order(d$strata), , drop = FALSE]
   if(color %in% colnames(d)) {
     surv.color <- color
-    if(is.null(legend.title)) legend.title <- color
+    if(is.null(legend.title) | legend.title == "Strata") legend.title <- color
   }
   else surv.color <- ifelse(n.strata > 1, "strata", color)
   #surv.color <- color
