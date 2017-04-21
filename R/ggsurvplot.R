@@ -354,8 +354,6 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   lty <- .get_lty(linetype)
   linetype <- lty$lty
   linetype.manual <- lty$lty.manual
-  # Check legend
-  .check_legend_labs(fit, legend.labs)
   # risk.table argument
   risk.table.pos <- match.arg(risk.table.pos)
   risktable <- .parse_risk_table_arg(risk.table)
@@ -377,8 +375,10 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   if (!is.null(.strata)){
     strata_names <- levels(.strata)
     n.strata <- length(strata_names)
-    if(is.null(legend.labs)) legend.labs <- strata_names
     if(missing(color) | is.null(color)) color <- "strata"
+    if(color == "strata") .check_legend_labs(fit, legend.labs)
+    if(is.null(legend.labs))
+      legend.labs <- .levels(d[, color])
   }
   # One group
   else{
@@ -423,13 +423,15 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 
   # Drawing survival curves
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  d$strata <- factor(d$strata, levels = strata_names, labels = legend.labs)
-  d <- d[order(d$strata), , drop = FALSE]
-  if(color %in% colnames(d)) {
+  if(color %in% colnames(d) & color != "strata") {
     surv.color <- color
     if(is.null(legend.title) | legend.title == "Strata") legend.title <- color
+    d[, color] <- factor( d[, color], levels = .levels(d[, color]), labels = legend.labs)
   }
   else surv.color <- ifelse(n.strata > 1, "strata", color)
+
+  if (surv.color == "strata") d$strata <- factor(d$strata, levels = strata_names, labels = legend.labs)
+  d <- d[order(d$strata), , drop = FALSE]
   #surv.color <- color
   p <- ggplot2::ggplot(d, ggplot2::aes_string("time", "surv")) +
     ggpubr::geom_exec(ggplot2::geom_step, data = d, size = size, color = surv.color, linetype = linetype, ...) +
@@ -810,19 +812,22 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
                         pval.coord = NULL,  pval.method.coord = NULL)
   {
 
+  if(is.null(method)) method <- "survdiff"
+  if(is.null(pval)) pval <- FALSE
+
   data <- .get_data(fit, data)
   res <- NULL
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   # Pvalue provided by user as numeric
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   if(is.numeric(pval))
-    res <- list(val = pval, method = NULL, pval.txt = paste("p =", pval) )
+    res <- list(val = pval, method = "", pval.txt = paste("p =", pval) )
 
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   # Pvalue provided by user as text
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   else if(is.character(pval))
-    res <- list(val = NULL, method = NULL, pval.txt = pval)
+    res <- list(val = NULL, method = "", pval.txt = pval)
 
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   # One group
