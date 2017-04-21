@@ -475,31 +475,19 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   }
 
   # Add pvalue
-  if(((is.logical(pval) && pval) | is.numeric(pval) | is.character(pval)) & !is.null(fit$strata)){
-    if(is.logical(pval) && pval) {
-      pval <- .get_pvalue(fit, method = log.rank.weights, data = data)
-      pvaltxt <- ifelse(pval$val < 1e-04, "p < 0.0001",
-                        paste("p =", signif(pval$val, 2)))
-    } else {
-      if(is.numeric(pval)) {
-        pvaltxt <- paste("p =",pval)
-      } else {
-        pvaltxt <- pval
-      }
-    }
+  # Compute pvalue or parse it if provided by the user
+  pval <- .get_pvalue(fit, method = log.rank.weights, data = data,
+                      pval = pval, pval.coord = pval.coord,
+                      pval.method.coord = pval.method.coord)
 
-    pval.x <- ifelse(is.null(pval.coord[1]), max(fit$time)/50, pval.coord[1])
-    pval.y <- ifelse(is.null(pval.coord[2]), 0.2, pval.coord[2])
-    p <- p + ggplot2::annotate("text", x = pval.x, y = pval.y,
-                               label = pvaltxt, size = pval.size, hjust = 0)
-    if(pval.method){
-      pvalmethod <- pval$method
-      pval.method.x <- ifelse(is.null(pval.method.coord[1]), max(fit$time)/50, pval.method.coord[1])
-      pval.method.y <- ifelse(is.null(pval.method.coord[2]), 0.3, pval.method.coord[2])
-      p <- p + ggplot2::annotate("text", x = pval.method.x, y = pval.method.y,
-                                 label = pvalmethod, size = pval.method.size, hjust = 0)
-    }
+  if(!is.null(pval)){
+    p <- p + ggplot2::annotate("text", x = pval$pval.coord[1], y = pval$pval.coord[2],
+                               label = pval$pval.txt, size = pval.size, hjust = 0)
+    if(pval.method)
+    p <- p + ggplot2::annotate("text", x = pval$method.coord[1], y = pval$method.coord[2],
+                               label = pval$method, size = pval.method.size, hjust = 0)
   }
+
 
   # Drawing a horizontal line at 50% survival
   #if(surv.scale == "percent") fun <- "pct"
@@ -801,16 +789,55 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
 
 
 
-
-# get survdiff pvalue
-.get_pvalue <- function(fit, method, data = NULL){
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Compute pvalue or parse it if provided by the user
+# ..................................................
+# return a list (val, method, pval.txt, pval.coord,  pval.method.coord)
+#     - val: pvalue
+#     - method: method to compute pvalue
+#     - pval.txt: formatted text ready to use for annotating plots
+#     - pval.coord: x & y coordinates of the pvalue for annotating the plot
+#     - method.coord: x & y coordinates of pvalue method
+# return NULL, if no strata (i.e, one group: ~1) or if pval = FALSE
+#
+# Examples
+# ..................................................
+# library(survival)
+# fit <- survfit(Surv(time, status) ~ sex, data = lung)
+# .get_pvalue(fit, data = lung)
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+.get_pvalue <- function(fit, method = "survdiff", data = NULL, pval = TRUE,
+                        pval.coord = NULL,  pval.method.coord = NULL)
+  {
 
   data <- .get_data(fit, data)
+  res <- NULL
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  # Pvalue provided by user as numeric
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  if(is.numeric(pval))
+    res <- list(val = pval, method = NULL, pval.txt = paste("p =", pval) )
 
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  # Pvalue provided by user as text
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  else if(is.character(pval))
+    res <- list(val = NULL, method = NULL, pval.txt = pval)
+
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   # One group
-  if(length(levels(summary(fit)$strata)) == 0)  return(list(val = NULL, method = NULL))
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  else if(length(levels(summary(fit)$strata)) == 0)
+    return(NULL)
 
-  if(method == "survdiff") {
+  # else if pval = FALSE ===> exit and return NULL
+  else if(is.logical(pval) & !pval)
+    return(res)
+
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  # Compute p-value using survdiff method
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  else if(method == "survdiff") {
     ssubset <- fit$call$subset
     if(is.null(ssubset))
       sdiff <- survival::survdiff(eval(fit$call$formula), data = data)
@@ -818,8 +845,14 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
       sdiff <- survival::survdiff(eval(fit$call$formula), data = data,
                                   subset = eval(fit$call$subset))
     pvalue <- stats::pchisq(sdiff$chisq, length(sdiff$n) - 1, lower.tail = FALSE)
-    return(list(val = pvalue, method = "Log-rank"))
-  } else {
+    pval.txt <- ifelse(pvalue < 1e-04, "p < 0.0001",
+                       paste("p =", signif(pvalue, 2)))
+    res <- list(val = pvalue, method = "Log-rank", pval.txt = pval.txt)
+  }
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  # Other possibilities to compute pvalue using the survMisc package
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  else {
     tenfit <- ten(eval(fit$call$formula), data = data)
     capture.output(comp(tenfit)) -> null_dev
     # comp modifies tenfit object (ten class: ?survMisc::ten)
@@ -827,12 +860,27 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     attributes(tenfit)$lrt -> tests
     # check str(tests) -> W:weights / pNorm:p-values
     pvalue <- round(tests$pNorm[tests$W == method], 4)
+    pval.txt <- ifelse(pvalue < 1e-04, "p < 0.0001",
+                       paste("p =", signif(pvalue, 2)))
     test_name <- c("Log-rank", "Gehan-Breslow",
                    "Tarone-Ware", "Peto-Peto",
                    "modified Peto-Peto", "Fleming-Harrington (p=1, q=1)")
     # taken from ?survMisc::comp
-    return(list(val = pvalue, method = test_name[tests$W == method]))
+    res <- list(val = pvalue, method = test_name[tests$W == method], pval.txt = pval.txt)
   }
+
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  # Pvalue coordinates to annotate the plot
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  pval.x <- ifelse(is.null(pval.coord[1]), max(fit$time)/50, pval.coord[1])
+  pval.y <- ifelse(is.null(pval.coord[2]), 0.2, pval.coord[2])
+  res$pval.coord <- c(pval.x, pval.y)
+
+  pval.method.x <- ifelse(is.null(pval.method.coord[1]), max(fit$time)/50, pval.method.coord[1])
+  pval.method.y <- ifelse(is.null(pval.method.coord[2]), 0.3, pval.method.coord[2])
+  res$method.coord <- c(pval.method.x, pval.method.y)
+
+  return (res)
 }
 
 
