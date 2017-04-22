@@ -925,10 +925,12 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
     base$strata <- strata
     base$strata <- factor(strata, levels = strata)
     # update variable values
-    if(!inherits(fit, "survfit.cox")){
-      variables <- .get_variables(base$strata,  fit, data)
-      for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata, fit, data)
-    }
+    if(!missing(fit)){
+      if(!inherits(fit, "survfit.cox")){
+        variables <- .get_variables(base$strata,  fit, data)
+        for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata, fit, data)
+      }
+      }
   }
   d <- rbind(base, d)
   d
