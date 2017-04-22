@@ -60,7 +60,9 @@ palette.}}
 \item{palette}{the color palette to be used. Allowed values include "hue" for
 the default hue color scale; "grey" for grey color palettes; brewer palettes
 e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
-See details section for more information.}
+See details section for more information.  Can be also a numeric vector of
+length(groups); in this case a basic color palette is created using the
+function \link[grDevices]{palette}.}
 
 \item{linetype}{line types. Allowed values includes i) "strata" for changing
 linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
@@ -97,11 +99,13 @@ c("ribbon", "step").}
 \item{censor.shape}{character or numeric value specifying the point shape of
 censors. Default value is "+" (3), a sensible choice is "|" (124).}
 
-\item{censor.size}{numveric value specifying the point size of censors. Default is 4.5.}
+\item{censor.size}{numveric value specifying the point size of censors.
+Default is 4.5.}
 
-\item{pval}{logical value, a numeric or a string. If logical and TRUE, the p-value is added on the plot.
-If numeric, than the computet p-value is substituted with the one passed with this parameter.
-If character, then the customized string appears on the plot. See examples - Example 3.}
+\item{pval}{logical value, a numeric or a string. If logical and TRUE, the
+p-value is added on the plot. If numeric, than the computet p-value is
+substituted with the one passed with this parameter. If character, then the
+customized string appears on the plot. See examples - Example 3.}
 
 \item{pval.size}{numeric value specifying the p-value text size. Default is 5.}
 

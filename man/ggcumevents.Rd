@@ -29,7 +29,9 @@ palette.}}
 \item{palette}{the color palette to be used. Allowed values include "hue" for
 the default hue color scale; "grey" for grey color palettes; brewer palettes
 e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
-See details section for more information.}
+See details section for more information.  Can be also a numeric vector of
+length(groups); in this case a basic color palette is created using the
+function \link[grDevices]{palette}.}
 
 \item{break.time.by}{numeric value controlling time axis breaks. Default value
 is NULL.}

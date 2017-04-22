@@ -39,6 +39,8 @@ ggsurv$plot + facet_grid(rx ~ adhere)
 - Now, the function `pairwise_survdiff()` checks whether the grouping variable is a factor. If this is not th case, the grouping variable is automatically converted into a factor.
 - `ggsurvplot()`: Now, log scale is used for x-axis when plotting the complementary log−log function (argument `fun = "cloglog") ([#171](https://github.com/kassambara/survminer/issues/171)).
 
+- Now, the argument `palette` in `ggsurvplot()` ccan be also a numeric vector of length(strata); in this case a basic color palette is created using the function `grDevices::palette()`.
+
 ## Bug fixes
    
 - Now, the `pairwise_survdiff()` function works when the data contain NAs ([@emilelatour , #184](https://github.com/kassambara/survminer/issues/184)).
