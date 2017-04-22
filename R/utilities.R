@@ -1,5 +1,11 @@
 #' @import ggplot2
 #' @import ggpubr
+#' @importFrom survival Surv
+#' @importFrom survival survfit
+#' @importFrom survival survdiff
+#' @importFrom magrittr %>%
+#' @importFrom dplyr mutate
+#' @importFrom purrr map
 
 
 # Count the number of ggplots in a list
@@ -240,4 +246,12 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
     )
   round(labels*xtrans,2)
 }
+
+
+.levels <- function(x){
+  if(!is.factor(x)) x <- as.factor(x)
+  levels(x)
+}
+
+
 
