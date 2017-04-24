@@ -30,7 +30,9 @@ Imports:
     dplyr,
     tidyr,
     survMisc,
-    cmprsk
+    cmprsk,
+    purrr,
+    tibble
 Suggests:
     knitr,
     KMsurv
