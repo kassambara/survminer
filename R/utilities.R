@@ -247,10 +247,67 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
   round(labels*xtrans,2)
 }
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# General helper functions
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+# Returns the levels of a factor variable
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 .levels <- function(x){
   if(!is.factor(x)) x <- as.factor(x)
   levels(x)
+}
+
+# Check if is a list
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+.is_list <- function(x){
+  inherits(x, "list")
+}
+
+# Collapse one or two vectors
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+.collapse <- function(x, y = NULL, sep = "."){
+  if(missing(y))
+    paste(x, collapse = sep)
+  else if(is.null(x) & is.null(y))
+    return(NULL)
+  else if(is.null(x))
+    return (as.character(y))
+  else if(is.null(y))
+    return(as.character(x))
+  else
+    paste0(x, sep, y)
+}
+
+# Check if en object is empty
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+.is_empty <- function(x){
+  length(x) == 0
+}
+
+
+# Pasting the column name to each value of a dataframe
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+.paste_colnames <- function(data, sep = "."){
+
+  data <- as.data.frame(data)
+
+  if(ncol(data) == 1){
+
+    res <- paste0(colnames(data), ".", data[[1]])
+    res <- data.frame(x = res, stringsAsFactors = FALSE)
+    colnames(res) <- colnames(data)
+    return(res)
+  }
+
+  res <- apply(data, 1,
+               function(row, cname){paste(cname, row, sep = sep)},
+               colnames(data)
+  ) %>%
+    t() %>%
+    as.data.frame(stringsAsFactors = FALSE)
+  colnames(res) <- colnames(data)
+  res
 }
 
 
