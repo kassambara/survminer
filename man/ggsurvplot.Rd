@@ -2,14 +2,11 @@
 % Please edit documentation in R/ggsurvplot.R
 \name{ggsurvplot}
 \alias{ggsurvplot}
-\alias{ggsurvplot_core}
 \alias{print.ggsurvplot}
 \title{Drawing Survival Curves Using ggplot2}
 \usage{
-ggsurvplot(fit, data, ...)
-
-ggsurvplot_core(fit, data = NULL, fun = NULL, color = NULL,
-  palette = NULL, linetype = 1, break.x.by = NULL, break.y.by = NULL,
+ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
+  linetype = 1, break.x.by = NULL, break.y.by = NULL,
   break.time.by = NULL, surv.scale = c("default", "percent"), xscale = 1,
   conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
   censor = TRUE, censor.shape = "+", censor.size = 4.5, pval = FALSE,
@@ -44,10 +41,6 @@ ggsurvplot_core(fit, data = NULL, fun = NULL, color = NULL,
 
 \item{data}{a dataset used to fit survival curves. If not supplied then data
 will be extracted from 'fit' object.}
-
-\item{...}{other arguments to be passed i) to ggplot2 geom_*() functions such
-as linetype, size, ii) or to the function ggpubr::ggpar() for customizing
-the plots. See details section.}
 
 \item{fun}{an arbitrary function defining a transformation of the survival
 curve.  Often used transformations can be specified with a character
@@ -251,6 +244,10 @@ line at median survival. Allowed values include one of c("none", "hv", "h",
 \link{theme_survminer}. Allowed values include ggplot2 official themes: see
 \code{\link[ggplot2]{theme}}.}
 
+\item{...}{other arguments to be passed i) to ggplot2 geom_*() functions such
+as linetype, size, ii) or to the function ggpubr::ggpar() for customizing
+the plots. See details section.}
+
 \item{x}{an object of class ggsurvplot}
 
 \item{newpage}{open a new page. See \code{\link{grid.arrange}}}
@@ -266,19 +263,9 @@ return an object of class ggsurvplot which is list containing the
  curves (data.frame). }
 }
 \description{
-Drawing survival curves using ggplot2. \itemize{ \item
- \strong{ggsurvplot()}: Wrapper arround \code{ggsurvplot_core}() and the
- other \code{ggsurvplot_*()} family functions to plot survival curves from one or
- multiple \code{survfit} objects. Accepts further arguments to be passed to
- the \code{ggsurvplot_*()} functions.\cr\cr Has options to: \itemize{ \item
- plot a list of survfit objects, \item facet survival curves into multiple
- panels, \item group  dataset by one or two grouping variables and to create
- the survival curves in each subset, \item combine multiple \code{survfit}
- objects into one plot, \item add survival curves of the pooled patients
- (null model) onto the main stratified plot, \item plot survival curves from
- a data frame containing survival curve summary as returned by
- \link{surv_summary}(). } \item \strong{ggsurvplot_core()}: Core function for
- drawing survival curves. Accepts only one survfit object. Internally called by the other \code{ggsurvplot_*()} family functions.}
+Core function to plot survival curves using ggplot2.  Accepts
+ only one survfit object. Internally called by the other
+ \code{ggsurvplot_*()} family functions.
 }
 \details{
 \itemize{ \item \strong{legend position}: The argument
@@ -305,9 +292,7 @@ Drawing survival curves using ggplot2. \itemize{ \item
 }
 \section{Functions}{
 \itemize{
-\item \code{ggsurvplot}: Draws survival curves using ggplot2.
-
-\item \code{ggsurvplot_core}: Core function for drawing survival curves.
+\item \code{ggsurvplot}: Core function for drawing survival curves.
 }}
 
 \examples{
@@ -409,6 +394,7 @@ grid::grid.draw(g)
 ggsurvplot(fit, data = lung, pval = TRUE)
 ggsurvplot(fit, data = lung, pval = 0.03)
 ggsurvplot(fit, data = lung, pval = "The hot p-value is: 0.031")
+
 }
 \author{
 Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
