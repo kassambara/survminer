@@ -144,7 +144,7 @@ NULL
 #'  \link{theme_survminer}. Allowed values include ggplot2 official themes: see
 #'  \code{\link[ggplot2]{theme}}.
 #'@param ... other arguments to be passed i) to ggplot2 geom_*() functions such
-#'  as linetype, size, ii) or to the function ggpubr::ggpar() for customizing
+#'  as linetype, size, ii) or to the function \link[ggpubr](ggpar)() for customizing
 #'  the plots. See details section.
 #'@param log.rank.weights The name for the type of weights to be used in
 #'  computing the p-value for log-rank test. By default \code{survdiff} is used

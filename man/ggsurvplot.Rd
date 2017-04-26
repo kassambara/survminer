@@ -245,7 +245,7 @@ line at median survival. Allowed values include one of c("none", "hv", "h",
 \code{\link[ggplot2]{theme}}.}
 
 \item{...}{other arguments to be passed i) to ggplot2 geom_*() functions such
-as linetype, size, ii) or to the function ggpubr::ggpar() for customizing
+as linetype, size, ii) or to the function \link[ggpubr](ggpar)() for customizing
 the plots. See details section.}
 
 \item{x}{an object of class ggsurvplot}
