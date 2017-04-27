@@ -52,4 +52,4 @@
 
 #' @rdname add_ggsurvplot
 #' @export
-"%+%" <- `+.ggsurv`
+"%++%" <- `+.ggsurv`

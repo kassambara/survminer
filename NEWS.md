@@ -10,7 +10,8 @@
     - If character, allowed options include one of c("d_m", "d_y", "m_d", "m_y", "y_d", "y_m"), where d = days, m = months and y = years. For example, xscale = "d_m" will transform labels from days to months; xscale = "m_y", will transform labels from months to years ([#166](https://github.com/kassambara/survminer/issues/166)). 
     
 - New arguments `censor.shape` and `censor.size` to change the shape and the shape of censors ([#186](https://github.com/kassambara/survminer/issues/186) & [#187](https://github.com/kassambara/survminer/issues/187)).
-
+     
+    
 ## Major changes
 
 - The `ggforest()` function has changed a lot. Now presents much more statistics for each level of each variable (extracted with `broom::tidy`) and also some statistics for the `coxph` model, like AIC, p.value, concordance (extracted with `broom::glance`) ([#178](https://github.com/kassambara/survminer/issues/178))
@@ -40,6 +41,8 @@ ggsurv$plot + facet_grid(rx ~ adhere)
 - `ggsurvplot()`: Now, log scale is used for x-axis when plotting the complementary log−log function (argument `fun = "cloglog") ([#171](https://github.com/kassambara/survminer/issues/171)).
 
 - Now, the argument `palette` in `ggsurvplot()` ccan be also a numeric vector of length(strata); in this case a basic color palette is created using the function `grDevices::palette()`.
+   
+- The `%+%` function in `survminer` has been replaced by `%++%` to avoid breaking the `ggplot2::%+%` function behavior when using survminer ([#199](https://github.com/kassambara/survminer/issues/199) and [#200](https://github.com/kassambara/survminer/issues/200)). 
 
 ## Bug fixes
    
