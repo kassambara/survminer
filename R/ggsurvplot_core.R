@@ -1,4 +1,4 @@
-#' @include utilities.R theme_classic2.R surv_summary.R ggsurvplot_df.R surv_pvalue.R
+#' @include utilities.R surv_summary.R ggsurvplot_df.R surv_pvalue.R ggsurvtable.R
 #
 # Core function to plot survival curves using ggplot2.
 # Accepts only one survfit object. Internally called by the other \code{ggsurvplot_*()} family functions.
@@ -69,7 +69,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   # Data
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   # data used to compute survfit
-  data <- .get_data(fit, data = data)
+  data <- .get_data(fit, data = data, complain = FALSE)
   # Data for survival plot
   d <- surv_summary(fit, data = data)
 
@@ -90,26 +90,15 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   # The main plot parameters, will be used to plot survival tables
   pms <- attr(p, "parameters")
   color <- surv.color <- pms$color
-  palette <- pms$palette
-  break.time.by <- pms$break.time.by
-  xlim <- pms$xlim
-  legend <- pms$legend
-  legend.title <- pms$legend.title
-  legend.labs <- pms$legend.labs
-  xlog <- pms$xlog
-  time.breaks <- pms$time.breaks
-  xlab  <- pms$xlab
-  ylab <- pms$ylab
-  xscale <- pms$xscale
-  xticklabels <- pms$xticklabels
 
   # Add pvalue
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   # Compute pvalue or parse it if provided by the user
   pval <- surv_pvalue(fit, method = log.rank.weights, data = data,
                       pval = pval, pval.coord = pval.coord,
                       pval.method.coord = pval.method.coord)
 
-  if(!is.na(pval$pval)){
+  if(pval$pval.txt != ""){
     p <- p + ggplot2::annotate("text", x = pval$pval.x, y = pval$pval.y,
                                label = pval$pval.txt, size = pval.size, hjust = 0)
     if(pval.method)
@@ -119,6 +108,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 
 
   # Drawing a horizontal line at 50% survival
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   #if(surv.scale == "percent") fun <- "pct"
   if(surv.median.line %in% c("hv", "h", "v"))
     p <- .add_surv_median(p, fit, type = surv.median.line, fun = fun, data = data)
@@ -128,45 +118,51 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   # Extract strata colors used in survival curves
   # Will be used to color the y.text of risk table and cumevents table
   if(risk.table | cumevents | cumcensor | ncensor.plot){
-    g <- ggplot_build(p)
-    scurve_cols <- unlist(unique(g$data[[1]]["colour"]))
-    if(length(scurve_cols)==1) scurve_cols <- rep(scurve_cols, length(legend.labs))
-    names(scurve_cols) <- legend.labs # Give every color an appropriate name
+    scurve_cols <- .extract_ggplot_colors (p, grp.levels = legend.labs)
   }
+
+
+  # The main plot parameters, will be used to plot survival tables
+  pms <- attr(p, "parameters")
+  surv.color <- pms$color
+
+  pms$fit <- fit
+  pms$data <- data
+  pms$risk.table.type <- risk.table.type
+  pms$risk.table.title <- risk.table.title
+  pms$cumevents.title <- cumevents.title
+  pms$cumcensor.title <- cumcensor.title
+  pms$fontsize <- fontsize
+  pms$ggtheme <- ggtheme
+  pms$ylab <- pms$legend.title
+  pms$tables.theme <- tables.theme
+  pms$y.text <- tables.y.text
+  pms$color <- tables.col
 
 
   # Add risk table
   if(risk.table){
     if(risk.table.pos == "in") risk.table.col = surv.color
-    risktable <- ggrisktable(fit, data = data, type = risk.table.type, color = risk.table.col,
-                             palette = palette, break.time.by = break.time.by,
-                             xlim = xlim, title = risk.table.title,
-                             legend = legend, legend.title = legend.title, legend.labs = legend.labs,
-                             y.text = risk.table.y.text, y.text.col = risk.table.y.text.col,
-                             fontsize = risk.table.fontsize, ggtheme = ggtheme,
-                             xlab = xlab, ylab = legend.title, xlog = xlog, xscale = xscale,
-                             ...)
-    risktable <- risktable + tables.theme
-    if(!risk.table.y.text) risktable <- .set_large_dash_as_ytext(risktable)
+    pms$color <- risk.table.col
+    pms$title <- risk.table.title
+    pms$y.text <- risk.table.y.text
+    pms$y.text.col <- risk.table.y.text.col
+    pms$fontsize <- risk.table.fontsize
+    pms$survtable <- "risk.table"
     # color risk.table ticks by strata
-    if(risk.table.y.text.col)
-      risktable <- risktable + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
-    res$table <- risktable
+    if(risk.table.y.text.col) pms$y.text.col <- .extract_ggplot_colors (p, grp.levels = pms$legend.labs)
+    res$table <- risktable <- do.call(ggsurvtable, pms)
   }
 
   # Add the cumulative number of events
   if(cumevents){
-    res$cumevents <- ggcumevents (fit, data = data, color = cumevents.col,
-                                  palette = palette, break.time.by = break.time.by,
-                                  xlim = xlim, title = cumevents.title,
-                                  legend = legend, legend.title = legend.title, legend.labs = legend.labs,
-                                  y.text = cumevents.y.text, y.text.col = cumevents.y.text.col,
-                                  fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
-                                  xlog = xlog, xscale = xscale, ...)
-    res$cumevents <- res$cumevents + tables.theme
-    if(!cumevents.y.text) res$cumevents <- .set_large_dash_as_ytext(res$cumevents)
-    if(cumevents.y.text.col)
-      res$cumevents <- res$cumevents + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
+    pms$color <- cumevents.col
+    pms$title <- cumevents.title
+    pms$y.text <- cumevents.y.text
+    pms$y.text.col <- cumevents.y.text.col
+    pms$fontsize <- fontsize
+    pms$survtable <- "cumevents"
+    res$cumevents <- do.call(ggsurvtable, pms)
   }
 
   # Add ncensor.plot or cumcensor plot
@@ -179,8 +175,8 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
       scale_y_continuous(breaks = sort(unique(d$n.censor))) +
       ggtheme
 
-    ncensor_plot <- ggpubr::ggpar(ncensor_plot, palette = palette)
-    ncensor_plot <- ncensor_plot + ggplot2::labs(color = legend.title, fill = legend.title,
+    ncensor_plot <- ggpubr::ggpar(ncensor_plot, palette = pms$palette)
+    ncensor_plot <- ncensor_plot + ggplot2::labs(color = pms$legend.title, fill = pms$legend.title,
                                                  x = xlab, y = "n.censor", title = ncensor.plot.title)
 
     # For backward compatibility
@@ -188,25 +184,22 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot,  ...) # specific graphical params
     ncensor_plot <- ncensor_plot + tables.theme
 
-    if(!xlog) ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = time.breaks, labels = xticklabels)
-    else ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = time.breaks, trans = "log10", labels = xticklabels)
+    if(!pms$xlog) ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = pms$time.breaks, labels = pms$xticklabels)
+    else ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = pms$time.breaks, trans = "log10", labels = pms$xticklabels)
 
   }
   else if(cumcensor){
-    ncensor_plot <- ggcumcensor (fit, data = data, color = cumcensor.col,
-                                 palette = palette, break.time.by = break.time.by,
-                                 xlim = xlim, title = cumcensor.title,
-                                 legend = legend, legend.title = legend.title, legend.labs = legend.labs,
-                                 y.text = cumcensor.y.text, y.text.col = cumcensor.y.text.col,
-                                 fontsize = fontsize, ggtheme = ggtheme, xlab = xlab, ylab = legend.title,
-                                 xlog = xlog, xscale = xscale, ...)
-    ncensor_plot <- ncensor_plot + tables.theme
-    if(!cumcensor.y.text) ncensor_plot <- .set_large_dash_as_ytext(ncensor_plot)
-    if(cumcensor.y.text.col)
-      ncensor_plot <- ncensor_plot + theme(axis.text.y = element_text(colour = rev(scurve_cols)))
+    pms$color <- cumcensor.col
+    pms$title <- cumcensor.title
+    pms$y.text <- cumcensor.y.text
+    pms$y.text.col <- cumcensor.y.text.col
+    pms$fontsize <- fontsize
+    pms$survtable <- "cumcensor"
+    ncensor_plot  <- do.call(ggsurvtable, pms)
   }
   if(ncensor.plot | cumcensor)
     res$ncensor.plot <- ncensor_plot
+
 
   # Defining attributs for ggsurvplot
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -229,7 +222,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 
   # Returning the data used to generate the survival plots
   res$data.survplot <- d
-  res$data.survtable <- .get_timepoints_survsummary(fit, data, time.breaks)
+  res$data.survtable <- .get_timepoints_survsummary(fit, data, pms$time.breaks)
 
   class(res) <- c("ggsurvplot", "ggsurv", "list")
   attr(res, "heights") <- heights
@@ -458,3 +451,5 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   }
   res
 }
+
+
