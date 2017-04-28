@@ -34,9 +34,21 @@ Add survival curves of pooled patients onto the main plot stratified by grouping
 }
 \examples{
 library(survival)
+
+# Fit survival curves
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
-ggsurvplot_add_all(fit, data = lung, risk.table = TRUE, pval = TRUE,
-                  palette = "jco", surv.median.line = "hv")
+
+# Visualize survival curves
+ggsurvplot(fit, data = lung,
+          risk.table = TRUE, pval = TRUE,
+          surv.median.line = "hv", palette = "jco")
+
+# Add survival curves of pooled patients (Null model)
+# Use add.all = TRUE option
+ggsurvplot(fit, data = lung,
+          risk.table = TRUE, pval = TRUE,
+          surv.median.line = "hv", palette = "jco",
+          add.all = TRUE)
 
 }
 \seealso{
