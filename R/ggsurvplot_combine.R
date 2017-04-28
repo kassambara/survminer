@@ -28,7 +28,7 @@ NULL
 #'    pfs.status = colon$status,
 #'    sex = colon$sex, rx = colon$rx, adhere = colon$adhere
 #'  )
-#
+#'
 #' # Survival fit 1
 #' #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #'  # Fit
@@ -37,7 +37,7 @@ NULL
 #'  # Combine on the same plot
 #'  fit <- list(PFS = pfs, OS = os)
 #'  ggsurvplot_combine(fit, demo.data)
-#
+#'
 #' # Survival fit 2
 #' #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #' # Fit
@@ -210,9 +210,9 @@ ggsurvplot_combine <- function(fit, data,
     surv.plot.height <- ifelse(is.null(.dots$surv.plot.height), 0.75, .dots$surv.plot.height)
     heights <- list(
       plot =  surv.plot.height,
-      table =  tables.height,
-      ncensor.plot = tables.height,
-      cumevents = tables.height
+      table =  ifelse(risk.table, tables.height, 0),
+      ncensor.plot = ifelse(cumcensor, tables.height, 0),
+      cumevents = ifelse(cumevents, tables.height, 0)
     )
     y.text <- list(
       table =  tables.y.text,

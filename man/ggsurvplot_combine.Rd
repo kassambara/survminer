@@ -75,6 +75,7 @@ library(survival)
    pfs.status = colon$status,
    sex = colon$sex, rx = colon$rx, adhere = colon$adhere
  )
+
 # Survival fit 1
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
  # Fit
@@ -83,6 +84,7 @@ library(survival)
  # Combine on the same plot
  fit <- list(PFS = pfs, OS = os)
  ggsurvplot_combine(fit, demo.data)
+
 # Survival fit 2
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 # Fit
