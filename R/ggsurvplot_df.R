@@ -80,7 +80,10 @@ ggsurvplot_df <- function(fit, fun = NULL,
   # one group
   if(is.null(df$strata)){
     df$strata <- as.factor(rep("All", nrow(df)))
-    if(missing(conf.int)) conf.int = TRUE
+    if(missing(conf.int)){
+      conf.int = TRUE
+      conf.int.fill = "strata"
+    }
   }
 
 
