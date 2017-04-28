@@ -92,7 +92,7 @@ Alias of the \code{\link{ggsurvplot_group_by}()} function.}
 to facet the survival curves into multiple panels. Should be of length <= 2.
 Alias of the \code{\link{ggsurvplot_facet}()} function.}
 
-\item{add.all}{a logical value. If TURE, add the survival curve of pooled patients (null model) onto the main plot.
+\item{add.all}{a logical value. If TRUE, add the survival curve of pooled patients (null model) onto the main plot.
 Alias of the \code{\link{ggsurvplot_add_all}()} function.}
 
 \item{combine}{a logical value. If TRUE, combine a list survfit objects on the same plot.

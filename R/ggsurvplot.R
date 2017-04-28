@@ -32,7 +32,7 @@ NULL
 #'@param facet.by a character vector containing the name of grouping variables
 #'to facet the survival curves into multiple panels. Should be of length <= 2.
 #' Alias of the \code{\link{ggsurvplot_facet}()} function.
-#'@param add.all a logical value. If TURE, add the survival curve of pooled patients (null model) onto the main plot.
+#'@param add.all a logical value. If TRUE, add the survival curve of pooled patients (null model) onto the main plot.
 #'Alias of the \code{\link{ggsurvplot_add_all}()} function.
 #'@param combine a logical value. If TRUE, combine a list survfit objects on the same plot.
 #'Alias of the \code{\link{ggsurvplot_combine}()} function.
