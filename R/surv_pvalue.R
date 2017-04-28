@@ -185,9 +185,9 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", combine = FALSE, 
   else if(is.character(pval))
     res <- list(pval = NA, method = "", pval.txt = pval)
   # One group, NULL model ==> there are no groups to compare
-  else if(is.null(fit$strata)){
+  else if(is.null(fit$strata) & pval == TRUE){
     warning("There are no survival curves to be compared. \n This is a null model.",
-            call. = FALSE)
+            call. = TRUE)
   }
   # else if pval = FALSE ===> exit
   else if(is.logical(pval) & !pval){}
