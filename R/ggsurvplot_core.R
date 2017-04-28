@@ -66,8 +66,9 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   risk.table.type <- risktable$type
   extra.params <- list(...)
 
+
   # Data
-  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   # data used to compute survfit
   data <- .get_data(fit, data = data, complain = FALSE)
   # Data for survival plot
@@ -118,7 +119,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   # Extract strata colors used in survival curves
   # Will be used to color the y.text of risk table and cumevents table
   if(risk.table | cumevents | cumcensor | ncensor.plot){
-    scurve_cols <- .extract_ggplot_colors (p, grp.levels = legend.labs)
+    scurve_cols <- .extract_ggplot_colors (p, grp.levels = pms$legend.labs)
   }
 
 
@@ -150,7 +151,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     pms$fontsize <- risk.table.fontsize
     pms$survtable <- "risk.table"
     # color risk.table ticks by strata
-    if(risk.table.y.text.col) pms$y.text.col <- .extract_ggplot_colors (p, grp.levels = pms$legend.labs)
+    if(risk.table.y.text.col) pms$y.text.col <- scurve_cols
     res$table <- risktable <- do.call(ggsurvtable, pms)
   }
 
@@ -159,7 +160,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     pms$color <- cumevents.col
     pms$title <- cumevents.title
     pms$y.text <- cumevents.y.text
-    pms$y.text.col <- cumevents.y.text.col
+    if(cumevents.y.text.col) pms$y.text.col <- scurve_cols
     pms$fontsize <- fontsize
     pms$survtable <- "cumevents"
     res$cumevents <- do.call(ggsurvtable, pms)
@@ -191,7 +192,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   else if(cumcensor){
     pms$color <- cumcensor.col
     pms$title <- cumcensor.title
-    pms$y.text <- cumcensor.y.text
+    if(cumcensor.y.text.col) pms$y.text.col <- scurve_cols
     pms$y.text.col <- cumcensor.y.text.col
     pms$fontsize <- fontsize
     pms$survtable <- "cumcensor"
@@ -247,6 +248,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   y.text.col <- attr(x, "y.text.col")
   cumcensor <- attr(x, "cumcensor")
 
+
   risk.table.pos <- attr(x, "risk.table.pos")
   if(risk.table.pos == "in") x <- .put_risktable_in_survplot(x)
 
@@ -279,17 +281,16 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     x$table <- .hide_legend(x$table)
     if(!y.text$table) x$table <- .set_large_dash_as_ytext(x$table)
     # Make sure that risk.table.y.text.col will be the same as the plot legend colors
-    if(y.text.col$table)
-      x$table <- x$table + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+   # if(y.text.col$table)
+   #    x$table <- x$table + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
   }
-
 
   if(!is.null(x$cumevents)){
     x$cumevents <- .hide_legend(x$cumevents)
     if(!y.text$cumevents) x$cumevents <- .set_large_dash_as_ytext(x$cumevents)
     # Make sure that y.text.col will be the same as the plot legend colors
-    if(y.text.col$cumevents)
-      x$cumevents <- x$cumevents + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+    #if(y.text.col$cumevents)
+    #  x$cumevents <- x$cumevents + ggplot2::theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
   }
 
 
@@ -297,8 +298,8 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     x$ncensor.plot <- x$ncensor.plot + theme (legend.position = "none")
     if(cumcensor){
       if(!y.text$cumcensor) x$ncensor.plot <- .set_large_dash_as_ytext(x$ncensor.plot)
-      if(y.text.col$cumcensor)
-        x$ncensor.plot <- x$ncensor.plot + theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
+      #if(y.text.col$cumcensor)
+       # x$ncensor.plot <- x$ncensor.plot + theme(axis.text.y = ggplot2::element_text(colour = rev(cols)))
     }
   }
 
@@ -317,6 +318,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   for (i in 1:length(grobs)) {
     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
   }
+
 
   ggsurv <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
 
