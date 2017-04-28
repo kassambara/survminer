@@ -383,8 +383,17 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     else if(add.all){
       ggsurv <- do.call(ggsurvplot_add_all, opts)
     }
-    else
+
+    else{
+      if(is.null(fit$strata)){
+        if(missing(conf.int)){
+          opts$conf.int = TRUE
+          opts$conf.int.fill = "strata"
+        }
+      }
       ggsurv <- do.call(ggsurvplot_core, opts)
+    }
+
   }
 
 
