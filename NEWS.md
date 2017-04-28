@@ -5,7 +5,10 @@
    
 - New option `add.all` added now in `ggsurvplot()` to add he survival curves of (all) pooled patients onto the main survival plot stratified by grouping variables. Alias of the `ggsurvplot_add_all()` function ([#194](https://github.com/kassambara/survminer/issues/194)).
     
-New option `combine = TRUE` is now available in the `ggsurvplot()` function to combine a list survfit objects on the same plot. Alias of the *ggsurvplot_combine*() function ([#195](https://github.com/kassambara/survminer/issues/195)).
+- New option `combine = TRUE` is now available in the `ggsurvplot()` function to combine a list survfit objects on the same plot. Alias of the *ggsurvplot_combine*() function ([#195](https://github.com/kassambara/survminer/issues/195)).
+
+-  The standard convention of ggplot2 is to have the axes offset from the origin. This is annoying with Kaplan-Meier plots. Now  we force the origin of `ggsurvplot()` to start at 0 ([#196](https://github.com/kassambara/survminer/issues/196)). 
+
 
 
 - In `ggsurvplot()`, one can specify pval = TRUE/FALSE as a logical value. Now, it's also possible to specify the argument `pval` as a numeric value (e.g.: pval = 0.002), that will be passed to the plot, so that user can pass any custom p-value to the final plot ([@MarcinKosinski, #189](https://github.com/kassambara/survminer/issues/189)) or one can specify it as a character string (e.g.: pval = "p < 0001") ([@MarcinKosinski, #193](https://github.com/kassambara/survminer/issues/193)).
