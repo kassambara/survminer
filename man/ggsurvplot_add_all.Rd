@@ -36,7 +36,7 @@ Add survival curves of pooled patients onto the main plot stratified by grouping
 library(survival)
 
 # Fit survival curves
-fit <- survfit(Surv(time, status) ~ sex, data = lung)
+fit <- surv_fit(Surv(time, status) ~ sex, data = lung)
 
 # Visualize survival curves
 ggsurvplot(fit, data = lung,
