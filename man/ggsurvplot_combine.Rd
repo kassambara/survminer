@@ -76,7 +76,7 @@ library(survival)
    sex = colon$sex, rx = colon$rx, adhere = colon$adhere
  )
 
-# Survival fit 1
+# Ex1: Combine null models
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
  # Fit
  pfs <- survfit( Surv(pfs.time, pfs.status) ~ 1, data = demo.data)
@@ -85,11 +85,11 @@ library(survival)
  fit <- list(PFS = pfs, OS = os)
  ggsurvplot_combine(fit, demo.data)
 
-# Survival fit 2
+# Combine survival curves stratified by treatment assignment rx
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 # Fit
-pfs <- survfit( Surv(pfs.time, pfs.status) ~ adhere, data = demo.data)
-os <- survfit( Surv(os.time, os.status) ~ adhere, data = demo.data)
+pfs <- survfit( Surv(pfs.time, pfs.status) ~ rx, data = demo.data)
+os <- survfit( Surv(os.time, os.status) ~ rx, data = demo.data)
 # Combine on the same plot
 fit <- list(PFS = pfs, OS = os)
 ggsurvplot_combine(fit, demo.data)
