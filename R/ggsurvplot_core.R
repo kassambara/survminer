@@ -185,7 +185,8 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     ncensor_plot <- .set_ncensorplot_gpar(ncensor_plot,  ...) # specific graphical params
     ncensor_plot <- ncensor_plot + tables.theme
 
-    if(!pms$xlog) ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = pms$time.breaks, labels = pms$xticklabels)
+    if(!pms$xlog) ncensor_plot <- ncensor_plot + scale_x_continuous(breaks = pms$time.breaks,
+                                                                    labels = pms$xticklabels, expand = c(0,0))
     else ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = pms$time.breaks, trans = "log10", labels = pms$xticklabels)
 
   }

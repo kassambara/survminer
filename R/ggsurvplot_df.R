@@ -146,7 +146,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
 
   p <- ggplot2::ggplot(df, ggplot2::aes_string("time", "surv")) +
     ggpubr::geom_exec(ggplot2::geom_step, data = df, size = size, color = color, linetype = linetype, ...) +
-    ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim) +
+    ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim, expand = c(0,0)) +
     ggplot2::coord_cartesian(xlim = xlim)+
     ggtheme
   p <- ggpubr::ggpar(p, palette = palette, ...)
@@ -164,7 +164,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
   xticklabels <- .format_xticklabels(labels = times, xscale = xscale)
 
   if(!.is_cloglog(fun)) {
-    p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels) +
+    p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels, expand = c(0,0)) +
       ggplot2::expand_limits(x = 0, y = 0)
   }
   else p <- p + ggplot2::scale_x_continuous(breaks = times, trans = "log10", labels = xticklabels)

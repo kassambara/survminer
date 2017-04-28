@@ -108,6 +108,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   if(!is.null(break.time.by) &!xlog) times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
 
 
+
   # Surv summary at specific time points
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   if(.is_survfit(fit)){
@@ -239,8 +240,6 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   n_strata <- length(levels(survsummary$strata))
   if(!y.text) yticklabs <- rep("-", n_strata)
 
-
-
   time <- strata <- label <- n.event <- cum.n.event  <- cum.n.censor<- NULL
 
   # Ploting the cumulative number of events table
@@ -273,6 +272,11 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
 
   # Plotting survival table
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  # Tables labels Offset from origing
+  offset <- max(xlim)/30
+  survsummary <- survsummary %>%
+    dplyr::mutate(time = ifelse(time == 0, offset, time))
+
   p <- ggplot(survsummary, mapping) +
     scale_shape_manual(values = 1:length(levels(survsummary$strata)))+
     ggpubr::geom_exec(geom_text, data = survsummary, size = fontsize, color = color) +
@@ -289,8 +293,9 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   # Customize axis ticks
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   xticklabels <- .format_xticklabels(labels = times, xscale = xscale)
-  if(!xlog) p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels)
-  else p <- p + ggplot2::scale_x_continuous(breaks = times, trans = "log10", labels = xticklabels)
+  if(!xlog) p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels, expand = c(0,0))
+  else p <- p + ggplot2::scale_x_continuous(breaks = times,
+                                            trans = "log10", labels = xticklabels)
 
   p <- p + tables.theme
 
