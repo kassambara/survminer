@@ -57,7 +57,7 @@ fit<- survfit(Surv(time, status) ~ sex, data = lung)
 ggsurv <- ggsurvplot(fit, data = lung, risk.table = TRUE,
    main = "Survival curves",
    submain = "Based on Kaplan-Meier estimates",
-   caption = "created with survminer",
+   caption = "created with survminer"
    )
 
 # Change font size, style and color

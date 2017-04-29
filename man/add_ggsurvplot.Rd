@@ -3,12 +3,12 @@
 \name{add_ggsurvplot}
 \alias{add_ggsurvplot}
 \alias{+.ggsurv}
-\alias{\%+\%}
+\alias{\%++\%}
 \title{Add Components to a ggsurvplot}
 \usage{
 \method{+}{ggsurv}(e1, e2)
 
-e1 \%+\% e2
+e1 \%++\% e2
 }
 \arguments{
 \item{e1}{an object of class ggsurv.}

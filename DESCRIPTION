@@ -30,10 +30,14 @@ Imports:
     dplyr,
     tidyr,
     survMisc,
-    cmprsk
+    cmprsk,
+    purrr,
+    tibble
 Suggests:
     knitr,
     KMsurv
+Remotes:
+    kassambara/ggpubr
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
@@ -44,7 +48,13 @@ Collate:
     'add_ggsurvplot.R'
     'utilities.R'
     'surv_summary.R'
-    'theme_classic2.R'
+    'ggsurvtable.R'
+    'surv_pvalue.R'
+    'ggsurvplot_df.R'
+    'ggsurvplot_core.R'
+    'ggsurvplot_add_all.R'
+    'ggsurvplot_list.R'
+    'ggsurvplot_group_by.R'
     'ggsurvplot.R'
     'arrange_ggsurvplots.R'
     'ggcompetingrisks.R'
@@ -52,12 +62,16 @@ Collate:
     'ggcoxdiagnostics.R'
     'ggcoxfunctional.R'
     'ggcoxzph.R'
-    'ggcumcensor.R'
-    'ggcumevents.R'
     'ggforest.R'
-    'ggrisktable.R'
     'ggsurvevents.R'
+    'ggsurvplot_combine.R'
+    'ggsurvplot_facet.R'
     'ggsurvtheme.R'
+    'ggurvplot_arguments.R'
     'myeloma.R'
     'pairwise_survdiff.R'
     'surv_cutpoint.R'
+    'surv_group_by.R'
+    'surv_fit.R'
+    'surv_median.R'
+    'theme_classic2.R'

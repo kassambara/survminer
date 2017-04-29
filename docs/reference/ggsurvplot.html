@@ -89,12 +89,13 @@
 
     <pre><span class='fu'>ggsurvplot</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>linetype</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>break.x.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>break.y.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>break.time.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>surv.scale</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"default"</span>, <span class='st'>"percent"</span>),
+  <span class='kw'>break.time.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>surv.scale</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"default"</span>, <span class='st'>"percent"</span>), <span class='kw'>xscale</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conf.int.fill</span> <span class='kw'>=</span> <span class='st'>"gray"</span>, <span class='kw'>conf.int.style</span> <span class='kw'>=</span> <span class='st'>"ribbon"</span>,
-  <span class='kw'>censor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pval.size</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>pval.coord</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>NULL</span>,
-  <span class='kw'>NULL</span>), <span class='kw'>pval.method</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pval.method.size</span> <span class='kw'>=</span> <span class='no'>pval.size</span>,
-  <span class='kw'>pval.method.coord</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>NULL</span>, <span class='kw'>NULL</span>), <span class='kw'>log.rank.weights</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"survdiff"</span>, <span class='st'>"1"</span>,
-  <span class='st'>"n"</span>, <span class='st'>"sqrtN"</span>, <span class='st'>"S1"</span>, <span class='st'>"S2"</span>, <span class='st'>"FH_p=1_q=1"</span>), <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>,
+  <span class='kw'>censor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>censor.shape</span> <span class='kw'>=</span> <span class='st'>"+"</span>, <span class='kw'>censor.size</span> <span class='kw'>=</span> <span class='fl'>4.5</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>pval.size</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>pval.coord</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>NULL</span>, <span class='kw'>NULL</span>), <span class='kw'>pval.method</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>pval.method.size</span> <span class='kw'>=</span> <span class='no'>pval.size</span>, <span class='kw'>pval.method.coord</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='kw'>NULL</span>, <span class='kw'>NULL</span>),
+  <span class='kw'>log.rank.weights</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"survdiff"</span>, <span class='st'>"1"</span>, <span class='st'>"n"</span>, <span class='st'>"sqrtN"</span>, <span class='st'>"S1"</span>, <span class='st'>"S2"</span>,
+  <span class='st'>"FH_p=1_q=1"</span>), <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>,
   <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival probability"</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"top"</span>, <span class='st'>"bottom"</span>, <span class='st'>"left"</span>, <span class='st'>"right"</span>, <span class='st'>"none"</span>),
   <span class='kw'>legend.title</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>, <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tables.height</span> <span class='kw'>=</span> <span class='fl'>0.25</span>,
@@ -132,9 +133,18 @@ argument: &quot;event&quot; plots cumulative events (f(y) = 1-y), &quot;cumhaz&q
 cumulative hazard function (f(y) = -log(y)), and &quot;pct&quot; for survival
 probability in percentage.</dd>
       <dt>color</dt>
-      <dd>color to be used for the survival curves. This argument is
-ignored when the number of strata (groups &gt; 1). In this case, use the
-argument palette.</dd>
+      <dd>color to be used for the survival curves. <ul>
+<li> If the
+number of strata/group (n.strata) = 1, the expected value is the color name.
+For example color = &quot;blue&quot;. </li>
+<li> If n.strata &gt; 1, the expected value is the
+grouping variable name. By default, survival curves are colored by strata
+using the argument color = &quot;strata&quot;,  but you can also color survival curves
+by any other grouping variables used to fit the survival curves. In this
+case, it&#39;s possible to specify a custom color palette by using the argument
+palette.</li>
+</ul>
+</dd>
       <dt>palette</dt>
       <dd>the color palette to be used. Allowed values include &quot;hue&quot; for
 the default hue color scale; &quot;grey&quot; for grey color palettes; brewer palettes
@@ -145,14 +155,27 @@ See details section for more information.</dd>
 linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
 character vector c(&quot;solid&quot;, &quot;dashed&quot;).</dd>
       <dt>break.x.by</dt>
-      <dd>alias of break.time.by. Numeric value controlling x axis breaks. Default value is NULL.</dd>
+      <dd>alias of break.time.by. Numeric value controlling x axis
+breaks. Default value is NULL.</dd>
       <dt>break.y.by</dt>
       <dd>same as break.x.by but for y axis.</dd>
       <dt>break.time.by</dt>
-      <dd>numeric value controlling time axis breaks. Default value is NULL.</dd>
+      <dd>numeric value controlling time axis breaks. Default value
+is NULL.</dd>
       <dt>surv.scale</dt>
       <dd>scale transformation of survival curves. Allowed values are
 &quot;default&quot; or &quot;percent&quot;.</dd>
+      <dt>xscale</dt>
+      <dd>numeric or character value specifying x-axis scale. <ul>
+<li> If numeric, the value is used to divide the labels on the x axis. For
+example, a value of 365.25 will give labels in years instead of the original
+days. </li>
+<li> If character, allowed options include one of c(&quot;d_m&quot;, &quot;d_y&quot;,
+&quot;m_d&quot;, &quot;m_y&quot;, &quot;y_d&quot;, &quot;y_m&quot;), where d = days, m = months and y = years. For
+example, xscale = &quot;d_m&quot; will transform labels from days to months; xscale =
+&quot;m_y&quot;, will transform labels from months to years.</li>
+</ul>
+</dd>
       <dt>conf.int</dt>
       <dd>logical value. If TRUE, plots confidence interval.</dd>
       <dt>conf.int.fill</dt>
@@ -162,8 +185,15 @@ character vector c(&quot;solid&quot;, &quot;dashed&quot;).</dd>
 c(&quot;ribbon&quot;, &quot;step&quot;).</dd>
       <dt>censor</dt>
       <dd>logical value. If TRUE, censors will be drawn.</dd>
+      <dt>censor.shape</dt>
+      <dd>character or numeric value specifying the point shape of
+censors. Default value is &quot;+&quot; (3), a sensible choice is &quot;|&quot; (124).</dd>
+      <dt>censor.size</dt>
+      <dd>numveric value specifying the point size of censors. Default is 4.5.</dd>
       <dt>pval</dt>
-      <dd>logical value. If TRUE, the p-value is added on the plot.</dd>
+      <dd>logical value, a numeric or a string. If logical and TRUE, the p-value is added on the plot.
+If numeric, than the computet p-value is substituted with the one passed with this parameter.
+If character, then the customized string appears on the plot. See examples - Example 3.</dd>
       <dt>pval.size</dt>
       <dd>numeric value specifying the p-value text size. Default is 5.</dd>
       <dt>pval.coord</dt>
@@ -210,9 +240,9 @@ of all tables under the main survival plot.</dd>
       <dd>logical. Default is TRUE. If FALSE, the y axis tick
 labels of tables will be hidden.</dd>
       <dt>tables.col</dt>
-      <dd>color to be used for all tables under the main plot. Default value is
-&quot;black&quot;. If you want to color by strata (i.e. groups), use tables.col =
-&quot;strata&quot;.</dd>
+      <dd>color to be used for all tables under the main plot. Default
+value is &quot;black&quot;. If you want to color by strata (i.e. groups), use
+tables.col = &quot;strata&quot;.</dd>
       <dt>risk.table</dt>
       <dd>Allowed values include: <ul>
 <li> TRUE or FALSE
@@ -270,7 +300,8 @@ time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.</dd>
       <dd>logical value specifying whether to show or not the table of
 the cumulative number of events. Default is FALSE.</dd>
       <dt>cumevents.col</dt>
-      <dd>same as tables.col but for the cumulative events table only.</dd>
+      <dd>same as tables.col but for the cumulative events table
+only.</dd>
       <dt>cumevents.title</dt>
       <dd>The title to be used for the cumulative events table.</dd>
       <dt>cumevents.y.text</dt>
@@ -335,29 +366,29 @@ the plots. See details section.</dd>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><ul>
-<li> <strong>legend position</strong>: The argument <strong>legend</strong> can be also a
- numeric vector c(x,y). In this case it is possible to position the legend
- inside the plotting area. x and y are the coordinates of the legend box.
- Their values should be between 0 and 1. c(0,0) corresponds to the &quot;bottom
- left&quot; and c(1,1) corresponds to the &quot;top right&quot; position. For instance use
- legend = c(0.8, 0.2). </li>
-<li> <strong>Color palettes</strong>: The argument
- <strong>palette</strong> can be used to specify the color to be used for each group.
- By default, the first color in the palette is used to color the first level
- of the factor variable. This default behavior can be changed by assigning
- correctly a named vector. That is, the names of colors should match the
- strata names as generated by the <code>ggsurvplot()</code> function in the
- legend. </li>
-<li> <strong>Customizing the plots</strong>: The plot can be easily
- customized using additional arguments to be passed to the function ggpar().
- Read ?ggpubr::ggpar. These arguments include
- <em>font.title, font.subtitle, font.caption, font.x, font.y, font.tickslab and font.legend</em>:
-  a vector of length 3 indicating respectively the size (e.g.: 14), the style
- (e.g.: &quot;plain&quot;, &quot;bold&quot;, &quot;italic&quot;, &quot;bold.italic&quot;) and the color (e.g.: &quot;red&quot;)
- of main title, subtitle, caption, xlab and ylab, axis tick labels and legend,
- respectively. For example <em>font.x = c(14, &quot;bold&quot;, &quot;red&quot;)</em>.  Use font.x
- = 14, to change only font size; or use font.x = &quot;bold&quot;, to change only font
- face.</li>
+<li> <strong>legend position</strong>: The argument
+ <strong>legend</strong> can be also a numeric vector c(x,y). In this case it is
+ possible to position the legend inside the plotting area. x and y are the
+ coordinates of the legend box. Their values should be between 0 and 1.
+ c(0,0) corresponds to the &quot;bottom left&quot; and c(1,1) corresponds to the &quot;top
+ right&quot; position. For instance use legend = c(0.8, 0.2). </li>
+<li>
+ <strong>Color palettes</strong>: The argument <strong>palette</strong> can be used to
+ specify the color to be used for each group. By default, the first color in
+ the palette is used to color the first level of the factor variable. This
+ default behavior can be changed by assigning correctly a named vector. That
+ is, the names of colors should match the strata names as generated by the
+ <code>ggsurvplot()</code> function in the legend. </li>
+<li> <strong>Customizing the
+ plots</strong>: The plot can be easily customized using additional arguments to be
+ passed to the function ggpar(). Read ?ggpubr::ggpar. These arguments include
+ <em>font.title, font.subtitle, font.caption, font.x, font.y, font.tickslab
+ and font.legend</em>: a vector of length 3 indicating respectively the size
+ (e.g.: 14), the style (e.g.: &quot;plain&quot;, &quot;bold&quot;, &quot;italic&quot;, &quot;bold.italic&quot;) and
+ the color (e.g.: &quot;red&quot;) of main title, subtitle, caption, xlab and ylab,
+ axis tick labels and legend, respectively. For example <em>font.x = c(14,
+ &quot;bold&quot;, &quot;red&quot;)</em>.  Use font.x = 14, to change only font size; or use font.x =
+ &quot;bold&quot;, to change only font face.</li>
 </ul></p>
     
     <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
@@ -456,7 +487,16 @@ the plots. See details section.</dd>
 <span class='co'># grid::grid.newpage()</span>
 <span class='co'># grid::grid.draw(g)</span>
 <span class='co'># </span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+<span class='co'>## ---------------------------------------------</span>
+
+<span class='co'>#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class='co'># Example 3: CUSTOMIZED PVALUE</span>
+<span class='co'>#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class='co'># Customized p-value</span>
+<span class='fu'>ggsurvplot</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><img src='ggsurvplot-6.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggsurvplot</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>0.03</span>)</div><img src='ggsurvplot-8.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggsurvplot</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='st'>"The hot p-value is: 0.031"</span>)</div><img src='ggsurvplot-10.png' alt='' width='540' height='400' /><div class='input'>
+
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

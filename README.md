@@ -8,6 +8,7 @@
     -   [ggsurvplot: Drawing survival curves](#ggsurvplot-drawing-survival-curves)
         -   [Fitting survival curves](#fitting-survival-curves)
         -   [Basic plots](#basic-plots)
+        -   [Computing and passing p-values](#computing-and-passin-p-values)
         -   [Customized survival curves](#customized-survival-curves)
         -   [More customized survival curves](#more-customized-survival-curves)
         -   [Uber customized survival curves](#uber-customized-survival-curves)
@@ -104,19 +105,86 @@ ggsurvplot(fit, data = lung)
 
 ![](tools/README-ggplot2-basic-survival-plot-1.png)
 
+Censor shape can be changed as follow:
+
+``` r
+ggsurvplot(fit, data = lung, censor.shape="|", censor.size = 4)
+```
+
+![](tools/README-ggplot2-basic-survival-plot-censor-1.png)
+
+### Computing and passing p-values
+
+The exact p-value of the log-rank test can be computed and be added to the plot:
+
+``` r
+ggsurvplot(fit, data = lung, pval = TRUE)
+```
+
+![](tools/README-ggplot2-basic-survival-plot-pval-logical-1.png)
+
+It is also possible to specify custom p-value, with numeric:
+
+``` r
+ggsurvplot(fit, data = lung, pval = 0.03)
+```
+
+![](tools/README-ggplot2-basic-survival-plot-pval-num-1.png)
+
+or a personalized character:
+
+``` r
+ggsurvplot(fit, data = lung, pval = "The hot p-value is 0.00***")
+```
+
+![](tools/README-ggplot2-basic-survival-plot-pval-char-1.png)
+
+Also the p-value of **weighted** log-rank tests can be computed and added to the plot:
+
+``` r
+ggsurvplot(
+  fit,
+  data = lung,
+  pval = TRUE,
+  pval.method = TRUE, # write the name of the test  
+                      # that was used compute the p-value?
+  pval.method.coord = c(3, 0.1), # coordinates for the name
+  pval.method.size = 4,          # size for the name of the test
+  # test specification
+  log.rank.weights = # use one from the included below
+                     # `i`    - time of an event
+                     # `n(i)` - risk set size in the time `i`
+# math formulas here - http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html#weighted-log-rank-extensions
+   # "survdiff"      # regular p-value from survdiff function (all weights equal to 1)
+   # "1"             # regular p-value from survMisc::comp    (all weights equal to 1)
+   "n"               # Gehan and Breslow (for every `i` weights are equal to `n(i)`)
+   # "sqrtN",        # Tharone and Ware  (for every `i` weights are equal to `sqrt(n(i))`)
+   # "S1",           # Peto-Peto’s modified survival estimate
+   # "S2",           # modified Peto-Peto (by Andersen)
+   # "FH_p=1_q=1"    # Fleming-Harrington
+)
+```
+
+![](tools/README-ggplot2-basic-survival-plot-pval-weighted-1.png)
+
 ### Customized survival curves
 
 ``` r
-ggsurvplot(fit, data = lung, size = 1,  # change line size
-           palette = c("#E7B800", "#2E9FDF"), # custom color palettes
-           conf.int = TRUE, # Add confidence interval
-           pval = TRUE, # Add p-value
-           risk.table = TRUE, # Add risk table
-           risk.table.col = "strata", # Risk table color by groups
-           legend.labs = c("Male", "Female"), # Change legend labels
-           risk.table.height = 0.25, # Useful to change when you have multiple groups
-           ggtheme = theme_bw() # Change ggplot2 theme
-           )
+ggsurvplot(
+  fit, 
+  data = lung, 
+  size = 1,                 # change line size
+  palette = 
+    c("#E7B800", "#2E9FDF"),# custom color palettes
+  conf.int = TRUE,          # Add confidence interval
+  pval = TRUE,              # Add p-value
+  risk.table = TRUE,        # Add risk table
+  risk.table.col = "strata",# Risk table color by groups
+  legend.labs = 
+    c("Male", "Female"),    # Change legend labels
+  risk.table.height = 0.25, # Useful to change when you have multiple groups
+  ggtheme = theme_bw()      # Change ggplot2 theme
+)
 ```
 
 ![](tools/README-ggplot2-customized-survival-plot-1.png)
@@ -188,23 +256,23 @@ ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
 # %%%%%%%%%%%%%%%%%%%%%%%%%%
 # Labels for Survival Curves (plot)
 ggsurv$plot <- ggsurv$plot + labs(
-  title = "Survival curves",                     
+  title    = "Survival curves",                     
   subtitle = "Based on Kaplan-Meier estimates",  
-  caption = "created with survminer"             
+  caption  = "created with survminer"             
   )
 
 # Labels for Risk Table 
 ggsurv$table <- ggsurv$table + labs(
-  title = "Note the risk set sizes",          
+  title    = "Note the risk set sizes",          
   subtitle = "and remember about censoring.", 
-  caption = "source code: website.com"        
+  caption  = "source code: website.com"        
   )
 
 # Labels for ncensor plot 
 ggsurv$ncensor.plot <- ggsurv$ncensor.plot + labs( 
-  title = "Number of censorings", 
+  title    = "Number of censorings", 
   subtitle = "over the time.",
-  caption = "source code: website.com"
+  caption  = "source code: website.com"
   )
 
 # Changing the font size, style and color
@@ -212,15 +280,16 @@ ggsurv$ncensor.plot <- ggsurv$ncensor.plot + labs(
 # Applying the same font style to all the components of ggsurv:
 # survival curves, risk table and censor part
 
-ggsurv <- ggpar(ggsurv,
-          font.title = c(16, "bold", "darkblue"),         
-          font.subtitle = c(15, "bold.italic", "purple"), 
-          font.caption = c(14, "plain", "orange"),        
-          font.x = c(14, "bold.italic", "red"),          
-          font.y = c(14, "bold.italic", "darkred"),      
-          font.tickslab = c(12, "plain", "darkgreen"),
-          legend = "top"
-          )
+ggsurv <- ggpar(
+  ggsurv,
+  font.title    = c(16, "bold", "darkblue"),         
+  font.subtitle = c(15, "bold.italic", "purple"), 
+  font.caption  = c(14, "plain", "orange"),        
+  font.x        = c(14, "bold.italic", "red"),          
+  font.y        = c(14, "bold.italic", "darkred"),      
+  font.tickslab = c(12, "plain", "darkgreen"),
+  legend = "top"
+)
 
 # Apply custom color palettes and print
 ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
@@ -235,25 +304,27 @@ Uber platinum premium customized survival curves
 # Using specific fonts for risk table and ncensor plots
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Font for Risk Table
-ggsurv$table <- ggpar(ggsurv$table,
-                      font.title = c(13, "bold.italic", "green"),
-                      font.subtitle = c(15, "bold", "pink"),
-                      font.caption = c(11, "plain", "darkgreen"),
-                      font.x = c(8, "bold.italic", "orange"),
-                      font.y = c(11, "bold.italic", "darkgreen"),
-                      font.tickslab = c(9, "bold", "red")
-                      )
+ggsurv$table <- ggpar(
+  ggsurv$table,
+  font.title    = c(13, "bold.italic", "green"),
+  font.subtitle = c(15, "bold", "pink"),
+  font.caption  = c(11, "plain", "darkgreen"),
+  font.x        = c(8, "bold.italic", "orange"),
+  font.y        = c(11, "bold.italic", "darkgreen"),
+  font.tickslab = c(9, "bold", "red")
+)
 
 
 # Font for ncensor plot
-ggsurv$ncensor.plot <- ggpar(ggsurv$ncensor.plot,
-                            font.title = c(13, "bold.italic", "green"),
-                            font.subtitle = c(15, "bold", "pink"),
-                            font.caption = c(11, "plain", "darkgreen"),
-                            font.x = c(8, "bold.italic", "orange"),
-                            font.y = c(11, "bold.italic", "darkgreen"),
-                            font.tickslab = c(9, "bold", "red")
-                            )
+ggsurv$ncensor.plot <- ggpar(
+  ggsurv$ncensor.plot,
+  font.title    = c(13, "bold.italic", "green"),
+  font.subtitle = c(15, "bold", "pink"),
+  font.caption  = c(11, "plain", "darkgreen"),
+  font.x        = c(8, "bold.italic", "orange"),
+  font.y        = c(11, "bold.italic", "darkgreen"),
+  font.tickslab = c(9, "bold", "red")
+)
 
 print(ggsurv)
 ```

@@ -2,21 +2,65 @@
 
 ## New features
    
+   
+- New option `add.all` added now in `ggsurvplot()` to add he survival curves of (all) pooled patients onto the main survival plot stratified by grouping variables. Alias of the `ggsurvplot_add_all()` function ([#194](https://github.com/kassambara/survminer/issues/194)).
+    
+- New option `combine = TRUE` is now available in the `ggsurvplot()` function to combine a list survfit objects on the same plot. Alias of the *ggsurvplot_combine*() function ([#195](https://github.com/kassambara/survminer/issues/195)).
+
+-  The standard convention of ggplot2 is to have the axes offset from the origin. This is annoying with Kaplan-Meier plots. Now  we force the origin of `ggsurvplot()` to start at 0 ([#196](https://github.com/kassambara/survminer/issues/196)). 
+
+- The function `ggsurvplot()` can take a list of survfit objects and produces a list of ggsurvplots ([#204](https://github.com/kassambara/survminer/issues/204)).
+   
+- New option `facet.by` added now in `ggsurvplot()` to draw multi-panel survival curves of a data set grouped by one or two variables. Alias of the `ggsurvplot_facet()` function ([#205](https://github.com/kassambara/survminer/issues/205)).
+ 
+
+
+
+- In `ggsurvplot()`, one can specify pval = TRUE/FALSE as a logical value. Now, it's also possible to specify the argument `pval` as a numeric value (e.g.: pval = 0.002), that will be passed to the plot, so that user can pass any custom p-value to the final plot ([@MarcinKosinski, #189](https://github.com/kassambara/survminer/issues/189)) or one can specify it as a character string (e.g.: pval = "p < 0001") ([@MarcinKosinski, #193](https://github.com/kassambara/survminer/issues/193)).
+   
+   
 - New argument `xscale` in `ggsurvplot()`: numeric or character value specifying x-axis scale.
     - If numeric, the value is used to divide the labels on the x axis. For example, a value of 365.25 will give labels in years instead of the original days.
     - If character, allowed options include one of c("d_m", "d_y", "m_d", "m_y", "y_d", "y_m"), where d = days, m = months and y = years. For example, xscale = "d_m" will transform labels from days to months; xscale = "m_y", will transform labels from months to years ([#166](https://github.com/kassambara/survminer/issues/166)). 
-
+    
+- New arguments `censor.shape` and `censor.size` to change the shape and the shape of censors ([#186](https://github.com/kassambara/survminer/issues/186) & [#187](https://github.com/kassambara/survminer/issues/187)).
+     
+    
 ## Major changes
 
 - The `ggforest()` function has changed a lot. Now presents much more statistics for each level of each variable (extracted with `broom::tidy`) and also some statistics for the `coxph` model, like AIC, p.value, concordance (extracted with `broom::glance`) ([#178](https://github.com/kassambara/survminer/issues/178))
 
 ## Minor changes
 
+- The argument `color` are updated allowing to assign the same color for same groups accross facets ([#99](https://github.com/kassambara/survminer/issues/99) & [#185](https://github.com/kassambara/survminer/issues/185)).
+    - If the number of strata/group (n.strata) = 1, the expected value is the color name. For example color = "blue".
+    - If n.strata > 1, the expected value is the grouping variable name. By default, survival curves are colored by strata using the argument color = "strata", but you can also color survival curves by any other grouping variables used to fit the survival curves.
+    
+For example, in the following script, survival curves are colored by the grouping variable `sex` in all facets:  
+   
+```r
+library(survminer)
+library(survival)
+fit <- survfit( Surv(time, status) ~ sex + rx + adhere,
+                 data = colon )
+ggsurv <- ggsurvplot(fit, data = colon,
+               color = "sex",
+               legend.title = "Sex",
+               palette = "jco")
+ggsurv$plot + facet_grid(rx ~ adhere)
+```
+
+   
 - Now, the function `pairwise_survdiff()` checks whether the grouping variable is a factor. If this is not th case, the grouping variable is automatically converted into a factor.
 - `ggsurvplot()`: Now, log scale is used for x-axis when plotting the complementary log−log function (argument `fun = "cloglog") ([#171](https://github.com/kassambara/survminer/issues/171)).
 
-## Bug fixes
+- Now, the argument `palette` in `ggsurvplot()` ccan be also a numeric vector of length(strata); in this case a basic color palette is created using the function `grDevices::palette()`.
+   
+- The `%+%` function in `survminer` has been replaced by `%++%` to avoid breaking the `ggplot2::%+%` function behavior when using survminer ([#199](https://github.com/kassambara/survminer/issues/199) and [#200](https://github.com/kassambara/survminer/issues/200)). 
 
+## Bug fixes
+   
+- Now, the `pairwise_survdiff()` function works when the data contain NAs ([@emilelatour , #184](https://github.com/kassambara/survminer/issues/184)).
 
 
 
