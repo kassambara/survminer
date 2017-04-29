@@ -332,7 +332,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        risk.table = FALSE, cumevents = FALSE, cumcensor = FALSE,
                        tables.height = 0.25,
                        group.by = NULL, facet.by = NULL, add.all = FALSE, combine = FALSE,
-                       ggtheme = ggtheme,
+                       ggtheme = theme_survminer(),
                        tables.theme = ggtheme,
                        ...
 ){
