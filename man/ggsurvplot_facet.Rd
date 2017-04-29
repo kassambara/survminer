@@ -7,7 +7,8 @@
 ggsurvplot_facet(fit, data, facet.by, color = NULL, palette = NULL,
   legend.labs = NULL, pval = FALSE, pval.method = FALSE,
   pval.coord = NULL, pval.method.coord = NULL, nrow = NULL, ncol = NULL,
-  scales = "fixed", panel.lab = TRUE, ...)
+  scales = "fixed", short.panel.labs = FALSE, panel.labs = NULL,
+  panel.labs.background = list(color = NULL, fill = NULL), ...)
 }
 \arguments{
 \item{fit}{an object of class survfit.}
@@ -59,8 +60,22 @@ data is faceted by one grouping variable.}
 \item{scales}{should axis scales of panels be fixed ("fixed", the default),
 free ("free"), or free in one dimension ("free_x", "free_y").}
 
-\item{panel.lab}{logical value. If TRUE, default, panels will be labelled by
-group names.}
+\item{short.panel.labs}{logical value. Default is FALSE. If TRUE, creae short
+labels for panels by omitting variable names; in other words panels will be
+labelled only by variable grouping levels.}
+
+\item{panel.labs}{a list of one or two character vectors to modify facet label
+text. For example, panel.labs = list(sex = c("Male", "Female")) specifies
+the labels for the "sex" variable. For two grouping variables, you can use
+for example panel.labs = list(sex = c("Male", "Female"), rx = c("Obs",
+"Lev", "Lev2") ).}
+
+\item{panel.labs.background}{a list to customize the background of panel
+labels. Should contain the combination of the following elements: \itemize{
+\item \code{color, linetype, size}: background line color, type and size
+\item \code{fill}: background fill color.
+}
+For example, panel.labs.background = list(color = "blue", fill = "pink").}
 
 \item{...}{other arguments to pass to the function \code{\link{ggsurvplot}}.}
 }

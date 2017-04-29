@@ -11,8 +11,20 @@ NULL
 #'  data is faceted by one grouping variable.
 #'@param scales should axis scales of panels be fixed ("fixed", the default),
 #'  free ("free"), or free in one dimension ("free_x", "free_y").
-#'@param panel.lab logical value. If TRUE, default, panels will be labelled by
-#'  group names.
+#'@param short.panel.labs logical value. Default is FALSE. If TRUE, creae short
+#'  labels for panels by omitting variable names; in other words panels will be
+#'  labelled only by variable grouping levels.
+#'@param panel.labs a list of one or two character vectors to modify facet label
+#'  text. For example, panel.labs = list(sex = c("Male", "Female")) specifies
+#'  the labels for the "sex" variable. For two grouping variables, you can use
+#'  for example panel.labs = list(sex = c("Male", "Female"), rx = c("Obs",
+#'  "Lev", "Lev2") ).
+#'@param panel.labs.background a list to customize the background of panel
+#'  labels. Should contain the combination of the following elements: \itemize{
+#'  \item \code{color, linetype, size}: background line color, type and size
+#'  \item \code{fill}: background fill color.
+#'  }
+#'  For example, panel.labs.background = list(color = "blue", fill = "pink").
 #'@param ... other arguments to pass to the function \code{\link{ggsurvplot}}.
 #' @examples
 #' library(survival)
@@ -41,14 +53,22 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                              legend.labs = NULL,
                              pval = FALSE, pval.method = FALSE, pval.coord = NULL, pval.method.coord = NULL,
                              nrow = NULL, ncol = NULL,
-                             scales = "fixed", panel.lab = TRUE,...){
+                             scales = "fixed",
+                             short.panel.labs = FALSE, panel.labs = NULL,
+                             panel.labs.background = list(color = NULL, fill = NULL),
+                             ...)
+  {
 
   if(length(facet.by) > 2)
     stop("facet.by should be of length 1 or 2.")
+
+  if(!is.null(panel.labs) & !.is_list(panel.labs))
+      stop("Argument panel.labs should be a list. Read the documentation.")
+
   . <- NULL # used in pipes
 
   .labeller <- "label_value"
-  if(panel.lab) .labeller <- label_both
+  if(short.panel.labs) .labeller <- label_both
   .dots <- list(...)
 
   # Extract fit components
@@ -62,11 +82,24 @@ ggsurvplot_facet <- function(fit, data, facet.by,
   vars.notin.groupby <- setdiff(all.variables, facet.by)
   data <- fit.ext$data.all
 
+  # Changing panel labs if specified
+  #:::::::::::::::::::::::::::::::::::::::::
+  if(!is.null(panel.labs)){
+    for(.grouping.var in facet.by){
+      if(!is.null(panel.labs[[.grouping.var]])){
+        levels(data[, .grouping.var]) <- panel.labs[[.grouping.var]]
+      }
+    }
+  }
+
   # If some of facet.by variables are not included in survfit formula,
   # ex: surv ~ sex & facet.by = "rx", we need to refit surv curves with all variables including facet.by
   # Required for faceting: all variables should be present in the survival table
+  #
+  # If the user decides to change panel labels,  we should also re-comput survival curves
+  # to take into account new labels
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  if(!all(facet.by %in% surv.vars)) {
+  if(!all(facet.by %in% surv.vars) | !is.null(panel.labs)) {
     fit <- .build_formula(surv.obj, all.variables) %>%
       surv_fit(., data = data)
   }
@@ -106,6 +139,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
   }
 
+
   # Plot survival curves
   #:::::::::::::::::::::::::::::::::::::::::
 
@@ -115,23 +149,10 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
   # Faceting the main plot
   #:::::::::::::::::::::::::::::::::::::::::
-  # Helper function
-  .facet <- function(p,  facet.by, nrow = NULL, ncol = NULL,
-                     scales = "fixed", panel.lab = TRUE) {
-    .labeller <- "label_value"
-    if(panel.lab) .labeller <- label_both
 
-    if(length(facet.by) == 1){
-      facet.formula <- paste0("~", facet.by) %>% stats::as.formula()
-      p <- p + facet_wrap(facet.formula, nrow = nrow, ncol = ncol, scales = scales, labeller = .labeller)
-    }
-    else if(length(facet.by) == 2){
-      facet.formula <- paste(facet.by, collapse = " ~ ") %>% stats::as.formula()
-      p <- p + facet_grid(facet.formula, scales = scales, labeller = .labeller)
-    }
-  }
-
-  p <- .facet(ggsurv$plot, facet.by, nrow = nrow, ncol = ncol, scales = scales, panel.lab = panel.lab)
+  p <- .facet(ggsurv$plot, facet.by, nrow = nrow, ncol = ncol,
+              scales = scales, short.panel.labs = short.panel.labs,
+              panel.labs.background = panel.labs.background)
 
   # Pvalues
   #:::::::::::::::::::::::::::::::::::::::::
@@ -171,6 +192,33 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
 
 
+
+# Helper function for faceting
+.facet <- function(p,  facet.by, nrow = NULL, ncol = NULL,
+                   scales = "fixed", short.panel.labs = FALSE,
+                   panel.labs.background = list(color = NULL, fill = NULL)
+                   )
+{
+
+  panel.labs.background <- .compact(panel.labs.background)
+
+  .labeller <- "label_value"
+  if(!short.panel.labs) .labeller <- label_both
+
+  if(length(facet.by) == 1){
+    facet.formula <- paste0("~", facet.by) %>% stats::as.formula()
+    p <- p + facet_wrap(facet.formula, nrow = nrow, ncol = ncol, scales = scales, labeller = .labeller)
+  }
+  else if(length(facet.by) == 2){
+    facet.formula <- paste(facet.by, collapse = " ~ ") %>% stats::as.formula()
+    p <- p + facet_grid(facet.formula, scales = scales, labeller = .labeller)
+  }
+
+  if(!.is_empty(panel.labs.background))
+    p <- p + theme(strip.background = do.call(element_rect, panel.labs.background))
+
+  p
+}
 
 
 
