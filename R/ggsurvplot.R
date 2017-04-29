@@ -332,7 +332,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        risk.table = FALSE, cumevents = FALSE, cumcensor = FALSE,
                        tables.height = 0.25,
                        group.by = NULL, facet.by = NULL, add.all = FALSE, combine = FALSE,
-                       ggtheme = theme_survminer(),
+                       ggtheme = ggtheme,
                        tables.theme = ggtheme,
                        ...
 ){
@@ -355,7 +355,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                conf.int = conf.int, pval = pval, pval.method = pval.method,
                surv.median.line = surv.median.line,
                risk.table = risk.table, cumevents = cumevents, cumcensor = cumcensor,
-               tables.height = tables.height, ggtheme = theme_survminer(),
+               tables.height = tables.height, ggtheme = ggtheme,
                tables.theme = tables.theme, ...)
 
 
