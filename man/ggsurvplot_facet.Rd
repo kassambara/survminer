@@ -53,18 +53,20 @@ coordinates of the p-value. Default values are NULL.}
 \item{pval.method.coord}{the same as \code{pval.coord} but for displaying
 \code{log.rank.weights} name}
 
-\item{nrow, ncol}{Number of rows and columns in the pannel. Used only when length(facet.by) = 1.}
+\item{nrow, ncol}{Number of rows and columns in the pannel. Used only when the
+data is faceted by one grouping variable.}
 
-\item{scales}{should axis scales of panels be fixed ("fixed", the default), free ("free"), or
-free in one dimension ("free_x", "free_y").}
+\item{scales}{should axis scales of panels be fixed ("fixed", the default),
+free ("free"), or free in one dimension ("free_x", "free_y").}
 
-\item{panel.lab}{logical value. If TRUE, default, panels will be labelled by group names.}
+\item{panel.lab}{logical value. If TRUE, default, panels will be labelled by
+group names.}
 
 \item{...}{other arguments to pass to the function \code{\link{ggsurvplot}}.}
 }
 \description{
-Draw multi-panel survival curves of a data set grouped by one
-or two variables.
+Draw multi-panel survival curves of a data set grouped by one or
+ two variables.
 }
 \examples{
 library(survival)

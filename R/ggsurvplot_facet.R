@@ -1,17 +1,19 @@
 #' @include ggsurvplot_core.R
 NULL
-#' Facet Survival Curves into Multiple Panels
+#'Facet Survival Curves into Multiple Panels
 #'
-#' @description Draw multi-panel survival curves of a data set grouped by one
-#' or two variables.
-#' @inheritParams ggsurvplot_arguments
-#' @param facet.by character vector, of length 1 or 2, specifying grouping
-#' variables for faceting the plot. Should be in the data.
-#' @param nrow,ncol Number of rows and columns in the pannel. Used only when length(facet.by) = 1.
-#' @param scales should axis scales of panels be fixed ("fixed", the default), free ("free"), or
-#' free in one dimension ("free_x", "free_y").
-#' @param panel.lab logical value. If TRUE, default, panels will be labelled by group names.
-#' @param ... other arguments to pass to the function \code{\link{ggsurvplot}}.
+#'@description Draw multi-panel survival curves of a data set grouped by one or
+#'  two variables.
+#'@inheritParams ggsurvplot_arguments
+#'@param facet.by character vector, of length 1 or 2, specifying grouping
+#'  variables for faceting the plot. Should be in the data.
+#'@param nrow,ncol Number of rows and columns in the pannel. Used only when the
+#'  data is faceted by one grouping variable.
+#'@param scales should axis scales of panels be fixed ("fixed", the default),
+#'  free ("free"), or free in one dimension ("free_x", "free_y").
+#'@param panel.lab logical value. If TRUE, default, panels will be labelled by
+#'  group names.
+#'@param ... other arguments to pass to the function \code{\link{ggsurvplot}}.
 #' @examples
 #' library(survival)
 #'
@@ -33,7 +35,7 @@ NULL
 #'ggsurvplot_facet(fit2, colon, facet.by = "adhere",
 #'                 palette = "jco", pval = TRUE)
 #'
-#' @export
+#'@export
 ggsurvplot_facet <- function(fit, data, facet.by,
                              color = NULL, palette = NULL,
                              legend.labs = NULL,
