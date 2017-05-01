@@ -39,7 +39,7 @@ collapsing the levels of grouping variables and the names of variables in the su
 }
 }
 \description{
-Wrapper arround the \link[survival]{survfit}() to create
+Wrapper arround the standard \link[survival]{survfit}() function to create
   survival curves. Compared to the standard \link[survival]{survfit}() function, it supports also:
   \itemize{
   \item a list of data sets and/or a list of formulas,

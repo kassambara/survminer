@@ -2,7 +2,7 @@
 NULL
 #' Create Survival Curves
 #'
-#' @description Wrapper arround the \link[survival]{survfit}() to create
+#' @description Wrapper arround the standard \link[survival]{survfit}() function to create
 #'   survival curves. Compared to the standard \link[survival]{survfit}() function, it supports also:
 #'   \itemize{
 #'   \item a list of data sets and/or a list of formulas,
