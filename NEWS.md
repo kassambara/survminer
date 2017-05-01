@@ -15,6 +15,9 @@
  
    
 - New function `surv_median()` added to easily extract median survivals from one or a list of survfit objects ([#207](https://github.com/kassambara/survminer/issues/207)).
+   
+   
+- New function **surv_pvalue**() added to compute p-value from survfit objects or parse it when provided by the user. Survival curves are compared using the log-rank test (default). Other methods can be specified using the argument method.
 
 
 - In `ggsurvplot()`, one can specify pval = TRUE/FALSE as a logical value. Now, it's also possible to specify the argument `pval` as a numeric value (e.g.: pval = 0.002), that will be passed to the plot, so that user can pass any custom p-value to the final plot ([@MarcinKosinski, #189](https://github.com/kassambara/survminer/issues/189)) or one can specify it as a character string (e.g.: pval = "p < 0001") ([@MarcinKosinski, #193](https://github.com/kassambara/survminer/issues/193)).
