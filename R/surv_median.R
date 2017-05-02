@@ -42,7 +42,7 @@ NULL
 #'fit.list2 <- surv_fit(Surv(time, status) ~ sex, data = colon,
 #'                      group.by = "rx")
 #'surv_median(fit.list2)
-#'
+#' @rdname surv_median
 #'@export
 surv_median <- function(fit, combine = FALSE){
 

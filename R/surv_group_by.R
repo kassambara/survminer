@@ -36,6 +36,7 @@ NULL
 #'    grouped.d
 #'
 #' @export
+#' @rdname surv_group_by
 surv_group_by <- function(data, grouping.vars){
 
   . <- NULL # used in pipes

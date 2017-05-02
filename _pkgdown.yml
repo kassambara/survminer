@@ -3,7 +3,7 @@ templates:
     bootswatch: flatly
 
 reference:
-  - title: Create survival curves
+  - title: Fit survival curves
     Contents:
       - surv_group_by
       - surv_fit

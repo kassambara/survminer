@@ -141,7 +141,7 @@ NULL
 #'
 #'surv_pvalue(fit)
 #'
-#'
+#' @rdname surv_fit
 #' @export
 surv_fit <- function(formula, data, group.by = NULL, match.fd = FALSE, ...){
 

@@ -77,6 +77,7 @@ NULL
 #'surv_pvalue(fit.list2, combine = TRUE, get_coord = TRUE)
 #'
 #' @export
+#' @rdname surv_pvalue
 surv_pvalue <- function(fit, data = NULL, method = "survdiff", combine = FALSE,   ...)
 {
 

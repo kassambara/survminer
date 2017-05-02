@@ -142,7 +142,7 @@ axis lines and, ii) x axis ticks and title.
 <span class='no'>ggsurv</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='ggsurvplot.html'>ggsurvplot</a></span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
    <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Survival curves"</span>,
    <span class='kw'>submain</span> <span class='kw'>=</span> <span class='st'>"Based on Kaplan-Meier estimates"</span>,
-   <span class='kw'>caption</span> <span class='kw'>=</span> <span class='st'>"created with survminer"</span>,
+   <span class='kw'>caption</span> <span class='kw'>=</span> <span class='st'>"created with survminer"</span>
    )
 
 <span class='co'># Change font size, style and color</span>
@@ -157,11 +157,12 @@ axis lines and, ii) x axis ticks and title.
      <span class='kw'>font.x</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"bold.italic"</span>, <span class='st'>"red"</span>),
      <span class='kw'>font.y</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>14</span>, <span class='st'>"bold.italic"</span>, <span class='st'>"darkred"</span>),
      <span class='kw'>font.tickslab</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>12</span>, <span class='st'>"plain"</span>, <span class='st'>"darkgreen"</span>)
-   )</div><img src='theme_survminer-2.png' alt='' width='540' height='400' /><div class='input'>
+   )
+
 <span class='co'># Clean risk table</span>
 <span class='co'># +++++++++++++++++++++++++++++</span>
 <span class='no'>ggsurv</span>$<span class='no'>table</span> <span class='kw'>&lt;-</span> <span class='no'>ggsurv</span>$<span class='no'>table</span> + <span class='fu'>theme_cleantable</span>()
-<span class='no'>ggsurv</span></div><img src='theme_survminer-4.png' alt='' width='540' height='400' /><div class='input'>
+<span class='no'>ggsurv</span></div><img src='theme_survminer-2.png' alt='' width='540' height='400' /><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
