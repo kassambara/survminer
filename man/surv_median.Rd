@@ -52,5 +52,4 @@ surv_median(fit.list, combine = TRUE)
 fit.list2 <- surv_fit(Surv(time, status) ~ sex, data = colon,
                      group.by = "rx")
 surv_median(fit.list2)
-
 }

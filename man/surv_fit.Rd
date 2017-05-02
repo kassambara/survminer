@@ -153,5 +153,4 @@ fit <- colon \%>\%
 
 surv_pvalue(fit)
 
-
 }
