@@ -3,6 +3,12 @@ templates:
     bootswatch: flatly
 
 reference:
+  - title: Create survival curves
+    Contents:
+      - surv_group_by
+      - surv_fit
+      - surv_median
+      - surv_pvalue
   - title: Survival Curves
     desc:  Summarize and visualize survival curves.
     contents:
@@ -26,9 +32,13 @@ reference:
       - ggcompetingrisks
   - title: Helpers
     contents:
-      - ggrisktable
-      - ggcumevents
-      - ggcumcensor
+      - ggsurvtable
+      - ggsurvplot_df
+      - ggsurvplot_list
+      - ggsurvplot_group_by
+      - ggsurvplot_add_all
+      - ggsurvplot_combine
+      - ggsurvplot_facet_by
   - title: Data
     contents:
       - myeloma

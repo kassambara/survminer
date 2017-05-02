@@ -18,8 +18,6 @@
 - New function `surv_group_by()` added to create a grouped data set for survival analysis.
    
 - New function `ggsurvplot_df()` added. An extension to ggsurvplot() to plot survival curves from any data frame containing the summary of survival curves as returned the surv_summary() function. Might be useful for a user who wants to use ggsurvplot for visualizing survival curves computed by another method than the standard survfit.formula function. In this case, the user has just to provide the data frame containing the summary of the survival analysis.
- 
-    
    
 - New function `surv_median()` added to easily extract median survivals from one or a list of survfit objects ([#207](https://github.com/kassambara/survminer/issues/207)).
    
