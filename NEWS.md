@@ -44,7 +44,7 @@
 ## Major changes
 
 - The `ggforest()` function has changed a lot. Now presents much more statistics for each level of each variable (extracted with `broom::tidy`) and also some statistics for the `coxph` model, like AIC, p.value, concordance (extracted with `broom::glance`) ([#178](https://github.com/kassambara/survminer/issues/178))
-
+   
 ## Minor changes
 
 - The argument `color` are updated allowing to assign the same color for same groups accross facets ([#99](https://github.com/kassambara/survminer/issues/99) & [#185](https://github.com/kassambara/survminer/issues/185)).
@@ -72,6 +72,8 @@ ggsurv$plot + facet_grid(rx ~ adhere)
 - Now, the argument `palette` in `ggsurvplot()` ccan be also a numeric vector of length(strata); in this case a basic color palette is created using the function `grDevices::palette()`.
    
 - The `%+%` function in `survminer` has been replaced by `%++%` to avoid breaking the `ggplot2::%+%` function behavior when using survminer ([#199](https://github.com/kassambara/survminer/issues/199) and [#200](https://github.com/kassambara/survminer/issues/200)). 
+   
+- New argument `fun` added in `ggcoxadjustedcurves()` ([@meganli, #202](https://github.com/kassambara/survminer/issues/202)).
 
 ## Bug fixes
    
