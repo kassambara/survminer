@@ -288,6 +288,35 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
     stats::as.formula()
 }
 
+# Function defining a transformation of the survival curve
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# see ?survival::plot.survfit
+# d: data frame containing the column surv, upper and lower
+# fun the function
+.apply_surv_func <- function(d, fun = NULL){
+
+  if (!is.null(fun)) {
+    if (is.character(fun)) {
+      fun <- switch(fun, log = function(y) log(y),
+                    event = function(y) 1 - y,
+                    cumhaz = function(y) -log(y),
+                    cloglog = function(y) log(-log(y)),
+                    pct = function(y) y * 100,
+                    logpct = function(y) 100 * y,
+                    identity = function(y) y,
+                    stop("Unrecognized survival function argument"))
+    }
+    else if (!is.function(fun)) {
+      stop("Invalid 'fun' argument")
+    }
+    cnames <- colnames(d)
+    if("surv" %in% cnames) d$surv <- fun(d$surv)
+    if("upper" %in% cnames) d$upper <- fun(d$upper)
+    if("lower" %in% cnames) d$lower <- fun(d$lower)
+  }
+  return(d)
+}
+
 
 # Get the names of formulas
 #.........................................................................
