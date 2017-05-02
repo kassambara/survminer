@@ -4,53 +4,59 @@
 \alias{surv_pvalue}
 \title{Compute P-value Comparing Survival Curves}
 \usage{
-surv_pvalue(fit, data = NULL, method = "survdiff", combine = FALSE, ...)
+surv_pvalue(fit, data = NULL, method = "survdiff", test.for.trend = FALSE,
+  combine = FALSE, ...)
 }
 \arguments{
 \item{fit}{A survfit object. Can be also a list of survfit objects.}
 
-\item{data}{data frame used to fit survival curves. Can be also a list of data.}
+\item{data}{data frame used to fit survival curves. Can be also a list of
+data.}
 
-\item{method}{method to compute survival curves. Default is "survdiff" (or "log-rank"). Allowed values are one of:
-\itemize{
-\item "survdiff", log-rank;
-\item "1": log-rank, LR; --> Regular log-rank test, sensitive to detect late differences.
-\item "n": Gehan-Breslow (generalized Wilcoxon), GB; --> detect early differences.
-\item "sqrtN": Tarone-Ware, TW; --> detect early differences.
-\item "S1": Peto-Peto's modified survival estimate, PP;
---> more robust than Tharone-Whare or Gehan-Breslow, detect early differences
-\item "S2": modified Peto-Peto (by Andersen), mPP
-\item "FH_p=1_q=1": Fleming-Harrington(p=1, q=1),  FH
-}
-To specify method, one can use either the weights (e.g.: "1", "n", "sqrtN", ...),
-or the full name ("log-rank", "gehan-breslow", "Peto-Peto", ...), or the acronyme LR, GB, ....
-Case insensitive partial match is allowed.\cr\cr To learn more about
-the mathematical background behind the different log-rank weights,
-read the following blog post on R-Addict:
-\href{http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html}{Comparing (Fancy) Survival Curves with Weighted Log-rank Tests}}
+\item{method}{method to compute survival curves. Default is "survdiff" (or
+"log-rank"). Allowed values are one of: \itemize{ \item "survdiff",
+log-rank; \item "1": log-rank, LR; --> Regular log-rank test, sensitive to
+detect late differences. \item "n": Gehan-Breslow (generalized Wilcoxon),
+GB; --> detect early differences. \item "sqrtN": Tarone-Ware, TW; --> detect
+early differences. \item "S1": Peto-Peto's modified survival estimate, PP;
+--> more robust than Tharone-Whare or Gehan-Breslow, detect early
+differences \item "S2": modified Peto-Peto (by Andersen), mPP \item
+"FH_p=1_q=1": Fleming-Harrington(p=1, q=1),  FH } To specify method, one can
+use either the weights (e.g.: "1", "n", "sqrtN", ...), or the full name
+("log-rank", "gehan-breslow", "Peto-Peto", ...), or the acronyme LR, GB,
+.... Case insensitive partial match is allowed.\cr\cr To learn more about
+the mathematical background behind the different log-rank weights, read the
+following blog post on R-Addict:
+\href{http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html}{Comparing
+(Fancy) Survival Curves with Weighted Log-rank Tests}}
+
+\item{test.for.trend}{logical value. Default is FALSE. If TRUE, returns the
+test for trend p-values. Tests for trend are designed to detect ordered
+differences in survival curves. That is, for at least one group. The test
+for trend can be only performed when the number of groups is > 2.}
 
 \item{combine}{logical value. Used only when fit is a list of survfit objects.
 If TRUE, combine the results for multiple fits.}
 
-\item{...}{other arguments including pval, pval.coord, pval.method.coord. These are only used internally to specify
-custom pvalue, pvalue and pvalue method coordinates on the survival plot. Normally, users don't need these arguments.}
+\item{...}{other arguments including pval, pval.coord, pval.method.coord.
+These are only used internally to specify custom pvalue, pvalue and pvalue
+method coordinates on the survival plot. Normally, users don't need these
+arguments.}
 }
 \value{
-Return a data frame with the columns (pval, method, pval.txt and variable).
-If additional arguments (pval, pval.coord, pval.method.coord, get_coord) are specified,
-then extra columns (pval.x, pval.y, method.x and method.y) are returned.
-\itemize{
-\item pval: pvalue
-\item method: method used to compute pvalues
-\item pval.txt: formatted text ready to use for annotating plots
-\item pval.x, pval.y: x & y coordinates of the pvalue for annotating the plot
-\item method.x, method.y: x & y coordinates of pvalue method
-}
+Return a data frame with the columns (pval, method, pval.txt and
+ variable). If additional arguments (pval, pval.coord, pval.method.coord,
+ get_coord) are specified, then extra columns (pval.x, pval.y, method.x and
+ method.y) are returned. \itemize{ \item pval: pvalue \item method: method
+ used to compute pvalues \item pval.txt: formatted text ready to use for
+ annotating plots \item pval.x, pval.y: x & y coordinates of the pvalue for
+ annotating the plot \item method.x, method.y: x & y coordinates of pvalue
+ method }
 }
 \description{
-Compute p-value from survfit objects or parse it when provided by the user.
-Survival curves are compared using the log-rank test (default).
-Other methods can be specified using the argument \code{method}.
+Compute p-value from survfit objects or parse it when provided by
+ the user. Survival curves are compared using the log-rank test (default).
+ Other methods can be specified using the argument \code{method}.
 }
 \examples{
 

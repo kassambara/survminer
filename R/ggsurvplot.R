@@ -21,6 +21,7 @@ NULL
 #'  \link{surv_summary}(). }}
 #'
 #' @inheritParams ggsurvplot_arguments
+#' @inheritParams surv_pvalue
 #'@param fit allowed values include:
 #'\itemize{
 #'\item a survfit object
@@ -36,6 +37,7 @@ NULL
 #'Alias of the \code{\link{ggsurvplot_add_all}()} function.
 #'@param combine a logical value. If TRUE, combine a list survfit objects on the same plot.
 #'Alias of the \code{\link{ggsurvplot_combine}()} function.
+#'
 #'@param ... Futher arguments as described hereafter and
 #'other arguments to be passed i) to ggplot2 geom_*() functions such
 #'  as linetype, size, ii) or to the function \link[ggpubr]{ggpar}() for
@@ -329,6 +331,7 @@ NULL
 ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        color = NULL, palette = NULL, linetype = 1,
                        conf.int = FALSE, pval = FALSE, pval.method = FALSE,
+                       test.for.trend = FALSE,
                        surv.median.line = "none",
                        risk.table = FALSE, cumevents = FALSE, cumcensor = FALSE,
                        tables.height = 0.25,
@@ -354,6 +357,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                fit = fit, data = data, fun = fun,
                color = color, palette = palette, linetype = linetype,
                conf.int = conf.int, pval = pval, pval.method = pval.method,
+               test.for.trend = test.for.trend,
                surv.median.line = surv.median.line,
                risk.table = risk.table, cumevents = cumevents, cumcensor = cumcensor,
                tables.height = tables.height, ggtheme = ggtheme,

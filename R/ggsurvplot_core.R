@@ -10,6 +10,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
                             conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                             censor = TRUE, censor.shape = "+", censor.size = 4.5,
                             pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
+                            test.for.trend = FALSE,
                             pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                             log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
                             title = NULL,  xlab = "Time", ylab = "Survival probability",
@@ -102,7 +103,8 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   # Compute pvalue or parse it if provided by the user
   pval <- surv_pvalue(fit, method = log.rank.weights, data = data,
                       pval = pval, pval.coord = pval.coord,
-                      pval.method.coord = pval.method.coord)
+                      pval.method.coord = pval.method.coord,
+                      test.for.trend = test.for.trend)
 
   if(pval$pval.txt != ""){
     p <- p + ggplot2::annotate("text", x = pval$pval.x, y = pval$pval.y,

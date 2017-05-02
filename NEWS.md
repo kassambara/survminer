@@ -2,6 +2,7 @@
 
 ## New features
    
+- New option `test.for.trend` added in `ggsurvplot()` to perform a log-rank test for trend. logical value. Default is FALSE. If TRUE, returns the test for trend p-values. Tests for trend are designed to detect ordered differences in survival curves. That is, for at least one group. The test for trend can be only performed when the number of groups is > 2 ([#188](https://github.com/kassambara/survminer/issues/188)).
    
 - New option `add.all` added now in `ggsurvplot()` to add he survival curves of (all) pooled patients onto the main survival plot stratified by grouping variables. Alias of the `ggsurvplot_add_all()` function ([#194](https://github.com/kassambara/survminer/issues/194)).
     

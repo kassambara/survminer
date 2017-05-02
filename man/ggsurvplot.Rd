@@ -7,9 +7,9 @@
 \usage{
 ggsurvplot(fit, data = NULL, fun = NULL, color = NULL, palette = NULL,
   linetype = 1, conf.int = FALSE, pval = FALSE, pval.method = FALSE,
-  surv.median.line = "none", risk.table = FALSE, cumevents = FALSE,
-  cumcensor = FALSE, tables.height = 0.25, group.by = NULL,
-  facet.by = NULL, add.all = FALSE, combine = FALSE,
+  test.for.trend = FALSE, surv.median.line = "none", risk.table = FALSE,
+  cumevents = FALSE, cumcensor = FALSE, tables.height = 0.25,
+  group.by = NULL, facet.by = NULL, add.all = FALSE, combine = FALSE,
   ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
 
 \method{print}{ggsurvplot}(x, surv.plot.height = NULL,
@@ -63,6 +63,11 @@ customized string appears on the plot. See examples - Example 3.}
 \item{pval.method}{whether to add a text with the test name used for
 calculating the pvalue, that corresponds to survival curves' comparison -
 used only when \code{pval=TRUE}}
+
+\item{test.for.trend}{logical value. Default is FALSE. If TRUE, returns the
+test for trend p-values. Tests for trend are designed to detect ordered
+differences in survival curves. That is, for at least one group. The test
+for trend can be only performed when the number of groups is > 2.}
 
 \item{surv.median.line}{character vector for drawing a horizontal/vertical
 line at median survival. Allowed values include one of c("none", "hv", "h",
