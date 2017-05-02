@@ -88,6 +88,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                          xlog = FALSE, legend = "top",
                          legend.title = "Strata", legend.labs = NULL,
                          y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
+                         axes.offset = TRUE,
                          ggtheme = theme_survminer(),
                          tables.theme = ggtheme, ...)
 {
@@ -129,6 +130,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
     title = title, xlab = xlab, ylab = ylab, xlog = xlog,
     legend = legend, legend.title = legend.title, legend.labs = legend.labs,
     y.text = y.text, y.text.col = y.text.col, fontsize = fontsize,
+    axes.offset = axes.offset,
     ggtheme = ggtheme, tables.theme = tables.theme,...)
 
   res <- list()
@@ -180,6 +182,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                          xlog = FALSE, legend = "top",
                          legend.title = "Strata", legend.labs = NULL,
                          y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
+                         axes.offset = TRUE,
                          ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
 {
 
@@ -272,10 +275,14 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
 
   # Plotting survival table
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  .expand <- ggplot2::waiver()
   # Tables labels Offset from origing
-  offset <- max(xlim)/30
-  survsummary <- survsummary %>%
-    dplyr::mutate(time = ifelse(time == 0, offset, time))
+  if(!axes.offset){
+    .expand <- c(0,0)
+    offset <- max(xlim)/30
+    survsummary <- survsummary %>%
+      dplyr::mutate(time = ifelse(time == 0, offset, time))
+  }
 
   p <- ggplot(survsummary, mapping) +
     scale_shape_manual(values = 1:length(levels(survsummary$strata)))+
@@ -293,7 +300,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   # Customize axis ticks
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   xticklabels <- .format_xticklabels(labels = times, xscale = xscale)
-  if(!xlog) p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels, expand = c(0,0))
+  if(!xlog) p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels, expand = .expand)
   else p <- p + ggplot2::scale_x_continuous(breaks = times,
                                             trans = "log10", labels = xticklabels)
 

@@ -45,7 +45,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
                           conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                           censor = TRUE, censor.shape = "+", censor.size = 4.5,
                           title = NULL,  xlab = "Time", ylab = "Survival probability",
-                          xlim = NULL, ylim = NULL,
+                          xlim = NULL, ylim = NULL, axes.offset = TRUE,
                           legend = c("top", "bottom", "left", "right", "none"),
                           legend.title = "Strata", legend.labs = NULL,
                           ggtheme = theme_survminer(),
@@ -140,13 +140,17 @@ ggsurvplot_df <- function(fit, fun = NULL,
   if(is.null(xlim)) xlim <- c(xmin, max(df$time))
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
 
+  # Axis offset
+  .expand <- ggplot2::waiver()
+  if(!axes.offset) .expand <- c(0, 0)
+
   # Drawing survival curves
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   df[, .strata.var] <- factor( df[, .strata.var], levels = .levels(.strata), labels = legend.labs)
 
   p <- ggplot2::ggplot(df, ggplot2::aes_string("time", "surv")) +
     ggpubr::geom_exec(ggplot2::geom_step, data = df, size = size, color = color, linetype = linetype, ...) +
-    ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim, expand = c(0,0)) +
+    ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim, expand = .expand) +
     ggplot2::coord_cartesian(xlim = xlim)+
     ggtheme
   p <- ggpubr::ggpar(p, palette = palette, ...)
@@ -164,7 +168,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
   xticklabels <- .format_xticklabels(labels = times, xscale = xscale)
 
   if(!.is_cloglog(fun)) {
-    p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels, expand = c(0,0)) +
+    p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels, expand = .expand) +
       ggplot2::expand_limits(x = 0, y = 0)
   }
   else p <- p + ggplot2::scale_x_continuous(breaks = times, trans = "log10", labels = xticklabels)

@@ -93,6 +93,7 @@ NULL
 #'  example, xscale = "d_m" will transform labels from days to months; xscale =
 #'  "m_y", will transform labels from months to years.}
 #'  \item \strong{xlim,ylim}: x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
+#'  \item \strong{axes.offset}: logical value. Default is TRUE. If FALSE, set the plot axes to start at the origin.
 #'}
 #'
 #'

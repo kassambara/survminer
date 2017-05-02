@@ -10,8 +10,8 @@ ggsurvplot_df(fit, fun = NULL, color = NULL, palette = NULL,
   conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
   censor = TRUE, censor.shape = "+", censor.size = 4.5, title = NULL,
   xlab = "Time", ylab = "Survival probability", xlim = NULL,
-  ylim = NULL, legend = c("top", "bottom", "left", "right", "none"),
-  legend.title = "Strata", legend.labs = NULL,
+  ylim = NULL, axes.offset = TRUE, legend = c("top", "bottom", "left",
+  "right", "none"), legend.title = "Strata", legend.labs = NULL,
   ggtheme = theme_survminer(), ...)
 }
 \arguments{
@@ -90,6 +90,9 @@ Default is 4.5.}
 \item{xlim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
 
 \item{ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
+
+\item{axes.offset}{logical value. Default is TRUE. If FALSE, set the plot axes
+to start at the origin.}
 
 \item{legend}{character specifying legend position. Allowed values are one of
 c("top", "bottom", "left", "right", "none"). Default is "top" side position.

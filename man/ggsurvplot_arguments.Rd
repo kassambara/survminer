@@ -83,6 +83,9 @@ coordinates of the p-value. Default values are NULL.}
 
 \item{xlim, ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
 
+\item{axes.offset}{logical value. Default is TRUE. If FALSE, set the plot axes
+to start at the origin.}
+
 \item{legend}{character specifying legend position. Allowed values are one of
 c("top", "bottom", "left", "right", "none"). Default is "top" side position.
 to remove the legend use legend = "none". Legend position can be also
