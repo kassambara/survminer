@@ -7,7 +7,7 @@
     
 - New option `combine = TRUE` is now available in the `ggsurvplot()` function to combine a list survfit objects on the same plot. Alias of the *ggsurvplot_combine*() function ([#195](https://github.com/kassambara/survminer/issues/195)).
 
--  The standard convention of ggplot2 is to have the axes offset from the origin. This is annoying with Kaplan-Meier plots. Now  we force the origin of `ggsurvplot()` to start at 0 ([#196](https://github.com/kassambara/survminer/issues/196)). 
+-  The standard convention of ggplot2 is to have the axes offset from the origin. This can be annoying with Kaplan-Meier plots. New argument `axes.offset` added non in `ggsurvplot()`.  logical value. Default is TRUE. If FALSE, set the plot axes to start at the origin (c(0,0)) ([#196](https://github.com/kassambara/survminer/issues/196)). 
 
 - The function `ggsurvplot()` can take a list of survfit objects and produces a list of ggsurvplots ([#204](https://github.com/kassambara/survminer/issues/204)).
    
