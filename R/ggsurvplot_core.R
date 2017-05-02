@@ -324,7 +324,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   ggsurv <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
 
   # Set legend
-  if(nplot > 1 & legend.position %in% c("left", "right", "bottom") & is.null(legend.grob)){
+  if(nplot > 1 & legend.position %in% c("left", "right", "bottom") & !is.null(legend.grob)){
     ggsurv <- switch(legend.position,
                      bottom = gridExtra::arrangeGrob(grobs = list(ggsurv, legend.grob), nrow = 2, heights = c(0.9, 0.1)),
                      top = gridExtra::arrangeGrob(grobs = list(legend.grob, ggsurv), nrow = 2, heights = c(0.1, 0.9)),
