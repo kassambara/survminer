@@ -64,6 +64,7 @@ ggcoxadjustedcurves <- function(fit,
     curves <- gather(both, time, surv, -.id)
     curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
     curve <- summarise(group_by(curves, time), surv = mean(surv, na.rm=TRUE))
+    curve <- .apply_surv_func(curve, fun = fun)
     pl <- ggplot(curve, aes(x = time, y = surv)) +
       geom_step(size=curve.size)
   } else {
@@ -77,8 +78,10 @@ ggcoxadjustedcurves <- function(fit,
     pl <- ggplot(curve, aes(x = time, y = surv, color=variable)) +
       geom_step(size=curve.size)
   }
-  if (individual.curves)
+  if (individual.curves){
+    curves <- .apply_surv_func(curves, fun)
     pl <- pl + geom_step(data = curves, aes(group=.id), alpha=curve.alpha)
+  }
   pl <- pl + ggtheme +
     scale_y_continuous(limits = ylim) +
     ylab(ylab)
