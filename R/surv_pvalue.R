@@ -214,15 +214,18 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", combine = FALSE, 
     # comp modifies tenfit object (ten class: ?survMisc::ten)
     # and adds attributes with tests
     attributes(tenfit)$lrt -> tests
+    lr_p <- tests$pChisq
+    if(is.null(lr_p)) lr_p <- tests$pNorm
+    lr_w <- tests$W
     # check str(tests) -> W:weights / pNorm:p-values
-    pvalue <- round(tests$pNorm[tests$W == method], 4)
+    pvalue <- round(lr_p[lr_w == method], 4)
     pval.txt <- ifelse(pvalue < 1e-04, "p < 0.0001",
                        paste("p =", signif(pvalue, 2)))
     test_name <- c("Log-rank", "Gehan-Breslow",
                    "Tarone-Ware", "Peto-Peto",
                    "modified Peto-Peto", "Fleming-Harrington (p=1, q=1)")
     # taken from ?survMisc::comp
-    res <- list(pval = pvalue, method = test_name[tests$W == method], pval.txt = pval.txt)
+    res <- list(pval = pvalue, method = test_name[lr_w == method], pval.txt = pval.txt)
   }
   res$variable <- .collapse(surv.vars, sep =  "+")
   # Pvalue coordinates to annotate the plot

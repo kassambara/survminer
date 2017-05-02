@@ -75,7 +75,8 @@ ggsurv$plot + facet_grid(rx ~ adhere)
 ## Bug fixes
    
 - Now, the `pairwise_survdiff()` function works when the data contain NAs ([@emilelatour , #184](https://github.com/kassambara/survminer/issues/184)).
-
+   
+- Now, `ggsurvplot()` fully supports different methods, in the *survMisc* package, for comparing survival curves ([#191](https://github.com/kassambara/survminer/issues/191)).
 
 
 # survminer 0.3.1
