@@ -373,6 +373,10 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
 #       - data.all: the dataset used in survfit
 #       - data.formula: data off all variables in the formula including time and status
 .extract.survfit <- function(fit, data = NULL){
+
+  if(inherits(fit, "survfit.cox"))
+    return(list())
+
   .formula <- fit$call$formula %>%
     stats::as.formula()
   surv.obj <- deparse(.formula[[2]])
