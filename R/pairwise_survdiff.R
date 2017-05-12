@@ -61,7 +61,7 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
 
 
   compare.levels <- function(i, j) {
-    .subset = group %in% (unique(group))[c(i,j)]
+    .subset = group %in% (levels(group))[c(i,j)]
     sdif <- survival::survdiff(formula, data = data[.subset, , drop = FALSE],
                                rho = rho, na.action = na.action)
     stats::pchisq(sdif$chisq, length(sdif$n) - 1, lower.tail = FALSE)
