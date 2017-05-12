@@ -46,6 +46,8 @@
 - The `ggforest()` function has changed a lot. Now presents much more statistics for each level of each variable (extracted with `broom::tidy`) and also some statistics for the `coxph` model, like AIC, p.value, concordance (extracted with `broom::glance`) ([#178](https://github.com/kassambara/survminer/issues/178))
    
 ## Minor changes
+     
+- `pairwise_survdiff()` has been improved to handle a formula with multiple variables ([213](https://github.com/kassambara/survminer/issues/213)).
 
 - The argument `color` are updated allowing to assign the same color for same groups accross facets ([#99](https://github.com/kassambara/survminer/issues/99) & [#185](https://github.com/kassambara/survminer/issues/185)).
     - If the number of strata/group (n.strata) = 1, the expected value is the color name. For example color = "blue".
