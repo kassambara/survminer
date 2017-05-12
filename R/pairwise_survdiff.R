@@ -45,20 +45,33 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
 {
   if(missing(na.action)) na.action <- options()$na.action
   group_var <- attr(stats::terms(formula), "term.labels")
+  surv_obj <- deparse(formula[[2]])
 
-  DNAME <- paste(deparse(substitute(data)), "and", group_var)
+  DNAME <- paste(deparse(substitute(data)), "and", .collapse(group_var, sep = " + " ))
   METHOD <- "Log-Rank"
   METHOD <- if (rho == 0) "Log-Rank test"
   else if(rho==1) "Peto & Peto test"
 
   # Removing missing value
-  group <- unlist(data[, group_var])
-  if(sum(is.na(group)) > 0) data <- data[!is.na(group), ]
-  group <- unlist(data[, group_var])
+  # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  .is.na <- data[, group_var, drop = FALSE] %>%
+    apply(1, function(.row){NA %in% .row})
+  data <- data[!.is.na, ]
 
+  # Grouping variables
+  # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  if(length(group_var) == 1){
+    group <- unlist(data[, group_var])
+  }
+  else if(length(group_var) >1){
+    # Create strata with multiple variables and add it in the data
+    group <- data[, group_var] %>%
+      survival::strata()
+    data <- data %>% mutate(..group.. = group)
+    # update formula
+    formula <- .build_formula(surv_obj, "..group..")
+  }
   if(!is.factor(group)) group <- as.factor(group)
-  ngroup <- length(levels(group))
-
 
   compare.levels <- function(i, j) {
     .subset = group %in% (levels(group))[c(i,j)]
