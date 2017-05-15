@@ -47,6 +47,8 @@
    
 ## Minor changes
      
+- Now, the default behaviour of `ggsurvplot()` is to round the number at risk using the option `digits = 0` ([214](https://github.com/kassambara/survminer/issues/214)).
+
 - `pairwise_survdiff()` has been improved to handle a formula with multiple variables ([213](https://github.com/kassambara/survminer/issues/213)).
 
 - The argument `color` are updated allowing to assign the same color for same groups accross facets ([#99](https://github.com/kassambara/survminer/issues/99) & [#185](https://github.com/kassambara/survminer/issues/185)).
