@@ -126,7 +126,7 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
 #   - n.event: the cumulative number of events that have occurred since the last time listed until time t+0
 #   - n.censor: number of censored subjects
 #   - strata_size: number of subject in the strata
-.get_timepoints_survsummary <- function(fit, data, times)
+.get_timepoints_survsummary <- function(fit, data, times, decimal.place = 0)
 {
   survsummary <- summary(fit, times = times, extend = TRUE)
 
@@ -146,11 +146,11 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
   res <- data.frame(
     strata = strata,
     time = survsummary$time,
-    n.risk = survsummary$n.risk,
+    n.risk = round(survsummary$n.risk, digits = decimal.place),
     pct.risk = round(survsummary$n.risk*100/strata_size),
-    n.event = survsummary$n.event,
+    n.event = round(survsummary$n.event, digits = decimal.place),
     cum.n.event = unlist(by(survsummary$n.event, strata, cumsum)),
-    n.censor = survsummary$n.censor,
+    n.censor = round(survsummary$n.censor, digits = decimal.place),
     cum.n.censor = unlist(by(survsummary$n.censor, strata, cumsum)),
     strata_size = strata_size
   )
