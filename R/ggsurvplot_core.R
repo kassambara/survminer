@@ -79,6 +79,13 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   data <- .get_data(fit, data = data, complain = FALSE)
   # Data for survival plot
   d <- surv_summary(fit, data = data)
+  if(!is.null(fit$start.time)) d <- subset(d, d$time >= fit$start.time )
+
+  # Axis limits
+   xmin <- ifelse(.is_cloglog(fun), min(c(1, d$time)), 0)
+   if(!is.null(fit$start.time)) xmin <- fit$start.time
+   xmax <- .get_default_breaks(d$time, .log = .is_cloglog(fun)) %>% max()
+   if(is.null(xlim)) xlim <- c(xmin, xmax)
 
   # Main survival curves
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

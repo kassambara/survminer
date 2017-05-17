@@ -131,7 +131,7 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
   survsummary <- summary(fit, times = times, extend = TRUE)
 
   if (is.null(fit$strata)) {
-    .strata <- factor(rep("All", length(times)))
+    .strata <- factor(rep("All", length(survsummary$time)))
     strata_names <- "All"
     strata_size <- rep(fit$n, length(.strata))
   }
