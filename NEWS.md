@@ -47,6 +47,8 @@
    
 ## Minor changes
      
+- Now, `ggsurvplot()` supports the `survfit()` outputs when used with the argument `start.time`.
+  
 - Now, the default behaviour of `ggsurvplot()` is to round the number at risk using the option `digits = 0` ([214](https://github.com/kassambara/survminer/issues/214)).
 
 - `pairwise_survdiff()` has been improved to handle a formula with multiple variables ([213](https://github.com/kassambara/survminer/issues/213)).
