@@ -95,8 +95,8 @@ ggsurvplot_df <- function(fit, fun = NULL,
     .strata.var <- color
   }
   else {
-   warning("Now, to change color palette, use the argument palette= '", color, "' ",
-            "instead of color = '", color, "'", call. = FALSE)
+   # warning("Now, to change color palette, use the argument palette= '", color, "' ",
+   #         "instead of color = '", color, "'", call. = FALSE)
     palette <- color
     .strata.var <- "strata"
   }
