@@ -208,7 +208,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     pms$color <- cumcensor.col
     pms$title <- cumcensor.title
     if(cumcensor.y.text.col) pms$y.text.col <- scurve_cols
-    pms$y.text.col <- cumcensor.y.text.col
+    #pms$y.text.col <- cumcensor.y.text.col
     pms$fontsize <- fontsize
     pms$survtable <- "cumcensor"
     ncensor_plot  <- do.call(ggsurvtable, pms)
