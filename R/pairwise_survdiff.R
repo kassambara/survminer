@@ -8,8 +8,8 @@ NULL
 #'@param data a data frame in which to interpret the variables occurring in the
 #'  formula.
 #'@param p.adjust.method method for adjusting p values (see
-#'  \code{\link[stats]{p.adjust}}). Allowed values include c("holm", "hochberg",
-#'  "hommel", "bonferroni", "BH", "BY", "fdr", "none"). If you don't want to
+#'  \code{\link[stats]{p.adjust}}). Allowed values include "holm", "hochberg",
+#'  "hommel", "bonferroni", "BH", "BY", "fdr", "none". If you don't want to
 #'  adjust the p value (not recommended), use p.adjust.method = "none".
 #'@param na.action a missing-data filter function. Default is
 #'  options()$na.action.

@@ -99,11 +99,11 @@ those strata.}
 
 \item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
 specifying whether to show or not the risk table. Default is FALSE. \item
-"absolute" or "percentage": to show the \bold{absolute number} and the
-\bold{percentage} of subjects at risk by time, respectively. Use i)
-"abs_pct" to show both absolute number and percentage. ii) "nrisk_cumcensor"
-and "nrisk_cumevents" to show the number at risk and, the cumulative number
-of censoring and events, respectively. }}
+"absolute" or "percentage". Shows the \bold{absolute number} and the
+\bold{percentage} of subjects at risk by time, respectively. \item
+"abs_pct" to show both absolute number and percentage. \item "nrisk_cumcensor"
+and "nrisk_cumevents". Show the number at risk and, the cumulative number of
+censoring and events, respectively. }}
 
 \item{risk.table.title}{The title to be used for the risk table.}
 
@@ -144,9 +144,7 @@ the value when you have many strata. Default is 0.25. Ignored when
 risk.table = FALSE.}
 
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
-is 0.75. Ignored when risk.table = FALSE. \code{1-risk.table.height -
-ncensor.plot.height} when \code{risk.table = TRUE} and \code{ncensor.plot =
-TRUE}}
+is 0.75. Ignored when risk.table = FALSE.}
 
 \item{ncensor.plot}{logical value. If TRUE, the number of censored subjects at
 time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.}

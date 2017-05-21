@@ -71,8 +71,6 @@ shown only, when the number of variables > 5.}
  'surv_categorize', which is a data frame containing the survival data and
  the categorized variables.
 
-
-
  }
 }
 \description{
@@ -81,15 +79,11 @@ Determine the optimal cutpoint for one or multiple continuous
  'maxstat' R package. This is an outcome-oriented  methods  providing  a
  value of a cutpoint that correspond to the most significant relation with
  outcome (here, survival).
+ \itemize{
+ \item \code{surv_cutpoint()}: Determine the optimal cutpoint for each variable using 'maxstat'.
+ \item \code{surv_categorize()}: Divide each variable values based on the cutpoint returned by \code{surv_cutpoint()}.
+ }
 }
-\section{Functions}{
-\itemize{
-\item \code{surv_cutpoint}: Determine the optimal cutpoint for each variable
-using 'maxstat'
-
-\item \code{surv_categorize}: Divide each variable values based on the cutpoint returned by surv_cutpoint().
-}}
-
 \examples{
 # 0. Load some data
 data(myeloma)

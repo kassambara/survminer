@@ -4,7 +4,9 @@ NULL
 #'
 #'@description An extension to \link{ggsurvplot}() to plot survival curves from
 #'  any data frame containing the summary of survival curves as returned the
-#'  \link{surv_summary}() function.\cr\cr Might be useful for a user who wants
+#'  \link{surv_summary}() function.
+#'
+#'  Might be useful for a user who wants
 #'  to use \link{ggsurvplot} for visualizing survival curves computed by another
 #'  method than the standard \link[survival]{survfit.formula} function. In this
 #'  case, the user has just to provide the data frame containing the summary of

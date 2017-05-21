@@ -78,7 +78,8 @@ Wrapper arround the standard \link[survival]{survfit}() function to create
   \item \link{ggsurvplot}()
   \item \link{surv_pvalue}()
   \item \link{surv_median}()
-  }\cr
+  }
+
 
  These functions return one element or a list of elements depending on the format of the input.
 }

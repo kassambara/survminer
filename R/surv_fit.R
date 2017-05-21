@@ -41,7 +41,8 @@ NULL
 #'   \item \link{ggsurvplot}()
 #'   \item \link{surv_pvalue}()
 #'   \item \link{surv_median}()
-#'   }\cr
+#'   }
+#'
 #'
 #'  These functions return one element or a list of elements depending on the format of the input.
 #' @param formula survival formula. See \link[survival]{survfit.formula}. Can be a list of formula. Named lists are recommended.
