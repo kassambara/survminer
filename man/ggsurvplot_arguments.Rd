@@ -61,6 +61,9 @@ breaks. Default value is NULL.}
 \item{conf.int.style}{confidence interval style. Allowed values include
 c("ribbon", "step").}
 
+\item{conf.int.alpha}{numeric value specifying fill color transparency. Value
+should be in [0, 1], where 0 is full transparency and 1 is no transparency.}
+
 \item{censor}{logical value. If TRUE, censors will be drawn.}
 
 \item{censor.shape}{character or numeric value specifying the point shape of
@@ -100,9 +103,9 @@ those strata.}
 \item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
 specifying whether to show or not the risk table. Default is FALSE. \item
 "absolute" or "percentage". Shows the \bold{absolute number} and the
-\bold{percentage} of subjects at risk by time, respectively. \item
-"abs_pct" to show both absolute number and percentage. \item "nrisk_cumcensor"
-and "nrisk_cumevents". Show the number at risk and, the cumulative number of
+\bold{percentage} of subjects at risk by time, respectively. \item "abs_pct"
+to show both absolute number and percentage. \item "nrisk_cumcensor" and
+"nrisk_cumevents". Show the number at risk and, the cumulative number of
 censoring and events, respectively. }}
 
 \item{risk.table.title}{The title to be used for the risk table.}

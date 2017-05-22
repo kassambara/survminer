@@ -8,10 +8,11 @@ ggsurvplot_df(fit, fun = NULL, color = NULL, palette = NULL,
   linetype = 1, break.x.by = NULL, break.time.by = NULL,
   break.y.by = NULL, surv.scale = c("default", "percent"), xscale = 1,
   conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
-  censor = TRUE, censor.shape = "+", censor.size = 4.5, title = NULL,
-  xlab = "Time", ylab = "Survival probability", xlim = NULL,
-  ylim = NULL, axes.offset = TRUE, legend = c("top", "bottom", "left",
-  "right", "none"), legend.title = "Strata", legend.labs = NULL,
+  conf.int.alpha = 0.3, censor = TRUE, censor.shape = "+",
+  censor.size = 4.5, title = NULL, xlab = "Time",
+  ylab = "Survival probability", xlim = NULL, ylim = NULL,
+  axes.offset = TRUE, legend = c("top", "bottom", "left", "right", "none"),
+  legend.title = "Strata", legend.labs = NULL,
   ggtheme = theme_survminer(), ...)
 }
 \arguments{
@@ -72,6 +73,9 @@ example, xscale = "d_m" will transform labels from days to months; xscale =
 
 \item{conf.int.style}{confidence interval style. Allowed values include
 c("ribbon", "step").}
+
+\item{conf.int.alpha}{numeric value specifying fill color transparency. Value
+should be in [0, 1], where 0 is full transparency and 1 is no transparency.}
 
 \item{censor}{logical value. If TRUE, censors will be drawn.}
 

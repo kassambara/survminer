@@ -45,6 +45,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
                           break.x.by = NULL, break.time.by = NULL, break.y.by = NULL,
                           surv.scale = c("default", "percent"), xscale = 1,
                           conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
+                          conf.int.alpha = 0.3,
                           censor = TRUE, censor.shape = "+", censor.size = 4.5,
                           title = NULL,  xlab = "Time", ylab = "Survival probability",
                           xlim = NULL, ylim = NULL, axes.offset = TRUE,
@@ -184,7 +185,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
     if(conf.int.style == "ribbon"){
       p <- p + ggpubr::geom_exec(.geom_confint, data = df,
                                  ymin = "lower", ymax = "upper",
-                                 fill = conf.int.fill,  alpha = 0.3, na.rm = TRUE)
+                                 fill = conf.int.fill,  alpha = conf.int.alpha, na.rm = TRUE)
     }
     else if(conf.int.style == "step"){
       p <- p + ggpubr::geom_exec(ggplot2::geom_step, data = df,

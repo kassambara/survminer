@@ -102,6 +102,8 @@ NULL
 #'\itemize{
 #'  \item \strong{conf.int.fill}: fill color to be used for confidence interval.
 #'  \item \strong{conf.int.style}: confidence interval style. Allowed values include c("ribbon", "step").
+#'  \item \strong{conf.int.alpha}: numeric value specifying confidence fill color transparency.
+#'  Value should be in [0, 1], where 0 is full transparency and 1 is no transparency.
 #'}
 #'
 #'@section P-value:
@@ -248,7 +250,7 @@ NULL
 #'  # Change legends: title & labels
 #'  legend.title = "Sex",
 #'  legend.labs = c("Male", "Female"),
-#'  # Add p-value and confidence intervals
+#'  # Add p-value and tervals
 #'  pval = TRUE,
 #'
 #'  conf.int = TRUE,

@@ -40,6 +40,8 @@
     
 - New arguments `censor.shape` and `censor.size` to change the shape and the shape of censors ([#186](https://github.com/kassambara/survminer/issues/186) & [#187](https://github.com/kassambara/survminer/issues/187)).
      
+     
+- New argument `conf.int.alpha` added in `ggsurvplot()`. Numeric value specifying fill color transparency. Value should be in [0, 1], where 0 is full transparency and 1 is no transparency.
     
 ## Major changes
 

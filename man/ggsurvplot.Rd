@@ -76,9 +76,9 @@ line at median survival. Allowed values include one of c("none", "hv", "h",
 \item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
 specifying whether to show or not the risk table. Default is FALSE. \item
 "absolute" or "percentage". Shows the \bold{absolute number} and the
-\bold{percentage} of subjects at risk by time, respectively. \item
-"abs_pct" to show both absolute number and percentage. \item "nrisk_cumcensor"
-and "nrisk_cumevents". Show the number at risk and, the cumulative number of
+\bold{percentage} of subjects at risk by time, respectively. \item "abs_pct"
+to show both absolute number and percentage. \item "nrisk_cumcensor" and
+"nrisk_cumevents". Show the number at risk and, the cumulative number of
 censoring and events, respectively. }}
 
 \item{cumevents}{logical value specifying whether to show or not the table of
@@ -227,6 +227,8 @@ Customize survival plots and tables. See also \link{ggsurvplot_arguments}.
 \itemize{
  \item \strong{conf.int.fill}: fill color to be used for confidence interval.
  \item \strong{conf.int.style}: confidence interval style. Allowed values include c("ribbon", "step").
+ \item \strong{conf.int.alpha}: numeric value specifying confidence fill color transparency.
+ Value should be in [0, 1], where 0 is full transparency and 1 is no transparency.
 }
 }
 
@@ -376,7 +378,7 @@ ggsurvplot(fit, data = lung,
  # Change legends: title & labels
  legend.title = "Sex",
  legend.labs = c("Male", "Female"),
- # Add p-value and confidence intervals
+ # Add p-value and tervals
  pval = TRUE,
 
  conf.int = TRUE,
