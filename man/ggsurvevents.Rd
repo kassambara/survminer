@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggsurvevents.R
 \name{ggsurvevents}
 \alias{ggsurvevents}
-\title{Distribution of Event's Times}
+\title{Distribution of Events' Times}
 \usage{
 ggsurvevents(surv = NULL, fit = NULL, data = NULL, type = "fraction",
   normalized = TRUE, censored.on.top = TRUE, ggtheme = theme_survminer(),

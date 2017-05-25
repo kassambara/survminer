@@ -1,4 +1,4 @@
-#' Distribution of Event's Times
+#' Distribution of Events' Times
 #'
 #' @param surv an object of \link{Surv}. If not suplied, the censoring variable is extracted from the model.
 #' @param fit an object of class \link{survfit}.
