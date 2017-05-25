@@ -74,12 +74,12 @@ ggsurvevents <- function(surv = NULL,
       surv$cum1[i] <- sum(surv$time[surv$status == 1] <= surv$time[i], na.rm=TRUE)
     }
     if (type == "radius") {
-      plot.title = "Distribution Of Events's Times"
+      plot.title = "Distribution Of Events' Times"
       surv$cum0[i] <- sum(abs(surv$time[surv$status == 0] - surv$time[i]) < radius, na.rm=TRUE)
       surv$cum1[i] <- sum(abs(surv$time[surv$status == 1] - surv$time[i]) < radius, na.rm=TRUE)
     }
     if (type == "fraction") {
-      plot.title = "Distribution Of Events's Times"
+      plot.title = "Distribution Of Events' Times"
       surv$cum0[i] <- sum(abs(surv$timeN[surv$status == 0] - surv$timeN[i]) < radiusN, na.rm=TRUE)
       surv$cum1[i] <- sum(abs(surv$timeN[surv$status == 1] - surv$timeN[i]) < radiusN, na.rm=TRUE)
     }
