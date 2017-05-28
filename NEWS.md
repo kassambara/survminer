@@ -49,6 +49,8 @@
    
 ## Minor changes
      
+- Now, `ggcompetingrisks()` supports the `add_ci` argument. If `add_ci=TRUE` and `fit` is an object of class `cuminc` then confidence intervals are plotted with `geom_ribbon`.
+  
 - Now, `ggsurvplot()` supports the `survfit()` outputs when used with the argument `start.time`.
   
 - Now, the default behaviour of `ggsurvplot()` is to round the number at risk using the option `digits = 0` ([214](https://github.com/kassambara/survminer/issues/214)).
