@@ -5,7 +5,7 @@
 \title{Cumulative Incidence Curves for Competing Risks}
 \usage{
 ggcompetingrisks(fit, gnames = NULL, gsep = " ", multiple_panels = TRUE,
-  ggtheme = theme_survminer(), ...)
+  ggtheme = theme_survminer(), coef = 1.96, add_ci = FALSE, ...)
 }
 \arguments{
 \item{fit}{an object of a class \link{cuminc} - created with \link{cuminc} function or \code{survfitms} created with \link{survfit} function.}
@@ -18,6 +18,10 @@ ggcompetingrisks(fit, gnames = NULL, gsep = " ", multiple_panels = TRUE,
 
 \item{ggtheme}{function, \code{ggplot2} theme name. Default value is \link{theme_survminer}.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
+
+\item{coef}{see \code{add_ci}, scaling actor for the ribbon. The default value is 1.96.}
+
+\item{add_ci}{if \code{TRUE} then additional layer (\code{geom_ribbon}) is added around the point estimate. The ribon is plotted with boundries +- \code{coef}*standard deviation.}
 
 \item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.}
 }
@@ -39,6 +43,8 @@ strt <- sample(1:2,100,replace=TRUE)
 print(fit <- cmprsk::cuminc(ss,cc,gg,strt))
 ggcompetingrisks(fit)
 ggcompetingrisks(fit, multiple_panels = FALSE)
+ggcompetingrisks(fit, add_ci = TRUE)
+ggcompetingrisks(fit, multiple_panels = FALSE, add_ci = TRUE)
 
 # handles survfitms objects
 library(survival)
