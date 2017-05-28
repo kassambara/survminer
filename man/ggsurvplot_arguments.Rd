@@ -61,6 +61,9 @@ breaks. Default value is NULL.}
 \item{conf.int.style}{confidence interval style. Allowed values include
 c("ribbon", "step").}
 
+\item{conf.int.alpha}{numeric value specifying fill color transparency. Value
+should be in [0, 1], where 0 is full transparency and 1 is no transparency.}
+
 \item{censor}{logical value. If TRUE, censors will be drawn.}
 
 \item{censor.shape}{character or numeric value specifying the point shape of
@@ -83,6 +86,9 @@ coordinates of the p-value. Default values are NULL.}
 
 \item{xlim, ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
 
+\item{axes.offset}{logical value. Default is TRUE. If FALSE, set the plot axes
+to start at the origin.}
+
 \item{legend}{character specifying legend position. Allowed values are one of
 c("top", "bottom", "left", "right", "none"). Default is "top" side position.
 to remove the legend use legend = "none". Legend position can be also
@@ -96,11 +102,11 @@ those strata.}
 
 \item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
 specifying whether to show or not the risk table. Default is FALSE. \item
-"absolute" or "percentage": to show the \bold{absolute number} and the
-\bold{percentage} of subjects at risk by time, respectively. Use i)
-"abs_pct" to show both absolute number and percentage. ii) "nrisk_cumcensor"
-and "nrisk_cumevents" to show the number at risk and, the cumulative number
-of censoring and events, respectively. }}
+"absolute" or "percentage". Shows the \bold{absolute number} and the
+\bold{percentage} of subjects at risk by time, respectively. \item "abs_pct"
+to show both absolute number and percentage. \item "nrisk_cumcensor" and
+"nrisk_cumevents". Show the number at risk and, the cumulative number of
+censoring and events, respectively. }}
 
 \item{risk.table.title}{The title to be used for the risk table.}
 
@@ -141,9 +147,7 @@ the value when you have many strata. Default is 0.25. Ignored when
 risk.table = FALSE.}
 
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
-is 0.75. Ignored when risk.table = FALSE. \code{1-risk.table.height -
-ncensor.plot.height} when \code{risk.table = TRUE} and \code{ncensor.plot =
-TRUE}}
+is 0.75. Ignored when risk.table = FALSE.}
 
 \item{ncensor.plot}{logical value. If TRUE, the number of censored subjects at
 time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.}

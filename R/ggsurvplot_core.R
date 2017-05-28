@@ -8,12 +8,14 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
                             break.x.by = NULL, break.y.by = NULL,  break.time.by = NULL,
                             surv.scale = c("default", "percent"), xscale = 1,
                             conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
+                            conf.int.alpha = 0.3,
                             censor = TRUE, censor.shape = "+", censor.size = 4.5,
                             pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
+                            test.for.trend = FALSE,
                             pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                             log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
                             title = NULL,  xlab = "Time", ylab = "Survival probability",
-                            xlim = NULL, ylim = NULL,
+                            xlim = NULL, ylim = NULL, axes.offset = TRUE,
                             legend = c("top", "bottom", "left", "right", "none"),
                             legend.title = "Strata", legend.labs = NULL,
                             fontsize = 4.5,
@@ -66,6 +68,11 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   risk.table.type <- risktable$type
   extra.params <- list(...)
 
+  # Axes offset
+  .expand <- ggplot2::waiver()
+  if(!axes.offset)
+    .expand <- c(0, 0)
+
 
   # Data
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -73,6 +80,13 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   data <- .get_data(fit, data = data, complain = FALSE)
   # Data for survival plot
   d <- surv_summary(fit, data = data)
+  if(!is.null(fit$start.time)) d <- subset(d, d$time >= fit$start.time )
+
+  # Axis limits
+   xmin <- ifelse(.is_cloglog(fun), min(c(1, d$time)), 0)
+   if(!is.null(fit$start.time)) xmin <- fit$start.time
+   xmax <- .get_default_breaks(d$time, .log = .is_cloglog(fun)) %>% max()
+   if(is.null(xlim)) xlim <- c(xmin, xmax)
 
   # Main survival curves
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -81,9 +95,10 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
                      break.x.by = break.x.by, break.time.by = break.time.by, break.y.by = break.y.by,
                      surv.scale = surv.scale, xscale = xscale,
                      conf.int = conf.int, conf.int.fill = conf.int.fill, conf.int.style = conf.int.style,
+                     conf.int.alpha = conf.int.alpha,
                      censor = censor, censor.shape = censor.shape, censor.size = censor.size,
                      title = title,  xlab = xlab, ylab = ylab,
-                     xlim = xlim, ylim = ylim,
+                     xlim = xlim, ylim = ylim, axes.offset = axes.offset,
                      legend = legend, legend.title = legend.title, legend.labs = legend.labs,
                      ggtheme = ggtheme, ...)
 
@@ -97,7 +112,8 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   # Compute pvalue or parse it if provided by the user
   pval <- surv_pvalue(fit, method = log.rank.weights, data = data,
                       pval = pval, pval.coord = pval.coord,
-                      pval.method.coord = pval.method.coord)
+                      pval.method.coord = pval.method.coord,
+                      test.for.trend = test.for.trend)
 
   if(pval$pval.txt != ""){
     p <- p + ggplot2::annotate("text", x = pval$pval.x, y = pval$pval.y,
@@ -186,7 +202,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     ncensor_plot <- ncensor_plot + tables.theme
 
     if(!pms$xlog) ncensor_plot <- ncensor_plot + scale_x_continuous(breaks = pms$time.breaks,
-                                                                    labels = pms$xticklabels, expand = c(0,0))
+                                                                    labels = pms$xticklabels, expand = .expand)
     else ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = pms$time.breaks, trans = "log10", labels = pms$xticklabels)
 
   }
@@ -194,7 +210,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     pms$color <- cumcensor.col
     pms$title <- cumcensor.title
     if(cumcensor.y.text.col) pms$y.text.col <- scurve_cols
-    pms$y.text.col <- cumcensor.y.text.col
+    #pms$y.text.col <- cumcensor.y.text.col
     pms$fontsize <- fontsize
     pms$survtable <- "cumcensor"
     ncensor_plot  <- do.call(ggsurvtable, pms)
@@ -234,6 +250,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   attr(res, "legend.labs") <- legend.labs
   attr(res, "cumcensor") <- cumcensor
   attr(res, "risk.table.pos") <- risk.table.pos
+  attr(res, "axes.offset") <- axes.offset
   res
 }
 
@@ -248,10 +265,11 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   y.text <- attr(x, "y.text")
   y.text.col <- attr(x, "y.text.col")
   cumcensor <- attr(x, "cumcensor")
+  axes.offset <- attr(x, "axes.offset")
 
 
   risk.table.pos <- attr(x, "risk.table.pos")
-  if(risk.table.pos == "in") x <- .put_risktable_in_survplot(x)
+  if(risk.table.pos == "in") x <- .put_risktable_in_survplot(x, axes.offset = axes.offset)
 
   nplot <- .count_ggplots(x)
   # Removing data components from the list and keep only plot objects
@@ -324,7 +342,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   ggsurv <- gridExtra::arrangeGrob(grobs = grobs, nrow = nplot, heights = unlist(heights))
 
   # Set legend
-  if(nplot > 1 & legend.position %in% c("left", "right", "bottom") & is.null(legend.grob)){
+  if(nplot > 1 & legend.position %in% c("left", "right", "bottom") & !is.null(legend.grob)){
     ggsurv <- switch(legend.position,
                      bottom = gridExtra::arrangeGrob(grobs = list(ggsurv, legend.grob), nrow = 2, heights = c(0.9, 0.1)),
                      top = gridExtra::arrangeGrob(grobs = list(legend.grob, ggsurv), nrow = 2, heights = c(0.1, 0.9)),
@@ -408,7 +426,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 
 # Put risk table inside main plot
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-.put_risktable_in_survplot <- function(ggsurv){
+.put_risktable_in_survplot <- function(ggsurv, axes.offset = TRUE){
 
   if(is.null(ggsurv$table)) return(ggsurv)
 
@@ -438,9 +456,16 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   nstrata <- length(levels(survplot$data$strata))
   .time <- survplot$data$time
   ymax <- nstrata*0.05
+  ymin <- -0.05
+  xmin <- -max(.time)/20
+
+  if(!axes.offset){
+    ymin <- -0.02
+    xmin <- -max(.time)/50
+  }
   risktable_grob = ggplotGrob(risktable)
-  survplot <- survplot + annotation_custom(grob = risktable_grob, xmin = -max(.time)/20,
-                                           ymin = -0.05, ymax = ymax)
+  survplot <- survplot + annotation_custom(grob = risktable_grob, xmin = xmin,
+                                           ymin = ymin, ymax = ymax)
   ggsurv$plot <- survplot
   ggsurv$table <- NULL
   ggsurv

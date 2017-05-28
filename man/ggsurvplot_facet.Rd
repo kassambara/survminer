@@ -8,7 +8,10 @@ ggsurvplot_facet(fit, data, facet.by, color = NULL, palette = NULL,
   legend.labs = NULL, pval = FALSE, pval.method = FALSE,
   pval.coord = NULL, pval.method.coord = NULL, nrow = NULL, ncol = NULL,
   scales = "fixed", short.panel.labs = FALSE, panel.labs = NULL,
-  panel.labs.background = list(color = NULL, fill = NULL), ...)
+  panel.labs.background = list(color = NULL, fill = NULL),
+  panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle =
+  NULL), panel.labs.font.x = panel.labs.font,
+  panel.labs.font.y = panel.labs.font, ...)
 }
 \arguments{
 \item{fit}{an object of class survfit.}
@@ -60,7 +63,7 @@ data is faceted by one grouping variable.}
 \item{scales}{should axis scales of panels be fixed ("fixed", the default),
 free ("free"), or free in one dimension ("free_x", "free_y").}
 
-\item{short.panel.labs}{logical value. Default is FALSE. If TRUE, creae short
+\item{short.panel.labs}{logical value. Default is FALSE. If TRUE, create short
 labels for panels by omitting variable names; in other words panels will be
 labelled only by variable grouping levels.}
 
@@ -73,9 +76,15 @@ for example panel.labs = list(sex = c("Male", "Female"), rx = c("Obs",
 \item{panel.labs.background}{a list to customize the background of panel
 labels. Should contain the combination of the following elements: \itemize{
 \item \code{color, linetype, size}: background line color, type and size
-\item \code{fill}: background fill color.
-}
-For example, panel.labs.background = list(color = "blue", fill = "pink").}
+\item \code{fill}: background fill color. } For example,
+panel.labs.background = list(color = "blue", fill = "pink").}
+
+\item{panel.labs.font}{a list of aestheics indicating the size (e.g.: 14), the
+face/style (e.g.: "plain", "bold", "italic", "bold.italic") and the color
+(e.g.: "red") and the orientation angle (e.g.: 45) of panel labels.}
+
+\item{panel.labs.font.x, panel.labs.font.y}{same as panel.labs.font but for x
+and y direction, respectively.}
 
 \item{...}{other arguments to pass to the function \code{\link{ggsurvplot}}.}
 }

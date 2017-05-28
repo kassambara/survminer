@@ -10,7 +10,7 @@ NULL
 #'@return Returns for each fit, a data frame with the following column:
 #'  \itemize{ \item strata: strata/group names \item median: median survival of
 #'  each group \item lower: 95\% lower confidence limit \item upper: 95\% upper
-#'  confidence limit } \cr Returns a list of data frames when the input is a
+#'  confidence limit }Returns a list of data frames when the input is a
 #'  list of survfit objects. If combine = TRUE, results are combined into one single data frame.
 #'
 #' @examples
@@ -42,7 +42,7 @@ NULL
 #'fit.list2 <- surv_fit(Surv(time, status) ~ sex, data = colon,
 #'                      group.by = "rx")
 #'surv_median(fit.list2)
-#'
+#' @rdname surv_median
 #'@export
 surv_median <- function(fit, combine = FALSE){
 

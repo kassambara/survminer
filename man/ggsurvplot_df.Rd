@@ -8,9 +8,10 @@ ggsurvplot_df(fit, fun = NULL, color = NULL, palette = NULL,
   linetype = 1, break.x.by = NULL, break.time.by = NULL,
   break.y.by = NULL, surv.scale = c("default", "percent"), xscale = 1,
   conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
-  censor = TRUE, censor.shape = "+", censor.size = 4.5, title = NULL,
-  xlab = "Time", ylab = "Survival probability", xlim = NULL,
-  ylim = NULL, legend = c("top", "bottom", "left", "right", "none"),
+  conf.int.alpha = 0.3, censor = TRUE, censor.shape = "+",
+  censor.size = 4.5, title = NULL, xlab = "Time",
+  ylab = "Survival probability", xlim = NULL, ylim = NULL,
+  axes.offset = TRUE, legend = c("top", "bottom", "left", "right", "none"),
   legend.title = "Strata", legend.labs = NULL,
   ggtheme = theme_survminer(), ...)
 }
@@ -73,6 +74,9 @@ example, xscale = "d_m" will transform labels from days to months; xscale =
 \item{conf.int.style}{confidence interval style. Allowed values include
 c("ribbon", "step").}
 
+\item{conf.int.alpha}{numeric value specifying fill color transparency. Value
+should be in [0, 1], where 0 is full transparency and 1 is no transparency.}
+
 \item{censor}{logical value. If TRUE, censors will be drawn.}
 
 \item{censor.shape}{character or numeric value specifying the point shape of
@@ -90,6 +94,9 @@ Default is 4.5.}
 \item{xlim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
 
 \item{ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
+
+\item{axes.offset}{logical value. Default is TRUE. If FALSE, set the plot axes
+to start at the origin.}
 
 \item{legend}{character specifying legend position. Allowed values are one of
 c("top", "bottom", "left", "right", "none"). Default is "top" side position.
@@ -113,7 +120,9 @@ customizing the plots. See details section.}
 \description{
 An extension to \link{ggsurvplot}() to plot survival curves from
  any data frame containing the summary of survival curves as returned the
- \link{surv_summary}() function.\cr\cr Might be useful for a user who wants
+ \link{surv_summary}() function.
+
+ Might be useful for a user who wants
  to use \link{ggsurvplot} for visualizing survival curves computed by another
  method than the standard \link[survival]{survfit.formula} function. In this
  case, the user has just to provide the data frame containing the summary of

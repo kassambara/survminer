@@ -1,45 +1,49 @@
 #' @include utilities.R
 NULL
 
-#' Compute P-value Comparing Survival Curves
+#'Compute P-value Comparing Survival Curves
 #'
-#' @description Compute p-value from survfit objects or parse it when provided by the user.
-#' Survival curves are compared using the log-rank test (default).
-#' Other methods can be specified using the argument \code{method}.
-#' @param fit A survfit object. Can be also a list of survfit objects.
-#' @param data data frame used to fit survival curves. Can be also a list of data.
-#' @param method method to compute survival curves. Default is "survdiff" (or "log-rank"). Allowed values are one of:
-#' \itemize{
-#' \item "survdiff", log-rank;
-#' \item "1": log-rank, LR; --> Regular log-rank test, sensitive to detect late differences.
-#' \item "n": Gehan-Breslow (generalized Wilcoxon), GB; --> detect early differences.
-#' \item "sqrtN": Tarone-Ware, TW; --> detect early differences.
-#' \item "S1": Peto-Peto's modified survival estimate, PP;
-#' --> more robust than Tharone-Whare or Gehan-Breslow, detect early differences
-#' \item "S2": modified Peto-Peto (by Andersen), mPP
-#' \item "FH_p=1_q=1": Fleming-Harrington(p=1, q=1),  FH
-#' }
-#' To specify method, one can use either the weights (e.g.: "1", "n", "sqrtN", ...),
-#' or the full name ("log-rank", "gehan-breslow", "Peto-Peto", ...), or the acronyme LR, GB, ....
-#' Case insensitive partial match is allowed.\cr\cr To learn more about
-#' the mathematical background behind the different log-rank weights,
-#' read the following blog post on R-Addict:
-#' \href{http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html}{Comparing (Fancy) Survival Curves with Weighted Log-rank Tests}
+#'@description Compute p-value from survfit objects or parse it when provided by
+#'  the user. Survival curves are compared using the log-rank test (default).
+#'  Other methods can be specified using the argument \code{method}.
+#'@param fit A survfit object. Can be also a list of survfit objects.
+#'@param data data frame used to fit survival curves. Can be also a list of
+#'  data.
+#'@param method method to compute survival curves. Default is "survdiff" (or
+#'  "log-rank"). Allowed values are one of: \itemize{ \item "survdiff",
+#'  log-rank; \item "1": log-rank, LR; --> Regular log-rank test, sensitive to
+#'  detect late differences. \item "n": Gehan-Breslow (generalized Wilcoxon),
+#'  GB; --> detect early differences. \item "sqrtN": Tarone-Ware, TW; --> detect
+#'  early differences. \item "S1": Peto-Peto's modified survival estimate, PP;
+#'  --> more robust than Tharone-Whare or Gehan-Breslow, detect early
+#'  differences \item "S2": modified Peto-Peto (by Andersen), mPP \item
+#'  "FH_p=1_q=1": Fleming-Harrington(p=1, q=1),  FH } To specify method, one can
+#'  use either the weights (e.g.: "1", "n", "sqrtN", ...), or the full name
+#'  ("log-rank", "gehan-breslow", "Peto-Peto", ...), or the acronyme LR, GB,
+#'  .... Case insensitive partial match is allowed.\cr\cr To learn more about
+#'  the mathematical background behind the different log-rank weights, read the
+#'  following blog post on R-Addict:
+#'  \href{http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html}{Comparing
+#'  (Fancy) Survival Curves with Weighted Log-rank Tests}
+#'@param test.for.trend logical value. Default is FALSE. If TRUE, returns the
+#'  test for trend p-values. Tests for trend are designed to detect ordered
+#'  differences in survival curves. That is, for at least one group. The test
+#'  for trend can be only performed when the number of groups is > 2.
 #'@param combine logical value. Used only when fit is a list of survfit objects.
 #'  If TRUE, combine the results for multiple fits.
-#' @param ... other arguments including pval, pval.coord, pval.method.coord. These are only used internally to specify
-#' custom pvalue, pvalue and pvalue method coordinates on the survival plot. Normally, users don't need these arguments.
+#'@param ... other arguments including pval, pval.coord, pval.method.coord.
+#'  These are only used internally to specify custom pvalue, pvalue and pvalue
+#'  method coordinates on the survival plot. Normally, users don't need these
+#'  arguments.
 #'
-#' @return  Return a data frame with the columns (pval, method, pval.txt and variable).
-#' If additional arguments (pval, pval.coord, pval.method.coord, get_coord) are specified,
-#' then extra columns (pval.x, pval.y, method.x and method.y) are returned.
-#' \itemize{
-#' \item pval: pvalue
-#' \item method: method used to compute pvalues
-#' \item pval.txt: formatted text ready to use for annotating plots
-#' \item pval.x, pval.y: x & y coordinates of the pvalue for annotating the plot
-#' \item method.x, method.y: x & y coordinates of pvalue method
-#' }
+#'@return  Return a data frame with the columns (pval, method, pval.txt and
+#'  variable). If additional arguments (pval, pval.coord, pval.method.coord,
+#'  get_coord) are specified, then extra columns (pval.x, pval.y, method.x and
+#'  method.y) are returned. \itemize{ \item pval: pvalue \item method: method
+#'  used to compute pvalues \item pval.txt: formatted text ready to use for
+#'  annotating plots \item pval.x, pval.y: x & y coordinates of the pvalue for
+#'  annotating the plot \item method.x, method.y: x & y coordinates of pvalue
+#'  method }
 #'
 #' @examples
 #'
@@ -76,8 +80,9 @@ NULL
 #'#:::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #'surv_pvalue(fit.list2, combine = TRUE, get_coord = TRUE)
 #'
-#' @export
-surv_pvalue <- function(fit, data = NULL, method = "survdiff", combine = FALSE,   ...)
+#'@export
+#'@rdname surv_pvalue
+surv_pvalue <- function(fit, data = NULL, method = "survdiff", test.for.trend = FALSE, combine = FALSE,   ...)
 {
 
   if(inherits(data, c("surv_group_by")))
@@ -112,18 +117,18 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", combine = FALSE, 
     res <- purrr::map2(fit, data, .pvalue,
                        method = method,  pval = pval,
                        pval.coord = pval.coord,  pval.method.coord = pval.method.coord,
-                       get_coord =  get_coord )
+                       get_coord =  get_coord, test.for.trend = test.for.trend )
   }
   else if(.is_list(fit)){
     res <- purrr::map(fit, .pvalue,
                       data = data, method = method,  pval = pval,
                       pval.coord = pval.coord,  pval.method.coord = pval.method.coord,
-                      get_coord  =  get_coord )
+                      get_coord  =  get_coord, test.for.trend = test.for.trend)
   }
   else{
     res <- .pvalue(fit, data = data, method = method,  pval = pval,
                    pval.coord = pval.coord,  pval.method.coord = pval.method.coord,
-                   get_coord  =  get_coord ) %>%
+                   get_coord  =  get_coord, test.for.trend = test.for.trend ) %>%
       dplyr::select(variable, dplyr::everything())
   }
 
@@ -147,12 +152,14 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", combine = FALSE, 
 # Helper function to compute pvalue for one fit
 # Will be used for a list of fits
 .pvalue <- function(fit, data, method = "survdiff",  pval = TRUE,
-                    pval.coord = NULL,  pval.method.coord = NULL, get_coord = FALSE)
+                    pval.coord = NULL,  pval.method.coord = NULL, get_coord = FALSE,
+                    test.for.trend = FALSE)
 {
 
   if(is.null(method)) method <- "survdiff"
   if(is.null(pval)) pval <- FALSE
   if(pval == "") pval <- FALSE
+
   . <- NULL
 
   allowed.methods <- c("survdiff", "log-rank", "LR", "1",
@@ -169,6 +176,9 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", combine = FALSE, 
     stop("Don't support the choosed method: ", choosed.method, ". ",
          "Allowed methods include: ", .collapse(allowed.methods, sep = ", "))
   else method <- method.names[choosed.method] %>% .[1]
+
+  if(test.for.trend & method == "survdiff")
+    method <- "1" # use survMisc
 
 
   # Extract fit components
@@ -212,16 +222,31 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", combine = FALSE, 
     capture.output(comp(tenfit)) -> null_dev
     # comp modifies tenfit object (ten class: ?survMisc::ten)
     # and adds attributes with tests
+    if(test.for.trend)
+      attributes(tenfit)$tft$tft -> tests
+    else
     attributes(tenfit)$lrt -> tests
+
+    if(test.for.trend & is.null(tests))
+      stop("Test for trend is NULL. ",
+           "Note that, the number of groups should be > 2 to perform the test for trend. ")
+
+    lr_p <- tests$pChisq
+    if(is.null(lr_p)) lr_p <- tests$pNorm
+    lr_w <- tests$W
+
     # check str(tests) -> W:weights / pNorm:p-values
-    pvalue <- round(tests$pNorm[tests$W == method], 4)
+    pvalue <- round(lr_p[lr_w == method], 4)
     pval.txt <- ifelse(pvalue < 1e-04, "p < 0.0001",
                        paste("p =", signif(pvalue, 2)))
     test_name <- c("Log-rank", "Gehan-Breslow",
                    "Tarone-Ware", "Peto-Peto",
                    "modified Peto-Peto", "Fleming-Harrington (p=1, q=1)")
     # taken from ?survMisc::comp
-    res <- list(pval = pvalue, method = test_name[tests$W == method], pval.txt = pval.txt)
+    method <- test_name[lr_w == method]
+    if(test.for.trend)
+      method <- paste0(method, ", tft")
+    res <- list(pval = pvalue, method = method, pval.txt = pval.txt)
   }
   res$variable <- .collapse(surv.vars, sep =  "+")
   # Pvalue coordinates to annotate the plot

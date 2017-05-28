@@ -43,6 +43,8 @@
 #'@param conf.int.fill fill color to be used for confidence interval.
 #'@param conf.int.style confidence interval style. Allowed values include
 #'  c("ribbon", "step").
+#'@param conf.int.alpha numeric value specifying fill color transparency. Value
+#'  should be in [0, 1], where 0 is full transparency and 1 is no transparency.
 #'@param censor logical value. If TRUE, censors will be drawn.
 #'@param censor.shape character or numeric value specifying the point shape of
 #'  censors. Default value is "+" (3), a sensible choice is "|" (124).
@@ -57,6 +59,8 @@
 #'  coordinates of the p-value. Default values are NULL.
 #'@param title,xlab,ylab main title and axis labels
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
+#'@param axes.offset logical value. Default is TRUE. If FALSE, set the plot axes
+#'  to start at the origin.
 #'@param legend character specifying legend position. Allowed values are one of
 #'  c("top", "bottom", "left", "right", "none"). Default is "top" side position.
 #'  to remove the legend use legend = "none". Legend position can be also
@@ -67,11 +71,11 @@
 #'  those strata.
 #'@param risk.table Allowed values include: \itemize{ \item TRUE or FALSE
 #'  specifying whether to show or not the risk table. Default is FALSE. \item
-#'  "absolute" or "percentage": to show the \bold{absolute number} and the
-#'  \bold{percentage} of subjects at risk by time, respectively. Use i)
-#'  "abs_pct" to show both absolute number and percentage. ii) "nrisk_cumcensor"
-#'  and "nrisk_cumevents" to show the number at risk and, the cumulative number
-#'  of censoring and events, respectively. }
+#'  "absolute" or "percentage". Shows the \bold{absolute number} and the
+#'  \bold{percentage} of subjects at risk by time, respectively. \item "abs_pct"
+#'  to show both absolute number and percentage. \item "nrisk_cumcensor" and
+#'  "nrisk_cumevents". Show the number at risk and, the cumulative number of
+#'  censoring and events, respectively. }
 #'
 #'@param risk.table.title The title to be used for the risk table.
 #'@param risk.table.pos character vector specifying the risk table position.
@@ -100,9 +104,7 @@
 #'  the value when you have many strata. Default is 0.25. Ignored when
 #'  risk.table = FALSE.
 #'@param surv.plot.height the height of the survival plot on the grid. Default
-#'  is 0.75. Ignored when risk.table = FALSE. \code{1-risk.table.height -
-#'  ncensor.plot.height} when \code{risk.table = TRUE} and \code{ncensor.plot =
-#'  TRUE}
+#'  is 0.75. Ignored when risk.table = FALSE.
 #'@param ncensor.plot logical value. If TRUE, the number of censored subjects at
 #'  time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.
 #'@param ncensor.plot.title The title to be used for the censor plot. Used when

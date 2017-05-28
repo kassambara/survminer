@@ -21,13 +21,19 @@ Retuns a list of ggsurvplots.
 }
 \description{
 Survival curves of grouped data sets by one or two
- variables.\cr\cr Survival analysis are often done on subsets defined by
+ variables.
+
+ Survival analysis are often done on subsets defined by
  variables in the dataset. For example, assume that we have a cohort of
  patients with a large number of  clinicopathological and molecular
  covariates, including survival data, TP53 mutation status and the patients'
- sex (Male or Female).\cr\cr One might be also interested in comparing the
+ sex (Male or Female).
+
+ One might be also interested in comparing the
  survival curves of Male and Female after grouping (or splitting ) the data
- by TP53 mutation status.\cr\cr \code{ggsurvplot_group_by}() provides a
+ by TP53 mutation status.
+
+ \code{ggsurvplot_group_by}() provides a
  convenient solution to create a multiple \link{ggsurvplot} of a data set
  grouped by one or two variables.
 }

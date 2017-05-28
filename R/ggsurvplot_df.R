@@ -4,7 +4,9 @@ NULL
 #'
 #'@description An extension to \link{ggsurvplot}() to plot survival curves from
 #'  any data frame containing the summary of survival curves as returned the
-#'  \link{surv_summary}() function.\cr\cr Might be useful for a user who wants
+#'  \link{surv_summary}() function.
+#'
+#'  Might be useful for a user who wants
 #'  to use \link{ggsurvplot} for visualizing survival curves computed by another
 #'  method than the standard \link[survival]{survfit.formula} function. In this
 #'  case, the user has just to provide the data frame containing the summary of
@@ -43,9 +45,10 @@ ggsurvplot_df <- function(fit, fun = NULL,
                           break.x.by = NULL, break.time.by = NULL, break.y.by = NULL,
                           surv.scale = c("default", "percent"), xscale = 1,
                           conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
+                          conf.int.alpha = 0.3,
                           censor = TRUE, censor.shape = "+", censor.size = 4.5,
                           title = NULL,  xlab = "Time", ylab = "Survival probability",
-                          xlim = NULL, ylim = NULL,
+                          xlim = NULL, ylim = NULL, axes.offset = TRUE,
                           legend = c("top", "bottom", "left", "right", "none"),
                           legend.title = "Strata", legend.labs = NULL,
                           ggtheme = theme_survminer(),
@@ -95,8 +98,8 @@ ggsurvplot_df <- function(fit, fun = NULL,
     .strata.var <- color
   }
   else {
-    warning("color should be a coloring variable name. ",
-            "To change color palette, use the argument palette= '", color, "'.", call. = FALSE)
+   warning("Now, to change color palette, use the argument palette= '", color, "' ",
+            "instead of color = '", color, "'", call. = FALSE)
     palette <- color
     .strata.var <- "strata"
   }
@@ -140,13 +143,17 @@ ggsurvplot_df <- function(fit, fun = NULL,
   if(is.null(xlim)) xlim <- c(xmin, max(df$time))
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
 
+  # Axis offset
+  .expand <- ggplot2::waiver()
+  if(!axes.offset) .expand <- c(0, 0)
+
   # Drawing survival curves
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   df[, .strata.var] <- factor( df[, .strata.var], levels = .levels(.strata), labels = legend.labs)
 
   p <- ggplot2::ggplot(df, ggplot2::aes_string("time", "surv")) +
     ggpubr::geom_exec(ggplot2::geom_step, data = df, size = size, color = color, linetype = linetype, ...) +
-    ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim, expand = c(0,0)) +
+    ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim, expand = .expand) +
     ggplot2::coord_cartesian(xlim = xlim)+
     ggtheme
   p <- ggpubr::ggpar(p, palette = palette, ...)
@@ -164,7 +171,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
   xticklabels <- .format_xticklabels(labels = times, xscale = xscale)
 
   if(!.is_cloglog(fun)) {
-    p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels, expand = c(0,0)) +
+    p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels, expand = .expand) +
       ggplot2::expand_limits(x = 0, y = 0)
   }
   else p <- p + ggplot2::scale_x_continuous(breaks = times, trans = "log10", labels = xticklabels)
@@ -178,7 +185,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
     if(conf.int.style == "ribbon"){
       p <- p + ggpubr::geom_exec(.geom_confint, data = df,
                                  ymin = "lower", ymax = "upper",
-                                 fill = conf.int.fill,  alpha = 0.3, na.rm = TRUE)
+                                 fill = conf.int.fill,  alpha = conf.int.alpha, na.rm = TRUE)
     }
     else if(conf.int.style == "step"){
       p <- p + ggpubr::geom_exec(ggplot2::geom_step, data = df,
@@ -226,35 +233,6 @@ ggsurvplot_df <- function(fit, fun = NULL,
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Helper functions
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-# Function defining a transformation of the survival curve
-#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-# see ?survival::plot.survfit
-# d: data frame containing the column surv, upper and lower
-# fun the function
-.apply_surv_func <- function(d, fun = NULL){
-
-  if (!is.null(fun)) {
-    if (is.character(fun)) {
-      fun <- switch(fun, log = function(y) log(y),
-                    event = function(y) 1 - y,
-                    cumhaz = function(y) -log(y),
-                    cloglog = function(y) log(-log(y)),
-                    pct = function(y) y * 100,
-                    logpct = function(y) 100 * y,
-                    identity = function(y) y,
-                    stop("Unrecognized survival function argument"))
-    }
-    else if (!is.function(fun)) {
-      stop("Invalid 'fun' argument")
-    }
-    d$surv <- fun(d$surv)
-    d$upper <- fun(d$upper)
-    d$lower <- fun(d$lower)
-  }
-  return(d)
-}
 
 # Adapt ylab according to the value of the argument fun
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

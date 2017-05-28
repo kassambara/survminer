@@ -11,7 +11,7 @@ NULL
 #'  data is faceted by one grouping variable.
 #'@param scales should axis scales of panels be fixed ("fixed", the default),
 #'  free ("free"), or free in one dimension ("free_x", "free_y").
-#'@param short.panel.labs logical value. Default is FALSE. If TRUE, creae short
+#'@param short.panel.labs logical value. Default is FALSE. If TRUE, create short
 #'  labels for panels by omitting variable names; in other words panels will be
 #'  labelled only by variable grouping levels.
 #'@param panel.labs a list of one or two character vectors to modify facet label
@@ -22,9 +22,13 @@ NULL
 #'@param panel.labs.background a list to customize the background of panel
 #'  labels. Should contain the combination of the following elements: \itemize{
 #'  \item \code{color, linetype, size}: background line color, type and size
-#'  \item \code{fill}: background fill color.
-#'  }
-#'  For example, panel.labs.background = list(color = "blue", fill = "pink").
+#'  \item \code{fill}: background fill color. } For example,
+#'  panel.labs.background = list(color = "blue", fill = "pink").
+#'@param panel.labs.font a list of aestheics indicating the size (e.g.: 14), the
+#'  face/style (e.g.: "plain", "bold", "italic", "bold.italic") and the color
+#'  (e.g.: "red") and the orientation angle (e.g.: 45) of panel labels.
+#'@param panel.labs.font.x,panel.labs.font.y same as panel.labs.font but for x
+#'  and y direction, respectively.
 #'@param ... other arguments to pass to the function \code{\link{ggsurvplot}}.
 #' @examples
 #' library(survival)
@@ -56,6 +60,9 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                              scales = "fixed",
                              short.panel.labs = FALSE, panel.labs = NULL,
                              panel.labs.background = list(color = NULL, fill = NULL),
+                             panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
+                             panel.labs.font.x = panel.labs.font,
+                             panel.labs.font.y = panel.labs.font,
                              ...)
   {
 
@@ -87,6 +94,8 @@ ggsurvplot_facet <- function(fit, data, facet.by,
   if(!is.null(panel.labs)){
     for(.grouping.var in facet.by){
       if(!is.null(panel.labs[[.grouping.var]])){
+        if(!is.factor(data[, .grouping.var]))
+          data[, .grouping.var] <- as.factor(data[, .grouping.var])
         levels(data[, .grouping.var]) <- panel.labs[[.grouping.var]]
       }
     }
@@ -152,7 +161,10 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
   p <- .facet(ggsurv$plot, facet.by, nrow = nrow, ncol = ncol,
               scales = scales, short.panel.labs = short.panel.labs,
-              panel.labs.background = panel.labs.background)
+              panel.labs.background = panel.labs.background,
+              panel.labs.font = panel.labs.font,
+              panel.labs.font.x =panel.labs.font.x,
+              panel.labs.font.y = panel.labs.font.y)
 
   # Pvalues
   #:::::::::::::::::::::::::::::::::::::::::
@@ -196,11 +208,16 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 # Helper function for faceting
 .facet <- function(p,  facet.by, nrow = NULL, ncol = NULL,
                    scales = "fixed", short.panel.labs = FALSE,
-                   panel.labs.background = list(color = NULL, fill = NULL)
+                   panel.labs.background = list(color = NULL, fill = NULL),
+                   panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
+                   panel.labs.font.x = panel.labs.font,
+                   panel.labs.font.y = panel.labs.font
                    )
 {
 
   panel.labs.background <- .compact(panel.labs.background)
+  panel.labs.font.x <- .compact(panel.labs.font.x)
+  panel.labs.font.y <- .compact(panel.labs.font.y)
 
   .labeller <- "label_value"
   if(!short.panel.labs) .labeller <- label_both
@@ -216,6 +233,10 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
   if(!.is_empty(panel.labs.background))
     p <- p + theme(strip.background = do.call(element_rect, panel.labs.background))
+  if(!.is_empty(panel.labs.font.x))
+    p <- p + theme(strip.text.x = do.call(element_text, panel.labs.font.x))
+  if(!.is_empty(panel.labs.font.y))
+    p <- p + theme(strip.text.y = do.call(element_text, panel.labs.font.y))
 
   p
 }

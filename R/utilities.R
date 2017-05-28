@@ -126,12 +126,12 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
 #   - n.event: the cumulative number of events that have occurred since the last time listed until time t+0
 #   - n.censor: number of censored subjects
 #   - strata_size: number of subject in the strata
-.get_timepoints_survsummary <- function(fit, data, times)
+.get_timepoints_survsummary <- function(fit, data, times, decimal.place = 0)
 {
   survsummary <- summary(fit, times = times, extend = TRUE)
 
   if (is.null(fit$strata)) {
-    .strata <- factor(rep("All", length(times)))
+    .strata <- factor(rep("All", length(survsummary$time)))
     strata_names <- "All"
     strata_size <- rep(fit$n, length(.strata))
   }
@@ -146,11 +146,11 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
   res <- data.frame(
     strata = strata,
     time = survsummary$time,
-    n.risk = survsummary$n.risk,
+    n.risk = round(survsummary$n.risk, digits = decimal.place),
     pct.risk = round(survsummary$n.risk*100/strata_size),
-    n.event = survsummary$n.event,
+    n.event = round(survsummary$n.event, digits = decimal.place),
     cum.n.event = unlist(by(survsummary$n.event, strata, cumsum)),
-    n.censor = survsummary$n.censor,
+    n.censor = round(survsummary$n.censor, digits = decimal.place),
     cum.n.censor = unlist(by(survsummary$n.censor, strata, cumsum)),
     strata_size = strata_size
   )
@@ -288,6 +288,35 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
     stats::as.formula()
 }
 
+# Function defining a transformation of the survival curve
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# see ?survival::plot.survfit
+# d: data frame containing the column surv, upper and lower
+# fun the function
+.apply_surv_func <- function(d, fun = NULL){
+
+  if (!is.null(fun)) {
+    if (is.character(fun)) {
+      fun <- switch(fun, log = function(y) log(y),
+                    event = function(y) 1 - y,
+                    cumhaz = function(y) -log(y),
+                    cloglog = function(y) log(-log(y)),
+                    pct = function(y) y * 100,
+                    logpct = function(y) 100 * y,
+                    identity = function(y) y,
+                    stop("Unrecognized survival function argument"))
+    }
+    else if (!is.function(fun)) {
+      stop("Invalid 'fun' argument")
+    }
+    cnames <- colnames(d)
+    if("surv" %in% cnames) d$surv <- fun(d$surv)
+    if("upper" %in% cnames) d$upper <- fun(d$upper)
+    if("lower" %in% cnames) d$lower <- fun(d$lower)
+  }
+  return(d)
+}
+
 
 # Get the names of formulas
 #.........................................................................
@@ -344,6 +373,10 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
 #       - data.all: the dataset used in survfit
 #       - data.formula: data off all variables in the formula including time and status
 .extract.survfit <- function(fit, data = NULL){
+
+  if(inherits(fit, "survfit.cox"))
+    return(list())
+
   .formula <- fit$call$formula %>%
     stats::as.formula()
   surv.obj <- deparse(.formula[[2]])

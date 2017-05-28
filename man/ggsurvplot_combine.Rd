@@ -17,11 +17,11 @@ ggsurvplot_combine(fit, data, risk.table = FALSE, risk.table.pos = c("out",
 
 \item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
 specifying whether to show or not the risk table. Default is FALSE. \item
-"absolute" or "percentage": to show the \bold{absolute number} and the
-\bold{percentage} of subjects at risk by time, respectively. Use i)
-"abs_pct" to show both absolute number and percentage. ii) "nrisk_cumcensor"
-and "nrisk_cumevents" to show the number at risk and, the cumulative number
-of censoring and events, respectively. }}
+"absolute" or "percentage". Shows the \bold{absolute number} and the
+\bold{percentage} of subjects at risk by time, respectively. \item "abs_pct"
+to show both absolute number and percentage. \item "nrisk_cumcensor" and
+"nrisk_cumevents". Show the number at risk and, the cumulative number of
+censoring and events, respectively. }}
 
 \item{risk.table.pos}{character vector specifying the risk table position.
 Allowed options are one of c("out", "in") indicating 'outside' or 'inside'

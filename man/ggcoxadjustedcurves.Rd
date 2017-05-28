@@ -5,8 +5,9 @@
 \title{Adjusted Survival Curves for Cox Proportional Hazards Model}
 \usage{
 ggcoxadjustedcurves(fit, variable = NULL, individual.curves = FALSE,
-  data = NULL, palette = "hue", curve.size = 2, curve.alpha = 0.2,
-  ylab = "Survival rate", ggtheme = theme_survminer(), ...)
+  data = NULL, fun = NULL, palette = "hue", curve.size = 2,
+  curve.alpha = 0.2, ylab = "Survival rate", ggtheme = theme_survminer(),
+  ...)
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
@@ -17,13 +18,18 @@ ggcoxadjustedcurves(fit, variable = NULL, individual.curves = FALSE,
 
 \item{data}{a dataset for predictions. If not supplied then data will be extracted from `fit` object.}
 
-\item{palette}{the color palette to be used for coloring or filling by
-groups. Allowed values include "grey" for grey color palettes; brewer
-palettes e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue",
-"red"); and scientific journal palettes from ggsci R package, e.g.: "npg",
-"aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and
-"rickandmorty". Can be also a numeric vector of length(groups); in this
-case a basic color palette is created using the function \link[grDevices]{palette}.}
+\item{fun}{an arbitrary function defining a transformation of the survival
+curve.  Often used transformations can be specified with a character
+argument: "event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the
+cumulative hazard function (f(y) = -log(y)), and "pct" for survival
+probability in percentage.}
+
+\item{palette}{the color palette to be used. Allowed values include "hue" for
+the default hue color scale; "grey" for grey color palettes; brewer palettes
+e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
+See details section for more information.  Can be also a numeric vector of
+length(groups); in this case a basic color palette is created using the
+function \link[grDevices]{palette}.}
 
 \item{curve.size, curve.alpha}{size and alpha for individual survival curves}
 
