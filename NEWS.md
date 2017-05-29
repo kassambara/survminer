@@ -49,7 +49,7 @@
    
 ## Minor changes
      
-- Now, `ggcompetingrisks()` supports the `add_ci` argument. If `add_ci=TRUE` and `fit` is an object of class `cuminc` then confidence intervals are plotted with `geom_ribbon`.
+- Now, `ggcompetingrisks()` supports the `conf.int` argument. If `conf.int=TRUE` and `fit` is an object of class `cuminc` then confidence intervals are plotted with `geom_ribbon`.
   
 - Now, `ggsurvplot()` supports the `survfit()` outputs when used with the argument `start.time`.
   

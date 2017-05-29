@@ -31,7 +31,7 @@ ggsurvevents(surv = NULL, fit = NULL, data = NULL, type = "fraction",
 return an object of class ggplot
 }
 \description{
-Distribution of Event's Times
+Distribution of Events' Times
 }
 \examples{
 require("survival")
