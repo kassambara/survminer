@@ -81,7 +81,7 @@ ggcompetingrisks.cuminc <- function(fit, gnames = NULL, gsep=" ",
   df <- do.call(rbind, fit2_list)
   df$event <- sapply(strsplit(df$name, split=gsep), `[`, 2)
   df$group <- sapply(strsplit(df$name, split=gsep), `[`, 1)
-  df$std <- sqrt(df$var)
+  df$std <- std <- sqrt(df$var)
   pl <- ggplot(df, aes(time, est, color=event))
   if (multiple_panels) {
     pl <- ggplot(df, aes(time, est, color=event)) + facet_wrap(~group)
