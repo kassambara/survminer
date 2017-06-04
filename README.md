@@ -287,7 +287,7 @@ ggsurv <- ggpar(
   font.caption  = c(14, "plain", "orange"),        
   font.x        = c(14, "bold.italic", "red"),          
   font.y        = c(14, "bold.italic", "darkred"),      
-  font.tickslab = c(12, "plain", "darkgreen"),
+  font.xtickslab = c(12, "plain", "darkgreen"),
   legend = "top"
 )
 
@@ -311,7 +311,7 @@ ggsurv$table <- ggpar(
   font.caption  = c(11, "plain", "darkgreen"),
   font.x        = c(8, "bold.italic", "orange"),
   font.y        = c(11, "bold.italic", "darkgreen"),
-  font.tickslab = c(9, "bold", "red")
+  font.xtickslab = c(9, "bold", "red")
 )
 
 
@@ -323,7 +323,7 @@ ggsurv$ncensor.plot <- ggpar(
   font.caption  = c(11, "plain", "darkgreen"),
   font.x        = c(8, "bold.italic", "orange"),
   font.y        = c(11, "bold.italic", "darkgreen"),
-  font.tickslab = c(9, "bold", "red")
+  font.xtickslab = c(9, "bold", "red")
 )
 
 print(ggsurv)
