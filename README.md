@@ -234,8 +234,7 @@ ggsurv <- ggpar(
   legend = "top"
 )
 
-# Apply custom color palettes and print
-ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
+ggsurv
 ```
 
 ![](tools/README-ggplot2-uber-platinium-customized-survival-plot-1.png)
