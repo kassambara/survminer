@@ -111,62 +111,6 @@ Censor shape can be changed as follow:
 ggsurvplot(fit, data = lung, censor.shape="|", censor.size = 4)
 ```
 
-![](tools/README-ggplot2-basic-survival-plot-censor-1.png)
-
-### Computing and passing p-values
-
-The exact p-value of the log-rank test can be computed and be added to the plot:
-
-``` r
-ggsurvplot(fit, data = lung, pval = TRUE)
-```
-
-![](tools/README-ggplot2-basic-survival-plot-pval-logical-1.png)
-
-It is also possible to specify custom p-value, with numeric:
-
-``` r
-ggsurvplot(fit, data = lung, pval = 0.03)
-```
-
-![](tools/README-ggplot2-basic-survival-plot-pval-num-1.png)
-
-or a personalized character:
-
-``` r
-ggsurvplot(fit, data = lung, pval = "The hot p-value is 0.00***")
-```
-
-![](tools/README-ggplot2-basic-survival-plot-pval-char-1.png)
-
-Also the p-value of **weighted** log-rank tests can be computed and added to the plot:
-
-``` r
-ggsurvplot(
-  fit,
-  data = lung,
-  pval = TRUE,
-  pval.method = TRUE, # write the name of the test  
-                      # that was used compute the p-value?
-  pval.method.coord = c(3, 0.1), # coordinates for the name
-  pval.method.size = 4,          # size for the name of the test
-  # test specification
-  log.rank.weights = # use one from the included below
-                     # `i`    - time of an event
-                     # `n(i)` - risk set size in the time `i`
-# math formulas here - http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html#weighted-log-rank-extensions
-   # "survdiff"      # regular p-value from survdiff function (all weights equal to 1)
-   # "1"             # regular p-value from survMisc::comp    (all weights equal to 1)
-   "n"               # Gehan and Breslow (for every `i` weights are equal to `n(i)`)
-   # "sqrtN",        # Tharone and Ware  (for every `i` weights are equal to `sqrt(n(i))`)
-   # "S1",           # Peto-Peto’s modified survival estimate
-   # "S2",           # modified Peto-Peto (by Andersen)
-   # "FH_p=1_q=1"    # Fleming-Harrington
-)
-```
-
-![](tools/README-ggplot2-basic-survival-plot-pval-weighted-1.png)
-
 ### Customized survival curves
 
 ``` r
@@ -226,6 +170,7 @@ ggsurv <- ggsurvplot(
            pval = TRUE,             # show p-value of log-rank test.
            conf.int = TRUE,         # show confidence intervals for 
                                     # point estimates of survival curves.
+           palette = c("#E7B800", "#2E9FDF"),
            xlim = c(0,500),         # present narrower X axis, but not affect
                                     # survival estimates.
            xlab = "Time in days",   # customize X axis label.
@@ -242,9 +187,7 @@ ggsurv <- ggsurvplot(
           legend.labs = 
             c("Male", "Female")    # change legend labels.
         )
-
-# Apply custom color palettes and print
-ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
+ggsurv
 ```
 
 ![](tools/README-ggplot2-uber-customized-survival-plot-1.png)
