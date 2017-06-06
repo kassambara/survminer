@@ -52,6 +52,7 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
   METHOD <- if (rho == 0) "Log-Rank test"
   else if(rho==1) "Peto & Peto test"
 
+
   # Removing missing value
   # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   .is.na <- data[, group_var, drop = FALSE] %>%
@@ -72,6 +73,7 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
     formula <- .build_formula(surv_obj, "..group..")
   }
   if(!is.factor(group)) group <- as.factor(group)
+  group <- droplevels(group)
 
   compare.levels <- function(i, j) {
     .subset = group %in% (levels(group))[c(i,j)]
