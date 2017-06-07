@@ -72,4 +72,3 @@ Collate:
     'surv_group_by.R'
     'surv_fit.R'
     'surv_median.R'
-    'theme_classic2.R'
