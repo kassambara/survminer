@@ -11,7 +11,7 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
@@ -86,7 +86,9 @@
     
     <p>An extension to <a href='ggsurvplot.html'>ggsurvplot</a>() to plot survival curves from
  any data frame containing the summary of survival curves as returned the
- <a href='surv_summary.html'>surv_summary</a>() function. Might be useful for a user who wants
+ <a href='surv_summary.html'>surv_summary</a>() function.</p>
+
+    <p>Might be useful for a user who wants
  to use <a href='ggsurvplot.html'>ggsurvplot</a> for visualizing survival curves computed by another
  method than the standard <a href='http://www.rdocumentation.org/packages/survival/topics/survfit.formula'>survfit.formula</a> function. In this
  case, the user has just to provide the data frame containing the summary of
@@ -97,10 +99,11 @@
   <span class='kw'>linetype</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>break.x.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>break.time.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>break.y.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>surv.scale</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"default"</span>, <span class='st'>"percent"</span>), <span class='kw'>xscale</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conf.int.fill</span> <span class='kw'>=</span> <span class='st'>"gray"</span>, <span class='kw'>conf.int.style</span> <span class='kw'>=</span> <span class='st'>"ribbon"</span>,
-  <span class='kw'>censor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>censor.shape</span> <span class='kw'>=</span> <span class='st'>"+"</span>, <span class='kw'>censor.size</span> <span class='kw'>=</span> <span class='fl'>4.5</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival probability"</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>axes.offset</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"top"</span>, <span class='st'>"bottom"</span>, <span class='st'>"left"</span>,
-  <span class='st'>"right"</span>, <span class='st'>"none"</span>), <span class='kw'>legend.title</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>, <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>conf.int.alpha</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>censor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>censor.shape</span> <span class='kw'>=</span> <span class='st'>"+"</span>,
+  <span class='kw'>censor.size</span> <span class='kw'>=</span> <span class='fl'>4.5</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>,
+  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival probability"</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>axes.offset</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"top"</span>, <span class='st'>"bottom"</span>, <span class='st'>"left"</span>, <span class='st'>"right"</span>, <span class='st'>"none"</span>),
+  <span class='kw'>legend.title</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>, <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
@@ -178,6 +181,9 @@ example, xscale = &quot;d_m&quot; will transform labels from days to months; xsc
       <dt>conf.int.style</dt>
       <dd>confidence interval style. Allowed values include
 c(&quot;ribbon&quot;, &quot;step&quot;).</dd>
+      <dt>conf.int.alpha</dt>
+      <dd>numeric value specifying fill color transparency. Value
+should be in [0, 1], where 0 is full transparency and 1 is no transparency.</dd>
       <dt>censor</dt>
       <dd>logical value. If TRUE, censors will be drawn.</dd>
       <dt>censor.shape</dt>

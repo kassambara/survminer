@@ -11,7 +11,7 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
@@ -89,7 +89,7 @@ For <code>survfitms</code> objects a different geometry is used, as suggested by
     
 
     <pre><span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>, <span class='kw'>gnames</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gsep</span> <span class='kw'>=</span> <span class='st'>" "</span>, <span class='kw'>multiple_panels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='no'>...</span>)</pre>
+  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='kw'>coef</span> <span class='kw'>=</span> <span class='fl'>1.96</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -104,6 +104,10 @@ For <code>survfitms</code> objects a different geometry is used, as suggested by
       <dt>ggtheme</dt>
       <dd>function, <code>ggplot2</code> theme name. Default value is <a href='theme_survminer.html'>theme_survminer</a>.
 Allowed values include ggplot2 official themes: see <code><a href='http://www.rdocumentation.org/packages/ggplot2/topics/theme'>theme</a></code>.</dd>
+      <dt>coef</dt>
+      <dd>see <code>conf.int</code>, scaling actor for the ribbon. The default value is 1.96.</dd>
+      <dt>conf.int</dt>
+      <dd>if <code>TRUE</code> then additional layer (<code>geom_ribbon</code>) is added around the point estimate. The ribon is plotted with boundries +- <code>coef</code>*standard deviation.</dd>
       <dt>...</dt>
       <dd>further arguments passed to the function <code><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggpar'>ggpar</a></code> for customizing the plot.</dd>
     </dl>
@@ -150,13 +154,13 @@ Allowed values include ggplot2 official themes: see <code><a href='http://www.rd
 #&gt; BRCA progression 0.004378377 0.006110680 0.006110680 0.006110680
 #&gt; LUNG progression 0.006700958 0.008631668 0.009219678 0.009771658
 #&gt; OV progression   0.005033271 0.006681731 0.006681731 0.006681731
-#&gt; </div><div class='input'><span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>)</div><img src='ggcompetingrisks-4.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>, <span class='kw'>multiple_panels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><img src='ggcompetingrisks-6.png' alt='' width='540' height='400' /><div class='input'>
+#&gt; </div><div class='input'><span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>)</div><img src='ggcompetingrisks-4.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>, <span class='kw'>multiple_panels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><img src='ggcompetingrisks-6.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><img src='ggcompetingrisks-8.png' alt='' width='540' height='400' /><div class='input'><span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>, <span class='kw'>multiple_panels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><img src='ggcompetingrisks-10.png' alt='' width='540' height='400' /><div class='input'>
 <span class='co'># handles survfitms objects</span>
 <span class='fu'>library</span>(<span class='no'>survival</span>)
 <span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>time</span> <span class='kw'>=</span> <span class='no'>ss</span>, <span class='kw'>group</span> <span class='kw'>=</span> <span class='no'>gg</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='no'>cc</span>, <span class='no'>strt</span>)
 <span class='no'>fit2</span> <span class='kw'>&lt;-</span> <span class='fu'>survfit</span>(<span class='fu'>Surv</span>(<span class='no'>time</span>, <span class='no'>status</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"mstate"</span>) ~ <span class='fl'>1</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>df</span>)
-<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit2</span>)</div><img src='ggcompetingrisks-8.png' alt='' width='540' height='400' /><div class='input'><span class='no'>fit3</span> <span class='kw'>&lt;-</span> <span class='fu'>survfit</span>(<span class='fu'>Surv</span>(<span class='no'>time</span>, <span class='no'>status</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"mstate"</span>) ~ <span class='no'>group</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>df</span>)
-<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit3</span>)</div><img src='ggcompetingrisks-10.png' alt='' width='540' height='400' /><div class='input'><span class='co'>## Not run: ------------------------------------</span>
+<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit2</span>)</div><img src='ggcompetingrisks-12.png' alt='' width='540' height='400' /><div class='input'><span class='no'>fit3</span> <span class='kw'>&lt;-</span> <span class='fu'>survfit</span>(<span class='fu'>Surv</span>(<span class='no'>time</span>, <span class='no'>status</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"mstate"</span>) ~ <span class='no'>group</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>df</span>)
+<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit3</span>)</div><img src='ggcompetingrisks-14.png' alt='' width='540' height='400' /><div class='input'><span class='co'>## Not run: ------------------------------------</span>
 <span class='co'>#   library(ggsci)</span>
 <span class='co'>#   library(cowplot)</span>
 <span class='co'>#   ggcompetingrisks(fit3) + theme_cowplot() + scale_fill_jco()</span>

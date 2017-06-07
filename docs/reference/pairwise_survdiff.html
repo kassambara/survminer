@@ -11,7 +11,7 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
@@ -100,8 +100,8 @@ Surv(time, status) ~ predictors.</dd>
 formula.</dd>
       <dt>p.adjust.method</dt>
       <dd>method for adjusting p values (see
-<code><a href='http://www.rdocumentation.org/packages/stats/topics/p.adjust'>p.adjust</a></code>). Allowed values include c(&quot;holm&quot;, &quot;hochberg&quot;,
-&quot;hommel&quot;, &quot;bonferroni&quot;, &quot;BH&quot;, &quot;BY&quot;, &quot;fdr&quot;, &quot;none&quot;). If you don&#39;t want to
+<code><a href='http://www.rdocumentation.org/packages/stats/topics/p.adjust'>p.adjust</a></code>). Allowed values include &quot;holm&quot;, &quot;hochberg&quot;,
+&quot;hommel&quot;, &quot;bonferroni&quot;, &quot;BH&quot;, &quot;BY&quot;, &quot;fdr&quot;, &quot;none&quot;. If you don&#39;t want to
 adjust the p value (not recommended), use p.adjust.method = &quot;none&quot;.</dd>
       <dt>na.action</dt>
       <dd>a missing-data filter function. Default is
@@ -137,18 +137,18 @@ include 0 (for Log-Rank test) and 1 (for peto &amp; peto test).</dd>
 #&gt; 
 #&gt;                  Cyclin D-1 Cyclin D-2 Hyperdiploid Low bone disease MAF  
 #&gt; Cyclin D-2       0.723      -          -            -                -    
-#&gt; Hyperdiploid     0.328      0.103      -            -                -    
-#&gt; Low bone disease 0.644      0.447      0.723        -                -    
-#&gt; MAF              0.943      0.723      0.103        0.523            -    
-#&gt; MMSET            0.103      0.038      0.527        0.485            0.038
-#&gt; Proliferation    0.723      0.988      0.103        0.485            0.644
+#&gt; Hyperdiploid     0.943      0.723      -            -                -    
+#&gt; Low bone disease 0.723      0.988      0.644        -                -    
+#&gt; MAF              0.644      0.447      0.523        0.485            -    
+#&gt; MMSET            0.328      0.103      0.103        0.103            0.723
+#&gt; Proliferation    0.103      0.038      0.038        0.062            0.485
 #&gt;                  MMSET
 #&gt; Cyclin D-2       -    
 #&gt; Hyperdiploid     -    
 #&gt; Low bone disease -    
 #&gt; MAF              -    
 #&gt; MMSET            -    
-#&gt; Proliferation    0.062
+#&gt; Proliferation    0.527
 #&gt; 
 #&gt; P value adjustment method: BH </div><div class='input'>
 <span class='co'># Symbolic number coding</span>
@@ -159,8 +159,8 @@ include 0 (for Log-Rank test) and 1 (for peto &amp; peto test).</dd>
 #&gt; Hyperdiploid                                                                  
 #&gt; Low bone disease                                                              
 #&gt; MAF                                                                           
-#&gt; MMSET                       *                                        *        
-#&gt; Proliferation                                                            +    
+#&gt; MMSET                                                                         
+#&gt; Proliferation               *          *            +                         
 #&gt; attr(,&quot;legend&quot;)
 #&gt; [1] 0 ‘****’ 1e-04 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘+’ 0.1 ‘ ’ 1 \t    ## NA: ‘’</div><div class='input'>
 
