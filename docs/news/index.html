@@ -169,6 +169,7 @@ ggsurv$plot +<span class="st"> </span><span class="kw">facet_grid</span>(rx ~<sp
 <li><p>Now, the argument <code>palette</code> in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> ccan be also a numeric vector of length(strata); in this case a basic color palette is created using the function <code>grDevices::palette()</code>.</p></li>
 <li><p>The <code>%+%</code> function in <code>survminer</code> has been replaced by <code>%++%</code> to avoid breaking the <code>ggplot2::%+%</code> function behavior when using survminer (<a href="https://github.com/kassambara/survminer/issues/199">#199</a> and <a href="https://github.com/kassambara/survminer/issues/200">#200</a>).</p></li>
 <li><p>New argument <code>fun</code> added in <code><a href="../reference/ggcoxadjustedcurves.html">ggcoxadjustedcurves()</a></code> (<a href="https://github.com/kassambara/survminer/issues/202">@meganli, #202</a>).</p></li>
+<li><p>The function <code>theme_classic2()</code> removed.</p></li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">

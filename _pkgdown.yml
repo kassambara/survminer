@@ -47,7 +47,6 @@ reference:
     contents:
       - ggsurvtheme
       - theme_survminer
-      - theme_classic2
       - add_ggsurvplot
 
 

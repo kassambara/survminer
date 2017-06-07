@@ -94,6 +94,8 @@ ggsurv$plot + facet_grid(rx ~ adhere)
    
 - New argument `fun` added in `ggcoxadjustedcurves()` ([@meganli, #202](https://github.com/kassambara/survminer/issues/202)).
 
+- The function `theme_classic2()` removed.
+
 ## Bug fixes
 
 - Columns/Rows are now correctly labeled in `pairwise_survdiff`() display ([@mriffle, #212](https://github.com/kassambara/survminer/issues/212)).
