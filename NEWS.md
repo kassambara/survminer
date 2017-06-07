@@ -2,20 +2,40 @@
 
 ## New features
    
-- New option `test.for.trend` added in `ggsurvplot()` to perform a log-rank test for trend. logical value. Default is FALSE. If TRUE, returns the test for trend p-values. Tests for trend are designed to detect ordered differences in survival curves. That is, for at least one group. The test for trend can be only performed when the number of groups is > 2 ([#188](https://github.com/kassambara/survminer/issues/188)).
    
-- New option `add.all` added now in `ggsurvplot()` to add he survival curves of (all) pooled patients onto the main survival plot stratified by grouping variables. Alias of the `ggsurvplot_add_all()` function ([#194](https://github.com/kassambara/survminer/issues/194)).
+### New options in ggsurvplot()
+   
+   
+- New argument `test.for.trend` added in `ggsurvplot()` to perform a log-rank test for trend. logical value. Default is FALSE. If TRUE, returns the test for trend p-values. Tests for trend are designed to detect ordered differences in survival curves. That is, for at least one group. The test for trend can be only performed when the number of groups is > 2 ([#188](https://github.com/kassambara/survminer/issues/188)).
+   
+- New argument `add.all` added now in `ggsurvplot()` to add he survival curves of (all) pooled patients onto the main survival plot stratified by grouping variables. Alias of the `ggsurvplot_add_all()` function ([#194](https://github.com/kassambara/survminer/issues/194)).
     
-- New option `combine = TRUE` is now available in the `ggsurvplot()` function to combine a list survfit objects on the same plot. Alias of the *ggsurvplot_combine*() function ([#195](https://github.com/kassambara/survminer/issues/195)).
+- New argument `combine = TRUE` is now available in the `ggsurvplot()` function to combine a list of survfit objects on the same plot. Alias of the *ggsurvplot_combine*() function ([#195](https://github.com/kassambara/survminer/issues/195)).
 
 -  The standard convention of ggplot2 is to have the axes offset from the origin. This can be annoying with Kaplan-Meier plots. New argument `axes.offset` added non in `ggsurvplot()`.  logical value. Default is TRUE. If FALSE, set the plot axes to start at the origin (c(0,0)) ([#196](https://github.com/kassambara/survminer/issues/196)). 
-
+      
 - The function `ggsurvplot()` can take a list of survfit objects and produces a list of ggsurvplots ([#204](https://github.com/kassambara/survminer/issues/204)).
    
-- New option `facet.by` added now in `ggsurvplot()` to draw multi-panel survival curves of a data set grouped by one or two variables. Alias of the `ggsurvplot_facet()` function ([#205](https://github.com/kassambara/survminer/issues/205)).
+- New argument `facet.by` added now in `ggsurvplot()` to draw multi-panel survival curves of a data set grouped by one or two variables. Alias of the `ggsurvplot_facet()` function ([#205](https://github.com/kassambara/survminer/issues/205)).
   
-- New option `group.by` added now in `ggsurvplot()` to create survival curves of grouped data sets. Alias of the `ggsurvplot_group_by()` function.
+- New argument `group.by` added now in `ggsurvplot()` to create survival curves of grouped data sets. Alias of the `ggsurvplot_group_by()` function.
+   
+
+- In `ggsurvplot()`, one can specify pval = TRUE/FALSE as a logical value. Now, it's also possible to specify the argument `pval` as a numeric value (e.g.: pval = 0.002), that will be passed to the plot, so that user can pass any custom p-value to the final plot ([@MarcinKosinski, #189](https://github.com/kassambara/survminer/issues/189)) or one can specify it as a character string (e.g.: pval = "p < 0001") ([@MarcinKosinski, #193](https://github.com/kassambara/survminer/issues/193)).
+   
+   
+- New argument `xscale` in `ggsurvplot()`: numeric or character value specifying x-axis scale.
+    - If numeric, the value is used to divide the labels on the x axis. For example, a value of 365.25 will give labels in years instead of the original days.
+    - If character, allowed options include one of c("d_m", "d_y", "m_d", "m_y", "y_d", "y_m"), where d = days, m = months and y = years. For example, xscale = "d_m" will transform labels from days to months; xscale = "m_y", will transform labels from months to years ([#166](https://github.com/kassambara/survminer/issues/166)). 
     
+- New arguments `censor.shape` and `censor.size` to change the shape and the shape of censors ([#186](https://github.com/kassambara/survminer/issues/186) & [#187](https://github.com/kassambara/survminer/issues/187)).
+     
+     
+- New argument `conf.int.alpha` added in `ggsurvplot()`. Numeric value specifying fill color transparency. Value should be in [0, 1], where 0 is full transparency and 1 is no transparency.
+    
+    
+### New functions
+  
 - New function `surv_group_by()` added to create a grouped data set for survival analysis.
    
 - New function `ggsurvplot_df()` added. An extension to ggsurvplot() to plot survival curves from any data frame containing the summary of survival curves as returned the surv_summary() function. Might be useful for a user who wants to use ggsurvplot for visualizing survival curves computed by another method than the standard survfit.formula function. In this case, the user has just to provide the data frame containing the summary of the survival analysis.
@@ -31,17 +51,6 @@
     - group.by option
    
 
-- In `ggsurvplot()`, one can specify pval = TRUE/FALSE as a logical value. Now, it's also possible to specify the argument `pval` as a numeric value (e.g.: pval = 0.002), that will be passed to the plot, so that user can pass any custom p-value to the final plot ([@MarcinKosinski, #189](https://github.com/kassambara/survminer/issues/189)) or one can specify it as a character string (e.g.: pval = "p < 0001") ([@MarcinKosinski, #193](https://github.com/kassambara/survminer/issues/193)).
-   
-   
-- New argument `xscale` in `ggsurvplot()`: numeric or character value specifying x-axis scale.
-    - If numeric, the value is used to divide the labels on the x axis. For example, a value of 365.25 will give labels in years instead of the original days.
-    - If character, allowed options include one of c("d_m", "d_y", "m_d", "m_y", "y_d", "y_m"), where d = days, m = months and y = years. For example, xscale = "d_m" will transform labels from days to months; xscale = "m_y", will transform labels from months to years ([#166](https://github.com/kassambara/survminer/issues/166)). 
-    
-- New arguments `censor.shape` and `censor.size` to change the shape and the shape of censors ([#186](https://github.com/kassambara/survminer/issues/186) & [#187](https://github.com/kassambara/survminer/issues/187)).
-     
-     
-- New argument `conf.int.alpha` added in `ggsurvplot()`. Numeric value specifying fill color transparency. Value should be in [0, 1], where 0 is full transparency and 1 is no transparency.
     
 ## Major changes
 
