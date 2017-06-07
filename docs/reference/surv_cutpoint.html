@@ -109,8 +109,8 @@
 <span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for surv_cutpoint</span>
-<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_classic2.html'>theme_classic2</a></span>(), <span class='kw'>bins</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='no'>...</span>)
+<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'>theme_classic</span>(),
+  <span class='kw'>bins</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for plot_surv_cutpoint</span>
 <span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>newpage</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
@@ -139,7 +139,7 @@ shown only, when the number of variables &gt; 5.</dd>
       <dd>other arguments. For plots, see ?ggpubr::ggpar</dd>
       <dt>ggtheme</dt>
       <dd>function, ggplot2 theme name. Default value is
-<a href='theme_classic2.html'>theme_classic2</a>. Allowed values include ggplot2 official themes. see
+theme_classic. Allowed values include ggplot2 official themes. see
 ?ggplot2::ggtheme.</dd>
       <dt>bins</dt>
       <dd>Number of bins for histogram. Defaults to 30.</dd>

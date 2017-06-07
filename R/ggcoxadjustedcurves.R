@@ -16,7 +16,7 @@ NULL
 #'@param individual.curves if TRUE then all individual predicted survival curves will be plotted
 #'@param curve.size,curve.alpha size and alpha for individual survival curves
 #'@param ylab y axis label.
-#'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
+#'@param ggtheme function, ggplot2 theme name.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@inheritParams ggpubr::ggpar
 #'@param ... further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.

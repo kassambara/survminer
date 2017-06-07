@@ -35,7 +35,7 @@ function \link[grDevices]{palette}.}
 
 \item{ylab}{y axis label.}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
+\item{ggtheme}{function, ggplot2 theme name.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
 
 \item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.}

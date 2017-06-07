@@ -21,7 +21,7 @@ ggsurvevents(surv = NULL, fit = NULL, data = NULL, type = "fraction",
 
 \item{censored.on.top}{is TRUE then censored events are on the top}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is theme_classic2. Allowed values include ggplot2 official themes: see theme.}
+\item{ggtheme}{function, ggplot2 theme name.  Allowed values include ggplot2 official themes: see theme.}
 
 \item{palette}{the color palette to be used for coloring of significant variables.}
 

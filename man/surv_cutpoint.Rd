@@ -18,8 +18,8 @@ surv_categorize(x, variables = NULL, labels = c("low", "high"))
 
 \method{print}{surv_cutpoint}(x, ...)
 
-\method{plot}{surv_cutpoint}(x, variables = NULL,
-  ggtheme = theme_classic2(), bins = 30, ...)
+\method{plot}{surv_cutpoint}(x, variables = NULL, ggtheme = theme_classic(),
+  bins = 30, ...)
 
 \method{print}{plot_surv_cutpoint}(x, ..., newpage = TRUE)
 }
@@ -45,7 +45,7 @@ shown only, when the number of variables > 5.}
 \item{...}{other arguments. For plots, see ?ggpubr::ggpar}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is
-\link{theme_classic2}. Allowed values include ggplot2 official themes. see
+\link{theme_classic}. Allowed values include ggplot2 official themes. see
 ?ggplot2::ggtheme.}
 
 \item{bins}{Number of bins for histogram. Defaults to 30.}
