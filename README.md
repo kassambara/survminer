@@ -25,6 +25,8 @@ The main functions, in the package, are organized in different categories as fol
 
 **Survival Curves**
 <hr/>
+<br/>
+
 -   **ggsurvplot**(): Draws survival curves with the 'number at risk' table, the cumulative number of events table and the cumulative number of censored subjects table.
 
 -   **arrange\_ggsurvplots**(): Arranges multiple ggsurvplots on the same page.
@@ -41,6 +43,8 @@ The main functions, in the package, are organized in different categories as fol
 
 **Diagnostics of Cox Model**
 <hr/>
+<br/>
+
 -   **ggcoxzph**(): Graphical test of proportional hazards. Displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ggplot2. Wrapper around plot.cox.zph().
 
 -   **ggcoxdiagnostics**(): Displays diagnostics graphs presenting goodness of Cox Proportional Hazards Model fit.
@@ -51,6 +55,8 @@ The main functions, in the package, are organized in different categories as fol
 
 **Summary of Cox Model**
 <hr/>
+<br/>
+
 -   **ggforest**(): Draws forest plot for CoxPH model.
 
 -   **ggcoxadjustedcurves**(): Plots adjusted survival curves for coxph model.
@@ -59,6 +65,8 @@ The main functions, in the package, are organized in different categories as fol
 
 **Competing Risks**
 <hr/>
+<br/>
+
 -   **ggcompetingrisks**(): Plots cumulative incidence curves for competing risks.
 
 <br/>
