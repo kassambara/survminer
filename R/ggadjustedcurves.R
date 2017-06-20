@@ -89,26 +89,19 @@ ggadjustedcurves <- function(fit,
   # non standard evaluation used by dplyr/tidyr
   .id <- time <- surv <- NULL
 
-  if (is.null(variable)) {
-    # only one curve
-    both <- cbind(.id = seq(data[,1]), adj_surv)
-    curves <- gather(both, time, surv, -.id)
-    curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
-    curve <- summarise(group_by(curves, time), surv = mean(surv, na.rm=TRUE))
-    curve <- .apply_surv_func(curve, fun = fun)
-    pl <- ggplot(curve, aes(x = time, y = surv)) +
-      geom_step(size=curve.size)
-  } else {
-    # one per level
-    variable <- factor(variable)
-    both <- cbind(.id = seq(data[,1]), variable, adj_surv)
-    curves <- gather(both, time, surv, -.id, -variable)
-    curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
-    curve <- summarise(group_by(curves, time, variable), surv = mean(surv, na.rm=TRUE))
-    curve <- .apply_surv_func(curve, fun = fun)
-    pl <- ggplot(curve, aes(x = time, y = surv, color=variable)) +
-      geom_step(size=curve.size)
+  if (method == "single") {
+    pl <- ggadjustedcurves.single(data, adj_surv)
   }
+  if (method == "average") {
+    pl <- ggadjustedcurves.average(data, adj_surv, variable)
+  }
+  if (method == "conditional") {
+    pl <- ggadjustedcurves.conditional(data, adj_surv, variable)
+  }
+  if (method == "marginal") {
+    pl <- ggadjustedcurves.marginal(data, adj_surv, variable)
+  }
+
   pl <- pl + ggtheme +
     scale_y_continuous(limits = ylim) +
     ylab(ylab)
@@ -117,12 +110,33 @@ ggadjustedcurves <- function(fit,
 }
 
 
-ggadjustedcurves.single <- function(...) {
+ggadjustedcurves.single <- function(data, adj_surv) {
+  # this dirty hack hides the problem with CHECK NOTES generated for
+  # non standard evaluation used by dplyr/tidyr
+  .id <- time <- surv <- NULL
 
+  both <- cbind(.id = seq(data[,1]), adj_surv)
+  curves <- gather(both, time, surv, -.id)
+  curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
+  curve <- summarise(group_by(curves, time), surv = mean(surv, na.rm=TRUE))
+  curve <- .apply_surv_func(curve, fun = fun)
+  ggplot(curve, aes(x = time, y = surv)) +
+    geom_step(size=curve.size)
 }
 
-ggadjustedcurves.average <- function(...) {
+ggadjustedcurves.average <- function(data, adj_surv, variable) {
+  # this dirty hack hides the problem with CHECK NOTES generated for
+  # non standard evaluation used by dplyr/tidyr
+  .id <- time <- surv <- NULL
 
+  variable <- factor(data[,variable])
+  both <- cbind(.id = seq(data[,1]), variable, adj_surv)
+  curves <- gather(both, time, surv, -.id, -variable)
+  curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
+  curve <- summarise(group_by(curves, time, variable), surv = mean(surv, na.rm=TRUE))
+  curve <- .apply_surv_func(curve, fun = fun)
+  ggplot(curve, aes(x = time, y = surv, color=variable)) +
+    geom_step(size=curve.size)
 }
 
 ggadjustedcurves.conditional <- function(...) {
