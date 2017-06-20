@@ -1,11 +1,11 @@
 #' @include utilities.R
 NULL
-#'  Adjusted Survival Curves for Cox Proportional Hazards Model
+#' Adjusted Survival Curves for Cox Proportional Hazards Model
 #' @importFrom tidyr gather
 #' @importFrom dplyr summarise
 #' @importFrom dplyr group_by
 #' @importFrom survival survfit
-#' @description This function plots adjusted survival curves for the \code{ coxph} model.
+#' @description This function plots adjusted survival curves for the \code{coxph} model.
 #' The idea behind this function is described in \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
 #' For every observation in the dataset a prediction for survival curve is made.
 #' Then the predictions are averaged with respect to a selected variable.
@@ -34,11 +34,11 @@ NULL
 #'                       labels=c("FLC < 3.38", "3.38 - 4.71", "FLC > 4.71"))
 #' fit <- coxph( Surv(futime, death) ~ age*sex + strata(group), data = fdata)
 #' ggadjustedcurves(fit, data = fdata)
-#' ggadjustedcurves(fit2, data = bladder, variable= bladder[,"rx"])
+#' ggadjustedcurves(fit, data = fdata, variable = "group")
 #'
-#' fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
+#' fit2 <- coxph( Surv(stop, event) ~  size, data = bladder )
 #' ggadjustedcurves(fit2, data = bladder)
-#' ggadjustedcurves(fit2, data = bladder, variable= bladder[,"rx"])
+#' ggadjustedcurves(fit2, data = bladder, variable = "rx")
 #'
 #'@export
 ggadjustedcurves <- function(fit,
@@ -46,15 +46,38 @@ ggadjustedcurves <- function(fit,
                                 individual.curves = FALSE,
                                 data = NULL,
                                 reference = NULL,
-                                approach = c("marginal", "average", "conditional"),
+                                method = "conditional",
                                 fun = NULL,
                                 palette = "hue",
                                 curve.size = 2, curve.alpha = 0.2,
                                 ylab = "Survival rate",
-                                ggtheme = theme_survminer(), ...){
+                                ggtheme = theme_survminer(), ...) {
+  stopifnot(method %in% c("marginal", "average", "conditional", "single"))
   data <- .get_data(fit, data)
   ylim <- NULL
-  if(is.null(fun)) ylim <- c(0, 1)
+  if (is.null(fun)) ylim <- c(0, 1)
+
+  # deal with default arguments
+  # reference = NULL
+  if (is.null(reference))
+    reference <- data
+
+  # variable = NULL
+  if (is.null(variable)) {
+    # is there a 'strata' component?
+    term.labels <- attr(terms(fit2$formula), "term.labels")
+    strata.term.labels <- grep(term.labels, pattern = "strata(", fixed = TRUE, value = TRUE)
+    if (length(strata.term.labels) > 1) {
+      variable <- gsub(
+        gsub(
+          strata.term.labels,
+          pattern = "strata(", replacement = "", fixed = TRUE)[1],
+        pattern = "[\\) ]", replacement = "")
+    } else {
+      method = "single"
+    }
+    # if not then leave variable = NULL
+  }
 
   pred <- survfit(fit, data)
   timepoints <- c(0, pred$time)
@@ -86,13 +109,26 @@ ggadjustedcurves <- function(fit,
     pl <- ggplot(curve, aes(x = time, y = surv, color=variable)) +
       geom_step(size=curve.size)
   }
-  if (individual.curves){
-    curves <- .apply_surv_func(curves, fun)
-    pl <- pl + geom_step(data = curves, aes(group=.id), alpha=curve.alpha)
-  }
   pl <- pl + ggtheme +
     scale_y_continuous(limits = ylim) +
     ylab(ylab)
   ggpubr::ggpar(pl,  palette = palette, ...)
+
+}
+
+
+ggadjustedcurves.single <- function(...) {
+
+}
+
+ggadjustedcurves.average <- function(...) {
+
+}
+
+ggadjustedcurves.conditional <- function(...) {
+
+}
+
+ggadjustedcurves.marginal <- function(...) {
 
 }
