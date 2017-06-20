@@ -35,6 +35,7 @@ NULL
 #' fit <- coxph( Surv(futime, death) ~ age*sex + strata(group), data = fdata)
 #' ggadjustedcurves(fit, data = fdata)
 #' ggadjustedcurves(fit, data = fdata, variable = "group")
+#' ggadjustedcurves(fit, data = fdata, method = "average")
 #'
 #' fit2 <- coxph( Surv(stop, event) ~  size, data = bladder )
 #' ggadjustedcurves(fit2, data = bladder)
@@ -85,22 +86,11 @@ ggadjustedcurves <- function(fit,
   adj_surv <- as.data.frame(cbind(time0 = 1, t(pred$surv)))
   colnames(adj_surv) <- paste0("time", timepoints)
 
-  # this dirty hack hides the problem with CHECK NOTES generated for
-  # non standard evaluation used by dplyr/tidyr
-  .id <- time <- surv <- NULL
-
-  if (method == "single") {
-    pl <- ggadjustedcurves.single(data, adj_surv)
-  }
-  if (method == "average") {
-    pl <- ggadjustedcurves.average(data, adj_surv, variable)
-  }
-  if (method == "conditional") {
-    pl <- ggadjustedcurves.conditional(data, adj_surv, variable)
-  }
-  if (method == "marginal") {
-    pl <- ggadjustedcurves.marginal(data, adj_surv, variable)
-  }
+  pl <- switch(method,
+         single = ggadjustedcurves.single(data, adj_surv),
+         average =  ggadjustedcurves.average(data, adj_surv, variable),
+         conditional = ggadjustedcurves.conditional(data, adj_surv, variable),
+         marginal = ggadjustedcurves.marginal(data, adj_surv, variable))
 
   pl <- pl + ggtheme +
     scale_y_continuous(limits = ylim) +
@@ -144,5 +134,9 @@ ggadjustedcurves.conditional <- function(...) {
 }
 
 ggadjustedcurves.marginal <- function(...) {
+  # this dirty hack hides the problem with CHECK NOTES generated for
+  # non standard evaluation used by dplyr/tidyr
+  .id <- time <- surv <- NULL
+
 
 }
