@@ -5,7 +5,7 @@
 #' @param data a dataset for predictions. If not supplied then data will be extracted from `fit` object.
 #' @param type one of \code{c("cumulative", "radius", "fraction")}. \code{"cumulative"} stands for cumulative number of events, \code{"radius"} stands for number of events within a given radius,
 #' @param normalized if \code{TRUE} relative number of events is presented,
-#' @param ggtheme function, ggplot2 theme name. Default value is theme_classic2. Allowed values include ggplot2 official themes: see theme.
+#' @param ggtheme function, ggplot2 theme name.  Allowed values include ggplot2 official themes: see theme.
 #' @param censored.on.top is TRUE then censored events are on the top
 #' @param palette the color palette to be used for coloring of significant variables.
 #' @param ... other graphical parameters to be passed to the function \link[ggpubr]{ggpar}.

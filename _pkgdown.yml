@@ -1,6 +1,6 @@
 templates:
   params:
-    bootswatch: flatly
+    bootswatch: lumen
 
 reference:
   - title: Fit survival curves
@@ -47,7 +47,6 @@ reference:
     contents:
       - ggsurvtheme
       - theme_survminer
-      - theme_classic2
       - add_ggsurvplot
 
 

@@ -20,7 +20,7 @@ NULL
 #'@param title the title of the final \link{grob} (\code{top} in \link{arrangeGrob})
 #'@param caption the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
-#'@param ggtheme function, ggplot2 theme name. Default value is \link{theme_classic2}.
+#'@param ggtheme function, ggplot2 theme name.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@param ... further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.
 #'@return Returns an object of class \code{ggcoxfunctional} which is a list of ggplots.

@@ -1,5 +1,5 @@
 
-[![Build Status](https://api.travis-ci.org/kassambara/survminer.png)](https://travis-ci.org/kassambara/survminer) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer) [![Downloads](http://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer) [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](http://cranlogs.r-pkg.org/badges/grand-total/survminer) [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Pending Pull-Requests](http://githubbadges.herokuapp.com/kassambara/survminer/pulls.svg?style=flat)](https://github.com/kassambara/survminer/pulls) [![Github Issues](http://githubbadges.herokuapp.com/kassambara/survminer/issues.svg)](https://github.com/kassambara/survminer/issues)
+[![Build Status](https://api.travis-ci.org/kassambara/survminer.png)](https://travis-ci.org/kassambara/survminer) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer) [![Downloads](http://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer) [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](http://cranlogs.r-pkg.org/badges/grand-total/survminer)
 
 <br/>
 
@@ -25,6 +25,8 @@ The main functions, in the package, are organized in different categories as fol
 
 **Survival Curves**
 <hr/>
+<br/>
+
 -   **ggsurvplot**(): Draws survival curves with the 'number at risk' table, the cumulative number of events table and the cumulative number of censored subjects table.
 
 -   **arrange\_ggsurvplots**(): Arranges multiple ggsurvplots on the same page.
@@ -41,6 +43,8 @@ The main functions, in the package, are organized in different categories as fol
 
 **Diagnostics of Cox Model**
 <hr/>
+<br/>
+
 -   **ggcoxzph**(): Graphical test of proportional hazards. Displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ggplot2. Wrapper around plot.cox.zph().
 
 -   **ggcoxdiagnostics**(): Displays diagnostics graphs presenting goodness of Cox Proportional Hazards Model fit.
@@ -51,6 +55,8 @@ The main functions, in the package, are organized in different categories as fol
 
 **Summary of Cox Model**
 <hr/>
+<br/>
+
 -   **ggforest**(): Draws forest plot for CoxPH model.
 
 -   **ggcoxadjustedcurves**(): Plots adjusted survival curves for coxph model.
@@ -59,6 +65,8 @@ The main functions, in the package, are organized in different categories as fol
 
 **Competing Risks**
 <hr/>
+<br/>
+
 -   **ggcompetingrisks**(): Plots cumulative incidence curves for competing risks.
 
 <br/>
@@ -110,62 +118,6 @@ Censor shape can be changed as follow:
 ``` r
 ggsurvplot(fit, data = lung, censor.shape="|", censor.size = 4)
 ```
-
-![](tools/README-ggplot2-basic-survival-plot-censor-1.png)
-
-### Computing and passing p-values
-
-The exact p-value of the log-rank test can be computed and be added to the plot:
-
-``` r
-ggsurvplot(fit, data = lung, pval = TRUE)
-```
-
-![](tools/README-ggplot2-basic-survival-plot-pval-logical-1.png)
-
-It is also possible to specify custom p-value, with numeric:
-
-``` r
-ggsurvplot(fit, data = lung, pval = 0.03)
-```
-
-![](tools/README-ggplot2-basic-survival-plot-pval-num-1.png)
-
-or a personalized character:
-
-``` r
-ggsurvplot(fit, data = lung, pval = "The hot p-value is 0.00***")
-```
-
-![](tools/README-ggplot2-basic-survival-plot-pval-char-1.png)
-
-Also the p-value of **weighted** log-rank tests can be computed and added to the plot:
-
-``` r
-ggsurvplot(
-  fit,
-  data = lung,
-  pval = TRUE,
-  pval.method = TRUE, # write the name of the test  
-                      # that was used compute the p-value?
-  pval.method.coord = c(3, 0.1), # coordinates for the name
-  pval.method.size = 4,          # size for the name of the test
-  # test specification
-  log.rank.weights = # use one from the included below
-                     # `i`    - time of an event
-                     # `n(i)` - risk set size in the time `i`
-# math formulas here - http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html#weighted-log-rank-extensions
-   # "survdiff"      # regular p-value from survdiff function (all weights equal to 1)
-   # "1"             # regular p-value from survMisc::comp    (all weights equal to 1)
-   "n"               # Gehan and Breslow (for every `i` weights are equal to `n(i)`)
-   # "sqrtN",        # Tharone and Ware  (for every `i` weights are equal to `sqrt(n(i))`)
-   # "S1",           # Peto-Peto’s modified survival estimate
-   # "S2",           # modified Peto-Peto (by Andersen)
-   # "FH_p=1_q=1"    # Fleming-Harrington
-)
-```
-
-![](tools/README-ggplot2-basic-survival-plot-pval-weighted-1.png)
 
 ### Customized survival curves
 
@@ -226,6 +178,7 @@ ggsurv <- ggsurvplot(
            pval = TRUE,             # show p-value of log-rank test.
            conf.int = TRUE,         # show confidence intervals for 
                                     # point estimates of survival curves.
+           palette = c("#E7B800", "#2E9FDF"),
            xlim = c(0,500),         # present narrower X axis, but not affect
                                     # survival estimates.
            xlab = "Time in days",   # customize X axis label.
@@ -242,9 +195,7 @@ ggsurv <- ggsurvplot(
           legend.labs = 
             c("Male", "Female")    # change legend labels.
         )
-
-# Apply custom color palettes and print
-ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
+ggsurv
 ```
 
 ![](tools/README-ggplot2-uber-customized-survival-plot-1.png)
@@ -287,12 +238,11 @@ ggsurv <- ggpar(
   font.caption  = c(14, "plain", "orange"),        
   font.x        = c(14, "bold.italic", "red"),          
   font.y        = c(14, "bold.italic", "darkred"),      
-  font.tickslab = c(12, "plain", "darkgreen"),
+  font.xtickslab = c(12, "plain", "darkgreen"),
   legend = "top"
 )
 
-# Apply custom color palettes and print
-ggpar(ggsurv, palette = c("#E7B800", "#2E9FDF"))
+ggsurv
 ```
 
 ![](tools/README-ggplot2-uber-platinium-customized-survival-plot-1.png)
@@ -311,7 +261,7 @@ ggsurv$table <- ggpar(
   font.caption  = c(11, "plain", "darkgreen"),
   font.x        = c(8, "bold.italic", "orange"),
   font.y        = c(11, "bold.italic", "darkgreen"),
-  font.tickslab = c(9, "bold", "red")
+  font.xtickslab = c(9, "bold", "red")
 )
 
 
@@ -323,7 +273,7 @@ ggsurv$ncensor.plot <- ggpar(
   font.caption  = c(11, "plain", "darkgreen"),
   font.x        = c(8, "bold.italic", "orange"),
   font.y        = c(11, "bold.italic", "darkgreen"),
-  font.tickslab = c(9, "bold", "red")
+  font.xtickslab = c(9, "bold", "red")
 )
 
 print(ggsurv)

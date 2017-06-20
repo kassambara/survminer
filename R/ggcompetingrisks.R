@@ -10,8 +10,8 @@
 #' @param ggtheme function, \code{ggplot2} theme name. Default value is \link{theme_survminer}.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #' @param ... further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.
-#' @param add_ci if \code{TRUE} then additional layer (\code{geom_ribbon}) is added around the point estimate. The ribon is plotted with boundries +- \code{coef}*standard deviation.
-#' @param coef see \code{add_ci}, scaling actor for the ribbon. The default value is 1.96.
+#' @param conf.int if \code{TRUE} then additional layer (\code{geom_ribbon}) is added around the point estimate. The ribon is plotted with boundries +- \code{coef}*standard deviation.
+#' @param coef see \code{conf.int}, scaling actor for the ribbon. The default value is 1.96.
 #' @return Returns an object of class \code{gg}.
 #'
 #' @author Przemyslaw Biecek, \email{przemyslaw.biecek@@gmail.com}
@@ -27,8 +27,8 @@
 #' print(fit <- cmprsk::cuminc(ss,cc,gg,strt))
 #' ggcompetingrisks(fit)
 #' ggcompetingrisks(fit, multiple_panels = FALSE)
-#' ggcompetingrisks(fit, add_ci = TRUE)
-#' ggcompetingrisks(fit, multiple_panels = FALSE, add_ci = TRUE)
+#' ggcompetingrisks(fit, conf.int = TRUE)
+#' ggcompetingrisks(fit, multiple_panels = FALSE, conf.int = TRUE)
 #'
 #' # handles survfitms objects
 #' library(survival)
@@ -47,13 +47,13 @@
 ggcompetingrisks <- function(fit, gnames = NULL, gsep=" ",
                              multiple_panels = TRUE,
                              ggtheme = theme_survminer(),
-                             coef = 1.96, add_ci = FALSE, ...) {
+                             coef = 1.96, conf.int = FALSE, ...) {
   stopifnot(any(class(fit) %in% c("cuminc", "survfitms")))
 
   if (any(class(fit) == "cuminc")) {
    pl <- ggcompetingrisks.cuminc(fit = fit, gnames=gnames,
                                   gsep=gsep, multiple_panels=multiple_panels,
-                                 coef = coef, add_ci = add_ci)
+                                 coef = coef, conf.int = conf.int)
   }
   if (any(class(fit) == "survfitms")) {
     pl <- ggcompetingrisks.survfitms(fit = fit)
@@ -67,7 +67,7 @@ ggcompetingrisks <- function(fit, gnames = NULL, gsep=" ",
 
 
 ggcompetingrisks.cuminc <- function(fit, gnames = NULL, gsep=" ",
-                                    multiple_panels = TRUE, coef = 1.96, add_ci = FALSE) {
+                                    multiple_panels = TRUE, coef = 1.96, conf.int = FALSE) {
   if (!is.null(fit$Tests))
     fit <- fit[names(fit) != "Tests"]
   fit2 <- lapply(fit, `[`, 1:3)
@@ -81,14 +81,14 @@ ggcompetingrisks.cuminc <- function(fit, gnames = NULL, gsep=" ",
   df <- do.call(rbind, fit2_list)
   df$event <- sapply(strsplit(df$name, split=gsep), `[`, 2)
   df$group <- sapply(strsplit(df$name, split=gsep), `[`, 1)
-  df$std <- sqrt(df$var)
+  df$std <- std <- sqrt(df$var)
   pl <- ggplot(df, aes(time, est, color=event))
   if (multiple_panels) {
     pl <- ggplot(df, aes(time, est, color=event)) + facet_wrap(~group)
   } else {
     pl <- ggplot(df, aes(time, est, color=event, linetype=group))
   }
-  if (add_ci) {
+  if (conf.int) {
     pl <- pl + geom_ribbon(aes(ymin = est - coef*std, ymax=est + coef*std, fill = event), alpha = 0.2, linetype=0)
   }
   pl +

@@ -52,6 +52,7 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
   METHOD <- if (rho == 0) "Log-Rank test"
   else if(rho==1) "Peto & Peto test"
 
+
   # Removing missing value
   # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   .is.na <- data[, group_var, drop = FALSE] %>%
@@ -72,6 +73,7 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
     formula <- .build_formula(surv_obj, "..group..")
   }
   if(!is.factor(group)) group <- as.factor(group)
+  group <- droplevels(group)
 
   compare.levels <- function(i, j) {
     .subset = group %in% (levels(group))[c(i,j)]
@@ -87,3 +89,20 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
   class(res) <- "pairwise.htest"
   res
 }
+
+
+# Collapse one or two vectors
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+.collapse <- function(x, y = NULL, sep = "."){
+  if(missing(y))
+    paste(x, collapse = sep)
+  else if(is.null(x) & is.null(y))
+    return(NULL)
+  else if(is.null(x))
+    return (as.character(y))
+  else if(is.null(y))
+    return(as.character(x))
+  else
+    paste0(x, sep, y)
+}
+

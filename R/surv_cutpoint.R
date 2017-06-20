@@ -181,13 +181,13 @@ print.surv_cutpoint <- function(x, ...){
 
 
 #' @param ggtheme function, ggplot2 theme name. Default value is
-#'   \link{theme_classic2}. Allowed values include ggplot2 official themes. see
+#'   \link{theme_classic}. Allowed values include ggplot2 official themes. see
 #'   ?ggplot2::ggtheme.
 #' @param bins Number of bins for histogram. Defaults to 30.
 #' @method plot surv_cutpoint
 #' @rdname surv_cutpoint
 #' @export
-plot.surv_cutpoint <- function(x, variables = NULL, ggtheme = theme_classic2(), bins = 30, ...)
+plot.surv_cutpoint <- function(x, variables = NULL, ggtheme = theme_classic(), bins = 30, ...)
   {
 
   if(!inherits(x, "surv_cutpoint"))
@@ -271,7 +271,7 @@ print.plot_surv_cutpoint <- function(x, ..., newpage = TRUE){
 # Helper function
 # %%%%%%%%%%%%%%%%%%%%%
 
-.ggpar <- function(p, ggtheme = theme_classic2(),...){
+.ggpar <- function(p, ggtheme = theme_classic(),...){
   argmt <- list(...)
   p <- ggpubr::ggpar(p, ggtheme = ggtheme,...)
   if(is.null(argmt$font.x)) p <- p + theme(axis.text.x = element_text(face = "plain"))

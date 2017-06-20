@@ -11,7 +11,7 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
@@ -88,7 +88,13 @@
  variables at once, using the maximally selected rank statistics from the
  &#39;maxstat&#39; R package. This is an outcome-oriented  methods  providing  a
  value of a cutpoint that correspond to the most significant relation with
- outcome (here, survival).</p>
+ outcome (here, survival).
+ <ul>
+<li> <code>surv_cutpoint()</code>: Determine the optimal cutpoint for each variable using &#39;maxstat&#39;.
+ </li>
+<li> <code>surv_categorize()</code>: Divide each variable values based on the cutpoint returned by <code>surv_cutpoint()</code>.
+ </li>
+</ul></p>
     
 
     <pre><span class='fu'>surv_cutpoint</span>(<span class='no'>data</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"time"</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"event"</span>, <span class='no'>variables</span>,
@@ -103,8 +109,8 @@
 <span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for surv_cutpoint</span>
-<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_classic2.html'>theme_classic2</a></span>(), <span class='kw'>bins</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='no'>...</span>)
+<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>variables</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'>theme_classic</span>(),
+  <span class='kw'>bins</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for plot_surv_cutpoint</span>
 <span class='fu'>print</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>newpage</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
@@ -133,7 +139,7 @@ shown only, when the number of variables &gt; 5.</dd>
       <dd>other arguments. For plots, see ?ggpubr::ggpar</dd>
       <dt>ggtheme</dt>
       <dd>function, ggplot2 theme name. Default value is
-<a href='theme_classic2.html'>theme_classic2</a>. Allowed values include ggplot2 official themes. see
+theme_classic. Allowed values include ggplot2 official themes. see
 ?ggplot2::ggtheme.</dd>
       <dt>bins</dt>
       <dd>Number of bins for histogram. Defaults to 30.</dd>
@@ -167,16 +173,6 @@ shown only, when the number of variables &gt; 5.</dd>
  &#39;surv_categorize&#39;, which is a data frame containing the survival data and
  the categorized variables.</p>
     <p></li>
-</ul></p>
-    
-    <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
-
-    <p><ul>
-<li> <code>surv_cutpoint</code>: Determine the optimal cutpoint for each variable
-using &#39;maxstat&#39;</p>
-    <p></li>
-<li> <code>surv_categorize</code>: Divide each variable values based on the cutpoint returned by surv_cutpoint().
-</li>
 </ul></p>
     
 
@@ -229,8 +225,6 @@ using &#39;maxstat&#39;</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#functions">Functions</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

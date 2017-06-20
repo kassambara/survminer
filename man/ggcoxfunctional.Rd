@@ -34,7 +34,7 @@ ggcoxfunctional(formula, data = NULL, fit, iter = 0, f = 0.6,
 
 \item{caption}{the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
+\item{ggtheme}{function, ggplot2 theme name.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
 
 \item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.}

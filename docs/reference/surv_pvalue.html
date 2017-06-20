@@ -11,7 +11,7 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
@@ -84,69 +84,77 @@
     </div>
 
     
-    <p>Compute p-value from survfit objects or parse it when provided by the user.
-Survival curves are compared using the log-rank test (default).
-Other methods can be specified using the argument <code>method</code>.</p>
+    <p>Compute p-value from survfit objects or parse it when provided by
+ the user. Survival curves are compared using the log-rank test (default).
+ Other methods can be specified using the argument <code>method</code>.</p>
     
 
-    <pre><span class='fu'>surv_pvalue</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"survdiff"</span>, <span class='kw'>combine</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>surv_pvalue</span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"survdiff"</span>, <span class='kw'>test.for.trend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>combine</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>fit</dt>
       <dd>A survfit object. Can be also a list of survfit objects.</dd>
       <dt>data</dt>
-      <dd>data frame used to fit survival curves. Can be also a list of data.</dd>
+      <dd>data frame used to fit survival curves. Can be also a list of
+data.</dd>
       <dt>method</dt>
-      <dd>method to compute survival curves. Default is &quot;survdiff&quot; (or &quot;log-rank&quot;). Allowed values are one of:
-<ul>
-<li> &quot;survdiff&quot;, log-rank;
-</li>
-<li> &quot;1&quot;: log-rank, LR; --&gt; Regular log-rank test, sensitive to detect late differences.
-</li>
-<li> &quot;n&quot;: Gehan-Breslow (generalized Wilcoxon), GB; --&gt; detect early differences.
-</li>
-<li> &quot;sqrtN&quot;: Tarone-Ware, TW; --&gt; detect early differences.
-</li>
+      <dd>method to compute survival curves. Default is &quot;survdiff&quot; (or
+&quot;log-rank&quot;). Allowed values are one of: <ul>
+<li> &quot;survdiff&quot;,
+log-rank; </li>
+<li> &quot;1&quot;: log-rank, LR; --&gt; Regular log-rank test, sensitive to
+detect late differences. </li>
+<li> &quot;n&quot;: Gehan-Breslow (generalized Wilcoxon),
+GB; --&gt; detect early differences. </li>
+<li> &quot;sqrtN&quot;: Tarone-Ware, TW; --&gt; detect
+early differences. </li>
 <li> &quot;S1&quot;: Peto-Peto&#39;s modified survival estimate, PP;
---&gt; more robust than Tharone-Whare or Gehan-Breslow, detect early differences
-</li>
-<li> &quot;S2&quot;: modified Peto-Peto (by Andersen), mPP
-</li>
-<li> &quot;FH_p=1_q=1&quot;: Fleming-Harrington(p=1, q=1),  FH
-</li>
+--&gt; more robust than Tharone-Whare or Gehan-Breslow, detect early
+differences </li>
+<li> &quot;S2&quot;: modified Peto-Peto (by Andersen), mPP </li>
+<li>
+&quot;FH_p=1_q=1&quot;: Fleming-Harrington(p=1, q=1),  FH </li>
 </ul>
-
-To specify method, one can use either the weights (e.g.: &quot;1&quot;, &quot;n&quot;, &quot;sqrtN&quot;, ...),
-or the full name (&quot;log-rank&quot;, &quot;gehan-breslow&quot;, &quot;Peto-Peto&quot;, ...), or the acronyme LR, GB, ....
-Case insensitive partial match is allowed. To learn more about
-the mathematical background behind the different log-rank weights,
-read the following blog post on R-Addict:
-<a href = 'Comparing (Fancy) Survival Curves with Weighted Log-rank Tests'>http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html</a></dd>
+ To specify method, one can
+use either the weights (e.g.: &quot;1&quot;, &quot;n&quot;, &quot;sqrtN&quot;, ...), or the full name
+(&quot;log-rank&quot;, &quot;gehan-breslow&quot;, &quot;Peto-Peto&quot;, ...), or the acronyme LR, GB,
+.... Case insensitive partial match is allowed. To learn more about
+the mathematical background behind the different log-rank weights, read the
+following blog post on R-Addict:
+<a href = 'Comparing
+(Fancy) Survival Curves with Weighted Log-rank Tests'>http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html</a></dd>
+      <dt>test.for.trend</dt>
+      <dd>logical value. Default is FALSE. If TRUE, returns the
+test for trend p-values. Tests for trend are designed to detect ordered
+differences in survival curves. That is, for at least one group. The test
+for trend can be only performed when the number of groups is &gt; 2.</dd>
       <dt>combine</dt>
       <dd>logical value. Used only when fit is a list of survfit objects.
 If TRUE, combine the results for multiple fits.</dd>
       <dt>...</dt>
-      <dd>other arguments including pval, pval.coord, pval.method.coord. These are only used internally to specify
-custom pvalue, pvalue and pvalue method coordinates on the survival plot. Normally, users don&#39;t need these arguments.</dd>
+      <dd>other arguments including pval, pval.coord, pval.method.coord.
+These are only used internally to specify custom pvalue, pvalue and pvalue
+method coordinates on the survival plot. Normally, users don&#39;t need these
+arguments.</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Return a data frame with the columns (pval, method, pval.txt and variable).
-If additional arguments (pval, pval.coord, pval.method.coord, get_coord) are specified,
-then extra columns (pval.x, pval.y, method.x and method.y) are returned.
-<ul>
-<li> pval: pvalue
-</li>
-<li> method: method used to compute pvalues
-</li>
-<li> pval.txt: formatted text ready to use for annotating plots
-</li>
-<li> pval.x, pval.y: x &amp; y coordinates of the pvalue for annotating the plot
-</li>
-<li> method.x, method.y: x &amp; y coordinates of pvalue method
-</li>
+    <p>Return a data frame with the columns (pval, method, pval.txt and
+ variable). If additional arguments (pval, pval.coord, pval.method.coord,
+ get_coord) are specified, then extra columns (pval.x, pval.y, method.x and
+ method.y) are returned. <ul>
+<li> pval: pvalue </li>
+<li> method: method
+ used to compute pvalues </li>
+<li> pval.txt: formatted text ready to use for
+ annotating plots </li>
+<li> pval.x, pval.y: x &amp; y coordinates of the pvalue for
+ annotating the plot </li>
+<li> method.x, method.y: x &amp; y coordinates of pvalue
+ method </li>
 </ul></p>
     
 

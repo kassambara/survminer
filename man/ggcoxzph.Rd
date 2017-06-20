@@ -32,7 +32,7 @@ are produced in turn for each variable of a model.}
 
 \item{caption}{the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})}
 
-\item{ggtheme}{function, ggplot2 theme name. Default value is \link{theme_classic2}.
+\item{ggtheme}{function, ggplot2 theme name.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
 
 \item{...}{further arguments passed to either the print() function or to the \code{\link[ggpubr]{ggpar}} function for customizing the plot (see Details section).}

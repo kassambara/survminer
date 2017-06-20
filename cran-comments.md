@@ -6,14 +6,14 @@
 ## R CMD check results
 There were no ERRORs or WARNINGs.
 
-There was one concerning the subdirectory "doc", which contains vignette files.  
+There was one note concerning the subdirectory "doc", which contains vignette files.  
    
 checking installed package size ... NOTE
   installed size is  5.6Mb
   sub-directories of 1Mb or more:
     doc   5.3Mb
    
-Would you be so kind to ignore these notes.
+Would you be so kind to ignore this note.
     
     
 ## win-builder check results
@@ -25,4 +25,4 @@ There are currently no downstream dependencies for this package
 
 ## Update
 
-This is an update version 0.3.1 so that the package can pass CRAN check under R-oldrelease (https://www.r-project.org/nosvn/R.check/r-oldrel-windows-ix86+x86_64/survminer-00check.html).
+This is an update version 0.4.0.

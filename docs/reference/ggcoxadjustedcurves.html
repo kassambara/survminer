@@ -11,7 +11,7 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
@@ -91,8 +91,9 @@ Then the predictions are averaged with respect to a selected variable.</p>
     
 
     <pre><span class='fu'>ggcoxadjustedcurves</span>(<span class='no'>fit</span>, <span class='kw'>variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>individual.curves</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"hue"</span>, <span class='kw'>curve.size</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>curve.alpha</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival rate"</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='no'>...</span>)</pre>
+  <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"hue"</span>, <span class='kw'>curve.size</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>curve.alpha</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival rate"</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(),
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -104,20 +105,25 @@ Then the predictions are averaged with respect to a selected variable.</p>
       <dd>if TRUE then all individual predicted survival curves will be plotted</dd>
       <dt>data</dt>
       <dd>a dataset for predictions. If not supplied then data will be extracted from `fit` object.</dd>
+      <dt>fun</dt>
+      <dd>an arbitrary function defining a transformation of the survival
+curve.  Often used transformations can be specified with a character
+argument: &quot;event&quot; plots cumulative events (f(y) = 1-y), &quot;cumhaz&quot; plots the
+cumulative hazard function (f(y) = -log(y)), and &quot;pct&quot; for survival
+probability in percentage.</dd>
       <dt>palette</dt>
-      <dd>the color palette to be used for coloring or filling by
-groups. Allowed values include &quot;grey&quot; for grey color palettes; brewer
-palettes e.g. &quot;RdBu&quot;, &quot;Blues&quot;, ...; or custom color palette e.g. c(&quot;blue&quot;,
-&quot;red&quot;); and scientific journal palettes from ggsci R package, e.g.: &quot;npg&quot;,
-&quot;aaas&quot;, &quot;lancet&quot;, &quot;jco&quot;, &quot;ucscgb&quot;, &quot;uchicago&quot;, &quot;simpsons&quot; and
-&quot;rickandmorty&quot;. Can be also a numeric vector of length(groups); in this
-case a basic color palette is created using the function <a href='http://www.rdocumentation.org/packages/grDevices/topics/palette'>palette</a>.</dd>
+      <dd>the color palette to be used. Allowed values include &quot;hue&quot; for
+the default hue color scale; &quot;grey&quot; for grey color palettes; brewer palettes
+e.g. &quot;RdBu&quot;, &quot;Blues&quot;, ...; or custom color palette e.g. c(&quot;blue&quot;, &quot;red&quot;).
+See details section for more information.  Can be also a numeric vector of
+length(groups); in this case a basic color palette is created using the
+function <a href='http://www.rdocumentation.org/packages/grDevices/topics/palette'>palette</a>.</dd>
       <dt>curve.size, curve.alpha</dt>
       <dd>size and alpha for individual survival curves</dd>
       <dt>ylab</dt>
       <dd>y axis label.</dd>
       <dt>ggtheme</dt>
-      <dd>function, ggplot2 theme name. Default value is <a href='theme_classic2.html'>theme_classic2</a>.
+      <dd>function, ggplot2 theme name.
 Allowed values include ggplot2 official themes: see <code><a href='http://www.rdocumentation.org/packages/ggplot2/topics/theme'>theme</a></code>.</dd>
       <dt>...</dt>
       <dd>further arguments passed to the function <code><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggpar'>ggpar</a></code> for customizing the plot.</dd>
