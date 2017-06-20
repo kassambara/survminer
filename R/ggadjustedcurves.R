@@ -5,20 +5,17 @@ NULL
 #' @importFrom dplyr summarise
 #' @importFrom dplyr group_by
 #' @importFrom survival survfit
-#' @description This function plots adjusted survival curves for coxph model.
+#' @description This function plots adjusted survival curves for the \code{ coxph} model.
 #' The idea behind this function is described in \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
 #' For every observation in the dataset a prediction for survival curve is made.
 #' Then the predictions are averaged with respect to a selected variable.
 #'@inheritParams ggsurvplot_arguments
 #'@param fit an object of class \link{coxph.object} - created with \link{coxph} function.
-#'@param data a dataset for predictions. If not supplied then data will be extracted from `fit` object.
+#'@param data a dataset for predictions. If not supplied then data will be extracted from the \code{fit} object.
 #'@param reference a dataset for with reference population, to which dependent variables should be balanced. If not specified, then the \code{data} will be used instead. Note that the \code{reference} dataset should contain variables used in \code{fit} object.
-#'@param variable a character, name of the grouping variable to be plotted. If not suplied then it will be extracted from the model formula from the \code{strata()} component. If there is no \code{strata()} component then only a single cuve will be plted - average for the population.
-#'@param individual.curves if TRUE then all individual predicted survival curves will be plotted
-#'@param curve.size,curve.alpha size and alpha for individual survival curves
-#'@param ylab y axis label.
-#'@param ggtheme function, ggplot2 theme name.
-#'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
+#'@param variable a character, name of the grouping variable to be plotted. If not suplied then it will be extracted from the model formula from the \code{strata()} component. If there is no \code{strata()} component then only a single curve will be plotted - average for the population.
+#'@param ylab a label for oy axis.
+#'@param ggtheme function, ggplot2 theme name. Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@inheritParams ggpubr::ggpar
 #'@param ... further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.
 #'@return Returns an object of class \code{gg}.
@@ -38,12 +35,10 @@ NULL
 #' fit <- coxph( Surv(futime, death) ~ age*sex + strata(group), data = fdata)
 #' ggadjustedcurves(fit, data = fdata)
 #' ggadjustedcurves(fit2, data = bladder, variable= bladder[,"rx"])
+#'
 #' fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
 #' ggadjustedcurves(fit2, data = bladder)
-#' ggadjustedcurves(fit2, individual.curves = TRUE, data = bladder, curve.alpha=0.01)
 #' ggadjustedcurves(fit2, data = bladder, variable= bladder[,"rx"])
-#' ggadjustedcurves(fit2, data = bladder, variable= bladder[,"rx"],
-#'    individual.curves=TRUE, curve.alpha=0.01)
 #'
 #'@export
 ggadjustedcurves <- function(fit,
