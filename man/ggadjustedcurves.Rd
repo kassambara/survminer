@@ -41,9 +41,19 @@ Returns an object of class \code{gg}.
 }
 \description{
 This function plots adjusted survival curves for the \code{coxph} model.
-The idea behind this function is described in \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
-For every observation in the dataset a prediction for survival curve is made.
-Then the predictions are averaged with respect to a selected variable.
+The main idea behind this function is to present survival curves for subpopulations. The details description and discussion of adjusted curves is presented in 'Adjusted Survival Curves' by Terry Therneau, Cynthia Crowson, Elizabeth Atkinson (2015) \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
+Currently four approaches are implemented in the \code{ggadjustedcurves()} function. See the section Details.
+}
+\details{
+Currently four approaches are implemented in the \code{ggadjustedcurves()} function.
+
+For \code{method = “single”} a single survival curve is plotted, the curve is an average expected survival calculated for population \code{data} based on Cox model \code{fit}.
+
+For \code{method = “average”} a survival curve is plotted for each level of a variable listed as \code{variable}. If this variable is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Each curve presents an expected survival calculated for subpopulation from \code{data} based on Cox model \code{fit}. Note that in this method subpopulations are NOT balanced.
+
+For \code{method = “conditional”} a survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced with respect to variables in the \code{fit} formula to keep distributions similar to these in the \code{reference} population. If no reference population is specified, then the whole \code{data} population is used instead. The balancing is performed in a following way: (1) for each subpopulation a logistic regression model is created to model the frequency of being in the subpopulation against the reference population, (2) reverse probabilities of belonging to a specified subpopulation are used as a weight in the Cox model, (3) the Cox model is refitted with weights taken into account, (4) expected survival curves are calculated for each subpopulation based on a refitted weighted model.
+
+For \code{method = “marginal”} a survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced in a following way: (1) the data is replicated as many times as many subpopulations are considered (say k), (2) for each row in original data a set of k copies are created and for every copy a different value of a grouping variable is assigned, this will create a new dataset balanced in terms of grouping variables, (3) expected survival is calculated for each subpopulation based on the new artificial dataset. Here the model is not refitted.
 }
 \examples{
 
@@ -58,6 +68,9 @@ ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
 
 # conditional balancing in groups
 ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
+# selected reference population
+ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx",
+    reference = bladder[bladder$rx == "1",])
 
 # marginal balancing in groups
 ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
