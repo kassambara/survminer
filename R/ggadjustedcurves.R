@@ -25,7 +25,25 @@ NULL
 #'@examples
 #'
 #' library(survival)
+#' fit2 <- coxph( Surv(stop, event) ~  size, data = bladder )
+#' # single curve
+#' ggadjustedcurves(fit2, data = bladder)
+#'
+#' fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
+#' # average in groups
+#' ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
+#'
+#' # conditional balancing in groups
+#' ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
+#' # selected reference population
+#' ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx",
+#'     reference = bladder[bladder$rx == "1",])
+#'
+#' # marginal balancing in groups
+#' ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
+#'
 #'\dontrun{
+#' # this will take some time
 #' fdata <- flchain[flchain$futime >=7,]
 #' fdata$age2 <- cut(fdata$age, c(0,54, 59,64, 69,74,79, 89, 110),
 #'                   labels = c(paste(c(50,55,60,65,70,75,80),
@@ -48,20 +66,6 @@ NULL
 #' ggadjustedcurves(fit, data = fdata, method = "marginal")
 #' }
 #'
-#' fit2 <- coxph( Surv(stop, event) ~  size, data = bladder )
-#' # single curve
-#' ggadjustedcurves(fit2, data = bladder)
-#'
-#' fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
-#' # average in groups
-#' ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
-#'
-#' # conditional balancing in groups
-#' ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
-#'
-#' # marginal balancing in groups
-#' ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
-#'
 #'@export
 ggadjustedcurves <- function(fit,
                                 variable = NULL,
@@ -69,6 +73,7 @@ ggadjustedcurves <- function(fit,
                                 reference = NULL,
                                 method = "conditional",
                                 fun = NULL,
+                                palette = "hue",
                                 ylab = "Survival rate",
                                 ggtheme = theme_survminer(), ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
@@ -84,7 +89,7 @@ ggadjustedcurves <- function(fit,
   # variable = NULL
   if (is.null(variable)) {
     # is there a 'strata' component?
-    term.labels <- attr(terms(fit2$formula), "term.labels")
+    term.labels <- attr(terms(fit$formula), "term.labels")
     strata.term.labels <- grep(term.labels, pattern = "strata(", fixed = TRUE, value = TRUE)
     if (length(strata.term.labels) > 1) {
       variable <- gsub(
@@ -92,10 +97,11 @@ ggadjustedcurves <- function(fit,
           strata.term.labels,
           pattern = "strata(", replacement = "", fixed = TRUE)[1],
         pattern = "[\\) ]", replacement = "")
+      cat("The variable argument is missing. Using", variable, "as extracted from strata\n")
     } else {
+      # if not then leave variable = NULL
       method = "single"
     }
-    # if not then leave variable = NULL
   }
 
   pl <- switch(method,
@@ -113,15 +119,14 @@ ggadjustedcurves <- function(fit,
 
 
 ggadjustedcurves.single <- function(data, fit) {
-  lev <- unique(data[,variable])
   pred <- survexp(~1, data = data, ratetable = fit)
 
-  curve <- data.frame(time = rep(c(0,pred$time), length(lev)),
-                      variable = factor(rep(lev, each=1+length(pred$time))),
-                      surv = c(rbind(1, pred$surv)))
+  curve <- data.frame(time = c(0,pred$time),
+                      variable = "total",
+                      surv = c(1, pred$surv))
 
   ggplot(curve, aes(x = time, y = surv, color=variable)) +
-    geom_step()
+    geom_step() + theme(legend.position = "none")
 }
 
 ggadjustedcurves.average <- function(data, fit, variable) {

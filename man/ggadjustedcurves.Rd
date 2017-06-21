@@ -5,8 +5,8 @@
 \title{Adjusted Survival Curves for Cox Proportional Hazards Model}
 \usage{
 ggadjustedcurves(fit, variable = NULL, data = NULL, reference = NULL,
-  method = "conditional", fun = NULL, ylab = "Survival rate",
-  ggtheme = theme_survminer(), ...)
+  method = "conditional", fun = NULL, palette = "hue",
+  ylab = "Survival rate", ggtheme = theme_survminer(), ...)
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
@@ -22,6 +22,13 @@ curve.  Often used transformations can be specified with a character
 argument: "event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the
 cumulative hazard function (f(y) = -log(y)), and "pct" for survival
 probability in percentage.}
+
+\item{palette}{the color palette to be used. Allowed values include "hue" for
+the default hue color scale; "grey" for grey color palettes; brewer palettes
+e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
+See details section for more information.  Can be also a numeric vector of
+length(groups); in this case a basic color palette is created using the
+function \link[grDevices]{palette}.}
 
 \item{ylab}{a label for oy axis.}
 
@@ -41,7 +48,22 @@ Then the predictions are averaged with respect to a selected variable.
 \examples{
 
 library(survival)
+fit2 <- coxph( Surv(stop, event) ~  size, data = bladder )
+# single curve
+ggadjustedcurves(fit2, data = bladder)
+
+fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
+# average in groups
+ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
+
+# conditional balancing in groups
+ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
+
+# marginal balancing in groups
+ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
+
 \dontrun{
+# this will take some time
 fdata <- flchain[flchain$futime >=7,]
 fdata$age2 <- cut(fdata$age, c(0,54, 59,64, 69,74,79, 89, 110),
                   labels = c(paste(c(50,55,60,65,70,75,80),
@@ -63,20 +85,6 @@ ggadjustedcurves(fit, data = fdata, method = "conditional", reference = fdata)
 # marginal balancing in groups
 ggadjustedcurves(fit, data = fdata, method = "marginal")
 }
-
-fit2 <- coxph( Surv(stop, event) ~  size, data = bladder )
-# single curve
-ggadjustedcurves(fit2, data = bladder)
-
-fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
-# average in groups
-ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
-
-# conditional balancing in groups
-ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
-
-# marginal balancing in groups
-ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
 
 }
 \author{
