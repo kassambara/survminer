@@ -39,11 +39,11 @@ NULL
 #'@examples
 #'
 #' library(survival)
-#' fit2 <- coxph( Surv(stop, event) ~  size, data = bladder )
+#' fit2 <- coxph( Surv(stop, event) ~ size, data = bladder )
 #' # single curve
 #' ggadjustedcurves(fit2, data = bladder)
 #'
-#' fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
+#' fit2 <- coxph( Surv(stop, event) ~ size + strata(rx), data = bladder )
 #' # average in groups
 #' ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
 #'
@@ -146,7 +146,7 @@ ggadjustedcurves.single <- function(data, fit) {
 }
 
 ggadjustedcurves.average <- function(data, fit, variable) {
-  time <- surv <- variable <- NULL
+  time <- surv <- NULL
 
   lev <- unique(data[,variable])
   pred <- survexp(as.formula(paste("~", variable)), data = data,
@@ -161,7 +161,7 @@ ggadjustedcurves.average <- function(data, fit, variable) {
 }
 
 ggadjustedcurves.conditional <- function(data, fit, variable, reference) {
-  time <- surv <- variable <- NULL
+  time <- surv <- NULL
 
   lev <- unique(data[,variable])
   reference[,variable] = "_reference_"
@@ -196,7 +196,7 @@ ggadjustedcurves.conditional <- function(data, fit, variable, reference) {
 }
 
 ggadjustedcurves.marginal <- function(data, fit, variable) {
-  time <- surv <- variable <- NULL
+  time <- surv <- NULL
 
   lev <- unique(data[,variable])
   ndata <- data[rep(1:nrow(data), each=length(lev)),

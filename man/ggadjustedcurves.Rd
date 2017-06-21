@@ -61,11 +61,11 @@ For \code{method = "marginal"} a separate survival curve is plotted for each lev
 \examples{
 
 library(survival)
-fit2 <- coxph( Surv(stop, event) ~  size, data = bladder )
+fit2 <- coxph( Surv(stop, event) ~ size, data = bladder )
 # single curve
 ggadjustedcurves(fit2, data = bladder)
 
-fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
+fit2 <- coxph( Surv(stop, event) ~ size + strata(rx), data = bladder )
 # average in groups
 ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
 
