@@ -3,26 +3,31 @@ NULL
 #' Adjusted Survival Curves for Cox Proportional Hazards Model
 #' @importFrom tidyr gather
 #' @importFrom dplyr summarise
+#' @importFrom stats formula
+#' @importFrom stats glm
+#' @importFrom survival survexp
 #' @importFrom dplyr group_by
 #' @importFrom survival survfit
 #' @description This function plots adjusted survival curves for the \code{coxph} model.
-#' The main idea behind this function is to present survival curves for subpopulations. The details description and discussion of adjusted curves is presented in 'Adjusted Survival Curves' by Terry Therneau, Cynthia Crowson, Elizabeth Atkinson (2015) \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
-#' Currently four approaches are implemented in the \code{ggadjustedcurves()} function. See the section Details.
+#' The main idea behind this function is to present expected survival curves calculated based on Cox model separately for subpopulations. The very detailed description and interesting discussion of adjusted curves is presented in 'Adjusted Survival Curves' by Terry Therneau, Cynthia Crowson, Elizabeth Atkinson (2015) \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
+#' Many approaches are discussed in this article. Currently four approaches (two unbalanced, one conditional and one marginal) are implemented in the \code{ggadjustedcurves()} function. See the section Details.
 #' @details Currently four approaches are implemented in the \code{ggadjustedcurves()} function.
 #'
-#' For \code{method = “single”} a single survival curve is plotted, the curve is an average expected survival calculated for population \code{data} based on Cox model \code{fit}.
+#' For \code{method = "single"} a single survival curve is calculated and plotted. The curve presents an expected survival calculated for population \code{data} calculated based on the Cox model \code{fit}.
 #'
-#' For \code{method = “average”} a survival curve is plotted for each level of a variable listed as \code{variable}. If this variable is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Each curve presents an expected survival calculated for subpopulation from \code{data} based on Cox model \code{fit}. Note that in this method subpopulations are NOT balanced.
+#' For \code{method = "average"} a separate survival curve is plotted for each level of a variable listed as \code{variable}. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} argument.  Each curve presents an expected survival calculated for subpopulation from \code{data} based on a Cox model \code{fit}. Note that in this method subpopulations are NOT balanced.
 #'
-#' For \code{method = “conditional”} a survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced with respect to variables in the \code{fit} formula to keep distributions similar to these in the \code{reference} population. If no reference population is specified, then the whole \code{data} population is used instead. The balancing is performed in a following way: (1) for each subpopulation a logistic regression model is created to model the frequency of being in the subpopulation against the reference population, (2) reverse probabilities of belonging to a specified subpopulation are used as a weight in the Cox model, (3) the Cox model is refitted with weights taken into account, (4) expected survival curves are calculated for each subpopulation based on a refitted weighted model.
+#' For \code{method = "conditional"} a survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced with respect to variables in the \code{fit} formula to keep distributions similar to these in the \code{reference} population. If no reference population is specified, then the whole \code{data} is used as a reference population instead. The balancing is performed in a following way: (1) for each subpopulation a logistic regression model is created to model the odds of being in the subpopulation against the reference population given the other variables listed in a \code{fit} object, (2) reverse probabilities of belonging to a specified subpopulation are used as weights in the Cox model, (3) the Cox model is refitted with weights taken into account, (4) expected survival curves are calculated for each subpopulation based on a refitted weighted model.
 #'
-#' For \code{method = “marginal”} a survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced in a following way: (1) the data is replicated as many times as many subpopulations are considered (say k), (2) for each row in original data a set of k copies are created and for every copy a different value of a grouping variable is assigned, this will create a new dataset balanced in terms of grouping variables, (3) expected survival is calculated for each subpopulation based on the new artificial dataset. Here the model is not refitted.
+#' For \code{method = "marginal"} a separate survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced in a following way: (1) the data is replicated as many times as many subpopulations are considered (say k), (2) for each row in original data a set of k copies are created and for every copy a different value of a grouping variable is assigned, this will create a new dataset balanced in terms of grouping variables, (3) expected survival is calculated for each subpopulation based on the new artificial dataset. Here the model \code{fit} is not refitted.
 #'
 #'@inheritParams ggsurvplot_arguments
 #'@param fit an object of class \link{coxph.object} - created with \link{coxph} function.
 #'@param data a dataset for predictions. If not supplied then data will be extracted from the \code{fit} object.
-#'@param reference a dataset for with reference population, to which dependent variables should be balanced. If not specified, then the \code{data} will be used instead. Note that the \code{reference} dataset should contain variables used in \code{fit} object.
-#'@param variable a character, name of the grouping variable to be plotted. If not suplied then it will be extracted from the model formula from the \code{strata()} component. If there is no \code{strata()} component then only a single curve will be plotted - average for the population.
+#'@param reference a dataset for reference population, to which dependent variables should be balanced. If not specified, then the \code{data} will be used instead. Note that the \code{reference} dataset should contain all variables used in \code{fit} object.
+#'@param method a character, describes how the expected survival curves shall be calculated. Possible options:
+#' 'single' (average for population), 'average' (averages for subpopulations), 'marginal', 'conditional' (averages for subpopulations after rebalancing). See the Details section  for further informatio.
+#'@param variable a character, name of the grouping variable to be plotted. If not supplied then it will be extracted from the model formula from the \code{strata()} component. If there is no \code{strata()} component then only a single curve will be plotted - average for the thole population.
 #'@param ylab a label for oy axis.
 #'@param ggtheme function, ggplot2 theme name. Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@inheritParams ggpubr::ggpar
@@ -128,6 +133,8 @@ ggadjustedcurves <- function(fit,
 
 
 ggadjustedcurves.single <- function(data, fit) {
+  time <- surv <- NULL
+
   pred <- survexp(~1, data = data, ratetable = fit)
 
   curve <- data.frame(time = c(0,pred$time),
@@ -139,6 +146,8 @@ ggadjustedcurves.single <- function(data, fit) {
 }
 
 ggadjustedcurves.average <- function(data, fit, variable) {
+  time <- surv <- NULL
+
   lev <- unique(data[,variable])
   pred <- survexp(as.formula(paste("~", variable)), data = data,
                   ratetable = fit)
@@ -152,6 +161,8 @@ ggadjustedcurves.average <- function(data, fit, variable) {
 }
 
 ggadjustedcurves.conditional <- function(data, fit, variable, reference) {
+  time <- surv <- NULL
+
   lev <- unique(data[,variable])
   reference[,variable] = "_reference_"
   df0 <- reference
@@ -172,7 +183,7 @@ ggadjustedcurves.conditional <- function(data, fit, variable, reference) {
   }
 
   nform <- paste(as.character(formula(fit))[2], "~", variable)
-  nfit <- coxph(as.formula(nform), data=data, weight=rwt)
+  nfit <- coxph(as.formula(nform), data = data, weights = rwt)
 
   pred <- survexp(as.formula(paste("~", variable)), data = data, ratetable = nfit)
 
@@ -185,6 +196,8 @@ ggadjustedcurves.conditional <- function(data, fit, variable, reference) {
 }
 
 ggadjustedcurves.marginal <- function(data, fit, variable) {
+  time <- surv <- NULL
+
   lev <- unique(data[,variable])
   ndata <- data[rep(1:nrow(data), each=length(lev)),
                 setdiff(colnames(data), variable)]
