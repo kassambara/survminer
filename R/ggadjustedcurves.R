@@ -133,7 +133,7 @@ ggadjustedcurves <- function(fit,
 
 
 ggadjustedcurves.single <- function(data, fit) {
-  time <- surv <- NULL
+  time <- surv <- variable <- NULL
 
   pred <- survexp(~1, data = data, ratetable = fit)
 
@@ -141,12 +141,12 @@ ggadjustedcurves.single <- function(data, fit) {
                       variable = "total",
                       surv = c(1, pred$surv))
 
-  ggplot(curve, aes(x = time, y = surv, color=variable)) +
+  ggplot(curve, aes(x = time, y = surv, color = variable)) +
     geom_step() + theme(legend.position = "none")
 }
 
 ggadjustedcurves.average <- function(data, fit, variable) {
-  time <- surv <- NULL
+  time <- surv <- variable <- NULL
 
   lev <- unique(data[,variable])
   pred <- survexp(as.formula(paste("~", variable)), data = data,
@@ -161,7 +161,7 @@ ggadjustedcurves.average <- function(data, fit, variable) {
 }
 
 ggadjustedcurves.conditional <- function(data, fit, variable, reference) {
-  time <- surv <- NULL
+  time <- surv <- variable <- NULL
 
   lev <- unique(data[,variable])
   reference[,variable] = "_reference_"
@@ -196,7 +196,7 @@ ggadjustedcurves.conditional <- function(data, fit, variable, reference) {
 }
 
 ggadjustedcurves.marginal <- function(data, fit, variable) {
-  time <- surv <- NULL
+  time <- surv <- variable <- NULL
 
   lev <- unique(data[,variable])
   ndata <- data[rep(1:nrow(data), each=length(lev)),
