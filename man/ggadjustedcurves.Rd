@@ -4,10 +4,9 @@
 \alias{ggadjustedcurves}
 \title{Adjusted Survival Curves for Cox Proportional Hazards Model}
 \usage{
-ggadjustedcurves(fit, variable = NULL, individual.curves = FALSE,
-  data = NULL, reference = NULL, method = "conditional", fun = NULL,
-  palette = "hue", curve.size = 2, curve.alpha = 0.2,
-  ylab = "Survival rate", ggtheme = theme_survminer(), ...)
+ggadjustedcurves(fit, variable = NULL, data = NULL, reference = NULL,
+  method = "conditional", fun = NULL, ylab = "Survival rate",
+  ggtheme = theme_survminer(), ...)
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
@@ -23,13 +22,6 @@ curve.  Often used transformations can be specified with a character
 argument: "event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the
 cumulative hazard function (f(y) = -log(y)), and "pct" for survival
 probability in percentage.}
-
-\item{palette}{the color palette to be used. Allowed values include "hue" for
-the default hue color scale; "grey" for grey color palettes; brewer palettes
-e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
-See details section for more information.  Can be also a numeric vector of
-length(groups); in this case a basic color palette is created using the
-function \link[grDevices]{palette}.}
 
 \item{ylab}{a label for oy axis.}
 
@@ -49,6 +41,7 @@ Then the predictions are averaged with respect to a selected variable.
 \examples{
 
 library(survival)
+\dontrun{
 fdata <- flchain[flchain$futime >=7,]
 fdata$age2 <- cut(fdata$age, c(0,54, 59,64, 69,74,79, 89, 110),
                   labels = c(paste(c(50,55,60,65,70,75,80),
@@ -56,14 +49,34 @@ fdata$age2 <- cut(fdata$age, c(0,54, 59,64, 69,74,79, 89, 110),
 fdata$group <- factor(1+ 1*(fdata$flc.grp >7) + 1*(fdata$flc.grp >9),
                       levels=1:3,
                       labels=c("FLC < 3.38", "3.38 - 4.71", "FLC > 4.71"))
+# single curve
+fit <- coxph( Surv(futime, death) ~ age*sex, data = fdata)
+ggadjustedcurves(fit, data = fdata, method = "single")
+
+# average in groups
 fit <- coxph( Surv(futime, death) ~ age*sex + strata(group), data = fdata)
-ggadjustedcurves(fit, data = fdata)
-ggadjustedcurves(fit, data = fdata, variable = "group")
 ggadjustedcurves(fit, data = fdata, method = "average")
 
+# conditional balancing in groups
+ggadjustedcurves(fit, data = fdata, method = "conditional", reference = fdata)
+
+# marginal balancing in groups
+ggadjustedcurves(fit, data = fdata, method = "marginal")
+}
+
 fit2 <- coxph( Surv(stop, event) ~  size, data = bladder )
+# single curve
 ggadjustedcurves(fit2, data = bladder)
-ggadjustedcurves(fit2, data = bladder, variable = "rx")
+
+fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
+# average in groups
+ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
+
+# conditional balancing in groups
+ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
+
+# marginal balancing in groups
+ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
 
 }
 \author{

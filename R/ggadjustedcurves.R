@@ -33,27 +33,42 @@ NULL
 #' fdata$group <- factor(1+ 1*(fdata$flc.grp >7) + 1*(fdata$flc.grp >9),
 #'                       levels=1:3,
 #'                       labels=c("FLC < 3.38", "3.38 - 4.71", "FLC > 4.71"))
-#' fit <- coxph( Surv(futime, death) ~ age*sex + strata(group), data = fdata)
-#' ggadjustedcurves(fit, data = fdata)
-#' ggadjustedcurves(fit, data = fdata, variable = "group")
-#' ggadjustedcurves(fit, data = fdata, method = "average")
+#' # single curve
+#' fit <- coxph( Surv(futime, death) ~ age*sex, data = fdata)
 #' ggadjustedcurves(fit, data = fdata, method = "single")
+#'
+#' # average in groups
+#' fit <- coxph( Surv(futime, death) ~ age*sex + strata(group), data = fdata)
+#' ggadjustedcurves(fit, data = fdata, method = "average")
+#'
+#' # conditional balancing in groups
+#' ggadjustedcurves(fit, data = fdata, method = "conditional", reference = fdata)
+#'
+#' # marginal balancing in groups
+#' ggadjustedcurves(fit, data = fdata, method = "marginal")
 #' }
 #'
-#' fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
+#' fit2 <- coxph( Surv(stop, event) ~  size, data = bladder )
+#' # single curve
 #' ggadjustedcurves(fit2, data = bladder)
-#' ggadjustedcurves(fit2, data = bladder, variable = "rx")
+#'
+#' fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
+#' # average in groups
+#' ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
+#'
+#' # conditional balancing in groups
+#' ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
+#'
+#' # marginal balancing in groups
+#' ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
 #'
 #'@export
 ggadjustedcurves <- function(fit,
                                 variable = NULL,
-                                individual.curves = FALSE,
                                 data = NULL,
                                 reference = NULL,
                                 method = "conditional",
                                 fun = NULL,
-                                palette = "hue",
-                                curve.size = 2, curve.alpha = 0.2,
                                 ylab = "Survival rate",
                                 ggtheme = theme_survminer(), ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
@@ -86,7 +101,7 @@ ggadjustedcurves <- function(fit,
   pl <- switch(method,
          single = ggadjustedcurves.single(reference, fit),
          average =  ggadjustedcurves.average(reference, fit, variable),
-         conditional = ggadjustedcurves.conditional(data, fit, variable),
+         conditional = ggadjustedcurves.conditional(data, fit, variable, reference),
          marginal = ggadjustedcurves.marginal(reference, fit, variable))
 
   pl <- pl + ggtheme +
@@ -107,26 +122,6 @@ ggadjustedcurves.single <- function(data, fit) {
 
   ggplot(curve, aes(x = time, y = surv, color=variable)) +
     geom_step()
-
-
-
-  # this dirty hack hides the problem with CHECK NOTES generated for
-  # non standard evaluation used by dplyr/tidyr
-  .id <- time <- surv <- NULL
-
-  pred <- survfit(fit, data)
-  timepoints <- c(0, pred$time)
-
-  adj_surv <- as.data.frame(cbind(time0 = 1, t(pred$surv)))
-  colnames(adj_surv) <- paste0("time", timepoints)
-
-  both <- cbind(.id = seq(data[,1]), adj_surv)
-  curves <- gather(both, time, surv, -.id)
-  curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
-  curve <- summarise(group_by(curves, time), surv = mean(surv, na.rm=TRUE))
-  curve <- .apply_surv_func(curve, fun = fun)
-  ggplot(curve, aes(x = time, y = surv)) +
-    geom_step(size=curve.size)
 }
 
 ggadjustedcurves.average <- function(data, fit, variable) {
@@ -149,15 +144,30 @@ ggadjustedcurves.conditional <- function(data, fit, variable, reference) {
   form <- paste(variable, "~", gsub(as.character(formula(fit))[3], pattern="\\+ *strata.*[^\\)].", replacement=""))
 
   allRes <- list()
+  rwt <- numeric(nrow(data))
   for (level in lev) {
-    df1 <- data[data[,variable] == level,]
-    ndf <- rbind(df0, df1)
-    ndf[,variable] <- factor(ndf[,variable])
-    model <- glm(as.formula(form), ndf, family="binomial")
-    allRes[[level]] <- predict(model, newdata = data, type = "response")
+    indexes <- which(data[,variable] == level)
+    if (length(indexes) > 0) {
+      df1 <- data[indexes, ]
+      ndf <- rbind(df0, df1)
+      ndf[,variable] <- factor(ndf[,variable])
+      model <- glm(as.formula(form), ndf, family="binomial")
+      allRes[[level]] <- predict(model, newdata = data, type = "response")
+      rwt[indexes] <- 1/allRes[[level]][indexes]
+    }
   }
 
+  nform <- paste(as.character(formula(fit))[2], "~", variable)
+  nfit <- coxph(as.formula(nform), data=data, weight=rwt)
 
+  pred <- survexp(as.formula(paste("~", variable)), data = data, ratetable = nfit)
+
+  curve <- data.frame(time = rep(c(0,pred$time), length(lev)),
+                      variable = factor(rep(lev, each=1+length(pred$time))),
+                      surv = c(rbind(1, pred$surv)))
+
+  ggplot(curve, aes(x = time, y = surv, color=variable)) +
+    geom_step()
 }
 
 ggadjustedcurves.marginal <- function(data, fit, variable) {
