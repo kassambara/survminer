@@ -55,6 +55,7 @@ Collate:
     'ggsurvplot_group_by.R'
     'ggsurvplot.R'
     'arrange_ggsurvplots.R'
+    'ggadjustedcurves.R'
     'ggcompetingrisks.R'
     'ggcoxadjustedcurves.R'
     'ggcoxdiagnostics.R'
