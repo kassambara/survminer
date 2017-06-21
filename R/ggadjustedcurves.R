@@ -25,6 +25,7 @@ NULL
 #'@examples
 #'
 #' library(survival)
+#'\dontrun{
 #' fdata <- flchain[flchain$futime >=7,]
 #' fdata$age2 <- cut(fdata$age, c(0,54, 59,64, 69,74,79, 89, 110),
 #'                   labels = c(paste(c(50,55,60,65,70,75,80),
@@ -36,8 +37,10 @@ NULL
 #' ggadjustedcurves(fit, data = fdata)
 #' ggadjustedcurves(fit, data = fdata, variable = "group")
 #' ggadjustedcurves(fit, data = fdata, method = "average")
+#' ggadjustedcurves(fit, data = fdata, method = "single")
+#' }
 #'
-#' fit2 <- coxph( Surv(stop, event) ~  size, data = bladder )
+#' fit2 <- coxph( Surv(stop, event) ~  size + strata(rx), data = bladder )
 #' ggadjustedcurves(fit2, data = bladder)
 #' ggadjustedcurves(fit2, data = bladder, variable = "rx")
 #'
@@ -80,17 +83,11 @@ ggadjustedcurves <- function(fit,
     # if not then leave variable = NULL
   }
 
-  pred <- survfit(fit, data)
-  timepoints <- c(0, pred$time)
-
-  adj_surv <- as.data.frame(cbind(time0 = 1, t(pred$surv)))
-  colnames(adj_surv) <- paste0("time", timepoints)
-
   pl <- switch(method,
-         single = ggadjustedcurves.single(data, adj_surv),
-         average =  ggadjustedcurves.average(data, adj_surv, variable),
-         conditional = ggadjustedcurves.conditional(data, adj_surv, variable),
-         marginal = ggadjustedcurves.marginal(data, adj_surv, variable))
+         single = ggadjustedcurves.single(reference, fit),
+         average =  ggadjustedcurves.average(reference, fit, variable),
+         conditional = ggadjustedcurves.conditional(data, fit, variable),
+         marginal = ggadjustedcurves.marginal(reference, fit, variable))
 
   pl <- pl + ggtheme +
     scale_y_continuous(limits = ylim) +
@@ -100,10 +97,28 @@ ggadjustedcurves <- function(fit,
 }
 
 
-ggadjustedcurves.single <- function(data, adj_surv) {
+ggadjustedcurves.single <- function(data, fit) {
+  lev <- unique(data[,variable])
+  pred <- survexp(~1, data = data, ratetable = fit)
+
+  curve <- data.frame(time = rep(c(0,pred$time), length(lev)),
+                      variable = factor(rep(lev, each=1+length(pred$time))),
+                      surv = c(rbind(1, pred$surv)))
+
+  ggplot(curve, aes(x = time, y = surv, color=variable)) +
+    geom_step()
+
+
+
   # this dirty hack hides the problem with CHECK NOTES generated for
   # non standard evaluation used by dplyr/tidyr
   .id <- time <- surv <- NULL
+
+  pred <- survfit(fit, data)
+  timepoints <- c(0, pred$time)
+
+  adj_surv <- as.data.frame(cbind(time0 = 1, t(pred$surv)))
+  colnames(adj_surv) <- paste0("time", timepoints)
 
   both <- cbind(.id = seq(data[,1]), adj_surv)
   curves <- gather(both, time, surv, -.id)
@@ -114,29 +129,50 @@ ggadjustedcurves.single <- function(data, adj_surv) {
     geom_step(size=curve.size)
 }
 
-ggadjustedcurves.average <- function(data, adj_surv, variable) {
-  # this dirty hack hides the problem with CHECK NOTES generated for
-  # non standard evaluation used by dplyr/tidyr
-  .id <- time <- surv <- NULL
+ggadjustedcurves.average <- function(data, fit, variable) {
+  lev <- unique(data[,variable])
+  pred <- survexp(as.formula(paste("~", variable)), data = data,
+                  ratetable = fit)
 
-  variable <- factor(data[,variable])
-  both <- cbind(.id = seq(data[,1]), variable, adj_surv)
-  curves <- gather(both, time, surv, -.id, -variable)
-  curves$time <- as.numeric(gsub(curves$time, pattern = "time", replacement = ""))
-  curve <- summarise(group_by(curves, time, variable), surv = mean(surv, na.rm=TRUE))
-  curve <- .apply_surv_func(curve, fun = fun)
+  curve <- data.frame(time = rep(c(0,pred$time), length(lev)),
+                      variable = factor(rep(lev, each=1+length(pred$time))),
+                      surv = c(rbind(1, pred$surv)))
+
   ggplot(curve, aes(x = time, y = surv, color=variable)) +
-    geom_step(size=curve.size)
+    geom_step()
 }
 
-ggadjustedcurves.conditional <- function(...) {
+ggadjustedcurves.conditional <- function(data, fit, variable, reference) {
+  lev <- unique(data[,variable])
+  reference[,variable] = "_reference_"
+  df0 <- reference
+  form <- paste(variable, "~", gsub(as.character(formula(fit))[3], pattern="\\+ *strata.*[^\\)].", replacement=""))
+
+  allRes <- list()
+  for (level in lev) {
+    df1 <- data[data[,variable] == level,]
+    ndf <- rbind(df0, df1)
+    ndf[,variable] <- factor(ndf[,variable])
+    model <- glm(as.formula(form), ndf, family="binomial")
+    allRes[[level]] <- predict(model, newdata = data, type = "response")
+  }
+
 
 }
 
-ggadjustedcurves.marginal <- function(...) {
-  # this dirty hack hides the problem with CHECK NOTES generated for
-  # non standard evaluation used by dplyr/tidyr
-  .id <- time <- surv <- NULL
+ggadjustedcurves.marginal <- function(data, fit, variable) {
+  lev <- unique(data[,variable])
+  ndata <- data[rep(1:nrow(data), each=length(lev)),
+                setdiff(colnames(data), variable)]
+  ndata[,variable] = rep(lev, nrow(data))
 
+  pred <- survexp(as.formula(paste("~", variable)), data = ndata,
+                  ratetable = fit)
 
+  curve <- data.frame(time = rep(c(0,pred$time), length(lev)),
+                      variable = factor(rep(lev, each=1+length(pred$time))),
+                      surv = c(rbind(1, pred$surv)))
+
+  ggplot(curve, aes(x = time, y = surv, color=variable)) +
+    geom_step()
 }
