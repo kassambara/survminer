@@ -57,7 +57,6 @@ Collate:
     'arrange_ggsurvplots.R'
     'ggadjustedcurves.R'
     'ggcompetingrisks.R'
-    'ggcoxadjustedcurves.R'
     'ggcoxdiagnostics.R'
     'ggcoxfunctional.R'
     'ggcoxzph.R'

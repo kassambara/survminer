@@ -1,14 +1,15 @@
 # survminer 0.4.0.999
    
 ## New features
+  - The function `ggadjustedcurves()` handles now argument `method` that defines how adjusted curves shall be calculated. With `method='conditional'|'marginal'` subpopulations are balanced with respect to variables present in the model formula. With `method='single'|'average'` the curve represents just the expected survival curves.
 
 
 ## Major changes
-   
+   - The function `ggcoxadjustedcurves()` is replaced by `ggadjustedcurves()` ([#229](https://github.com/kassambara/survminer/issues/229)). 
    
 ## Minor changes
-    
-    
+    - The grouping variable to the  `ggadjustedcurves()` function is now passed as a name (character) of grouping variable not as a vector with values of grouping variable.
+
 ## Bug fixes
     
     
