@@ -100,7 +100,7 @@ ggadjustedcurves <- function(fit,
     # is there a 'strata' component?
     term.labels <- attr(terms(fit$formula), "term.labels")
     strata.term.labels <- grep(term.labels, pattern = "strata(", fixed = TRUE, value = TRUE)
-    if (length(strata.term.labels) > 1) {
+    if (length(strata.term.labels) > 0) {
       variable <- gsub(
         gsub(
           strata.term.labels,
@@ -114,10 +114,10 @@ ggadjustedcurves <- function(fit,
   }
 
   pl <- switch(method,
-         single = ggadjustedcurves.single(reference, fit),
-         average =  ggadjustedcurves.average(reference, fit, variable),
+         single = ggadjustedcurves.single(data, fit),
+         average =  ggadjustedcurves.average(data, fit, variable),
          conditional = ggadjustedcurves.conditional(data, fit, variable, reference),
-         marginal = ggadjustedcurves.marginal(reference, fit, variable))
+         marginal = ggadjustedcurves.marginal(data, fit, variable))
 
   pl <- pl + ggtheme +
     scale_y_continuous(limits = ylim) +
