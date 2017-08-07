@@ -285,7 +285,7 @@ Customize survival plots and tables. See also \link{ggsurvplot_arguments}.
  tables.col = "strata".
  \item \strong{fontsize}: font size to be used for the risk table
  and the cumulative events table.
- \item \strong{font.family}: character vector specifying font family,
+ \item \strong{font.family}: character vector specifying text element font family,
  e.g.: font.family = "Courier New".
  \item \strong{tables.y.text}: logical. Default is TRUE. If FALSE, the y axis tick
  labels of tables will be hidden.
