@@ -117,10 +117,12 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 
   if(pval$pval.txt != ""){
     p <- p + ggplot2::annotate("text", x = pval$pval.x, y = pval$pval.y,
-                               label = pval$pval.txt, size = pval.size, hjust = 0)
+                               label = pval$pval.txt, size = pval.size, hjust = 0,
+                               family = font.family)
     if(pval.method)
       p <- p + ggplot2::annotate("text", x = pval$method.x, y = pval$method.y,
-                                 label = pval$method, size = pval.method.size, hjust = 0)
+                                 label = pval$method, size = pval.method.size, hjust = 0,
+                                 family = font.family)
   }
 
 
