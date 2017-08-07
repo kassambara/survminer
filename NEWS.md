@@ -9,6 +9,7 @@
    
 ## Minor changes
     - The grouping variable to the  `ggadjustedcurves()` function is now passed as a name (character) of grouping variable not as a vector with values of grouping variable.
+    - New argument `font.family` in `ggsurvtable()` to change the font family in the survival tables - such as risk, cummulative events and censoring tables. For example font.family = "Courier New" ([@Swechhya, #245](https://github.com/kassambara/survminer/issues/245)).
 
 ## Bug fixes
     

@@ -22,8 +22,9 @@ ggsurvtable(fit, data = NULL, survtable = c("cumevents", "cumcensor",
   break.time.by = NULL, xlim = NULL, xscale = 1, xlab = "Time",
   ylab = "Strata", xlog = FALSE, legend = "top",
   legend.title = "Strata", legend.labs = NULL, y.text = TRUE,
-  y.text.col = TRUE, fontsize = 4.5, axes.offset = TRUE,
-  ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
+  y.text.col = TRUE, fontsize = 4.5, font.family = "",
+  axes.offset = TRUE, ggtheme = theme_survminer(), tables.theme = ggtheme,
+  ...)
 }
 \arguments{
 \item{fit}{an object of class survfit. Can be a list containing two
@@ -104,6 +105,8 @@ labels will be hidden.}
 labels will be colored by strata.}
 
 \item{fontsize}{text font size.}
+
+\item{font.family}{character vector specifying font family, e.g.: font.family = "Courier New".}
 
 \item{axes.offset}{logical value. Default is TRUE. If FALSE, set the plot axes
 to start at the origin.}
