@@ -100,6 +100,8 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
     if (complain)
       warning ("The `data` argument is not provided. Data will be extracted from model fit.")
     data <- eval(fit$call$data)
+    if (is.null(data))
+      stop("The `data` argument should be provided either to ggsurvfit or survfit.")
   }
   data
 }
