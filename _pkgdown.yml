@@ -13,6 +13,7 @@ reference:
     desc:  Summarize and visualize survival curves.
     contents:
       - ggsurvplot
+      - ggflexsurvplot
       - arrange_ggsurvplots
       - ggsurvevents
       - surv_summary

@@ -35,7 +35,8 @@ Imports:
     tibble
 Suggests:
     knitr,
-    KMsurv
+    KMsurv,
+    flexsurv
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
@@ -60,6 +61,7 @@ Collate:
     'ggcoxdiagnostics.R'
     'ggcoxfunctional.R'
     'ggcoxzph.R'
+    'ggflexsurvplot.R'
     'ggforest.R'
     'ggsurvevents.R'
     'ggsurvplot_combine.R'
