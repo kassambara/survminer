@@ -2,6 +2,7 @@
 NULL
 #' Ggplots of Fitted Flexible Survival Models
 #' @description Create ggplot2-based graphs for flexible survival models.
+#' @inheritParams ggsurvplot_arguments
 #' @param fit an object of class \code{flexsurvreg}.
 #' @param data the data used to fit survival curves.
 #' @param fun the type of survival curves. Allowed values include "survival"
@@ -31,6 +32,7 @@ ggflexsurvplot <- function(fit, data = NULL,
                            summary.flexsurv = NULL,
                            size = 1, conf.int = FALSE,
                            conf.int.flex = conf.int, conf.int.km = FALSE,
+                           legend.labs = NULL,
                            ...
                            )
 
@@ -45,14 +47,34 @@ ggflexsurvplot <- function(fit, data = NULL,
   summ <- .summary_flexsurv(fit, type = fun,
                             summary.flexsurv = summary.flexsurv)
 
+
   .formula <- fit$call$formula %>%
     stats::as.formula()
 
+  # Fit KM survival curves
+  #::::::::::::::::::::::::::::::::::::::
   x <- do.call(survival::survfit, list(formula = .formula, data = data))
-
   fun <- if(fun == "survival") NULL else fun
   ggsurv <- ggsurvplot_core(x, data = data, size = 0.5,
-                            fun = fun, conf.int = conf.int.km, ...)
+                            fun = fun, conf.int = conf.int.km,
+                            legend.labs = legend.labs, ...)
+
+  # Overlay the fitted models
+  #::::::::::::::::::::::::::::::::::::::
+
+  # Check legend labels if specified
+  .strata <- summ$strata
+  n.strata <- .strata %>% .levels() %>% length()
+
+  if(!is.null(legend.labs)){
+
+    if(n.strata != length(legend.labs))
+      stop("The length of legend.labs should be ", n.strata )
+
+    summ$strata <- factor(summ$strata,
+                          levels = .levels(.strata),
+                          labels = legend.labs)
+  }
 
   time <- est <- strata <- lcl <- ucl <- NULL
   ggsurv$plot <- ggsurv$plot +

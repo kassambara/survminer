@@ -6,7 +6,7 @@
 \usage{
 ggflexsurvplot(fit, data = NULL, fun = c("survival", "cumhaz"),
   summary.flexsurv = NULL, size = 1, conf.int = FALSE,
-  conf.int.flex = conf.int, conf.int.km = FALSE, ...)
+  conf.int.flex = conf.int, conf.int.km = FALSE, legend.labs = NULL, ...)
 }
 \arguments{
 \item{fit}{an object of class \code{flexsurvreg}.}
@@ -26,6 +26,10 @@ flexible survival estimates.}
 
 \item{conf.int.km}{same as \code{conf.in.flex} but for the kaplan-meier
 estimates.}
+
+\item{legend.labs}{character vector specifying legend labels. Used to replace
+the names of the strata from the fit. Should be given in the same order as
+those strata.}
 
 \item{...}{additional arguments passed to the function \code{\link{ggsurvplot}()}.}
 }
