@@ -406,6 +406,9 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 
   }
 
+  else if(inherits(fit, "flexsurvreg"))
+    ggsurv <- do.call(ggflexsurvplot, opts)
+
 
   return(ggsurv)
 }
