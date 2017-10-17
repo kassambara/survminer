@@ -46,10 +46,21 @@ ggflexsurvplot <- function(fit, data = NULL,
 
   summ <- .summary_flexsurv(fit, type = fun,
                             summary.flexsurv = summary.flexsurv)
+  .strata <- summ$strata
+  n.strata <- .strata %>% .levels() %>% length()
 
+   fit.ext <- .extract.survfit(fit)
+   surv.obj <- fit.ext$surv
+   surv.vars <- fit.ext$variables
+   .formula <- fit.ext$formula
+   isfac <- .is_all_covariate_factor(fit)
+   if(!all(isfac)){
+     .formula <- .build_formula(surv.obj, "1")
+     n.strata <- 1
+   }
 
-  .formula <- fit$call$formula %>%
-    stats::as.formula()
+   if(n.strata == 1 & missing(conf.int))
+     conf.int <- TRUE
 
   # Fit KM survival curves
   #::::::::::::::::::::::::::::::::::::::
@@ -63,9 +74,6 @@ ggflexsurvplot <- function(fit, data = NULL,
   #::::::::::::::::::::::::::::::::::::::
 
   # Check legend labels if specified
-  .strata <- summ$strata
-  n.strata <- .strata %>% .levels() %>% length()
-
   if(!is.null(legend.labs)){
 
     if(n.strata != length(legend.labs))
@@ -118,4 +126,14 @@ ggflexsurvplot <- function(fit, data = NULL,
 
   summ
 
+}
+
+
+# Check if all covariates are factor
+.is_all_covariate_factor <- function(fit){
+  x <- fit
+  mf <- model.frame(x)
+  Xraw <- mf[,attr(mf, "covnames.orig"), drop=FALSE]
+  dat <- x$data
+  sapply(Xraw,is.factor)
 }
