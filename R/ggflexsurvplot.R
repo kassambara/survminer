@@ -132,7 +132,7 @@ ggflexsurvplot <- function(fit, data = NULL,
 # Check if all covariates are factor
 .is_all_covariate_factor <- function(fit){
   x <- fit
-  mf <- model.frame(x)
+  mf <- stats::model.frame(x)
   Xraw <- mf[,attr(mf, "covnames.orig"), drop=FALSE]
   dat <- x$data
   sapply(Xraw,is.factor)
