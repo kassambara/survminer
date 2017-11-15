@@ -24,7 +24,7 @@ will be extracted from 'fit' object.}
 \item{noDigits}{number of digits for estimates and p-values in the plot.}
 }
 \value{
-return an grid object
+returns a ggplot2 object (invisibly)
 }
 \description{
 Drawing Forest Plot for Cox proportional hazards model. In two panels the model structure is presented.
@@ -35,10 +35,18 @@ model <- coxph( Surv(time, status) ~ sex + rx + adhere,
                 data = colon )
 ggforest(model)
 
-model <- coxph( Surv(time, status) ~ sex+rx, data = colon )
-ggforest(model)
+colon <- within(colon, {
+  sex <- factor(sex, labels = c("female", "male"))
+  differ <- factor(differ, labels = c("well", "moderate", "poor"))
+  extent <- factor(extent, labels = c("submuc.", "muscle", "serosa", "contig."))
+})
+bigmodel <-
+  coxph(Surv(time, status) ~ sex + rx + adhere + differ + extent + node4,
+    data = colon )
+ggforest(bigmodel)
 
 }
 \author{
-Przemyslaw Biecek, \email{przemyslaw.biecek@gmail.com}
+Przemyslaw Biecek (\email{przemyslaw.biecek@gmail.com}),
+  Fabian Scheipl (\email{fabian.scheipl@gmail.com})
 }
