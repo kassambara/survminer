@@ -109,7 +109,7 @@ ggcompetingrisks.survfitms <- function(fit) {
   event <- value <- strata <- NULL
   pstal <- gather(psta, event, value, -strata, -times)
   pstal <- dplyr::mutate(
-    pstal, event = ifelse(event == "", ".", event)
+    pstal, event = ifelse(event == "", ".no", event)
   )
 
   ggplot(pstal, aes(times, value, fill=event)) +
