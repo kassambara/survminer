@@ -105,6 +105,7 @@ ggcompetingrisks.survfitms <- function(fit) {
     psta$strata <- rep(names(fit$strata), fit$strata)
   }
   psta$times <- times
+  colnames(psta)[3] <- "no"
 
   event <- value <- strata <- NULL
   pstal <- gather(psta, event, value, -strata, -times)
