@@ -18,6 +18,8 @@
 
 ## Bug fixes
     
+- `ggforest()` no longer tries to bolt a table full of text to the coefficient plot ([@mmoisse, #241](https://github.com/kassambara/survminer/issues/241)), instead the annotations are done via ggplot2::annotate, see example at: [@fabian-s, #264](https://github.com/kassambara/survminer/pull/264)   
+
     
 # survminer 0.4.0
 
