@@ -105,11 +105,12 @@ ggcompetingrisks.survfitms <- function(fit) {
     psta$strata <- rep(names(fit$strata), fit$strata)
   }
   psta$times <- times
-  colnames(psta)[3] <- "no"
 
   event <- value <- strata <- NULL
   pstal <- gather(psta, event, value, -strata, -times)
-
+  pstal <- dplyr::mutate(
+    pstal, event = ifelse(event == "", ".", event)
+  )
   ggplot(pstal, aes(times, value, fill=event)) +
     geom_area() + facet_wrap(~strata)
 
