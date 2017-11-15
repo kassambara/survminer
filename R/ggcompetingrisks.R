@@ -111,6 +111,7 @@ ggcompetingrisks.survfitms <- function(fit) {
   pstal <- dplyr::mutate(
     pstal, event = ifelse(event == "", ".", event)
   )
+
   ggplot(pstal, aes(times, value, fill=event)) +
     geom_area() + facet_wrap(~strata)
 
