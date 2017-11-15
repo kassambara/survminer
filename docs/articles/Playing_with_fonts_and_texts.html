@@ -80,7 +80,7 @@
 <html><body><a href="#basic" class="anchor"> </a></body></html>Basic</h2>
 <p>Compare the basic plot</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"survival"</span>)
-fit&lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw">Surv</span>(time, status) ~<span class="st"> </span>sex, <span class="dt">data =</span> lung)
+fit&lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw">Surv</span>(time, status) <span class="op">~</span><span class="st"> </span>sex, <span class="dt">data =</span> lung)
 
 <span class="co"># Drawing survival curves</span>
 <span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> lung)</code></pre></div>

@@ -117,8 +117,9 @@
   <span class='kw'>break.time.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xscale</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>,
   <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>, <span class='kw'>xlog</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='st'>"top"</span>,
   <span class='kw'>legend.title</span> <span class='kw'>=</span> <span class='st'>"Strata"</span>, <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>y.text</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>y.text.col</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>fontsize</span> <span class='kw'>=</span> <span class='fl'>4.5</span>, <span class='kw'>axes.offset</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='kw'>tables.theme</span> <span class='kw'>=</span> <span class='no'>ggtheme</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>y.text.col</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>fontsize</span> <span class='kw'>=</span> <span class='fl'>4.5</span>, <span class='kw'>font.family</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>axes.offset</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='kw'>tables.theme</span> <span class='kw'>=</span> <span class='no'>ggtheme</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -208,6 +209,8 @@ labels will be hidden.</dd>
 labels will be colored by strata.</dd>
       <dt>fontsize</dt>
       <dd>text font size.</dd>
+      <dt>font.family</dt>
+      <dd>character vector specifying text element font family, e.g.: font.family = &quot;Courier New&quot;.</dd>
       <dt>axes.offset</dt>
       <dd>logical value. Default is TRUE. If FALSE, set the plot axes
 to start at the origin.</dd>

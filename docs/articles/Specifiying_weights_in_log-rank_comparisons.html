@@ -140,7 +140,7 @@
 <html><body><a href="#plots" class="anchor"> </a></body></html>Plots</h1>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"survival"</span>)
 <span class="kw">data</span>(<span class="st">"kidney"</span>, <span class="dt">package=</span><span class="st">"KMsurv"</span>)
-fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw">Surv</span>(<span class="dt">time=</span>time, <span class="dt">event=</span>delta) ~<span class="st"> </span>type, <span class="dt">data=</span>kidney)</code></pre></div>
+fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw">Surv</span>(<span class="dt">time=</span>time, <span class="dt">event=</span>delta) <span class="op">~</span><span class="st"> </span>type, <span class="dt">data=</span>kidney)</code></pre></div>
 <p>After preparing a functionality for this GitHub’s issue <a href="https://github.com/kassambara/survminer/issues/17">Other tests than log-rank for testing survival curves and Log-rank test for trend</a> we are now able to compute p-values for various Log-rank test in survminer package. Let as see below examples on executing all possible tests.</p>
 <div id="log-rank-survdiff" class="section level2">
 <h2 class="hasAnchor">
