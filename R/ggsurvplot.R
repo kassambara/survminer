@@ -355,7 +355,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   opts_df <- list(
                 fit = fit, fun = fun,
                 color = color, palette = palette, linetype = linetype,
-                conf.int = conf.int,  ggtheme = theme_survminer(), ...)
+                conf.int = conf.int,  ggtheme = ggtheme, ...)
 
   # Options for the remaining ggsurvplot_*() functions
   opts <- list(

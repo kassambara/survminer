@@ -124,7 +124,7 @@ ggsurvplot_combine <- function(fit, data,
 
     # Survplot of combined survsummary data frame
     #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    p <- ggsurvplot_df(all.survsummary, ...)
+    p <- ggsurvplot_df(all.survsummary, ggtheme = ggtheme, ...)
     res <- list(plot = p)
 
 
