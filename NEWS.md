@@ -12,6 +12,7 @@
 
 ## Bug fixes
 
+- Now, confidence interval ribbon works properly ([@wp07, #278](https://github.com/kassambara/survminer/issues/275)). 
 - Now, the argument `ggtheme` is supported when combining a list of survfit objects in `ggsurvplot()` ([@PhonePong, #278](https://github.com/kassambara/survminer/issues/278)). 
 
 # survminer 0.4.1
