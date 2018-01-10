@@ -7,6 +7,7 @@
 
 ## Minor changes
 
+- New argument `size` added in `ggadjustedcurves()` to change the curve size ([@MaximilianTscharre, #267](https://github.com/kassambara/survminer/issues/267)).
 
 
 ## Bug fixes
