@@ -27,7 +27,7 @@ reference:
   - title: Summary of Cox Model
     contents:
       - ggforest
-      - ggcoxadjustedcurves
+      - ggadjustedcurves
   - title: Competing Risks
     contents:
       - ggcompetingrisks
