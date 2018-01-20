@@ -119,7 +119,7 @@ to start at the origin.}
 
 \item{tables.theme}{function, ggplot2 theme name. Default value is
 \link{theme_survminer}. Allowed values include ggplot2 official themes: see
-\code{\link[ggplot2]{theme}}.}
+\code{\link[ggplot2]{theme}}. Note that, \code{tables.theme} is incremental to \code{ggtheme}.}
 }
 \value{
 a ggplot.

@@ -101,7 +101,7 @@
 #'  tables.col = "strata".
 #'@param tables.theme function, ggplot2 theme name. Default value is
 #'  \link{theme_survminer}. Allowed values include ggplot2 official themes: see
-#'  \code{\link[ggplot2]{theme}}.
+#'  \code{\link[ggplot2]{theme}}. Note that, \code{tables.theme} is incremental to \code{ggtheme}.
 #'@param risk.table.height the height of the risk table on the grid. Increase
 #'  the value when you have many strata. Default is 0.25. Ignored when
 #'  risk.table = FALSE.

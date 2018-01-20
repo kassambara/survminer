@@ -111,7 +111,7 @@ Alias of the \code{\link{ggsurvplot_combine}()} function.}
 
 \item{tables.theme}{function, ggplot2 theme name. Default value is
 \link{theme_survminer}. Allowed values include ggplot2 official themes: see
-\code{\link[ggplot2]{theme}}.}
+\code{\link[ggplot2]{theme}}. Note that, \code{tables.theme} is incremental to \code{ggtheme}.}
 
 \item{...}{Futher arguments as described hereafter and
 other arguments to be passed i) to ggplot2 geom_*() functions such

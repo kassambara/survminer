@@ -49,7 +49,7 @@ labels will be colored by strata.}
 
 \item{tables.theme}{function, ggplot2 theme name. Default value is
 \link{theme_survminer}. Allowed values include ggplot2 official themes: see
-\code{\link[ggplot2]{theme}}.}
+\code{\link[ggplot2]{theme}}. Note that, \code{tables.theme} is incremental to \code{ggtheme}.}
 
 \item{keep.data}{logical value specifying whether the plot data frame should be kept in the result.
 Setting these to FALSE (default) can give much smaller results and hence even save memory allocation time.}
