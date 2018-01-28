@@ -40,11 +40,13 @@ a ggsurvplot
 Create ggplot2-based graphs for flexible survival models.
 }
 \examples{
-if(!require("flexsurv")) install.packages("flexsurv")
-require("flexsurv")
+\donttest{
+if(require("flexsurv")) {
 fit <- flexsurvreg(Surv(rectime, censrec) ~ group,
                    dist = "gengamma", data = bc)
 ggflexsurvplot(fit)
+}
+}
 
 }
 \author{

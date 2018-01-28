@@ -18,11 +18,13 @@ NULL
 #' @author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @return a ggsurvplot
 #' @examples
-#' if(!require("flexsurv")) install.packages("flexsurv")
-#' require("flexsurv")
+#' \donttest{
+#' if(require("flexsurv")) {
 #' fit <- flexsurvreg(Surv(rectime, censrec) ~ group,
 #'                    dist = "gengamma", data = bc)
 #' ggflexsurvplot(fit)
+#' }
+#' }
 #'
 #' @name ggflexsurvplot
 #' @rdname ggflexsurvplot
@@ -37,6 +39,10 @@ ggflexsurvplot <- function(fit, data = NULL,
                            )
 
   {
+
+  if (!requireNamespace("flexsurv", quietly = TRUE)) {
+    stop("flexsurv package needed for this function to work. Please install it.")
+  }
 
   if(!inherits(fit, "flexsurvreg"))
     stop("Can't handle an object of class ", class(fit))
