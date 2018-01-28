@@ -35,7 +35,6 @@ Imports:
     tibble
 Suggests:
     knitr,
-    KMsurv,
     flexsurv
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/

@@ -87,28 +87,28 @@ The regular Log-rank test is sensitive to detect differences in late survival ti
 
 ```{r}
 library("survival")
-data("kidney", package="KMsurv")
-fit <- survfit(Surv(time=time, event=delta) ~ type, data=kidney)
+data("lung")
+fit <- survfit(Surv(time, status) ~ sex, data = lung)
 ```
 
 After preparing a functionality for this GitHub's issue [Other tests than log-rank for testing survival curves and Log-rank test for trend](https://github.com/kassambara/survminer/issues/17) we are now able to compute p-values for various Log-rank test in survminer package. Let as see below examples on executing all possible tests.
 
 ## Log-rank (survdiff)
 ```{r}
-ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE)
+ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE)
 ```
 
 ## Log-rank (comp)
 
 ```{r}
-ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "1")
 ```
 
 ## Gehan-Breslow (generalized Wilcoxon)
 
 ```{r}
-ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "n", pval.method.coord = c(5, 0.1),
            pval.method.size = 3)
 ```
@@ -116,7 +116,7 @@ ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
 ## Tharone-Ware
 
 ```{r}
-ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "sqrtN", pval.method.coord = c(3, 0.1),
            pval.method.size = 4)
 ```
@@ -124,7 +124,7 @@ ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
 ## Peto-Peto's modified survival estimate
 
 ```{r}
-ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "S1", pval.method.coord = c(5, 0.1),
            pval.method.size = 3)
 ```
@@ -132,7 +132,7 @@ ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
 ## modified Peto-Peto's (by Andersen)
 
 ```{r}
-ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "S2", pval.method.coord = c(5, 0.1),
            pval.method.size = 3)
 ```
@@ -140,7 +140,7 @@ ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
 ## Fleming-Harrington (p=1, q=1)
 
 ```{r}
-ggsurvplot(fit, data = kidney, pval = TRUE, pval.method = TRUE,
+ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE,
            log.rank.weights = "FH_p=1_q=1", 
            pval.method.coord = c(5, 0.1),
            pval.method.size = 4)
