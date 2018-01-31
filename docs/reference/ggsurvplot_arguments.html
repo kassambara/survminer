@@ -131,7 +131,9 @@ palette.</li>
       <dt>palette</dt>
       <dd>the color palette to be used. Allowed values include &quot;hue&quot; for
 the default hue color scale; &quot;grey&quot; for grey color palettes; brewer palettes
-e.g. &quot;RdBu&quot;, &quot;Blues&quot;, ...; or custom color palette e.g. c(&quot;blue&quot;, &quot;red&quot;).
+e.g. &quot;RdBu&quot;, &quot;Blues&quot;, ...; or custom color palette e.g. c(&quot;blue&quot;, &quot;red&quot;); and scientific journal palettes from ggsci R package, e.g.: &quot;npg&quot;,
+ &quot;aaas&quot;, &quot;lancet&quot;, &quot;jco&quot;, &quot;ucscgb&quot;, &quot;uchicago&quot;, &quot;simpsons&quot; and
+ &quot;rickandmorty&quot;.
 See details section for more information.  Can be also a numeric vector of
 length(groups); in this case a basic color palette is created using the
 function <a href='http://www.rdocumentation.org/packages/grDevices/topics/palette'>palette</a>.</dd>
@@ -240,7 +242,7 @@ tables.col = &quot;strata&quot;.</dd>
       <dt>tables.theme</dt>
       <dd>function, ggplot2 theme name. Default value is
 <a href='theme_survminer.html'>theme_survminer</a>. Allowed values include ggplot2 official themes: see
-<code><a href='http://www.rdocumentation.org/packages/ggplot2/topics/theme'>theme</a></code>.</dd>
+<code><a href='http://www.rdocumentation.org/packages/ggplot2/topics/theme'>theme</a></code>. Note that, <code>tables.theme</code> is incremental to <code>ggtheme</code>.</dd>
       <dt>risk.table.height</dt>
       <dd>the height of the risk table on the grid. Increase
 the value when you have many strata. Default is 0.25. Ignored when

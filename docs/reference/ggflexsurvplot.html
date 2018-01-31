@@ -125,10 +125,12 @@ those strata.</dd>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span>(!<span class='fu'>require</span>(<span class='st'>"flexsurv"</span>)) <span class='fu'>install.packages</span>(<span class='st'>"flexsurv"</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: flexsurv</span></div><div class='input'><span class='fu'>require</span>(<span class='st'>"flexsurv"</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span>(<span class='fu'>require</span>(<span class='st'>"flexsurv"</span>)) {
 <span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>flexsurvreg</span>(<span class='fu'>Surv</span>(<span class='no'>rectime</span>, <span class='no'>censrec</span>) ~ <span class='no'>group</span>,
                    <span class='kw'>dist</span> <span class='kw'>=</span> <span class='st'>"gengamma"</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bc</span>)
-<span class='fu'>ggflexsurvplot</span>(<span class='no'>fit</span>)</div><img src='ggflexsurvplot-4.png' alt='' width='540' height='400' /><div class='input'>
+<span class='fu'>ggflexsurvplot</span>(<span class='no'>fit</span>)
+}</div><div class='output co'>#&gt; <span class='message'>Loading required package: flexsurv</span></div><img src='ggflexsurvplot-3.png' alt='' width='540' height='400' /><div class='input'>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

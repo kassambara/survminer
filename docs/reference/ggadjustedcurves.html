@@ -91,7 +91,7 @@ Many approaches are discussed in this article. Currently four approaches (two un
 
     <pre><span class='fu'>ggadjustedcurves</span>(<span class='no'>fit</span>, <span class='kw'>variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"conditional"</span>, <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"hue"</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival rate"</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='no'>...</span>)</pre>
+  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Survival rate"</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -115,12 +115,16 @@ probability in percentage.</dd>
       <dt>palette</dt>
       <dd>the color palette to be used. Allowed values include &quot;hue&quot; for
 the default hue color scale; &quot;grey&quot; for grey color palettes; brewer palettes
-e.g. &quot;RdBu&quot;, &quot;Blues&quot;, ...; or custom color palette e.g. c(&quot;blue&quot;, &quot;red&quot;).
+e.g. &quot;RdBu&quot;, &quot;Blues&quot;, ...; or custom color palette e.g. c(&quot;blue&quot;, &quot;red&quot;); and scientific journal palettes from ggsci R package, e.g.: &quot;npg&quot;,
+ &quot;aaas&quot;, &quot;lancet&quot;, &quot;jco&quot;, &quot;ucscgb&quot;, &quot;uchicago&quot;, &quot;simpsons&quot; and
+ &quot;rickandmorty&quot;.
 See details section for more information.  Can be also a numeric vector of
 length(groups); in this case a basic color palette is created using the
 function <a href='http://www.rdocumentation.org/packages/grDevices/topics/palette'>palette</a>.</dd>
       <dt>ylab</dt>
       <dd>a label for oy axis.</dd>
+      <dt>size</dt>
+      <dd>the curve size.</dd>
       <dt>ggtheme</dt>
       <dd>function, ggplot2 theme name. Allowed values include ggplot2 official themes: see <code><a href='http://www.rdocumentation.org/packages/ggplot2/topics/theme'>theme</a></code>.</dd>
       <dt>...</dt>
