@@ -11,7 +11,7 @@ There was one note concerning the subdirectory "doc", which contains vignette fi
 checking installed package size ... NOTE
   installed size is  5.1Mb
   sub-directories of 1Mb or more:
-    doc   4.8Mb
+    doc   5.1Mb
    
 Would you be so kind to ignore this note.
     
@@ -25,4 +25,4 @@ There are currently no downstream dependencies for this package
 
 ## Update
 
-This is an update version 0.4.1
+This is an update version 0.4.2

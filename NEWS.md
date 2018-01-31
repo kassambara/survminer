@@ -1,9 +1,4 @@
-# Survminer 0.4.1.999
-
-## New features
-   
-   
-## Major changes
+# Survminer 0.4.2
 
 ## Minor changes
 
