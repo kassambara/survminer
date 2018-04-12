@@ -296,6 +296,8 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
     coord_cartesian(xlim = xlim) +
     labs(title = title, x = xlab, y = ylab, color = legend.title, shape = legend.title)
 
+  p <- p + tables.theme
+
   if (survtable == "risk.table")
     p <- .set_risktable_gpar(p, ...) # For backward compatibility
 
@@ -308,7 +310,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   else p <- p + ggplot2::scale_x_continuous(breaks = times,
                                             trans = "log10", labels = xticklabels)
 
-  p <- p + tables.theme
+
 
   if(!y.text) {
     p <- .set_large_dash_as_ytext(p)

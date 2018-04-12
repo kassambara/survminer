@@ -23,6 +23,8 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
                             tables.y.text.col = TRUE,
                             risk.table = FALSE, risk.table.pos = c("out", "in"), risk.table.title = NULL,
                             risk.table.col = tables.col, risk.table.fontsize = fontsize,
+                            risk.table.font.x =  NULL, risk.table.font.y =  NULL,
+                            risk.table.font.tickslab = NULL,
                             risk.table.y.text = tables.y.text,
                             risk.table.y.text.col = tables.y.text.col,
                             risk.table.height = tables.height, surv.plot.height = 0.75,
@@ -152,6 +154,12 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   pms$cumevents.title <- cumevents.title
   pms$cumcensor.title <- cumcensor.title
   pms$fontsize <- fontsize
+  pms$font.x <- risk.table.font.x
+  if( ("font.x" %in% names(extra.params)) & is.null(risk.table.font.x)) pms$font.x <- extra.params[["font.x"]]
+  pms$font.y <- risk.table.font.y
+  if( ("font.y" %in% names(extra.params)) & is.null(risk.table.font.y)) pms$font.y <- extra.params[["font.y"]]
+  pms$font.tickslab <- risk.table.font.tickslab
+  if( ("font.tickslab" %in% names(extra.params)) & is.null(risk.table.font.tickslab)) pms$font.tickslab <- extra.params[["font.tickslab"]]
   pms$ggtheme <- ggtheme
   pms$ylab <- pms$legend.title
   pms$tables.theme <- tables.theme
