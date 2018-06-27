@@ -325,7 +325,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     }
   }
 
-  if(is.null(x$table) & is.null(x$ncensor.plot) & is.null(x$cumevents)) return(x$plot)
+  if(is.null(x$table) & is.null(x$ncensor.plot) & is.null(x$cumevents)) return(ggplotGrob(x$plot))
 
   heights <- unlist(heights)[names(x)] # get the height of each component in x
   plots <- x
