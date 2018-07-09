@@ -166,6 +166,7 @@ ggforest <- function(model, data = NULL,
   # switch off clipping for p-vals, bottom annotation:
   gt <- ggplot_gtable(ggplot_build(p))
   gt$layout$clip[gt$layout$name == "panel"] <- "off"
-  grid.draw(gt)
-  invisible(p)
+  # grid.draw(gt)
+  # invisible(p)
+  ggpubr::as_ggplot(gt)
 }

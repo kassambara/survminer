@@ -3,6 +3,7 @@
 ## Minor changes
 
 - New argument `size` added in `ggadjustedcurves()` to change the curve size ([@MaximilianTscharre, #267](https://github.com/kassambara/survminer/issues/267)).
+- Now, `ggforest()` simply returns a ggplot instead of drawing automatically the plot ([@grvsinghal, #267](https://github.com/kassambara/survminer/issues/321)).
 
 
 ## Bug fixes
