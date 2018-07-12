@@ -6,13 +6,13 @@
 \usage{
 ggsurvplot_df(fit, fun = NULL, color = NULL, palette = NULL,
   linetype = 1, break.x.by = NULL, break.time.by = NULL,
-  break.y.by = NULL, surv.scale = c("default", "percent"), xscale = 1,
-  conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
-  conf.int.alpha = 0.3, censor = TRUE, censor.shape = "+",
-  censor.size = 4.5, title = NULL, xlab = "Time",
-  ylab = "Survival probability", xlim = NULL, ylim = NULL,
-  axes.offset = TRUE, legend = c("top", "bottom", "left", "right", "none"),
-  legend.title = "Strata", legend.labs = NULL,
+  break.y.by = NULL, surv.scale = c("default", "percent"),
+  surv.geom = geom_step, xscale = 1, conf.int = FALSE,
+  conf.int.fill = "gray", conf.int.style = "ribbon", conf.int.alpha = 0.3,
+  censor = TRUE, censor.shape = "+", censor.size = 4.5, title = NULL,
+  xlab = "Time", ylab = "Survival probability", xlim = NULL,
+  ylim = NULL, axes.offset = TRUE, legend = c("top", "bottom", "left",
+  "right", "none"), legend.title = "Strata", legend.labs = NULL,
   ggtheme = theme_survminer(), ...)
 }
 \arguments{
@@ -60,6 +60,9 @@ is NULL.}
 
 \item{surv.scale}{scale transformation of survival curves. Allowed values are
 "default" or "percent".}
+
+\item{surv.geom}{survival curve style. Is the survival curve entered a step
+function (\link[ggplot2]{geom_step}) or a smooth function (\link[ggplot2]{geom_line}).}
 
 \item{xscale}{numeric or character value specifying x-axis scale. \itemize{
 \item If numeric, the value is used to divide the labels on the x axis. For
@@ -150,4 +153,25 @@ ggsurvplot_df(surv_summary(fit1, colon))
 
 ggsurvplot_df(surv_summary(fit2, colon), conf.int = TRUE,
              legend.title = "Adhere", legend.labs = c("0", "1"))
+
+# Kaplan-Meier estimate
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+out_km <- survfit(Surv(time, status) ~ 1, data = lung)
+
+# Weibull model
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+wb <- survreg(Surv(time, status) ~ 1, data = lung)
+s <- seq(.01, .99, by = .01)
+t <- predict(wb, type = "quantile", p = s, newdata = lung[1, ])
+out_wb <- data.frame(time = t, surv = 1 - s, upper = NA, lower = NA, std.err = NA)
+
+# plot both
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+p_km <- ggsurvplot(out_km, conf.int = FALSE)
+p_wb <- ggsurvplot(out_wb, conf.int = FALSE, surv.geom = geom_line)
+
+p_km
+p_wb
+p_km$plot + geom_line(data = out_wb, aes(x = time, y = surv))
+
 }
