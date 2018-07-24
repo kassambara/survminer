@@ -158,6 +158,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   pms$y.text <- tables.y.text
   pms$color <- tables.col
   pms$font.family <- font.family
+  pms$axes.offset <- axes.offset
 
 
   # Add risk table
