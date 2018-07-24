@@ -1,4 +1,5 @@
 #' @include utilities.R
+#' @importFrom ggplot2 geom_step
 NULL
 #'Plot Survival Curves from Survival Summary Data Frame
 #'
