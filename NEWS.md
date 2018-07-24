@@ -1,5 +1,11 @@
 # Survminer 0.4.2
-
+  
+  
+## New features
+   
+- Now `ggsurvplot()` can be used to plot survreg model ([@HeidiSeibold, #276](https://github.com/kassambara/survminer/issues/276), [#325](https://github.com/kassambara/survminer/pull/325) ).
+   
+   
 ## Minor changes
 
 - New argument `size` added in `ggadjustedcurves()` to change the curve size ([@MaximilianTscharre, #267](https://github.com/kassambara/survminer/issues/267)).
