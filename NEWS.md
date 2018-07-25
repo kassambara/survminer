@@ -14,6 +14,7 @@
 
 ## Bug fixes
 
+- Now, hiding strata names in risk table work when combining survfits ([@krassowski, #317](https://github.com/kassambara/survminer/issues/317)).
 - Now, `axes.offset` argument is also applied to risk table ([@dmartinffm, #243](https://github.com/kassambara/survminer/issues/243)).
 - It is now possible to add `ggsurvplot` to powerpoint document using ReporteRs even if there is no risk table ([@DrRZ, #314](https://github.com/kassambara/survminer/issues/314)).
 - Now, confidence interval ribbon works properly ([@wp07, #275](https://github.com/kassambara/survminer/issues/275)). 
