@@ -1,22 +1,13 @@
 # Survminer 0.4.2
   
-  
-## New features
-   
-- Now `ggsurvplot()` can be used to plot survreg model ([@HeidiSeibold, #276](https://github.com/kassambara/survminer/issues/276), [#325](https://github.com/kassambara/survminer/pull/325) ).
-   
    
 ## Minor changes
 
 - New argument `size` added in `ggadjustedcurves()` to change the curve size ([@MaximilianTscharre, #267](https://github.com/kassambara/survminer/issues/267)).
-- Now, `ggforest()` simply returns a ggplot instead of drawing automatically the plot ([@grvsinghal, #267](https://github.com/kassambara/survminer/issues/321)).
 
 
 ## Bug fixes
 
-- Now, hiding strata names in risk table work when combining survfits ([@krassowski, #317](https://github.com/kassambara/survminer/issues/317)).
-- Now, `axes.offset` argument is also applied to risk table ([@dmartinffm, #243](https://github.com/kassambara/survminer/issues/243)).
-- It is now possible to add `ggsurvplot` to powerpoint document using ReporteRs even if there is no risk table ([@DrRZ, #314](https://github.com/kassambara/survminer/issues/314)).
 - Now, confidence interval ribbon works properly ([@wp07, #275](https://github.com/kassambara/survminer/issues/275)). 
 - Now, the argument `ggtheme` is supported when combining a list of survfit objects in `ggsurvplot()` ([@PhonePong, #278](https://github.com/kassambara/survminer/issues/278)). 
 
