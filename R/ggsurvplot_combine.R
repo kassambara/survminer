@@ -53,7 +53,7 @@ ggsurvplot_combine <- function(fit, data,
                                cumevents = FALSE, cumcensor = FALSE,
                                tables.col = "black", tables.y.text = TRUE, tables.y.text.col = TRUE,
                                ggtheme = theme_survminer(), tables.theme = ggtheme,
-                               keep.data = FALSE,
+                               keep.data = FALSE, risk.table.y.text = tables.y.text,
                                ...)
 
 {
@@ -141,7 +141,7 @@ ggsurvplot_combine <- function(fit, data,
     pms$ggtheme <- ggtheme
     pms$ylab <- pms$legend.title
     pms$tables.theme <- tables.theme
-    pms$y.text <- tables.y.text
+    pms$y.text <- risk.table.y.text
     if(tables.y.text.col) pms$y.text.col <- .extract_ggplot_colors (p, grp.levels = pms$legend.labs)
     pms$color <- tables.col
     if(risk.table.pos == "in") pms$color <- surv.color
