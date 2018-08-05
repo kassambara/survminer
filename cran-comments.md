@@ -16,13 +16,11 @@ checking installed package size ... NOTE
 Would you be so kind to ignore this note.
     
     
-## win-builder check results
-   
-As in the R CMD check results, there was one note concerning the subdirectory "doc", which contains vignette files.
-
 ## Downstream dependencies
-There are currently no downstream dependencies for this package
+  
+I have also run R CMD check on downstream dependencies of survminer. 
+All packages that I could install passed.
 
 ## Update
 
-This is an update version 0.4.2
+This is an update version 0.4.3
