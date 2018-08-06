@@ -118,7 +118,7 @@ will be extracted from &#39;fit&#39; object.</dd>
     <pre class="examples"><div class='input'><span class='fu'>require</span>(<span class='st'>"survival"</span>)
 <span class='no'>model</span> <span class='kw'>&lt;-</span> <span class='fu'>coxph</span>( <span class='fu'>Surv</span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span> + <span class='no'>rx</span> + <span class='no'>adhere</span>,
                 <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span> )
-<span class='fu'>ggforest</span>(<span class='no'>model</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `data` argument is not provided. Data will be extracted from model fit.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 1 rows containing missing values (geom_errorbar).</span></div><div class='input'>
+<span class='fu'>ggforest</span>(<span class='no'>model</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `data` argument is not provided. Data will be extracted from model fit.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 1 rows containing missing values (geom_errorbar).</span></div><img src='ggforest-4.png' alt='' width='540' height='400' /><div class='input'>
 <span class='no'>colon</span> <span class='kw'>&lt;-</span> <span class='fu'>within</span>(<span class='no'>colon</span>, {
   <span class='no'>sex</span> <span class='kw'>&lt;-</span> <span class='fu'>factor</span>(<span class='no'>sex</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"female"</span>, <span class='st'>"male"</span>))
   <span class='no'>differ</span> <span class='kw'>&lt;-</span> <span class='fu'>factor</span>(<span class='no'>differ</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"well"</span>, <span class='st'>"moderate"</span>, <span class='st'>"poor"</span>))
@@ -127,7 +127,7 @@ will be extracted from &#39;fit&#39; object.</dd>
 <span class='no'>bigmodel</span> <span class='kw'>&lt;-</span>
   <span class='fu'>coxph</span>(<span class='fu'>Surv</span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span> + <span class='no'>rx</span> + <span class='no'>adhere</span> + <span class='no'>differ</span> + <span class='no'>extent</span> + <span class='no'>node4</span>,
     <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span> )
-<span class='fu'>ggforest</span>(<span class='no'>bigmodel</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `data` argument is not provided. Data will be extracted from model fit.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 10 rows containing missing values (geom_errorbar).</span></div><img src='ggforest-7.png' alt='' width='540' height='400' /><div class='input'>
+<span class='fu'>ggforest</span>(<span class='no'>bigmodel</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `data` argument is not provided. Data will be extracted from model fit.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 10 rows containing missing values (geom_errorbar).</span></div><img src='ggforest-8.png' alt='' width='540' height='400' /><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

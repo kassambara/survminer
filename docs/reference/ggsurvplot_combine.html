@@ -95,7 +95,7 @@
   <span class='st'>"in"</span>), <span class='kw'>cumevents</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>cumcensor</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>tables.col</span> <span class='kw'>=</span> <span class='st'>"black"</span>,
   <span class='kw'>tables.y.text</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tables.y.text.col</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'><a href='theme_survminer.html'>theme_survminer</a></span>(), <span class='kw'>tables.theme</span> <span class='kw'>=</span> <span class='no'>ggtheme</span>, <span class='kw'>keep.data</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>...</span>)</pre>
+  <span class='kw'>risk.table.y.text</span> <span class='kw'>=</span> <span class='no'>tables.y.text</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -148,6 +148,9 @@ labels will be colored by strata.</dd>
       <dt>keep.data</dt>
       <dd>logical value specifying whether the plot data frame should be kept in the result.
 Setting these to FALSE (default) can give much smaller results and hence even save memory allocation time.</dd>
+      <dt>risk.table.y.text</dt>
+      <dd>logical. Default is TRUE. If FALSE, risk table y axis
+tick labels will be hidden.</dd>
       <dt>...</dt>
       <dd>other arguments to pass to the <code><a href='ggsurvplot.html'>ggsurvplot</a>()</code> function.</dd>
     </dl>
