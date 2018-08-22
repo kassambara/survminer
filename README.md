@@ -58,7 +58,7 @@ The main functions, in the package, are organized in different categories as fol
 
 -   **ggforest**(): Draws forest plot for CoxPH model.
 
--   **ggcoxadjustedcurves**(): Plots adjusted survival curves for coxph model.
+-   **ggadjustedcurves**(): Plots adjusted survival curves for coxph model.
 
 <br/>
 
