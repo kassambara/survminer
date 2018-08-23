@@ -1,7 +1,7 @@
 ---
 title: Specifiyng weights in Log-rank comparisons
 author: Marcin Kosinski
-date: "29-01-2017"
+date: "created 29-01-2017, revised 22-08-2018"
 output:
   html_document:
     mathjax:  default
@@ -43,7 +43,7 @@ As it is stated in the literature, the Log-rank test for comparing survival (est
 
 $$LR = \frac{U^2}{V} \sim \chi(1),$$
 
-where $$U = \sum_{i=1}^{T}w_{t_i}(o_{t_i}^A-e_{t_i}^A), \ \ \ \ \ \ \ \ V = Var(U) = \sum_{i=1}^{T}(w_{t_i}^2\frac{n_{t_i}^An_{t_i}^Bd_i(n_{t_i}-o_{t_i})}{n_{t_i}^2(n_{t_i}-1)})$$
+where $$U = \sum_{i=1}^{T}w_{t_i}(o_{t_i}^A-e_{t_i}^A), \ \ \ \ \ \ \ \ V = Var(U) = \sum_{i=1}^{T}(w_{t_i}^2\frac{n_{t_i}^An_{t_i}^Bo_{t_i}(n_{t_i}-o_{t_i})}{n_{t_i}^2(n_{t_i}-1)})$$
 and 
 
 - $t_i$ for $i=1, \dots, T$ are possible event times, 
