@@ -8,6 +8,10 @@
    
    
 ## Bug fixes
+    
+- A typo fixed in the formula for weightened log-rank test ([@MarcinKosinski, #336](https://github.com/kassambara/survminer/pull/336).
+    
+- `surv_summary()` can now handle the output of `survfit(cox.model, newdata)` when the option `conf.type = "none"` is specified by users ([@HeidiSeibold, #335](https://github.com/kassambara/survminer/pull/335).
 
   
 
