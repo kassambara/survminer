@@ -29,6 +29,7 @@ NULL
 #' 'single' (average for population), 'average' (averages for subpopulations), 'marginal', 'conditional' (averages for subpopulations after rebalancing). See the Details section  for further informatio.
 #'@param variable a character, name of the grouping variable to be plotted. If not supplied then it will be extracted from the model formula from the \code{strata()} component. If there is no \code{strata()} component then only a single curve will be plotted - average for the thole population.
 #'@param ylab a label for oy axis.
+#'@param size the curve size.
 #'@param ggtheme function, ggplot2 theme name. Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@inheritParams ggpubr::ggpar
 #'@param ... further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.
@@ -88,7 +89,7 @@ ggadjustedcurves <- function(fit,
                                 method = "conditional",
                                 fun = NULL,
                                 palette = "hue",
-                                ylab = "Survival rate",
+                                ylab = "Survival rate", size = 1,
                                 ggtheme = theme_survminer(), ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
   data <- .get_data(fit, data)
@@ -119,10 +120,10 @@ ggadjustedcurves <- function(fit,
   }
 
   pl <- switch(method,
-         single = ggadjustedcurves.single(data, fit),
-         average =  ggadjustedcurves.average(data, fit, variable),
-         conditional = ggadjustedcurves.conditional(data, fit, variable, reference),
-         marginal = ggadjustedcurves.marginal(data, fit, variable))
+         single = ggadjustedcurves.single(data, fit, size = size),
+         average =  ggadjustedcurves.average(data, fit, variable, size = size),
+         conditional = ggadjustedcurves.conditional(data, fit, variable, reference, size = size),
+         marginal = ggadjustedcurves.marginal(data, fit, variable, size = size))
 
   pl <- pl + ggtheme +
     scale_y_continuous(limits = ylim) +
@@ -132,7 +133,7 @@ ggadjustedcurves <- function(fit,
 }
 
 
-ggadjustedcurves.single <- function(data, fit) {
+ggadjustedcurves.single <- function(data, fit, size = 1) {
   time <- surv <- variable <- NULL
 
   pred <- survexp(~1, data = data, ratetable = fit)
@@ -142,10 +143,10 @@ ggadjustedcurves.single <- function(data, fit) {
                       surv = c(1, pred$surv))
 
   ggplot(curve, aes(x = time, y = surv, color = variable)) +
-    geom_step() + theme(legend.position = "none")
+    geom_step(size = size) + theme(legend.position = "none")
 }
 
-ggadjustedcurves.average <- function(data, fit, variable) {
+ggadjustedcurves.average <- function(data, fit, variable, size = 1) {
   time <- surv <- NULL
 
   lev <- sort(unique(data[,variable]))
@@ -157,10 +158,10 @@ ggadjustedcurves.average <- function(data, fit, variable) {
                       surv = c(rbind(1, pred$surv)))
 
   ggplot(curve, aes(x = time, y = surv, color=variable)) +
-    geom_step()
+    geom_step(size = size)
 }
 
-ggadjustedcurves.conditional <- function(data, fit, variable, reference) {
+ggadjustedcurves.conditional <- function(data, fit, variable, reference, size = 1) {
   time <- surv <- NULL
 
   lev <- sort(unique(data[,variable]))
@@ -201,10 +202,10 @@ ggadjustedcurves.conditional <- function(data, fit, variable, reference) {
                       surv = c(rbind(1, pred$surv)))
 
   ggplot(curve, aes(x = time, y = surv, color=variable)) +
-    geom_step()
+    geom_step(size = size)
 }
 
-ggadjustedcurves.marginal <- function(data, fit, variable) {
+ggadjustedcurves.marginal <- function(data, fit, variable, size = 1) {
   time <- surv <- NULL
 
   lev <- sort(unique(data[,variable]))
@@ -228,5 +229,5 @@ ggadjustedcurves.marginal <- function(data, fit, variable) {
                       surv = c(rbind(1, pred$surv)))
 
   ggplot(curve, aes(x = time, y = surv, color=variable)) +
-    geom_step()
+    geom_step(size = size)
 }

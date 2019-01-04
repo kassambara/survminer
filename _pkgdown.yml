@@ -13,6 +13,7 @@ reference:
     desc:  Summarize and visualize survival curves.
     contents:
       - ggsurvplot
+      - ggflexsurvplot
       - arrange_ggsurvplots
       - ggsurvevents
       - surv_summary
@@ -26,7 +27,7 @@ reference:
   - title: Summary of Cox Model
     contents:
       - ggforest
-      - ggcoxadjustedcurves
+      - ggadjustedcurves
   - title: Competing Risks
     contents:
       - ggcompetingrisks

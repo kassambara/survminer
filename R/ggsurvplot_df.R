@@ -1,4 +1,5 @@
 #' @include utilities.R
+#' @importFrom ggplot2 geom_step
 NULL
 #'Plot Survival Curves from Survival Summary Data Frame
 #'
@@ -18,6 +19,8 @@ NULL
 #'  survival probability \item strata: grouping variables \item n.censor: number
 #'  of censors \item upper: upper end of confidence interval \item lower: lower
 #'  end of confidence interval }
+#' @param surv.geom survival curve style. Is the survival curve entered a step
+#'  function (\link[ggplot2]{geom_step}) or a smooth function (\link[ggplot2]{geom_line}).
 #'
 #' @examples
 #' library(survival)
@@ -39,11 +42,33 @@ NULL
 #'
 #'ggsurvplot_df(surv_summary(fit2, colon), conf.int = TRUE,
 #'              legend.title = "Adhere", legend.labs = c("0", "1"))
+#'
+#'# Kaplan-Meier estimate
+#'#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#'out_km <- survfit(Surv(time, status) ~ 1, data = lung)
+#'
+#'# Weibull model
+#'#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#'wb <- survreg(Surv(time, status) ~ 1, data = lung)
+#'s <- seq(.01, .99, by = .01)
+#'t <- predict(wb, type = "quantile", p = s, newdata = lung[1, ])
+#'out_wb <- data.frame(time = t, surv = 1 - s, upper = NA, lower = NA, std.err = NA)
+#'
+#'# plot both
+#'#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#'p_km <- ggsurvplot(out_km, conf.int = FALSE)
+#'p_wb <- ggsurvplot(out_wb, conf.int = FALSE, surv.geom = geom_line)
+#'
+#'p_km
+#'p_wb
+#'p_km$plot + geom_line(data = out_wb, aes(x = time, y = surv))
+#'
 #'@export
 ggsurvplot_df <- function(fit, fun = NULL,
                           color = NULL, palette = NULL, linetype = 1,
                           break.x.by = NULL, break.time.by = NULL, break.y.by = NULL,
-                          surv.scale = c("default", "percent"), xscale = 1,
+                          surv.scale = c("default", "percent"), surv.geom = geom_step,
+                          xscale = 1,
                           conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                           conf.int.alpha = 0.3,
                           censor = TRUE, censor.shape = "+", censor.size = 4.5,
@@ -152,7 +177,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
   df[, .strata.var] <- factor( df[, .strata.var], levels = .levels(.strata), labels = legend.labs)
 
   p <- ggplot2::ggplot(df, ggplot2::aes_string("time", "surv")) +
-    ggpubr::geom_exec(ggplot2::geom_step, data = df, size = size, color = color, linetype = linetype, ...) +
+    ggpubr::geom_exec(surv.geom, data = df, size = size, color = color, linetype = linetype, ...) +
     ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim, expand = .expand) +
     ggplot2::coord_cartesian(xlim = xlim)+
     ggtheme
@@ -188,10 +213,10 @@ ggsurvplot_df <- function(fit, fun = NULL,
                                  fill = conf.int.fill,  alpha = conf.int.alpha, na.rm = TRUE)
     }
     else if(conf.int.style == "step"){
-      p <- p + ggpubr::geom_exec(ggplot2::geom_step, data = df,
+      p <- p + ggpubr::geom_exec(surv.geom, data = df,
                                  y = "lower", linetype = "dashed",
                                  color = color, na.rm = TRUE)+
-        ggpubr::geom_exec(ggplot2::geom_step, data = df,
+        ggpubr::geom_exec(surv.geom, data = df,
                           y = "upper", linetype = "dashed",
                           color = color, na.rm = TRUE)
     }

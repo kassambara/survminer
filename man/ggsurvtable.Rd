@@ -22,8 +22,9 @@ ggsurvtable(fit, data = NULL, survtable = c("cumevents", "cumcensor",
   break.time.by = NULL, xlim = NULL, xscale = 1, xlab = "Time",
   ylab = "Strata", xlog = FALSE, legend = "top",
   legend.title = "Strata", legend.labs = NULL, y.text = TRUE,
-  y.text.col = TRUE, fontsize = 4.5, axes.offset = TRUE,
-  ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
+  y.text.col = TRUE, fontsize = 4.5, font.family = "",
+  axes.offset = TRUE, ggtheme = theme_survminer(), tables.theme = ggtheme,
+  ...)
 }
 \arguments{
 \item{fit}{an object of class survfit. Can be a list containing two
@@ -62,7 +63,9 @@ palette.}}
 
 \item{palette}{the color palette to be used. Allowed values include "hue" for
 the default hue color scale; "grey" for grey color palettes; brewer palettes
-e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
+e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red"); and scientific journal palettes from ggsci R package, e.g.: "npg",
+ "aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and
+ "rickandmorty".
 See details section for more information.  Can be also a numeric vector of
 length(groups); in this case a basic color palette is created using the
 function \link[grDevices]{palette}.}
@@ -105,6 +108,8 @@ labels will be colored by strata.}
 
 \item{fontsize}{text font size.}
 
+\item{font.family}{character vector specifying text element font family, e.g.: font.family = "Courier New".}
+
 \item{axes.offset}{logical value. Default is TRUE. If FALSE, set the plot axes
 to start at the origin.}
 
@@ -114,7 +119,7 @@ to start at the origin.}
 
 \item{tables.theme}{function, ggplot2 theme name. Default value is
 \link{theme_survminer}. Allowed values include ggplot2 official themes: see
-\code{\link[ggplot2]{theme}}.}
+\code{\link[ggplot2]{theme}}. Note that, \code{tables.theme} is incremental to \code{ggtheme}.}
 }
 \value{
 a ggplot.

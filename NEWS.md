@@ -1,17 +1,85 @@
-# survminer 0.4.0.999
+# Survminer 0.4.3.999
+   
    
 ## New features
-  - The function `ggadjustedcurves()` handles now argument `method` that defines how adjusted curves shall be calculated. With `method='conditional'|'marginal'` subpopulations are balanced with respect to variables present in the model formula. With `method='single'|'average'` the curve represents just the expected survival curves.
-
-
-## Major changes
-   - The function `ggcoxadjustedcurves()` is replaced by `ggadjustedcurves()` ([#229](https://github.com/kassambara/survminer/issues/229)). 
+   
    
 ## Minor changes
-    - The grouping variable to the  `ggadjustedcurves()` function is now passed as a name (character) of grouping variable not as a vector with values of grouping variable.
-
+   
+   
 ## Bug fixes
     
+- A typo fixed in the formula for weightened log-rank test ([@MarcinKosinski, #336](https://github.com/kassambara/survminer/pull/336).
+    
+- `surv_summary()` can now handle the output of `survfit(cox.model, newdata)` when the option `conf.type = "none"` is specified by users ([@HeidiSeibold, #335](https://github.com/kassambara/survminer/pull/335).
+
+  
+
+# Survminer 0.4.3
+
+
+## New features
+   
+- Now `ggsurvplot()` can be used to plot survreg model ([@HeidiSeibold, #276](https://github.com/kassambara/survminer/issues/276), [#325](https://github.com/kassambara/survminer/pull/325) ).
+   
+   
+ 
+## Minor changes
+
+- Now, `ggforest()` simply returns a ggplot instead of drawing automatically the plot ([@grvsinghal, #267](https://github.com/kassambara/survminer/issues/321)).
+
+
+## Bug fixes
+
+
+- Now, hiding strata names in risk table work when combining survfits ([@krassowski, #317](https://github.com/kassambara/survminer/issues/317)).
+- Now, `axes.offset` argument is also applied to risk table ([@dmartinffm, #243](https://github.com/kassambara/survminer/issues/243)).
+- It is now possible to add `ggsurvplot` to powerpoint document using ReporteRs even if there is no risk table ([@DrRZ, #314](https://github.com/kassambara/survminer/issues/314)).
+
+
+
+
+# Survminer 0.4.2
+  
+   
+## Minor changes
+
+- New argument `size` added in `ggadjustedcurves()` to change the curve size ([@MaximilianTscharre, #267](https://github.com/kassambara/survminer/issues/267)).
+
+
+## Bug fixes
+
+- Now, confidence interval ribbon works properly ([@wp07, #275](https://github.com/kassambara/survminer/issues/275)). 
+- Now, the argument `ggtheme` is supported when combining a list of survfit objects in `ggsurvplot()` ([@PhonePong, #278](https://github.com/kassambara/survminer/issues/278)). 
+
+
+# survminer 0.4.1
+   
+## New features
+  
+- New function `ggflexsurvplot()` to create ggplot2-based graphs for flexible survival models.
+
+- The function `ggadjustedcurves()` handles now argument `method` that defines how adjusted curves shall be calculated. With `method='conditional'|'marginal'` subpopulations are balanced with respect to variables present in the model formula. With `method='single'|'average'` the curve represents just the expected survival curves.
+  
+  
+
+## Major changes
+
+- The function `ggcoxadjustedcurves()` is replaced by `ggadjustedcurves()` ([#229](https://github.com/kassambara/survminer/issues/229)). 
+   
+## Minor changes
+
+- The grouping variable to the  `ggadjustedcurves()` function is now passed as a name (character) of grouping variable not as a vector with values of grouping variable.
+
+- New argument `font.family` in `ggsurvtable()` to change the font family in the survival tables - such as risk, cummulative events and censoring tables. For example font.family = "Courier New" ([@Swechhya, #245](https://github.com/kassambara/survminer/issues/245)).
+
+- Now, in `ggsurvplot()` the data argument should be strictly provided ([@dnzmarcio, #235](https://github.com/kassambara/survminer/issues/235))
+  
+  
+## Bug fixes
+    
+- `ggforest()` no longer tries to bolt a table full of text to the coefficient plot ([@mmoisse, #241](https://github.com/kassambara/survminer/issues/241)), instead the annotations are done via ggplot2::annotate, see example at: [@fabian-s, #264](https://github.com/kassambara/survminer/pull/264)   
+
     
 # survminer 0.4.0
 

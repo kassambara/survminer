@@ -12,6 +12,7 @@ r_packages:
  - devtools
  - magrittr
  - survMisc
+ - flexsurv
 bioc_packages:
  - RTCGA.clinical
 sudo: required

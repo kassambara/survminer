@@ -6,7 +6,7 @@
 \usage{
 ggadjustedcurves(fit, variable = NULL, data = NULL, reference = NULL,
   method = "conditional", fun = NULL, palette = "hue",
-  ylab = "Survival rate", ggtheme = theme_survminer(), ...)
+  ylab = "Survival rate", size = 1, ggtheme = theme_survminer(), ...)
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
@@ -28,12 +28,16 @@ probability in percentage.}
 
 \item{palette}{the color palette to be used. Allowed values include "hue" for
 the default hue color scale; "grey" for grey color palettes; brewer palettes
-e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red").
+e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red"); and scientific journal palettes from ggsci R package, e.g.: "npg",
+ "aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and
+ "rickandmorty".
 See details section for more information.  Can be also a numeric vector of
 length(groups); in this case a basic color palette is created using the
 function \link[grDevices]{palette}.}
 
 \item{ylab}{a label for oy axis.}
+
+\item{size}{the curve size.}
 
 \item{ggtheme}{function, ggplot2 theme name. Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
 

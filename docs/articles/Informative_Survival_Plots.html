@@ -91,7 +91,7 @@
 <span class="kw">survivalTCGA</span>(BRCA.clinical, OV.clinical,
              <span class="dt">extract.cols =</span> <span class="st">"admin.disease_code"</span>) -&gt;<span class="st"> </span>BRCAOV.survInfo
 <span class="kw">library</span>(survival)
-fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw">Surv</span>(times, patient.vital_status) ~<span class="st"> </span>admin.disease_code,
+fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="kw">Surv</span>(times, patient.vital_status) <span class="op">~</span><span class="st"> </span>admin.disease_code,
                <span class="dt">data =</span> BRCAOV.survInfo)
 <span class="co"># Visualize with survminer</span>
 <span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> BRCAOV.survInfo, <span class="dt">risk.table =</span> <span class="ot">TRUE</span>)</code></pre></div>
@@ -126,11 +126,11 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(fit) <span class="co"># base</span></code></pre></div>
 <p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-6-1.png" width="960"></p>
 <p>It looks pretty… base…</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(fit, <span class="dt">col=</span><span class="kw">c</span>(<span class="st">"orange"</span>,<span class="st">"purple"</span>), <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">2</span>), <span class="dt">lwd=</span><span class="dv">3</span>, <span class="co"># base with some customization</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(fit, <span class="dt">col=</span><span class="kw">c</span>(<span class="st">"orange"</span>,<span class="st">"purple"</span>), <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>), <span class="dt">lwd=</span><span class="dv">3</span>, <span class="co"># base with some customization</span>
      <span class="dt">conf.int =</span> <span class="ot">TRUE</span>, <span class="dt">xmax =</span> <span class="dv">2000</span>)
 <span class="co"># add a legend</span>
 <span class="kw">legend</span>(<span class="dv">100</span>, .<span class="dv">2</span>, <span class="kw">c</span>(<span class="st">"Ovarian Cancer"</span>, <span class="st">"Breast Cancer"</span>), 
-       <span class="dt">lty =</span> <span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">2</span>), <span class="dt">col=</span><span class="kw">c</span>(<span class="st">"orange"</span>,<span class="st">"purple"</span>))</code></pre></div>
+       <span class="dt">lty =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>), <span class="dt">col=</span><span class="kw">c</span>(<span class="st">"orange"</span>,<span class="st">"purple"</span>))</code></pre></div>
 <p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-7-1.png" width="960"></p>
 <p>I haven’t seen examples with risk table and adding legend isn’t so quick as in survminer. Moreover, there are no minor axis breaks lines.</p>
 </div>
@@ -139,22 +139,20 @@ fit &lt;-<span class="st"> </span><span class="kw">survfit</span>(<span class="k
 <html><body><a href="#survmisc-package" class="anchor"> </a></body></html>survMisc package</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages('survMisc')</span>
 <span class="kw">library</span>(survMisc)
-survMisc:::<span class="kw">autoplot.survfit</span>(fit) <span class="co"># no customization</span></code></pre></div>
-<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
+survMisc<span class="op">:::</span><span class="kw">autoplot.survfit</span>(fit) <span class="co"># no customization</span></code></pre></div>
 <p><em>Why colours are not asigned to any group? Where is the legend? Why there is so much white space to the right?</em> (Those were questions for the version of survMisc where this was an issue.) Where is OX axis?</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">survMisc:::<span class="kw">autoplot.survfit</span>( <span class="co"># with some hard customization</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">survMisc<span class="op">:::</span><span class="kw">autoplot.survfit</span>( <span class="co"># with some hard customization</span>
    fit,
    <span class="dt">type =</span> <span class="st">"fill"</span>,
    <span class="dt">pVal=</span><span class="ot">TRUE</span>
 ) -&gt;<span class="st"> </span>fit.survMisc 
-fit.survMisc$table &lt;-<span class="st"> </span>fit.survMisc$table +
-<span class="st">   </span><span class="kw">theme_minimal</span>() +<span class="st"> </span><span class="co"># theme(legend.position = "top")</span>
+fit.survMisc<span class="op">$</span>table &lt;-<span class="st"> </span>fit.survMisc<span class="op">$</span>table <span class="op">+</span>
+<span class="st">   </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span><span class="co"># theme(legend.position = "top")</span>
 <span class="st">   </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">2000</span>))
-fit.survMisc$plot &lt;-<span class="st"> </span>fit.survMisc$plot +
-<span class="st">   </span><span class="kw">theme_minimal</span>() +<span class="st"> </span>
+fit.survMisc<span class="op">$</span>plot &lt;-<span class="st"> </span>fit.survMisc<span class="op">$</span>plot <span class="op">+</span>
+<span class="st">   </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span>
 <span class="st">   </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">2000</span>))
-survMisc:::<span class="kw">print.tableAndPlot</span>(fit.survMisc)</code></pre></div>
-<p><img src="Informative_Survival_Plots_files/figure-html/unnamed-chunk-9-1.png" width="960"></p>
+survMisc<span class="op">:::</span><span class="kw">print.tableAndPlot</span>(fit.survMisc)</code></pre></div>
 <p>Where is risk table? Why I can’t pass <code>break.by.time</code> to have informative minor X axis breaks? Why the plot gets narrower when the legend in risk table gets wider and why I can’t do anything to workaround this?</p>
 <blockquote>
 <p>Never mind -&gt; <code>install.packages('survminer')</code></p>

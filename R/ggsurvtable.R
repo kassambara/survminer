@@ -32,6 +32,7 @@ NULL
 #'@param y.text.col logical. Default value is FALSE. If TRUE, the table tick
 #'  labels will be colored by strata.
 #'@param fontsize text font size.
+#'@param font.family character vector specifying text element font family, e.g.: font.family = "Courier New".
 #'@param ... other arguments passed to the function \code{\link{ggsurvtable}} and \code{\link[ggpubr]{ggpar}}.
 #'@return a ggplot.
 #'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
@@ -87,7 +88,8 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                          xscale = 1, xlab = "Time", ylab = "Strata",
                          xlog = FALSE, legend = "top",
                          legend.title = "Strata", legend.labs = NULL,
-                         y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
+                         y.text = TRUE, y.text.col = TRUE,
+                         fontsize = 4.5, font.family = "",
                          axes.offset = TRUE,
                          ggtheme = theme_survminer(),
                          tables.theme = ggtheme, ...)
@@ -129,7 +131,8 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
     xlim = xlim, xscale = xscale,
     title = title, xlab = xlab, ylab = ylab, xlog = xlog,
     legend = legend, legend.title = legend.title, legend.labs = legend.labs,
-    y.text = y.text, y.text.col = y.text.col, fontsize = fontsize,
+    y.text = y.text, y.text.col = y.text.col,
+    fontsize = fontsize, font.family = font.family,
     axes.offset = axes.offset,
     ggtheme = ggtheme, tables.theme = tables.theme,...)
 
@@ -182,10 +185,11 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                          xlog = FALSE, legend = "top",
                          legend.title = "Strata", legend.labs = NULL,
                          y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
+                         font.family = "",
                          axes.offset = TRUE,
-                         ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
+                         ggtheme = theme_survminer(), tables.theme = ggtheme,
+                          ...)
 {
-
 
   survtable <- match.arg(survtable)
   risk.table.type <- match.arg(risk.table.type)
@@ -286,7 +290,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
 
   p <- ggplot(survsummary, mapping) +
     scale_shape_manual(values = 1:length(levels(survsummary$strata)))+
-    ggpubr::geom_exec(geom_text, data = survsummary, size = fontsize, color = color) +
+    ggpubr::geom_exec(geom_text, data = survsummary, size = fontsize, color = color, family = font.family) +
     ggtheme +
     scale_y_discrete(breaks = as.character(levels(survsummary$strata)),labels = yticklabs ) +
     coord_cartesian(xlim = xlim) +

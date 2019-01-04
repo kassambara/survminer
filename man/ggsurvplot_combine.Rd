@@ -8,7 +8,7 @@ ggsurvplot_combine(fit, data, risk.table = FALSE, risk.table.pos = c("out",
   "in"), cumevents = FALSE, cumcensor = FALSE, tables.col = "black",
   tables.y.text = TRUE, tables.y.text.col = TRUE,
   ggtheme = theme_survminer(), tables.theme = ggtheme, keep.data = FALSE,
-  ...)
+  risk.table.y.text = tables.y.text, ...)
 }
 \arguments{
 \item{fit}{a named list of survfit objects.}
@@ -49,10 +49,13 @@ labels will be colored by strata.}
 
 \item{tables.theme}{function, ggplot2 theme name. Default value is
 \link{theme_survminer}. Allowed values include ggplot2 official themes: see
-\code{\link[ggplot2]{theme}}.}
+\code{\link[ggplot2]{theme}}. Note that, \code{tables.theme} is incremental to \code{ggtheme}.}
 
 \item{keep.data}{logical value specifying whether the plot data frame should be kept in the result.
 Setting these to FALSE (default) can give much smaller results and hence even save memory allocation time.}
+
+\item{risk.table.y.text}{logical. Default is TRUE. If FALSE, risk table y axis
+tick labels will be hidden.}
 
 \item{...}{other arguments to pass to the \code{\link{ggsurvplot}()} function.}
 }

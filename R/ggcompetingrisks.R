@@ -105,11 +105,21 @@ ggcompetingrisks.survfitms <- function(fit) {
     psta$strata <- rep(names(fit$strata), fit$strata)
   }
   psta$times <- times
+  psta <- .rename_empty_colname(
+    psta, newname = "."
+    )
 
   event <- value <- strata <- NULL
   pstal <- gather(psta, event, value, -strata, -times)
-
   ggplot(pstal, aes(times, value, fill=event)) +
     geom_area() + facet_wrap(~strata)
 
+}
+
+.rename_empty_colname <- function(df, newname = "."){
+  empty.col <- colnames(df) == ""
+  empty.col.exist <- length(empty.col) > 0
+  if(empty.col.exist)
+    colnames(df)[empty.col] <- newname
+  df
 }
