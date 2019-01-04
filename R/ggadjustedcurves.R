@@ -17,16 +17,16 @@ NULL
 #'
 #' For \code{method = "average"} a separate survival curve is plotted for each level of a variable listed as \code{variable}. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} argument.  Each curve presents an expected survival calculated for subpopulation from \code{data} based on a Cox model \code{fit}. Note that in this method subpopulations are NOT balanced.
 #'
-#' For \code{method = "conditional"} a survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced with respect to variables in the \code{fit} formula to keep distributions similar to these in the \code{reference} population. If no reference population is specified, then the whole \code{data} is used as a reference population instead. The balancing is performed in a following way: (1) for each subpopulation a logistic regression model is created to model the odds of being in the subpopulation against the reference population given the other variables listed in a \code{fit} object, (2) reverse probabilities of belonging to a specified subpopulation are used as weights in the Cox model, (3) the Cox model is refitted with weights taken into account, (4) expected survival curves are calculated for each subpopulation based on a refitted weighted model.
+#' For \code{method = "marginal"} a survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced with respect to variables in the \code{fit} formula to keep distributions similar to these in the \code{reference} population. If no reference population is specified, then the whole \code{data} is used as a reference population instead. The balancing is performed in a following way: (1) for each subpopulation a logistic regression model is created to model the odds of being in the subpopulation against the reference population given the other variables listed in a \code{fit} object, (2) reverse probabilities of belonging to a specified subpopulation are used as weights in the Cox model, (3) the Cox model is refitted with weights taken into account, (4) expected survival curves are calculated for each subpopulation based on a refitted weighted model.
 #'
-#' For \code{method = "marginal"} a separate survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced in a following way: (1) the data is replicated as many times as many subpopulations are considered (say k), (2) for each row in original data a set of k copies are created and for every copy a different value of a grouping variable is assigned, this will create a new dataset balanced in terms of grouping variables, (3) expected survival is calculated for each subpopulation based on the new artificial dataset. Here the model \code{fit} is not refitted.
+#' For \code{method = "conditional"} a separate survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced in a following way: (1) the data is replicated as many times as many subpopulations are considered (say k), (2) for each row in original data a set of k copies are created and for every copy a different value of a grouping variable is assigned, this will create a new dataset balanced in terms of grouping variables, (3) expected survival is calculated for each subpopulation based on the new artificial dataset. Here the model \code{fit} is not refitted.
 #'
 #'@inheritParams ggsurvplot_arguments
 #'@param fit an object of class \link{coxph.object} - created with \link{coxph} function.
 #'@param data a dataset for predictions. If not supplied then data will be extracted from the \code{fit} object.
 #'@param reference a dataset for reference population, to which dependent variables should be balanced. If not specified, then the \code{data} will be used instead. Note that the \code{reference} dataset should contain all variables used in \code{fit} object.
 #'@param method a character, describes how the expected survival curves shall be calculated. Possible options:
-#' 'single' (average for population), 'average' (averages for subpopulations), 'marginal', 'conditional' (averages for subpopulations after rebalancing). See the Details section  for further informatio.
+#' 'single' (average for population), 'average' (averages for subpopulations), 'marginal', 'conditional' (averages for subpopulations after rebalancing). See the Details section  for further information.
 #'@param variable a character, name of the grouping variable to be plotted. If not supplied then it will be extracted from the model formula from the \code{strata()} component. If there is no \code{strata()} component then only a single curve will be plotted - average for the thole population.
 #'@param ylab a label for oy axis.
 #'@param size the curve size.
@@ -49,13 +49,13 @@ NULL
 #' ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
 #'
 #' # conditional balancing in groups
-#' ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
+#' ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
 #' # selected reference population
-#' ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx",
+#' ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx",
 #'     reference = bladder[bladder$rx == "1",])
 #'
-#' # marginal balancing in groups
-#' ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
+#' # conditional balancing in groups
+#' ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
 #'
 #'\dontrun{
 #' # this will take some time
@@ -75,10 +75,10 @@ NULL
 #' ggadjustedcurves(fit, data = fdata, method = "average")
 #'
 #' # conditional balancing in groups
-#' ggadjustedcurves(fit, data = fdata, method = "conditional", reference = fdata)
+#' ggadjustedcurves(fit, data = fdata, method = "conditional")
 #'
 #' # marginal balancing in groups
-#' ggadjustedcurves(fit, data = fdata, method = "marginal")
+#' ggadjustedcurves(fit, data = fdata, method = "marginal", reference = fdata)
 #' }
 #'
 #'@export
@@ -122,8 +122,8 @@ ggadjustedcurves <- function(fit,
   pl <- switch(method,
          single = ggadjustedcurves.single(data, fit, size = size),
          average =  ggadjustedcurves.average(data, fit, variable, size = size),
-         conditional = ggadjustedcurves.conditional(data, fit, variable, reference, size = size),
-         marginal = ggadjustedcurves.marginal(data, fit, variable, size = size))
+         conditional = ggadjustedcurves.conditional(data, fit, variable, size = size),
+         marginal = ggadjustedcurves.marginal(data, fit, variable, reference, size = size))
 
   pl <- pl + ggtheme +
     scale_y_continuous(limits = ylim) +
@@ -161,7 +161,7 @@ ggadjustedcurves.average <- function(data, fit, variable, size = 1) {
     geom_step(size = size)
 }
 
-ggadjustedcurves.conditional <- function(data, fit, variable, reference, size = 1) {
+ggadjustedcurves.marginal <- function(data, fit, variable, reference, size = 1) {
   time <- surv <- NULL
 
   lev <- sort(unique(data[,variable]))
@@ -205,7 +205,7 @@ ggadjustedcurves.conditional <- function(data, fit, variable, reference, size = 
     geom_step(size = size)
 }
 
-ggadjustedcurves.marginal <- function(data, fit, variable, size = 1) {
+ggadjustedcurves.conditional <- function(data, fit, variable, size = 1) {
   time <- surv <- NULL
 
   lev <- sort(unique(data[,variable]))
