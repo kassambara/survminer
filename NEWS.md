@@ -13,7 +13,8 @@
     
 - `surv_summary()` can now handle the output of `survfit(cox.model, newdata)` when the option `conf.type = "none"` is specified by users ([@HeidiSeibold, #335](https://github.com/kassambara/survminer/pull/335).
 
-  
+- `ggadjustedcurves()` has now flipped labels for `conditional`/`marginal` to mach names from ’Adjusted Survival Curves’ by Terry Therneau, Cynthia Crowson, Elizabeth Atkinson (2015).
+
 
 # Survminer 0.4.3
 
