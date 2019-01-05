@@ -380,7 +380,8 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 
 # Drawing horizontal line at 50% median survival
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-.add_surv_median <-function(p, fit, type = "hv", fun = NULL, data = NULL){
+.add_surv_median <-function(p, fit, type = "hv", fun = NULL, data = NULL,
+                            color = "black", linetype = "dashed", size = 0.5){
   x1 <- x2 <- y1 <- y2 <- NULL
 
   draw_lines <- TRUE
@@ -414,11 +415,11 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
       if(type %in% c("hv", "h"))
         p <- p +
           geom_segment(aes(x = 0, y = max(y2), xend = max(x1), yend = max(y2)),
-                       data = df, linetype = "dashed", size = 0.5) # horizontal segment
+                       data = df, linetype = linetype, size = size, color = color) # horizontal segment
 
       if(type %in% c("hv", "v"))
         p <- p + geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2), data = df,
-                              linetype = "dashed", size = 0.5) # vertical segments
+                              linetype = linetype, size = size, color = color) # vertical segments
     }
     else warning("Median survival not reached.")
   }
