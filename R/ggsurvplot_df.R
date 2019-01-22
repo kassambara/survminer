@@ -312,6 +312,18 @@ ggsurvplot_df <- function(fit, fun = NULL,
     row.names(base) <- 1:nrow(base)
     base$strata <- strata
     base$strata <- factor(strata, levels = strata)
+    
+    # set the origin values for each strata and facet
+    indStrata <- grep("strata",names(base))
+    indMax    <- length(names(base))
+    if(indStrata<indMax & n.strata>0){
+      for (indRow in c(1:n.strata)) {
+        tmpStrata = as.list(strsplit(strata[indRow], '\\,'))[[1]]
+        tmpFacet  = as.numeric(gsub("\\D", "", tmpStrata)) 
+        base[indRow, c((indStrata+1):indMax)] = tmpFacet
+      }
+    }
+    
     # update variable values
     if(!missing(fit)){
       if(!inherits(fit, "survfit.cox")){
