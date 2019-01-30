@@ -319,7 +319,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
     if(indStrata<indMax & n.strata>0){
       for (indRow in c(1:n.strata)) {
         tmpStrata = as.list(strsplit(strata[indRow], '\\,'))[[1]]
-        tmpFacet  = as.numeric(gsub("\\D", "", tmpStrata)) 
+        tmpFacet  = gsub(".*=", "", tmpStrata)
         base[indRow, c((indStrata+1):indMax)] = tmpFacet
       }
     }
