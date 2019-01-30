@@ -7,8 +7,8 @@
 \alias{ggsurvtable}
 \title{Plot Survival Tables}
 \usage{
-ggrisktable(fit, data = NULL, risk.table.type = c("absolute", "percentage",
-  "abs_pct", "nrisk_cumcensor", "nrisk_cumevents"), ...)
+ggrisktable(fit, data = NULL, risk.table.type = c("absolute",
+  "percentage", "abs_pct", "nrisk_cumcensor", "nrisk_cumevents"), ...)
 
 ggcumevents(fit, data = NULL, ...)
 
@@ -23,8 +23,8 @@ ggsurvtable(fit, data = NULL, survtable = c("cumevents", "cumcensor",
   ylab = "Strata", xlog = FALSE, legend = "top",
   legend.title = "Strata", legend.labs = NULL, y.text = TRUE,
   y.text.col = TRUE, fontsize = 4.5, font.family = "",
-  axes.offset = TRUE, ggtheme = theme_survminer(), tables.theme = ggtheme,
-  ...)
+  axes.offset = TRUE, ggtheme = theme_survminer(),
+  tables.theme = ggtheme, ...)
 }
 \arguments{
 \item{fit}{an object of class survfit. Can be a list containing two

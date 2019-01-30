@@ -6,8 +6,8 @@
 \title{Graphical Test of Proportional Hazards with ggplot2}
 \usage{
 ggcoxzph(fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
-  point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
-  caption = NULL, ggtheme = theme_survminer(), ...)
+  point.col = "red", point.size = 1, point.shape = 19,
+  point.alpha = 1, caption = NULL, ggtheme = theme_survminer(), ...)
 
 \method{print}{ggcoxzph}(x, ..., newpage = TRUE)
 }

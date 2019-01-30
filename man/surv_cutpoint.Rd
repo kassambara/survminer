@@ -18,8 +18,8 @@ surv_categorize(x, variables = NULL, labels = c("low", "high"))
 
 \method{print}{surv_cutpoint}(x, ...)
 
-\method{plot}{surv_cutpoint}(x, variables = NULL, ggtheme = theme_classic(),
-  bins = 30, ...)
+\method{plot}{surv_cutpoint}(x, variables = NULL,
+  ggtheme = theme_classic(), bins = 30, ...)
 
 \method{print}{plot_surv_cutpoint}(x, ..., newpage = TRUE)
 }

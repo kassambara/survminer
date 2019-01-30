@@ -4,8 +4,8 @@
 \alias{ggsurvplot_add_all}
 \title{Add Survival Curves of Pooled Patients onto the Main Plot}
 \usage{
-ggsurvplot_add_all(fit, data, legend.title = "Strata", legend.labs = NULL,
-  pval = FALSE, ...)
+ggsurvplot_add_all(fit, data, legend.title = "Strata",
+  legend.labs = NULL, pval = FALSE, ...)
 }
 \arguments{
 \item{fit}{an object of class survfit.}

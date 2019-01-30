@@ -4,10 +4,11 @@
 \alias{ggsurvplot_combine}
 \title{Combine a List of Survfit Objects on the Same Plot}
 \usage{
-ggsurvplot_combine(fit, data, risk.table = FALSE, risk.table.pos = c("out",
-  "in"), cumevents = FALSE, cumcensor = FALSE, tables.col = "black",
-  tables.y.text = TRUE, tables.y.text.col = TRUE,
-  ggtheme = theme_survminer(), tables.theme = ggtheme, keep.data = FALSE,
+ggsurvplot_combine(fit, data, risk.table = FALSE,
+  risk.table.pos = c("out", "in"), cumevents = FALSE,
+  cumcensor = FALSE, tables.col = "black", tables.y.text = TRUE,
+  tables.y.text.col = TRUE, ggtheme = theme_survminer(),
+  tables.theme = ggtheme, keep.data = FALSE,
   risk.table.y.text = tables.y.text, ...)
 }
 \arguments{

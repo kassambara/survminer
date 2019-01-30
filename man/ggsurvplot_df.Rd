@@ -8,11 +8,12 @@ ggsurvplot_df(fit, fun = NULL, color = NULL, palette = NULL,
   linetype = 1, break.x.by = NULL, break.time.by = NULL,
   break.y.by = NULL, surv.scale = c("default", "percent"),
   surv.geom = geom_step, xscale = 1, conf.int = FALSE,
-  conf.int.fill = "gray", conf.int.style = "ribbon", conf.int.alpha = 0.3,
-  censor = TRUE, censor.shape = "+", censor.size = 4.5, title = NULL,
-  xlab = "Time", ylab = "Survival probability", xlim = NULL,
-  ylim = NULL, axes.offset = TRUE, legend = c("top", "bottom", "left",
-  "right", "none"), legend.title = "Strata", legend.labs = NULL,
+  conf.int.fill = "gray", conf.int.style = "ribbon",
+  conf.int.alpha = 0.3, censor = TRUE, censor.shape = "+",
+  censor.size = 4.5, title = NULL, xlab = "Time",
+  ylab = "Survival probability", xlim = NULL, ylim = NULL,
+  axes.offset = TRUE, legend = c("top", "bottom", "left", "right",
+  "none"), legend.title = "Strata", legend.labs = NULL,
   ggtheme = theme_survminer(), ...)
 }
 \arguments{

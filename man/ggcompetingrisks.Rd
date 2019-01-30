@@ -4,8 +4,9 @@
 \alias{ggcompetingrisks}
 \title{Cumulative Incidence Curves for Competing Risks}
 \usage{
-ggcompetingrisks(fit, gnames = NULL, gsep = " ", multiple_panels = TRUE,
-  ggtheme = theme_survminer(), coef = 1.96, conf.int = FALSE, ...)
+ggcompetingrisks(fit, gnames = NULL, gsep = " ",
+  multiple_panels = TRUE, ggtheme = theme_survminer(), coef = 1.96,
+  conf.int = FALSE, ...)
 }
 \arguments{
 \item{fit}{an object of a class \link{cuminc} - created with \link{cuminc} function or \code{survfitms} created with \link{survfit} function.}

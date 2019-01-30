@@ -6,7 +6,8 @@
 \usage{
 ggflexsurvplot(fit, data = NULL, fun = c("survival", "cumhaz"),
   summary.flexsurv = NULL, size = 1, conf.int = FALSE,
-  conf.int.flex = conf.int, conf.int.km = FALSE, legend.labs = NULL, ...)
+  conf.int.flex = conf.int, conf.int.km = FALSE, legend.labs = NULL,
+  ...)
 }
 \arguments{
 \item{fit}{an object of class \code{flexsurvreg}.}
