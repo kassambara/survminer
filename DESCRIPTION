@@ -14,6 +14,7 @@ Description: Contains the function 'ggsurvplot()' for drawing easily beautiful
     adjusted curves for `Cox` model and to visually examine 'Cox' model assumptions.
 License: GPL-2
 LazyData: TRUE
+Encoding: UTF-8
 Depends:
     ggplot2,
     ggpubr(>= 0.1.6)
