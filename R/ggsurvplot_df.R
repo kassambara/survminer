@@ -301,7 +301,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 .connect2origin <- function(d, ...){
   n.risk <- strata <- NULL
-  if("n.risk" %in% colnames(d)){d <- dplyr::arrange(d, dplyr::desc(n.risk))}
+  # if("n.risk" %in% colnames(d)){d <- dplyr::arrange(d, dplyr::desc(n.risk))}
   origin <- d %>% dplyr::distinct(strata, .keep_all = TRUE)
   origin[intersect(c('time', 'n.censor', 'std.err', "n.event"), colnames(origin))] <- 0
   origin[c('surv', 'upper', 'lower')] <- 1.0
