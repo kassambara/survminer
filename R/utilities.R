@@ -204,7 +204,8 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 .get_variable_value <- function(variable, strata, fit, data = NULL){
   res <- sapply(as.vector(strata), function(x){
     x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
-    index <- grep(paste0("^", variable, "$"), x)
+    # When a factor name is the same as one of its level, index is of length 2
+    index <- grep(paste0("^", variable, "$"), x)[1]
     .trim(x[index+1])
   })
   res <- as.vector(res)
