@@ -4,9 +4,9 @@
 \alias{ggsurvevents}
 \title{Distribution of Events' Times}
 \usage{
-ggsurvevents(surv = NULL, fit = NULL, data = NULL, type = "fraction",
-  normalized = TRUE, censored.on.top = TRUE, ggtheme = theme_survminer(),
-  palette = c("grey75", "grey25"), ...)
+ggsurvevents(surv = NULL, fit = NULL, data = NULL,
+  type = "fraction", normalized = TRUE, censored.on.top = TRUE,
+  ggtheme = theme_survminer(), palette = c("grey75", "grey25"), ...)
 }
 \arguments{
 \item{surv}{an object of \link{Surv}. If not suplied, the censoring variable is extracted from the model.}

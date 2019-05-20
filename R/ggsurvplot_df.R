@@ -299,29 +299,13 @@ ggsurvplot_df <- function(fit, fun = NULL,
 
 # Connect survival data to the origine
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-.connect2origin <- function(d, fit, data = NULL){
-  base <- d[1, , drop = FALSE]
-  base[intersect(c('time', 'n.censor', 'std.err', "n.event"), colnames(base))] <- 0
-  base[c('surv', 'upper', 'lower')] <- 1.0
-  n.strata <- length(levels(d$strata))
-
-  # Connect each group to the origin
-  if (n.strata > 1) {
-    strata <- levels(d$strata)
-    base <- base[rep(1, n.strata),, drop = FALSE]
-    row.names(base) <- 1:nrow(base)
-    base$strata <- strata
-    base$strata <- factor(strata, levels = strata)
-    # update variable values
-    if(!missing(fit)){
-      if(!inherits(fit, "survfit.cox")){
-        variables <- .get_variables(base$strata,  fit, data)
-        for(variable in variables) base[[variable]] <- .get_variable_value(variable, base$strata, fit, data)
-      }
-    }
-  }
-  d <- rbind(base, d)
-  d
+.connect2origin <- function(d, ...){
+  n.risk <- strata <- NULL
+  # if("n.risk" %in% colnames(d)){d <- dplyr::arrange(d, dplyr::desc(n.risk))}
+  origin <- d %>% dplyr::distinct(strata, .keep_all = TRUE)
+  origin[intersect(c('time', 'n.censor', 'std.err', "n.event"), colnames(origin))] <- 0
+  origin[c('surv', 'upper', 'lower')] <- 1.0
+  dplyr::bind_rows(origin, d)
 }
 
 

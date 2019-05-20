@@ -1,7 +1,7 @@
 templates:
   params:
     bootswatch: lumen
-
+    ganalytics: UA-54921687-5
 reference:
   - title: Fit survival curves
     Contents:

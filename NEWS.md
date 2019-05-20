@@ -9,11 +9,14 @@
    
 ## Bug fixes
     
+- When a factor variable name is the same as one of its level, `ggsurvplot()` failed ([@KohSoonho, #387](https://github.com/kassambara/survminer/issues/387)). Fixed now.
+- `ggsurvplot()` can now create correctly faceted survival curves ([@uraniborg, #254](https://github.com/kassambara/survminer/pull/254), [@BingxinS, #363](https://github.com/kassambara/survminer/pull/363))
+
 - A typo fixed in the formula for weightened log-rank test ([@MarcinKosinski, #336](https://github.com/kassambara/survminer/pull/336).
     
 - `surv_summary()` can now handle the output of `survfit(cox.model, newdata)` when the option `conf.type = "none"` is specified by users ([@HeidiSeibold, #335](https://github.com/kassambara/survminer/pull/335).
 
-- `ggadjustedcurves()` has now flipped labels for `conditional`/`marginal` to mach names from ’Adjusted Survival Curves’ by Terry Therneau, Cynthia Crowson, Elizabeth Atkinson (2015).
+- `ggadjustedcurves()` has now flipped labels for `conditional`/`marginal` to mach names from ’Adjusted Survival Curves’ by Terry Therneau, Cynthia Crowson, Elizabeth Atkinson (2015) ([@pbiecek, #335](https://github.com/kassambara/survminer/pull/358).
 
 
 # Survminer 0.4.3

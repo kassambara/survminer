@@ -4,8 +4,8 @@
 \alias{surv_pvalue}
 \title{Compute P-value Comparing Survival Curves}
 \usage{
-surv_pvalue(fit, data = NULL, method = "survdiff", test.for.trend = FALSE,
-  combine = FALSE, ...)
+surv_pvalue(fit, data = NULL, method = "survdiff",
+  test.for.trend = FALSE, combine = FALSE, ...)
 }
 \arguments{
 \item{fit}{A survfit object. Can be also a list of survfit objects.}
