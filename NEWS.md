@@ -3,6 +3,7 @@
 ## Minor changes
    
 - ggforest updated to take into account interactions and polynomial or spline terms ([@fabian-s, #306](https://github.com/kassambara/survminer/issues/306), [@fabian-s, #388](https://github.com/kassambara/survminer/pull/388)
+- Removed unnecessary call to `anova()` as requested ([@pbiecek, #391](https://github.com/kassambara/survminer/issues/391)
    
 ## Bug fixes
     
