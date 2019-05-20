@@ -47,6 +47,7 @@ ggforest <- function(model, data = NULL,
   # get data and variables/terms from cox model
   data  <- .get_data(model, data = data)
   terms <- attr(model$terms, "dataClasses")[-1]
+# removed as requested in #388
 #  terms <- terms[intersect(names(terms),
 #    gsub(rownames(anova(model))[-1], pattern = "`", replacement = ""))]
 
@@ -67,7 +68,7 @@ ggforest <- function(model, data = NULL,
     }
     else {
       vars = grep(paste0("^", var, "*."), coef$term, value=TRUE)
-      data.frame(var =vars , Var1 = "", Freq = nrow(data),
+      data.frame(var = vars, Var1 = "", Freq = nrow(data),
                  pos = seq_along(vars))
     }
   })
