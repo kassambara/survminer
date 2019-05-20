@@ -49,25 +49,33 @@ ggforest <- function(model, data = NULL,
   terms <- attr(model$terms, "dataClasses")[-1]
   terms <- terms[intersect(names(terms),
     gsub(rownames(anova(model))[-1], pattern = "`", replacement = ""))]
+  
+  # use broom to get some required statistics
+  coef <- as.data.frame(tidy(model))
+  gmodel <- glance(model)
 
   # extract statistics for every variable
   allTerms <- lapply(seq_along(terms), function(i){
     var <- names(terms)[i]
-    if (terms[i] == "factor") {
-      adf <- as.data.frame(table(data[,var]))
-      cbind(var=var, adf, pos=1:nrow(adf))
-    } else {
-      data.frame(var=var, Var1 = "", Freq = nrow(data), pos=1)
+    if (terms[i] %in% c("factor", "character")) {
+      adf <- as.data.frame(table(data[, var]))
+      cbind(var = var, adf, pos = 1:nrow(adf))
+    }
+    else if (terms[i] == "numeric") {
+      data.frame(var = var, Var1 = "", Freq = nrow(data), 
+                 pos = 1)
+    }
+    else {
+      vars = grep(paste0("^", var, "*."), coef$term, value=TRUE)
+      data.frame(var =vars , Var1 = "", Freq = nrow(data), 
+                 pos = seq_along(vars))
     }
   })
   allTermsDF <- do.call(rbind, allTerms)
   colnames(allTermsDF) <- c("var", "level", "N", "pos")
   inds <- apply(allTermsDF[,1:2], 1, paste0, collapse="")
 
-  # use broom to get all required statistics
-  coef <- as.data.frame(tidy(model))
-  gmodel <- glance(model)
-
+  # use broom again to get remaining required statistics
   rownames(coef) <- gsub(coef$term, pattern = "`", replacement = "")
   toShow <- cbind(allTermsDF, coef[inds,])[,c("var", "level", "N", "p.value", "estimate", "conf.low", "conf.high", "pos")]
   toShowExp <- toShow[,5:7]
