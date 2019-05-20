@@ -47,9 +47,10 @@ ggforest <- function(model, data = NULL,
   # get data and variables/terms from cox model
   data  <- .get_data(model, data = data)
   terms <- attr(model$terms, "dataClasses")[-1]
-  terms <- terms[intersect(names(terms),
-    gsub(rownames(anova(model))[-1], pattern = "`", replacement = ""))]
-  
+# removed as requested in #388
+#  terms <- terms[intersect(names(terms),
+#    gsub(rownames(anova(model))[-1], pattern = "`", replacement = ""))]
+
   # use broom to get some required statistics
   coef <- as.data.frame(tidy(model))
   gmodel <- glance(model)
@@ -62,12 +63,12 @@ ggforest <- function(model, data = NULL,
       cbind(var = var, adf, pos = 1:nrow(adf))
     }
     else if (terms[i] == "numeric") {
-      data.frame(var = var, Var1 = "", Freq = nrow(data), 
+      data.frame(var = var, Var1 = "", Freq = nrow(data),
                  pos = 1)
     }
     else {
       vars = grep(paste0("^", var, "*."), coef$term, value=TRUE)
-      data.frame(var =vars , Var1 = "", Freq = nrow(data), 
+      data.frame(var = vars, Var1 = "", Freq = nrow(data),
                  pos = seq_along(vars))
     }
   })
