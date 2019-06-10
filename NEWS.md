@@ -11,7 +11,10 @@
 
 
 ## Bug fixes
-
+   
+- Bug fixed for plotting confidence intervals for coxph using ggsurvplot ([@kharknes, #393](https://github.com/kassambara/survminer/issues/393)
+   
+   
 # Survminer 0.4.4
    
 ## Minor changes

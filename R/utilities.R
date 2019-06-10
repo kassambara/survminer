@@ -104,6 +104,7 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 
 # Take a data frame and return a flatten value
 .flat <- function(x){
+  if(is.null(x)) return(NA)
   x <- as.data.frame(x)
   x <- tidyr::gather_(x,
                       key_col = "key", value_col = "value",

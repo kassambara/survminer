@@ -59,9 +59,9 @@ surv_summary <- function (x, data = NULL){
       res <- data.frame(time = rep(x$time, ncurve), n.risk = rep(x$n.risk, ncurve),
                         n.event = rep(x$n.event, ncurve), n.censor = rep(x$n.censor, ncurve))
       res <- cbind(res, surv = .flat(x$surv),
-                   std.err = ifelse(is.null(x$std.err), NA, .flat(x$std.err)),
-                   upper = ifelse(is.null(x$upper), NA, .flat(x$upper)),
-                   lower = ifelse(is.null(x$lower), NA, .flat(x$lower)))
+                   std.err = .flat(x$std.err),
+                   upper = .flat(x$upper),
+                   lower = .flat(x$lower))
       res$strata <- as.factor(rep(colnames(x$surv), each = nrow(x$surv)))
     }
     # case of standard survfit() or survfit(res.cox)
@@ -80,3 +80,4 @@ surv_summary <- function (x, data = NULL){
   attr(res, "table") <-  as.data.frame(summary(x)$table)
   res
 }
+
