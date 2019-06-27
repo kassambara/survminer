@@ -31,12 +31,12 @@ Imports:
     dplyr,
     tidyr,
     survMisc,
-    cmprsk,
     purrr,
     tibble
 Suggests:
     knitr,
-    flexsurv
+    flexsurv,
+    cmprsk
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues

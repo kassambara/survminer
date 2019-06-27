@@ -9,6 +9,7 @@
 
 ## Minor changes
 
+- `cmprsk` is no longer needed for survminer installation. The package has been moved from Imports to Suggests. It's only used in documentations ([@massimofagg, #394](https://github.com/kassambara/survminer/issues/394).
 
 ## Bug fixes
    

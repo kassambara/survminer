@@ -17,6 +17,7 @@
 #'
 #' @examples
 #' data(BMT)
+#' if(require("cmprsk")){
 #'
 #' # Data preparaion
 #' #+++++++++++++++++++++
@@ -40,5 +41,7 @@
 #' ggcompetingrisks(fit)
 #' ggcompetingrisks(fit, multiple_panels = FALSE,
 #'   legend = "right")
+#'
+#'}
 #'
 NULL
