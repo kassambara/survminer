@@ -13,6 +13,7 @@
 
 ## Bug fixes
    
+- Now, in `ggflexsurvplot()`, the grouping variable can be factor or character vector ([@andersbergren , #393](https://github.com/kassambara/survminer/issues/408)
 - Bug fixed for plotting confidence intervals for coxph using ggsurvplot ([@kharknes, #393](https://github.com/kassambara/survminer/issues/393)
    
    
