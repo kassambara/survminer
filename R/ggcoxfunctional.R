@@ -58,6 +58,9 @@ ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6,
   }
   formula <- fit$formula
   data <- .get_data(fit, data)
+  remov = sapply(attr(stats::terms(formula), "term.labels"),
+                 function(x){!is.numeric(data[[x]])})
+  formula = drop.terms(terms(formula), which(remov), keep.response=TRUE)
 
   attr(stats::terms(formula), "term.labels") -> explanatory.variables.names
   stats::model.matrix(formula, data = data) -> explanatory.variables.values
