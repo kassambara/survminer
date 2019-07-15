@@ -31,7 +31,7 @@ NULL
 #'
 #' library(survival)
 #' data(mgus)
-#' res.cox <- coxph(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
+#' res.cox <- coxph(Surv(futime, death) ~ mspike + sex + log(mspike) + I(mspike^2) +
 #'     age + I(log(age)^2) + I(sqrt(age)), data = mgus)
 #' ggcoxfunctional(res.cox,  data = mgus, point.col = "blue", point.alpha = 0.5)
 #' ggcoxfunctional(res.cox, data = mgus, point.col = "blue", point.alpha = 0.5,
@@ -58,9 +58,9 @@ ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6,
   }
   formula <- fit$formula
   data <- .get_data(fit, data)
-  remov = sapply(attr(stats::terms(formula), "term.labels"),
+  remov <- sapply(attr(stats::terms(formula), "term.labels"),
                  function(x){!is.numeric(data[[x]])})
-  formula = drop.terms(terms(formula), which(remov), keep.response=TRUE)
+  formula <- drop.terms(terms(formula), which(remov), keep.response=TRUE)
 
   attr(stats::terms(formula), "term.labels") -> explanatory.variables.names
   stats::model.matrix(formula, data = data) -> explanatory.variables.values
