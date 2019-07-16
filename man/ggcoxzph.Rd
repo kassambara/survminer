@@ -6,13 +6,14 @@
 \title{Graphical Test of Proportional Hazards with ggplot2}
 \usage{
 ggcoxzph(fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
-  point.col = "red", point.size = 1, point.shape = 19,
-  point.alpha = 1, caption = NULL, ggtheme = theme_survminer(), ...)
+  var_pval, point.col = "red", point.size = 1, point.shape = 19,
+  point.alpha = 1, caption = NULL, zph.transform = "km",
+  hline_size = 1.25, ggtheme = theme_survminer(), ...)
 
 \method{print}{ggcoxzph}(x, ..., newpage = TRUE)
 }
 \arguments{
-\item{fit}{an object of class \link{cox.zph}.}
+\item{fit}{an object of class \link{coxph} or \link{cox.zph}.}
 
 \item{resid}{a logical value, if TRUE the residuals are included on the plot,
 as well as the smooth fit.}
@@ -28,9 +29,15 @@ a linear fit.}
 \item{var}{the set of variables for which plots are desired. By default, plots
 are produced in turn for each variable of a model.}
 
+\item{var_pval}{the max Grambsch-Therneau test pvalue for which plots are desired. Use only one of \code{var} or \code{var_pval}.}
+
 \item{point.col, point.size, point.shape, point.alpha}{color, size, shape and visibility to be used for points.}
 
 \item{caption}{the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})}
+
+\item{zph.transform}{the argument to pass to \code{survival::cox.zph} if \code{fit} is a \code{coxph} object}
+
+\item{hline_size}{the argument to pass to \code{survival::cox.zph} if \code{fit} is a \code{coxph} object}
 
 \item{ggtheme}{function, ggplot2 theme name.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
@@ -46,7 +53,7 @@ Returns an object of class \code{ggcoxzph} which is a list of ggplots.
 }
 \description{
 Displays a graph of the scaled Schoenfeld residuals, along with a
- smooth curve using \pkg{ggplot2}. Wrapper around \link{plot.cox.zph}.
+ smooth curve using \pkg{ggplot2}. Wrapper around \link{plot.cox.zph}. If fit is a \code{coxph}, the function will also plot the coefficient estimated by the model as a horizontal line.
 }
 \details{
 \strong{Customizing the plots}: The plot can be easily
@@ -72,6 +79,9 @@ fit <- coxph(Surv(futime, fustat) ~ age + ecog.ps + rx, data=ovarian)
 cox.zph.fit <- cox.zph(fit)
 # plot all variables
 ggcoxzph(cox.zph.fit)
+ggcoxzph(fit)
+# plot all variables for which the Grambsch-Therneau test pvalue is less than 0.55
+ggcoxzph(fit, var_pval=0.55)
 # plot all variables in specified order
 ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx", "age"), font.main = 12)
 # plot specified variables in specified order

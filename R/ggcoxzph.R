@@ -61,7 +61,7 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var, var_
   
   if(methods::is(fit, "coxph")){
     COX_FIT <- TRUE
-    x <- cox.zph(fit, transform = zph.transform)
+    x <- survival::cox.zph(fit, transform = zph.transform)
   } else{
     COX_FIT <- FALSE
     x <- fit
