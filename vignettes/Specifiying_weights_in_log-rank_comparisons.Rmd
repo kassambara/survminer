@@ -149,12 +149,12 @@ ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE,
 
 # References
 
-- Gehan A. A Generalized Wilcoxon Test for Comparing Arbitrarily Singly-Censored Samples. Biometrika 1965 Jun. 52(1/2):203-23. [JSTOR](www.jstor.org/stable/2333825)
+- Gehan A. A Generalized Wilcoxon Test for Comparing Arbitrarily Singly-Censored Samples. Biometrika 1965 Jun. 52(1/2):203-23. 
 
-- Tarone RE, Ware J 1977 On Distribution-Free Tests for Equality of Survival Distributions. Biometrika;64(1):156-60. [JSTOR](http://www.jstor.org/stable/2335790)
+- Tarone RE, Ware J 1977 On Distribution-Free Tests for Equality of Survival Distributions. Biometrika;64(1):156-60.
 
-- Peto R, Peto J 1972 Asymptotically Efficient Rank Invariant Test Procedures. J Royal Statistical Society 135(2):186-207. [JSTOR](http://www.jstor.org/stable/2344317)
+- Peto R, Peto J 1972 Asymptotically Efficient Rank Invariant Test Procedures. J Royal Statistical Society 135(2):186-207. 
 
-- Fleming TR, Harrington DP, O'Sullivan M 1987 Supremum Versions of the Log-Rank and Generalized Wilcoxon Statistics. J American Statistical Association 82(397):312-20. [JSTOR](http://www.jstor.org/stable/2289169)
+- Fleming TR, Harrington DP, O'Sullivan M 1987 Supremum Versions of the Log-Rank and Generalized Wilcoxon Statistics. J American Statistical Association 82(397):312-20. 
 
 - Billingsly P 1999 Convergence of Probability Measures. New York: John Wiley & Sons. [Wiley (paywall)](dx.doi.org/10.1002/9780470316962)

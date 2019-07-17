@@ -20,6 +20,7 @@ Bone marrow transplant data from L Scrucca et aL., Bone Marrow
 }
 \examples{
 data(BMT)
+if(require("cmprsk")){
 
 # Data preparaion
 #+++++++++++++++++++++
@@ -43,6 +44,8 @@ fit <- cmprsk::cuminc(
 ggcompetingrisks(fit)
 ggcompetingrisks(fit, multiple_panels = FALSE,
   legend = "right")
+
+}
 
 }
 \references{

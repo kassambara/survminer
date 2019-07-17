@@ -1,12 +1,28 @@
-# Survminer 0.4.3.999
-   
+# Survminer 0.4.4.999
    
 ## New features
+
+
+
+## Major changes
+
+
+## Minor changes
+
+- `cmprsk` is no longer needed for survminer installation. The package has been moved from Imports to Suggests. It's only used in documentations ([@massimofagg, #394](https://github.com/kassambara/survminer/issues/394).
+
+## Bug fixes
    
+- Now, in `ggflexsurvplot()`, the grouping variable can be factor or character vector ([@andersbergren , #393](https://github.com/kassambara/survminer/issues/408)
+- Bug fixed for plotting confidence intervals for coxph using ggsurvplot ([@kharknes, #393](https://github.com/kassambara/survminer/issues/393)
+   
+   
+# Survminer 0.4.4
    
 ## Minor changes
    
 - ggforest updated to take into account interactions and polynomial or spline terms ([@fabian-s, #306](https://github.com/kassambara/survminer/issues/306), [@fabian-s, #388](https://github.com/kassambara/survminer/pull/388)
+- Removed unnecessary call to `anova()` as requested ([@pbiecek, #391](https://github.com/kassambara/survminer/issues/391)
    
 ## Bug fixes
     

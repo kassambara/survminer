@@ -1,9 +1,8 @@
 #' Cumulative Incidence Curves for Competing Risks
-#' @importFrom cmprsk cuminc
 #' @importFrom survival survfit
 #' @description This function plots Cumulative Incidence Curves. For \code{cuminc} objects it's a \code{ggplot2} version of \code{plot.cuminc}.
 #' For \code{survfitms} objects a different geometry is used, as suggested by \code{@@teigentler}.
-#' @param fit an object of a class \link{cuminc} - created with \link{cuminc} function or \code{survfitms} created with \link{survfit} function.
+#' @param fit an object of a class \code{cmprsk::cuminc} - created with \code{cmprsk::cuminc} function or \code{survfitms} created with \link{survfit} function.
 #' @param gnames a vector with group names. If not supplied then will be extracted from \code{fit} object (\code{cuminc} only).
 #' @param gsep a separator that extracts group names and event names from \code{gnames} object (\code{cuminc} only).
 #' @param multiple_panels if \code{TRUE} then groups will be plotted in different panels (\code{cuminc} only).
@@ -17,6 +16,8 @@
 #' @author Przemyslaw Biecek, \email{przemyslaw.biecek@@gmail.com}
 #'
 #' @examples
+#' if(require("cmprsk")){
+#'
 #' set.seed(2)
 #' ss <- rexp(100)
 #' gg <- factor(sample(1:3,100,replace=TRUE),1:3,c('BRCA','LUNG','OV'))
@@ -37,6 +38,7 @@
 #' ggcompetingrisks(fit2)
 #' fit3 <- survfit(Surv(time, status, type="mstate") ~ group, data=df)
 #' ggcompetingrisks(fit3)
+#' }
 #' \dontrun{
 #'   library(ggsci)
 #'   library(cowplot)

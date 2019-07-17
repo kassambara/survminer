@@ -1,12 +1,12 @@
 Package: survminer
 Type: Package
 Title: Drawing Survival Curves using 'ggplot2'
-Version: 0.4.3.999
-Date: 2018-08-04
+Version: 0.4.4.999
+Date: 2019-05-20
 Authors@R: c(
     person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"),
     person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@@gmail.com"),
-    person("Przemyslaw", "Biecek", role = c("ctb"), email = "przemyslaw.biecek@gmail.com"),
+    person("Przemyslaw", "Biecek", role = c("aut"), email = "przemyslaw.biecek@gmail.com"),
     person("Scheipl", "Fabian", role = c("ctb"), email = "fabian.scheipl@gmail.com"))
 Description: Contains the function 'ggsurvplot()' for drawing easily beautiful
     and 'ready-to-publish' survival curves with the 'number at risk' table
@@ -31,12 +31,12 @@ Imports:
     dplyr,
     tidyr,
     survMisc,
-    cmprsk,
     purrr,
     tibble
 Suggests:
     knitr,
-    flexsurv
+    flexsurv,
+    cmprsk
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues

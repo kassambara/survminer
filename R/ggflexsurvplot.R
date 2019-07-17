@@ -135,11 +135,15 @@ ggflexsurvplot <- function(fit, data = NULL,
 }
 
 
-# Check if all covariates are factor
+# Check if all covariates are factor or character vector
 .is_all_covariate_factor <- function(fit){
   x <- fit
   mf <- stats::model.frame(x)
   Xraw <- mf[,attr(mf, "covnames.orig"), drop=FALSE]
   dat <- x$data
-  sapply(Xraw,is.factor)
+  sapply(Xraw,is_factor_or_character)
+}
+
+is_factor_or_character <- function(x){
+  is.facet(x) | is.character(x)
 }
