@@ -1,14 +1,8 @@
-# Survminer 0.4.4.999
+# Survminer 0.4.5
    
-## New features
-
-
-
-## Major changes
-
-
 ## Minor changes
 
+- Adding variable with a group-agnostic approach ([@jennybc, #414](https://github.com/kassambara/survminer/pull/414)
 - `cmprsk` is no longer needed for survminer installation. The package has been moved from Imports to Suggests. It's only used in documentations ([@massimofagg, #394](https://github.com/kassambara/survminer/issues/394).
 
 ## Bug fixes
