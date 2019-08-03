@@ -157,4 +157,4 @@ ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE,
 
 - Fleming TR, Harrington DP, O'Sullivan M 1987 Supremum Versions of the Log-Rank and Generalized Wilcoxon Statistics. J American Statistical Association 82(397):312-20. 
 
-- Billingsly P 1999 Convergence of Probability Measures. New York: John Wiley & Sons. [Wiley (paywall)](dx.doi.org/10.1002/9780470316962)
+- Billingsly P 1999 Convergence of Probability Measures. New York: John Wiley & Sons. 
