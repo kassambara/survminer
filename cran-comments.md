@@ -24,3 +24,7 @@ All packages that I could install passed.
 ## Update
 
 This is an update version 0.4.5
+
+## Resubmission
+
+Invalid URL removed

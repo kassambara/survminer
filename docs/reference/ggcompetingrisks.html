@@ -64,7 +64,7 @@ For survfitms objects a different geometry is used, as suggested by @teigentler.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.5</span>
       </span>
     </div>
 
@@ -124,7 +124,7 @@ For <code>survfitms</code> objects a different geometry is used, as suggested by
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>fit</th>
-      <td><p>an object of a class cuminc - created with cuminc function or <code>survfitms</code> created with survfit function.</p></td>
+      <td><p>an object of a class <code><a href='https://www.rdocumentation.org/packages/cmprsk/topics/cuminc'>cmprsk::cuminc</a></code> - created with <code><a href='https://www.rdocumentation.org/packages/cmprsk/topics/cuminc'>cmprsk::cuminc</a></code> function or <code>survfitms</code> created with survfit function.</p></td>
     </tr>
     <tr>
       <th>gnames</th>
@@ -141,7 +141,7 @@ For <code>survfitms</code> objects a different geometry is used, as suggested by
     <tr>
       <th>ggtheme</th>
       <td><p>function, <code>ggplot2</code> theme name. Default value is <a href='ggsurvtheme.html'>theme_survminer</a>.
-Allowed values include ggplot2 official themes: see <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/theme'>theme</a></code>.</p></td>
+Allowed values include ggplot2 official themes: see <code><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></code>.</p></td>
     </tr>
     <tr>
       <th>coef</th>
@@ -153,7 +153,7 @@ Allowed values include ggplot2 official themes: see <code><a href='https://www.r
     </tr>
     <tr>
       <th>...</th>
-      <td><p>further arguments passed to the function <code><a href='https://www.rdocumentation.org/packages/ggpubr/topics/ggpar'>ggpar</a></code> for customizing the plot.</p></td>
+      <td><p>further arguments passed to the function <code><a href='https://rpkgs.datanovia.com/ggpubr/reference/ggpar.html'>ggpar</a></code> for customizing the plot.</p></td>
     </tr>
     </table>
     
@@ -163,14 +163,29 @@ Allowed values include ggplot2 official themes: see <code><a href='https://www.r
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>2</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>require</a></span>(<span class='st'>"cmprsk"</span>)){
+
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>2</span>)
 <span class='no'>ss</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Exponential'>rexp</a></span>(<span class='fl'>100</span>)
 <span class='no'>gg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/factor'>factor</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sample'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>3</span>,<span class='fl'>100</span>,<span class='kw'>replace</span><span class='kw'>=</span><span class='fl'>TRUE</span>),<span class='fl'>1</span>:<span class='fl'>3</span>,<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>'BRCA'</span>,<span class='st'>'LUNG'</span>,<span class='st'>'OV'</span>))
 <span class='no'>cc</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/factor'>factor</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sample'>sample</a></span>(<span class='fl'>0</span>:<span class='fl'>2</span>,<span class='fl'>100</span>,<span class='kw'>replace</span><span class='kw'>=</span><span class='fl'>TRUE</span>),<span class='fl'>0</span>:<span class='fl'>2</span>,<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>'no event'</span>, <span class='st'>'death'</span>, <span class='st'>'progression'</span>))
 <span class='no'>strt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sample'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>2</span>,<span class='fl'>100</span>,<span class='kw'>replace</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
 
 <span class='co'># handles cuminc objects</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>cmprsk</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/cmprsk/topics/cuminc'>cuminc</a></span>(<span class='no'>ss</span>,<span class='no'>cc</span>,<span class='no'>gg</span>,<span class='no'>strt</span>))</div><div class='output co'>#&gt; Tests:
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>cmprsk</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/cmprsk/topics/cuminc'>cuminc</a></span>(<span class='no'>ss</span>,<span class='no'>cc</span>,<span class='no'>gg</span>,<span class='no'>strt</span>))
+<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>)
+<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>, <span class='kw'>multiple_panels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>, <span class='kw'>multiple_panels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='co'># handles survfitms objects</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>survival</span>)
+<span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>time</span> <span class='kw'>=</span> <span class='no'>ss</span>, <span class='kw'>group</span> <span class='kw'>=</span> <span class='no'>gg</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='no'>cc</span>, <span class='no'>strt</span>)
+<span class='no'>fit2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/survfit'>survfit</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"mstate"</span>) ~ <span class='fl'>1</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>df</span>)
+<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit2</span>)
+<span class='no'>fit3</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/survfit'>survfit</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"mstate"</span>) ~ <span class='no'>group</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>df</span>)
+<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit3</span>)
+}</div><div class='output co'>#&gt; Tests:
 #&gt;                  stat        pv df
 #&gt; no event    2.1489630 0.3414748  2
 #&gt; death       0.2490482 0.8829170  2
@@ -199,13 +214,7 @@ Allowed values include ggplot2 official themes: see <code><a href='https://www.r
 #&gt; BRCA progression 0.004378377 0.006110680 0.006110680 0.006110680
 #&gt; LUNG progression 0.006700958 0.008631668 0.009219678 0.009771658
 #&gt; OV progression   0.005033271 0.006681731 0.006681731 0.006681731
-#&gt; </div><div class='input'><span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>)</div><div class='img'><img src='ggcompetingrisks-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>, <span class='kw'>multiple_panels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='img'><img src='ggcompetingrisks-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='ggcompetingrisks-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcompetingrisks</span>(<span class='no'>fit</span>, <span class='kw'>multiple_panels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='ggcompetingrisks-4.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># handles survfitms objects</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>survival</span>)
-<span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>time</span> <span class='kw'>=</span> <span class='no'>ss</span>, <span class='kw'>group</span> <span class='kw'>=</span> <span class='no'>gg</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='no'>cc</span>, <span class='no'>strt</span>)
-<span class='no'>fit2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/survfit'>survfit</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"mstate"</span>) ~ <span class='fl'>1</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>df</span>)
-<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit2</span>)</div><div class='img'><img src='ggcompetingrisks-5.png' alt='' width='700' height='433' /></div><div class='input'><span class='no'>fit3</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/survfit'>survfit</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"mstate"</span>) ~ <span class='no'>group</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>df</span>)
-<span class='fu'>ggcompetingrisks</span>(<span class='no'>fit3</span>)</div><div class='img'><img src='ggcompetingrisks-6.png' alt='' width='700' height='433' /></div><span class='co'># NOT RUN {</span>
+#&gt; </div><div class='img'><img src='ggcompetingrisks-1.png' alt='' width='700' height='433' /></div><span class='co'># NOT RUN {</span>
   <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>ggsci</span>)
   <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>cowplot</span>)
   <span class='fu'>ggcompetingrisks</span>(<span class='no'>fit3</span>) + <span class='fu'><a href='https://www.rdocumentation.org/packages/cowplot/topics/theme_cowplot'>theme_cowplot</a></span>() + <span class='fu'><a href='https://www.rdocumentation.org/packages/ggsci/topics/scale_jco'>scale_fill_jco</a></span>()
@@ -228,7 +237,7 @@ Allowed values include ggplot2 official themes: see <code><a href='https://www.r
 
       <footer>
       <div class="copyright">
-  <p>Developed by Alboukadel Kassambara, Marcin Kosinski.</p>
+  <p>Developed by Alboukadel Kassambara, Marcin Kosinski, Przemyslaw Biecek.</p>
 </div>
 
 <div class="pkgdown">
