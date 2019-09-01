@@ -10,7 +10,7 @@ ggadjustedcurves(fit, variable = NULL, data = NULL, reference = NULL,
   ylab = "Survival rate", size = 1, ggtheme = theme_survminer(), ...)
 
 surv_adjustedcurves(fit, variable = NULL, data = NULL,
-  reference = NULL, method = "conditional", ...)
+  reference = NULL, method = "conditional", size = 1, ...)
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}

@@ -108,8 +108,9 @@ ggadjustedcurves <- function(fit,
                                data = data,
                                reference = reference,
                                method = method,
+                               size = size,
                                ...)
-
+  time <- surv <- NULL
   pl <- ggplot(curve, aes(x = time, y = surv, color = variable)) +
     geom_step(size = size) + ggtheme +
     scale_y_continuous(limits = ylim) +
@@ -129,6 +130,7 @@ surv_adjustedcurves <- function(fit,
                              data = NULL,
                              reference = NULL,
                              method = "conditional",
+                             size = 1,
                              ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
   data <- .get_data(fit, data)
