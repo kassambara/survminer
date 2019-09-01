@@ -8,7 +8,7 @@ NULL
 #' @importFrom survival survexp
 #' @importFrom dplyr group_by
 #' @importFrom survival survfit
-#' @description This function plots adjusted survival curves for the \code{coxph} model.
+#' @description The function \code{surv_adjustedcurves()} calculates while the function \code{ggadjustedcurves()} plots adjusted survival curves for the \code{coxph} model.
 #' The main idea behind this function is to present expected survival curves calculated based on Cox model separately for subpopulations. The very detailed description and interesting discussion of adjusted curves is presented in 'Adjusted Survival Curves' by Terry Therneau, Cynthia Crowson, Elizabeth Atkinson (2015) \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
 #' Many approaches are discussed in this article. Currently four approaches (two unbalanced, one conditional and one marginal) are implemented in the \code{ggadjustedcurves()} function. See the section Details.
 #' @details Currently four approaches are implemented in the \code{ggadjustedcurves()} function.
@@ -20,6 +20,8 @@ NULL
 #' For \code{method = "marginal"} a survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced with respect to variables in the \code{fit} formula to keep distributions similar to these in the \code{reference} population. If no reference population is specified, then the whole \code{data} is used as a reference population instead. The balancing is performed in a following way: (1) for each subpopulation a logistic regression model is created to model the odds of being in the subpopulation against the reference population given the other variables listed in a \code{fit} object, (2) reverse probabilities of belonging to a specified subpopulation are used as weights in the Cox model, (3) the Cox model is refitted with weights taken into account, (4) expected survival curves are calculated for each subpopulation based on a refitted weighted model.
 #'
 #' For \code{method = "conditional"} a separate survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced in a following way: (1) the data is replicated as many times as many subpopulations are considered (say k), (2) for each row in original data a set of k copies are created and for every copy a different value of a grouping variable is assigned, this will create a new dataset balanced in terms of grouping variables, (3) expected survival is calculated for each subpopulation based on the new artificial dataset. Here the model \code{fit} is not refitted.
+#'
+#' Note that \code{surv_adjustedcurves} function calculates survival curves and based on this function one can calculate median survival.
 #'
 #'@inheritParams ggsurvplot_arguments
 #'@param fit an object of class \link{coxph.object} - created with \link{coxph} function.
@@ -43,19 +45,24 @@ NULL
 #' fit2 <- coxph( Surv(stop, event) ~ size, data = bladder )
 #' # single curve
 #' ggadjustedcurves(fit2, data = bladder)
+#' curve <- surv_adjustedcurves(fit2, data = bladder)
 #'
 #' fit2 <- coxph( Surv(stop, event) ~ size + strata(rx), data = bladder )
 #' # average in groups
 #' ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
+#' curve <- surv_adjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
 #'
 #' # conditional balancing in groups
 #' ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
+#' curve <- surv_adjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
+#'
 #' # selected reference population
 #' ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx",
 #'     reference = bladder[bladder$rx == "1",])
 #'
 #' # conditional balancing in groups
 #' ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
+#' curve <- surv_adjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
 #'
 #'\dontrun{
 #' # this will take some time
@@ -81,7 +88,8 @@ NULL
 #' ggadjustedcurves(fit, data = fdata, method = "marginal", reference = fdata)
 #' }
 #'
-#'@export
+#' @rdname ggadjustedcurves
+#' @export
 ggadjustedcurves <- function(fit,
                                 variable = NULL,
                                 data = NULL,
@@ -92,10 +100,38 @@ ggadjustedcurves <- function(fit,
                                 ylab = "Survival rate", size = 1,
                                 ggtheme = theme_survminer(), ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
-  data <- .get_data(fit, data)
   ylim <- NULL
   if (is.null(fun)) ylim <- c(0, 1)
 
+  curve <- surv_adjustedcurves(fit = fit,
+                               variable = variable,
+                               data = data,
+                               reference = reference,
+                               method = method,
+                               ...)
+
+  pl <- ggplot(curve, aes(x = time, y = surv, color = variable)) +
+    geom_step(size = size) + ggtheme +
+    scale_y_continuous(limits = ylim) +
+    ylab(ylab)
+
+  if (method == "single")
+    pl <- pl + theme(legend.position = "none")
+
+  ggpubr::ggpar(pl,  palette = palette, ...)
+
+}
+
+#' @rdname ggadjustedcurves
+#' @export
+surv_adjustedcurves <- function(fit,
+                             variable = NULL,
+                             data = NULL,
+                             reference = NULL,
+                             method = "conditional",
+                             ...) {
+  stopifnot(method %in% c("marginal", "average", "conditional", "single"))
+  data <- .get_data(fit, data)
   # deal with default arguments
   # reference = NULL
   if (is.null(reference))
@@ -119,17 +155,13 @@ ggadjustedcurves <- function(fit,
     }
   }
 
-  pl <- switch(method,
-         single = ggadjustedcurves.single(data, fit, size = size),
-         average =  ggadjustedcurves.average(data, fit, variable, size = size),
-         conditional = ggadjustedcurves.conditional(data, fit, variable, size = size),
-         marginal = ggadjustedcurves.marginal(data, fit, variable, reference, size = size))
+  curve <- switch(method,
+                  single = ggadjustedcurves.single(data, fit, size = size),
+                  average =  ggadjustedcurves.average(data, fit, variable, size = size),
+                  conditional = ggadjustedcurves.conditional(data, fit, variable, size = size),
+                  marginal = ggadjustedcurves.marginal(data, fit, variable, reference, size = size))
 
-  pl <- pl + ggtheme +
-    scale_y_continuous(limits = ylim) +
-    ylab(ylab)
-  ggpubr::ggpar(pl,  palette = palette, ...)
-
+  curve
 }
 
 
@@ -142,8 +174,10 @@ ggadjustedcurves.single <- function(data, fit, size = 1) {
                       variable = "total",
                       surv = c(1, pred$surv))
 
-  ggplot(curve, aes(x = time, y = surv, color = variable)) +
-    geom_step(size = size) + theme(legend.position = "none")
+  # plot moved to ggadjustedcurves
+  # ggplot(curve, aes(x = time, y = surv, color = variable)) +
+  #   geom_step(size = size) + theme(legend.position = "none")
+  curve
 }
 
 ggadjustedcurves.average <- function(data, fit, variable, size = 1) {
@@ -157,8 +191,10 @@ ggadjustedcurves.average <- function(data, fit, variable, size = 1) {
                       variable = factor(rep(lev, each=1+length(pred$time))),
                       surv = c(rbind(1, pred$surv)))
 
-  ggplot(curve, aes(x = time, y = surv, color=variable)) +
-    geom_step(size = size)
+  # plot moved to ggadjustedcurves
+  # ggplot(curve, aes(x = time, y = surv, color=variable)) +
+  #   geom_step(size = size)
+  curve
 }
 
 ggadjustedcurves.marginal <- function(data, fit, variable, reference, size = 1) {
@@ -201,8 +237,10 @@ ggadjustedcurves.marginal <- function(data, fit, variable, reference, size = 1) 
                       variable = factor(rep(lev, each=1+length(pred$time))),
                       surv = c(rbind(1, pred$surv)))
 
-  ggplot(curve, aes(x = time, y = surv, color=variable)) +
-    geom_step(size = size)
+  # plot moved to ggadjustedcurves
+  # ggplot(curve, aes(x = time, y = surv, color=variable)) +
+  #   geom_step(size = size)
+  curve
 }
 
 ggadjustedcurves.conditional <- function(data, fit, variable, size = 1) {
@@ -227,7 +265,9 @@ ggadjustedcurves.conditional <- function(data, fit, variable, size = 1) {
   curve <- data.frame(time = rep(c(0,pred$time), length(lev)),
                       variable = factor(rep(lev, each=1+length(pred$time))),
                       surv = c(rbind(1, pred$surv)))
-
-  ggplot(curve, aes(x = time, y = surv, color=variable)) +
-    geom_step(size = size)
+  # plot moved to ggadjustedcurves
+  # ggplot(curve, aes(x = time, y = surv, color=variable)) +
+  #   geom_step(size = size)
+  curve
 }
+

@@ -2,11 +2,15 @@
 % Please edit documentation in R/ggadjustedcurves.R
 \name{ggadjustedcurves}
 \alias{ggadjustedcurves}
+\alias{surv_adjustedcurves}
 \title{Adjusted Survival Curves for Cox Proportional Hazards Model}
 \usage{
 ggadjustedcurves(fit, variable = NULL, data = NULL, reference = NULL,
   method = "conditional", fun = NULL, palette = "hue",
   ylab = "Survival rate", size = 1, ggtheme = theme_survminer(), ...)
+
+surv_adjustedcurves(fit, variable = NULL, data = NULL,
+  reference = NULL, method = "conditional", ...)
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
@@ -47,7 +51,7 @@ function \link[grDevices]{palette}.}
 Returns an object of class \code{gg}.
 }
 \description{
-This function plots adjusted survival curves for the \code{coxph} model.
+The function \code{surv_adjustedcurves()} calculates while the function \code{ggadjustedcurves()} plots adjusted survival curves for the \code{coxph} model.
 The main idea behind this function is to present expected survival curves calculated based on Cox model separately for subpopulations. The very detailed description and interesting discussion of adjusted curves is presented in 'Adjusted Survival Curves' by Terry Therneau, Cynthia Crowson, Elizabeth Atkinson (2015) \code{https://cran.r-project.org/web/packages/survival/vignettes/adjcurve.pdf}.
 Many approaches are discussed in this article. Currently four approaches (two unbalanced, one conditional and one marginal) are implemented in the \code{ggadjustedcurves()} function. See the section Details.
 }
@@ -61,6 +65,8 @@ For \code{method = "average"} a separate survival curve is plotted for each leve
 For \code{method = "marginal"} a survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced with respect to variables in the \code{fit} formula to keep distributions similar to these in the \code{reference} population. If no reference population is specified, then the whole \code{data} is used as a reference population instead. The balancing is performed in a following way: (1) for each subpopulation a logistic regression model is created to model the odds of being in the subpopulation against the reference population given the other variables listed in a \code{fit} object, (2) reverse probabilities of belonging to a specified subpopulation are used as weights in the Cox model, (3) the Cox model is refitted with weights taken into account, (4) expected survival curves are calculated for each subpopulation based on a refitted weighted model.
 
 For \code{method = "conditional"} a separate survival curve is plotted for each level of a grouping variable selected by \code{variable} argument. If this argument is not specified, then it will be extracted from the \code{strata} component of \code{fit} object.  Subpopulations are balanced in a following way: (1) the data is replicated as many times as many subpopulations are considered (say k), (2) for each row in original data a set of k copies are created and for every copy a different value of a grouping variable is assigned, this will create a new dataset balanced in terms of grouping variables, (3) expected survival is calculated for each subpopulation based on the new artificial dataset. Here the model \code{fit} is not refitted.
+
+Note that \code{surv_adjustedcurves} function calculates survival curves and based on this function one can calculate median survival.
 }
 \examples{
 
@@ -68,19 +74,24 @@ library(survival)
 fit2 <- coxph( Surv(stop, event) ~ size, data = bladder )
 # single curve
 ggadjustedcurves(fit2, data = bladder)
+curve <- surv_adjustedcurves(fit2, data = bladder)
 
 fit2 <- coxph( Surv(stop, event) ~ size + strata(rx), data = bladder )
 # average in groups
 ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
+curve <- surv_adjustedcurves(fit2, data = bladder, method = "average", variable = "rx")
 
 # conditional balancing in groups
 ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
+curve <- surv_adjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx")
+
 # selected reference population
 ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx",
     reference = bladder[bladder$rx == "1",])
 
 # conditional balancing in groups
 ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
+curve <- surv_adjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
 
 \dontrun{
 # this will take some time
