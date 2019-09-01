@@ -173,7 +173,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
     grouped.d <- surv_group_by(data, grouping.vars = facet.by)
     # Compute survfit on each subset ==> list of fits
     sf <- surv_fit(.survformula, grouped.d$data, ...)
-    grouped.d <- grouped.d %>% mutate(fit = sf)
+    grouped.d <- grouped.d %>% tibble::add_column(fit = sf)
     # Compute pvalue and convert the list of data frame into one data frame
     # by binding rows of the data frame
     pvalue <- surv_pvalue(grouped.d$fit, grouped.d$data, pval.coord = pval.coord,
