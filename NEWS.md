@@ -2,6 +2,8 @@
     
 ## New features
    
+- A new function `surv_adjustedcurves` is extracted from `ggadjustedcurves`. This function calculates adjusted survival curves but do not plot them. Its results may be useful for calculation of median survival or some other statistics. ([@pbiecek, #423](https://github.com/kassambara/survminer/pull/423)). 
+
    
 ## Major changes
      
