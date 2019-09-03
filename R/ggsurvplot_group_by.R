@@ -72,7 +72,7 @@ ggsurvplot_group_by <- function(fit, data, group.by, ...){
   # Fit survival curves on each subset  ==> list of fits
   #:::::::::::::::::::::::::::::::::::::::::
   fits <- surv_fit(formula = .formula, data = grouped.d$data, ...)
-  grouped.d <- grouped.d %>% mutate(fit = fits)
+  grouped.d <- grouped.d %>% tibble::add_column(fit = fits)
   # Map ggsurvplot to each fit ==> list of ggsurvplots
   #:::::::::::::::::::::::::::::::::::::::::
   ggsurvplot_list(fit = grouped.d$fit, data = grouped.d$data, ...)

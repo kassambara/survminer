@@ -448,7 +448,7 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 # Check if is a list
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 .is_list <- function(x){
-  inherits(x, "list")
+  inherits(x, c("list", "vctrs_list_of"))
 }
 
 # Collapse one or two vectors
