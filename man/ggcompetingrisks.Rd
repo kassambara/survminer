@@ -34,6 +34,7 @@ This function plots Cumulative Incidence Curves. For \code{cuminc} objects it's 
 For \code{survfitms} objects a different geometry is used, as suggested by \code{@teigentler}.
 }
 \examples{
+\dontrun{
 if(require("cmprsk")){
 
 set.seed(2)
@@ -57,7 +58,7 @@ ggcompetingrisks(fit2)
 fit3 <- survfit(Surv(time, status, type="mstate") ~ group, data=df)
 ggcompetingrisks(fit3)
 }
-\dontrun{
+
   library(ggsci)
   library(cowplot)
   ggcompetingrisks(fit3) + theme_cowplot() + scale_fill_jco()

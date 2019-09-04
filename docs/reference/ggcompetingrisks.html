@@ -64,7 +64,7 @@ For survfitms objects a different geometry is used, as suggested by @teigentler.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.6</span>
       </span>
     </div>
 
@@ -163,7 +163,8 @@ Allowed values include ggplot2 official themes: see <code><a href='https://ggplo
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>require</a></span>(<span class='st'>"cmprsk"</span>)){
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='kw'>if</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>require</a></span>(<span class='st'>"cmprsk"</span>)){
 
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>2</span>)
 <span class='no'>ss</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Exponential'>rexp</a></span>(<span class='fl'>100</span>)
@@ -185,36 +186,8 @@ Allowed values include ggplot2 official themes: see <code><a href='https://ggplo
 <span class='fu'>ggcompetingrisks</span>(<span class='no'>fit2</span>)
 <span class='no'>fit3</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/survfit'>survfit</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>, <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"mstate"</span>) ~ <span class='no'>group</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>df</span>)
 <span class='fu'>ggcompetingrisks</span>(<span class='no'>fit3</span>)
-}</div><div class='output co'>#&gt; Tests:
-#&gt;                  stat        pv df
-#&gt; no event    2.1489630 0.3414748  2
-#&gt; death       0.2490482 0.8829170  2
-#&gt; progression 0.5518865 0.7588560  2
-#&gt; Estimates and Variances:
-#&gt; $est
-#&gt;                          1         2         3         4
-#&gt; BRCA no event    0.3243243 0.3783784 0.4054054 0.4054054
-#&gt; LUNG no event    0.1379310 0.2758621 0.2758621 0.2758621
-#&gt; OV no event      0.2058824 0.4117647 0.4411765 0.4411765
-#&gt; BRCA death       0.1621622 0.2432432 0.2702703 0.2702703
-#&gt; LUNG death       0.2413793 0.2758621 0.2758621 0.2758621
-#&gt; OV death         0.1764706 0.2058824 0.2058824 0.2058824
-#&gt; BRCA progression 0.1891892 0.2972973 0.2972973 0.2972973
-#&gt; LUNG progression 0.2413793 0.3448276 0.3793103 0.4137931
-#&gt; OV progression   0.2058824 0.2941176 0.2941176 0.2941176
-#&gt; 
-#&gt; $var
-#&gt;                            1           2           3           4
-#&gt; BRCA no event    0.006188145 0.006901417 0.007391345 0.007391345
-#&gt; LUNG no event    0.004340703 0.007643672 0.007643672 0.007643672
-#&gt; OV no event      0.004994699 0.007767270 0.008089927 0.008089927
-#&gt; BRCA death       0.003828336 0.005337151 0.005930541 0.005930541
-#&gt; LUNG death       0.006637210 0.007337434 0.007337434 0.007337434
-#&gt; OV death         0.004504398 0.005133510 0.005133510 0.005133510
-#&gt; BRCA progression 0.004378377 0.006110680 0.006110680 0.006110680
-#&gt; LUNG progression 0.006700958 0.008631668 0.009219678 0.009771658
-#&gt; OV progression   0.005033271 0.006681731 0.006681731 0.006681731
-#&gt; </div><div class='img'><img src='ggcompetingrisks-1.png' alt='' width='700' height='433' /></div><span class='co'># NOT RUN {</span>
+}
+
   <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>ggsci</span>)
   <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>cowplot</span>)
   <span class='fu'>ggcompetingrisks</span>(<span class='no'>fit3</span>) + <span class='fu'><a href='https://www.rdocumentation.org/packages/cowplot/topics/theme_cowplot'>theme_cowplot</a></span>() + <span class='fu'><a href='https://www.rdocumentation.org/packages/ggsci/topics/scale_jco'>scale_fill_jco</a></span>()

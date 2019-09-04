@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![Build Status](https://api.travis-ci.org/kassambara/survminer.png)](https://travis-ci.org/kassambara/survminer)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer)
 [![Downloads](https://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer)
-[![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](https://cranlogs.r-pkg.org/badges/grand-total/survminer)
+[![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](https://cran.r-project.org/package=survminer)
 
       
       
