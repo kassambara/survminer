@@ -73,6 +73,7 @@ ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6, vars.
   }
 
   explanatory.variables.values <- stats::model.matrix(formula, data = data)
+  data = data[rownames(explanatory.variables.values), ]
   SurvFormula <- deparse(formula[[2]])
   martingale_resid <- lowess_x <- lowess_y <- NULL
   lapply(explanatory.variables.names, function(i){
