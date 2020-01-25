@@ -55,7 +55,7 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
                                   if (na.rm) data <- data[stats::complete.cases(self$required_aes), ]
                                   data <- data[order(data$group, data$x), ]
                                   data <- self$stairstep_confint(data)
-                                  ggplot2:::GeomRibbon$draw_group(data, panel_scales, coord, na.rm = FALSE)
+                                  ggplot2:::GeomRibbon$draw_group(data, panel_scales, coord, na.rm = na.rm)
                                 },
                                 stairstep_confint = function (data) {
                                   data <- as.data.frame(data)[order(data$x), ]

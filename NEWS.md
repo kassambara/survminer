@@ -1,5 +1,10 @@
 # Survminer 0.4.6.999
 
+## Bug fxes
+   
+- When the group size is small (i.e. n = 1), NAs are introduced during the computation of the confidence interval leading to a failure when specifying the option `conf.int` in the `ggsurvplot()` function. To fix this issue, Now, NAs are removed by default when drawing the confidence interval ([#443](https://github.com/kassambara/survminer/issues/443) and [#315](https://github.com/kassambara/survminer/issues/315)). 
+
+
 # Survminer 0.4.6
     
 ## New features
