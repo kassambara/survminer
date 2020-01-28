@@ -61,7 +61,7 @@ should be linear to satisfy cox proportional hazards model assumptions.
 
 library(survival)
 data(mgus)
-res.cox <- coxph(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
+res.cox <- coxph(Surv(futime, death) ~ mspike + sex + log(mspike) + I(mspike^2) +
     age + I(log(age)^2) + I(sqrt(age)), data = mgus)
 ggcoxfunctional(res.cox,  data = mgus, point.col = "blue", point.alpha = 0.5)
 ggcoxfunctional(res.cox, data = mgus, point.col = "blue", point.alpha = 0.5,

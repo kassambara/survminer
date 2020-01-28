@@ -1,7 +1,7 @@
 #'Graphical Test of Proportional Hazards with ggplot2
 #'@description Displays a graph of the scaled Schoenfeld residuals, along with a
-#'  smooth curve using \pkg{ggplot2}. Wrapper around \link{plot.cox.zph}.
-#'@param fit an object of class \link{cox.zph}.
+#'  smooth curve using \pkg{ggplot2}. Wrapper around \link{plot.cox.zph}. If fit is a \code{coxph}, the function will also plot the coefficient estimated by the model as a horizontal line.
+#'@param fit an object of class \link{coxph} or \link{cox.zph}.
 #'@param resid	a logical value, if TRUE the residuals are included on the plot,
 #'  as well as the smooth fit.
 #'@param se a logical value, if TRUE, confidence bands at two standard errors
@@ -11,8 +11,11 @@
 #'@param nsmo	number of points used to plot the fitted spline.
 #'@param var the set of variables for which plots are desired. By default, plots
 #'  are produced in turn for each variable of a model.
+#'@param var_pval the max Grambsch-Therneau test pvalue for which plots are desired. Use only one of \code{var} or \code{var_pval}.
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
 #'@param caption the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})
+#'@param zph.transform the argument to pass to \code{survival::cox.zph} if \code{fit} is a \code{coxph} object
+#'@param hline_size the argument to pass to \code{survival::cox.zph} if \code{fit} is a \code{coxph} object
 #'@param ggtheme function, ggplot2 theme name.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@param ... further arguments passed to either the print() function or to the \code{\link[ggpubr]{ggpar}} function for customizing the plot (see Details section).
@@ -37,6 +40,9 @@
 #' cox.zph.fit <- cox.zph(fit)
 #' # plot all variables
 #' ggcoxzph(cox.zph.fit)
+#' ggcoxzph(fit)
+#' # plot all variables for which the Grambsch-Therneau test pvalue is less than 0.55
+#' ggcoxzph(fit, var_pval=0.55)
 #' # plot all variables in specified order
 #' ggcoxzph(cox.zph.fit, var = c("ecog.ps", "rx", "age"), font.main = 12)
 #' # plot specified variables in specified order
@@ -44,15 +50,33 @@
 #'
 #'@describeIn ggcoxzph Graphical Test of Proportional Hazards using ggplot2.
 #'@export
-ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
+ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var, var_pval, 
                       point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
-                      caption = NULL,
-                      ggtheme = theme_survminer(), ...){
-
-  x <- fit
-  if(!methods::is(x, "cox.zph"))
-    stop("Can't handle an object of class ", class(x))
-
+                      caption = NULL, zph.transform="km", hline_size = 1.25,
+                      ggtheme = theme_survminer(), ...){ 
+  
+  
+  if(!methods::is(fit, "cox.zph") && !methods::is(fit, "coxph"))
+    stop("Can't handle an object of class ", class(fit))
+  
+  if(methods::is(fit, "coxph")){
+    COX_FIT <- TRUE
+    x <- survival::cox.zph(fit, transform = zph.transform)
+  } else{
+    COX_FIT <- FALSE
+    x <- fit
+  }
+  
+  if(!missing(var_pval)){
+    if(!is.numeric(var_pval))
+      stop("var_pval should be a numeric vector")
+    if(!missing(var))
+      stop("Can't handle both var and var_pval")
+    tmp <- x$table[,"p"]
+    var <- names(tmp[tmp<var_pval])
+    var <- var[var!="GLOBAL"]
+  }
+  
   xx <- x$x
   yy <- x$y
   d <- nrow(yy)
@@ -146,14 +170,32 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
   names(plots) <- var
   class(plots) <- c("ggcoxzph", "ggsurv", "list")
 
+  if(COX_FIT){
+    if(missing(var)||is.null(var)||is.na(var)){
+      betas <- fit$coefficients
+    } else {
+      betas <- fit$coefficients[var]
+    }
+    
+    if (length(betas) != length(plots))
+      stop("Error: length of plot list (", length(plots),
+           ") is different from length of coefficients (", length(betas), ")")
+    for (i in 1:length(betas)) {
+      p <- plots[[i]]
+      p <- p + geom_hline(yintercept = betas[i], color = "steel blue",
+                          size = hline_size)
+      plots[[i]] <- p
+    }
+  }
+  
   if("GLOBAL" %in% rownames(x$table)) # case of multivariate Cox
     global_p <- x$table["GLOBAL", 3]
   else global_p <- NULL # Univariate Cox
   attr(plots, "global_pval") <- global_p
   attr(plots, "caption") <- caption
   plots
-
 }
+
 
 #' @param x an object of class ggcoxzph
 #' @param newpage open a new page. See \code{\link{grid.arrange}}.
