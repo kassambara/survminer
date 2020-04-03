@@ -4,12 +4,14 @@
 \name{BMT}
 \alias{BMT}
 \title{Bone Marrow Transplant}
-\format{A data frame with 35 rows and 3 columns.
+\format{
+A data frame with 35 rows and 3 columns.
 \preformatted{
 - dis: disease; 0 = ALL; 1 = AML
 - ftime: follow-up time
 - status: 0 = censored (survival); 1 = Transplant-related mortality; 2 = relapse
-}}
+}
+}
 \usage{
 data("BMT")
 }

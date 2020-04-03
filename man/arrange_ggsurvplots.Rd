@@ -4,9 +4,17 @@
 \alias{arrange_ggsurvplots}
 \title{Arranging Multiple ggsurvplots}
 \usage{
-arrange_ggsurvplots(x, print = TRUE, title = NA, ncol = 2,
-  nrow = 1, surv.plot.height = NULL, risk.table.height = NULL,
-  ncensor.plot.height = NULL, ...)
+arrange_ggsurvplots(
+  x,
+  print = TRUE,
+  title = NA,
+  ncol = 2,
+  nrow = 1,
+  surv.plot.height = NULL,
+  risk.table.height = NULL,
+  ncensor.plot.height = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{a list of ggsurvplots.}

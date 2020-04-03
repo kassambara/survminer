@@ -4,8 +4,14 @@
 \alias{ggsurvplot_list}
 \title{Plot a List of Survfit Objects}
 \usage{
-ggsurvplot_list(fit, data, title = NULL, legend.labs = NULL,
-  legend.title = "Strata", ...)
+ggsurvplot_list(
+  fit,
+  data,
+  title = NULL,
+  legend.labs = NULL,
+  legend.title = "Strata",
+  ...
+)
 }
 \arguments{
 \item{fit}{a list of survfit objects.}

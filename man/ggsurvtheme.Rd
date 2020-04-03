@@ -5,12 +5,19 @@
 \alias{theme_cleantable}
 \title{Theme for Survminer Plots}
 \usage{
-theme_survminer(base_size = 12, base_family = "", font.main = c(16,
-  "plain", "black"), font.submain = c(15, "plain", "black"),
-  font.x = c(14, "plain", "black"), font.y = c(14, "plain", "black"),
-  font.caption = c(15, "plain", "black"), font.tickslab = c(12,
-  "plain", "black"), legend = c("top", "bottom", "left", "right",
-  "none"), font.legend = c(10, "plain", "black"), ...)
+theme_survminer(
+  base_size = 12,
+  base_family = "",
+  font.main = c(16, "plain", "black"),
+  font.submain = c(15, "plain", "black"),
+  font.x = c(14, "plain", "black"),
+  font.y = c(14, "plain", "black"),
+  font.caption = c(15, "plain", "black"),
+  font.tickslab = c(12, "plain", "black"),
+  legend = c("top", "bottom", "left", "right", "none"),
+  font.legend = c(10, "plain", "black"),
+  ...
+)
 
 theme_cleantable(base_size = 12, base_family = "", ...)
 }

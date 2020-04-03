@@ -5,17 +5,39 @@
 \alias{print.ggsurvplot}
 \title{Drawing Survival Curves Using ggplot2}
 \usage{
-ggsurvplot(fit, data = NULL, fun = NULL, color = NULL,
-  palette = NULL, linetype = 1, conf.int = FALSE, pval = FALSE,
-  pval.method = FALSE, test.for.trend = FALSE,
-  surv.median.line = "none", risk.table = FALSE, cumevents = FALSE,
-  cumcensor = FALSE, tables.height = 0.25, group.by = NULL,
-  facet.by = NULL, add.all = FALSE, combine = FALSE,
-  ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
+ggsurvplot(
+  fit,
+  data = NULL,
+  fun = NULL,
+  color = NULL,
+  palette = NULL,
+  linetype = 1,
+  conf.int = FALSE,
+  pval = FALSE,
+  pval.method = FALSE,
+  test.for.trend = FALSE,
+  surv.median.line = "none",
+  risk.table = FALSE,
+  cumevents = FALSE,
+  cumcensor = FALSE,
+  tables.height = 0.25,
+  group.by = NULL,
+  facet.by = NULL,
+  add.all = FALSE,
+  combine = FALSE,
+  ggtheme = theme_survminer(),
+  tables.theme = ggtheme,
+  ...
+)
 
-\method{print}{ggsurvplot}(x, surv.plot.height = NULL,
-  risk.table.height = NULL, ncensor.plot.height = NULL,
-  newpage = TRUE, ...)
+\method{print}{ggsurvplot}(
+  x,
+  surv.plot.height = NULL,
+  risk.table.height = NULL,
+  ncensor.plot.height = NULL,
+  newpage = TRUE,
+  ...
+)
 }
 \arguments{
 \item{fit}{allowed values include:

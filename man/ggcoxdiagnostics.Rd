@@ -4,17 +4,34 @@
 \alias{ggcoxdiagnostics}
 \title{Diagnostic Plots for Cox Proportional Hazards Model with ggplot2}
 \usage{
-ggcoxdiagnostics(fit, type = c("martingale", "deviance", "score",
-  "schoenfeld", "dfbeta", "dfbetas", "scaledsch", "partial"), ...,
+ggcoxdiagnostics(
+  fit,
+  type = c("martingale", "deviance", "score", "schoenfeld", "dfbeta", "dfbetas",
+    "scaledsch", "partial"),
+  ...,
   linear.predictions = type \%in\% c("martingale", "deviance"),
-  ox.scale = ifelse(linear.predictions, "linear.predictions",
-  "observation.id"), hline = TRUE, sline = TRUE, sline.se = TRUE,
-  hline.col = "red", hline.size = 1, hline.alpha = 1,
-  hline.yintercept = 0, hline.lty = "dashed", sline.col = "blue",
-  sline.size = 1, sline.alpha = 0.3, sline.lty = "dashed",
-  point.col = "black", point.size = 1, point.shape = 19,
-  point.alpha = 1, title = NULL, subtitle = NULL, caption = NULL,
-  ggtheme = ggplot2::theme_bw())
+  ox.scale = ifelse(linear.predictions, "linear.predictions", "observation.id"),
+  hline = TRUE,
+  sline = TRUE,
+  sline.se = TRUE,
+  hline.col = "red",
+  hline.size = 1,
+  hline.alpha = 1,
+  hline.yintercept = 0,
+  hline.lty = "dashed",
+  sline.col = "blue",
+  sline.size = 1,
+  sline.alpha = 0.3,
+  sline.lty = "dashed",
+  point.col = "black",
+  point.size = 1,
+  point.shape = 19,
+  point.alpha = 1,
+  title = NULL,
+  subtitle = NULL,
+  caption = NULL,
+  ggtheme = ggplot2::theme_bw()
+)
 }
 \arguments{
 \item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}

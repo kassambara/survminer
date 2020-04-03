@@ -4,8 +4,7 @@
 \alias{pairwise_survdiff}
 \title{Multiple Comparisons of Survival Curves}
 \usage{
-pairwise_survdiff(formula, data, p.adjust.method = "BH", na.action,
-  rho = 0)
+pairwise_survdiff(formula, data, p.adjust.method = "BH", na.action, rho = 0)
 }
 \arguments{
 \item{formula}{a formula expression as for other survival models, of the form

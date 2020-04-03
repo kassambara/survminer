@@ -1,5 +1,13 @@
 # Survminer 0.4.6.999
 
+## Minor changes
+   
+Fixes to adapt to dplyr 1.0.0 ([@romainfrancois, #460](https://github.com/kassambara/survminer/pull/460)): 
+    
+- Using group_by() instead of group_by_() which is deprecated
+- Putting the extra "surv_group_by" class first where it is supposed to be instead of last, which messes up with some internal processing from vctrs.
+     
+     
 ## Bug fxes
    
 - When the group size is small (i.e. n = 1), NAs are introduced during the computation of the confidence interval leading to a failure when specifying the option `conf.int` in the `ggsurvplot()` function. To fix this issue, Now, NAs are removed by default when drawing the confidence interval ([#443](https://github.com/kassambara/survminer/issues/443) and [#315](https://github.com/kassambara/survminer/issues/315)). 
