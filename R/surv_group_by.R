@@ -35,6 +35,7 @@ NULL
 #'    surv_group_by(grouping.vars = c("rx", "adhere"))
 #'    grouped.d
 #'
+#' @importFrom rlang syms
 #' @export
 #' @rdname surv_group_by
 surv_group_by <- function(data, grouping.vars){
@@ -45,7 +46,7 @@ surv_group_by <- function(data, grouping.vars){
 
   # Grouping the data ==> list of data sets
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  grouped.d <- dplyr::group_by_(.data = data, .dots = grouping.vars) %>%
+  grouped.d <- dplyr::group_by(.data = data, !!!syms(grouping.vars)) %>%
     tidyr::nest()
 
   # Ordering the grouped data by the original factor levels
@@ -77,5 +78,5 @@ surv_group_by <- function(data, grouping.vars){
   }
   names(grouped.d$data) <- .names
 
-  structure(grouped.d, class = c(class(grouped.d), "surv_group_by"))
+  structure(grouped.d, class = c("surv_group_by", class(grouped.d)))
 }
