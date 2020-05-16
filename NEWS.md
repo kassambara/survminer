@@ -2,6 +2,8 @@
 
 ## Minor changes
    
+- In older versions of the survival package, the function `survfit(res.cox)` returned an object of class survfit.cox. The class has been changed to `survfitcox` in the current survival package version. The survminer package has been now updated to take this change into account ([@edvbb, #441](https://github.com/kassambara/survminer/issues/441)).
+
 Fixes to adapt to dplyr 1.0.0 ([@romainfrancois, #460](https://github.com/kassambara/survminer/pull/460)): 
     
 - Using group_by() instead of group_by_() which is deprecated

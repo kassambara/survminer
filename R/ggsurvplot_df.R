@@ -280,7 +280,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 .check_legend_labs <- function(fit, legend.labs = NULL){
 
-  if(!is.null(legend.labs) & !inherits(fit, "survfit.cox")){
+  if(!is.null(legend.labs) & !inherits(fit, c("survfit.cox", "survfitcox"))){
 
     if(!is.null(fit$strata)){
       if(length(fit$strata) != length(legend.labs))

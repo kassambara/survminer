@@ -395,7 +395,7 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 #       - data.formula: data off all variables in the formula including time and status
 .extract.survfit <- function(fit, data = NULL){
 
-  if(inherits(fit, "survfit.cox"))
+  if(inherits(fit, c("survfit.cox", "survfitcox")))
     return(list())
 
   .formula <- fit$call$formula %>%
