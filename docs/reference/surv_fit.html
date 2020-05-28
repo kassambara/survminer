@@ -8,21 +8,29 @@
 
 <title>Create Survival Curves — surv_fit • survminer</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,8 +38,8 @@
 
 
 
-<meta property="og:title" content="Create Survival Curves — surv_fit" />
 
+<meta property="og:title" content="Create Survival Curves — surv_fit" />
 <meta property="og:description" content="Wrapper arround the standard survfit() function to create
   survival curves. Compared to the standard survfit() function, it supports also:
 a list of data sets and/or a list of formulas,
@@ -60,17 +68,18 @@ Case 6. In a rare case you might have a list of formulas and a list of data sets
   For example formula1 is applied to data 1, formula2 is applied to data 2, and so on ...
   In this case formula and data lists should have the same length and you should specify the argument match.fd = TRUE ( stands for match formula and data).
   Returns a named list of survfit objects.
-" />
 
-<meta property="og:description" content="The output of the surv_fit() function can be directly handled by the following functions:
+
+The output of the surv_fit() function can be directly handled by the following functions:
 
 ggsurvplot()
 surv_pvalue()
 surv_median()
-" />
 
-<meta property="og:description" content="These functions return one element or a list of elements depending on the format of the input." />
-<meta name="twitter:card" content="summary" />
+
+
+These functions return one element or a list of elements depending on the format of the input." />
+
 
 
 
@@ -84,9 +93,10 @@ surv_median()
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -100,7 +110,7 @@ surv_median()
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.7</span>
       </span>
     </div>
 
@@ -119,7 +129,6 @@ surv_median()
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/kassambara/survminer">
@@ -134,27 +143,27 @@ surv_median()
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create Survival Curves</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/kassambara/survminer/blob/master/R/surv_fit.R'><code>R/surv_fit.R</code></a></small>
     <div class="hidden name"><code>surv_fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    
-    <p>Wrapper arround the standard <a href='https://www.rdocumentation.org/packages/survival/topics/survfit'>survfit</a>() function to create
-  survival curves. Compared to the standard <a href='https://www.rdocumentation.org/packages/survival/topics/survfit'>survfit</a>() function, it supports also:</p><ul>
+    <p>Wrapper arround the standard <a href='https://rdrr.io/pkg/survival/man/survfit.html'>survfit</a>() function to create
+  survival curves. Compared to the standard <a href='https://rdrr.io/pkg/survival/man/survfit.html'>survfit</a>() function, it supports also:</p><ul>
 <li><p>a list of data sets and/or a list of formulas,</p></li>
 <li><p>a grouped data sets as generated by the function <a href='surv_group_by.html'>surv_group_by</a>,</p></li>
 <li><p>group.by option</p></li>
 </ul><p>There are many cases, where this function might be useful:</p><ul>
 <li><p><strong>Case 1: One formula and One data set</strong>.
   Example: You want to fit the survival curves of one biomarker/gene in a given data set.
-  This is the same as the standard <a href='https://www.rdocumentation.org/packages/survival/topics/survfit'>survfit</a>() function. Returns one survfit object.</p></li>
+  This is the same as the standard <a href='https://rdrr.io/pkg/survival/man/survfit.html'>survfit</a>() function. Returns one survfit object.</p></li>
 <li><p><strong>Case 2: List of formulas and One data set</strong>.
   Example: You want to fit the survival curves of a list of biormarkers/genes in the same data set.
   Returns a named list of survfit objects in the same order as formulas.</p></li>
@@ -176,25 +185,25 @@ surv_median()
   Returns a named list of survfit objects.</p></li>
 </ul>
 
-    <p>The output of the <code>surv_fit</code>() function can be directly handled by the following functions:</p>
+<p>The output of the <code>surv_fit</code>() function can be directly handled by the following functions:</p>
 <p></p><ul>
 <li><p><a href='ggsurvplot.html'>ggsurvplot</a>()</p></li>
 <li><p><a href='surv_pvalue.html'>surv_pvalue</a>()</p></li>
 <li><p><a href='surv_median.html'>surv_median</a>()</p></li>
 </ul>
 
-    <p>These functions return one element or a list of elements depending on the format of the input.</p>
-    
+
+<p>These functions return one element or a list of elements depending on the format of the input.</p>
     </div>
 
     <pre class="usage"><span class='fu'>surv_fit</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='kw'>group.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>match.fd</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>formula</th>
-      <td><p>survival formula. See <a href='https://www.rdocumentation.org/packages/survival/topics/survfit.formula'>survfit.formula</a>. Can be a list of formula. Named lists are recommended.</p></td>
+      <td><p>survival formula. See <a href='https://rdrr.io/pkg/survival/man/survfit.formula.html'>survfit.formula</a>. Can be a list of formula. Named lists are recommended.</p></td>
     </tr>
     <tr>
       <th>data</th>
@@ -217,10 +226,10 @@ Useful only when you have a list of formulas and a list of data sets, and
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Other arguments passed to the <a href='https://www.rdocumentation.org/packages/survival/topics/survfit.formula'>survfit.formula</a> function.</p></td>
+      <td><p>Other arguments passed to the <a href='https://rdrr.io/pkg/survival/man/survfit.formula.html'>survfit.formula</a> function.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     
@@ -236,16 +245,15 @@ collapsing the levels of grouping variables and the names of variables in the su
 </ul></li>
 </ul>
 
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='st'>"survival"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='st'>"magrittr"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"survival"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"magrittr"</span>)
 
 <span class='co'># Case 1: One formula and One data set</span>
 <span class='co'>#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>surv_fit</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>,
+<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>surv_fit</span>(<span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>,
                <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span>)
 <span class='fu'><a href='surv_pvalue.html'>surv_pvalue</a></span>(<span class='no'>fit</span>)</div><div class='output co'>#&gt;   variable      pval   method pval.txt
 #&gt; 1      sex 0.6107936 Log-rank p = 0.61</div><div class='input'>
@@ -255,9 +263,9 @@ collapsing the levels of grouping variables and the names of variables in the su
 <span class='co'>#   - Returns a (named) list of survfit objects</span>
 <span class='co'>#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
 <span class='co'># Create a named list of formulas</span>
-<span class='no'>formulas</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(
- <span class='kw'>sex</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>,
- <span class='kw'>rx</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>rx</span>
+<span class='no'>formulas</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
+ <span class='kw'>sex</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>,
+ <span class='kw'>rx</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>rx</span>
 )
 
 <span class='co'># Fit survival curves for each formula</span>
@@ -272,8 +280,8 @@ collapsing the levels of grouping variables and the names of variables in the su
 #&gt; </div><div class='input'>
 <span class='co'># Case 3: One formula and List of data sets</span>
 <span class='co'>#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>surv_fit</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>,
-               <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='no'>colon</span>, <span class='no'>lung</span>))
+<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>surv_fit</span>(<span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>,
+               <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>colon</span>, <span class='no'>lung</span>))
 <span class='fu'><a href='surv_pvalue.html'>surv_pvalue</a></span>(<span class='no'>fit</span>)</div><div class='output co'>#&gt; $`colon::sex`
 #&gt;   variable      pval   method pval.txt
 #&gt; 1      sex 0.6107936 Log-rank p = 0.61
@@ -289,57 +297,59 @@ collapsing the levels of grouping variables and the names of variables in the su
 <span class='co'>#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
 
 <span class='co'># Create two data sets</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>123</span>)
-<span class='no'>colon1</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/sample.html'>sample_frac</a></span>(<span class='no'>colon</span>, <span class='fl'>1</span>/<span class='fl'>2</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>1234</span>)
-<span class='no'>colon2</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/sample.html'>sample_frac</a></span>(<span class='no'>colon</span>, <span class='fl'>1</span>/<span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>123</span>)
+<span class='no'>colon1</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/sample_n.html'>sample_frac</a></span>(<span class='no'>colon</span>, <span class='fl'>1</span>/<span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1234</span>)
+<span class='no'>colon2</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/sample_n.html'>sample_frac</a></span>(<span class='no'>colon</span>, <span class='fl'>1</span>/<span class='fl'>2</span>)
 
 <span class='co'># Create a named list of formulas</span>
-<span class='no'>formula.list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(
- <span class='kw'>sex</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>,
- <span class='kw'>adhere</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>adhere</span>,
- <span class='kw'>rx</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>rx</span>
+<span class='no'>formula.list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
+ <span class='kw'>sex</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>,
+ <span class='kw'>adhere</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>adhere</span>,
+ <span class='kw'>rx</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>rx</span>
 )
 
 <span class='co'># Fit survival curves</span>
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>surv_fit</span>(<span class='no'>formula.list</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='no'>colon1</span>, <span class='no'>colon2</span>),
-               <span class='kw'>match.fd</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='fu'><a href='surv_pvalue.html'>surv_pvalue</a></span>(<span class='no'>fit</span>)</div><div class='output co'>#&gt; $`colon1::sex`
+<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>surv_fit</span>(<span class='no'>formula.list</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>colon1</span>, <span class='no'>colon2</span>),
+               <span class='kw'>match.fd</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: `combine()` is deprecated as of dplyr 1.0.0.</span>
+#&gt; <span class='warning'>Please use `vctrs::vec_c()` instead.</span>
+#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
+#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'><span class='fu'><a href='surv_pvalue.html'>surv_pvalue</a></span>(<span class='no'>fit</span>)</div><div class='output co'>#&gt; $`colon1::sex`
 #&gt;   variable      pval   method pval.txt
-#&gt; 1      sex 0.7098588 Log-rank p = 0.71
+#&gt; 1      sex 0.8372769 Log-rank p = 0.84
 #&gt; 
 #&gt; $`colon2::sex`
 #&gt;   variable      pval   method pval.txt
-#&gt; 1      sex 0.7254968 Log-rank p = 0.73
+#&gt; 1      sex 0.3901548 Log-rank p = 0.39
 #&gt; 
 #&gt; $`colon1::adhere`
-#&gt;   variable         pval   method    pval.txt
-#&gt; 1   adhere 0.0002416513 Log-rank p = 0.00024
+#&gt;   variable      pval   method  pval.txt
+#&gt; 1   adhere 0.0125047 Log-rank p = 0.013
 #&gt; 
 #&gt; $`colon2::adhere`
-#&gt;   variable        pval   method   pval.txt
-#&gt; 1   adhere 0.003468833 Log-rank p = 0.0035
+#&gt;   variable       pval   method  pval.txt
+#&gt; 1   adhere 0.02104745 Log-rank p = 0.021
 #&gt; 
 #&gt; $`colon1::rx`
 #&gt;   variable        pval   method   pval.txt
-#&gt; 1       rx 0.001421399 Log-rank p = 0.0014
+#&gt; 1       rx 0.001173476 Log-rank p = 0.0012
 #&gt; 
 #&gt; $`colon2::rx`
 #&gt;   variable         pval   method   pval.txt
-#&gt; 1       rx 8.123231e-06 Log-rank p &lt; 0.0001
+#&gt; 1       rx 4.449283e-05 Log-rank p &lt; 0.0001
 #&gt; </div><div class='input'>
 
 <span class='co'># Grouped survfit</span>
 <span class='co'>#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
 <span class='co'># - Group by the treatment "rx" and fit survival curves on each subset</span>
 <span class='co'># - Returns a list of survfit objects</span>
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>surv_fit</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>,
+<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>surv_fit</span>(<span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>,
                <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span>, <span class='kw'>group.by</span> <span class='kw'>=</span> <span class='st'>"rx"</span>)
 
 <span class='co'># Alternatively, do this</span>
 <span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='no'>colon</span> <span class='kw'>%&gt;%</span>
  <span class='fu'><a href='surv_group_by.html'>surv_group_by</a></span>(<span class='st'>"rx"</span>) <span class='kw'>%&gt;%</span>
- <span class='fu'>surv_fit</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>.</span>)
+ <span class='fu'>surv_fit</span>(<span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>.</span>)
 
 <span class='fu'><a href='surv_pvalue.html'>surv_pvalue</a></span>(<span class='no'>fit</span>)</div><div class='output co'>#&gt; $`rx.Obs::sex`
 #&gt;   variable      pval   method pval.txt
@@ -353,20 +363,15 @@ collapsing the levels of grouping variables and the names of variables in the su
 #&gt;   variable         pval   method    pval.txt
 #&gt; 1      sex 0.0005623961 Log-rank p = 0.00056
 #&gt; </div><div class='input'>
-</div></pre>
+</div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -374,13 +379,16 @@ collapsing the levels of grouping variables and the names of variables in the su
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

@@ -8,21 +8,29 @@
 
 <title>Changelog • survminer</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,7 +38,9 @@
 
 
 
+
 <meta property="og:title" content="Changelog" />
+
 
 
 
@@ -44,9 +54,10 @@
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -60,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.7</span>
       </span>
     </div>
 
@@ -79,7 +90,6 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/kassambara/survminer">
@@ -94,71 +104,95 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
-      
+      <h1 data-toc-skip>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/kassambara/survminer/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="survminer-0-4-7" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.7">
+<a href="#survminer-0-4-7" class="anchor"></a>Survminer 0.4.7<small> 2020-05-28 </small>
+</h1>
+<div id="minor-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
+<ul>
+<li>In older versions of the survival package, the function <code><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit(res.cox)</a></code> returned an object of class survfit.cox. The class has been changed to <code>survfitcox</code> in the current survival package version. The survminer package has been now updated to take this change into account (<a href="https://github.com/kassambara/survminer/issues/441">@edvbb, <a href='https://github.com/kassambara/survminer/issues/441'>#441</a></a>).</li>
+</ul>
+<p>Fixes to adapt to dplyr 1.0.0 (<a href="https://github.com/kassambara/survminer/pull/460">@romainfrancois, <a href='https://github.com/kassambara/survminer/issues/460'>#460</a></a>):</p>
+<ul>
+<li>Using group_by() instead of group_by_() which is deprecated</li>
+<li>Putting the extra “surv_group_by” class first where it is supposed to be instead of last, which messes up with some internal processing from vctrs.</li>
+</ul>
+</div>
+<div id="bug-fxes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fxes" class="anchor"></a>Bug fxes</h2>
+<ul>
+<li>When the group size is small (i.e. n = 1), NAs are introduced during the computation of the confidence interval leading to a failure when specifying the option <code>conf.int</code> in the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function. To fix this issue, Now, NAs are removed by default when drawing the confidence interval (<a href='https://github.com/kassambara/survminer/issues/443'>#443</a> and <a href='https://github.com/kassambara/survminer/issues/315'>#315</a>).</li>
+</ul>
+</div>
+</div>
     <div id="survminer-0-4-6" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.4.6">
 <a href="#survminer-0-4-6" class="anchor"></a>Survminer 0.4.6<small> 2019-09-03 </small>
 </h1>
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h2>
 <ul>
-<li>A new function <code>surv_adjustedcurves</code> is extracted from <code>ggadjustedcurves</code>. This function calculates adjusted survival curves but do not plot them. Its results may be useful for calculation of median survival or some other statistics. (<a href="https://github.com/kassambara/survminer/pull/423">@pbiecek, #423</a>).</li>
+<li>A new function <code>surv_adjustedcurves</code> is extracted from <code>ggadjustedcurves</code>. This function calculates adjusted survival curves but do not plot them. Its results may be useful for calculation of median survival or some other statistics. (<a href="https://github.com/kassambara/survminer/pull/423">@pbiecek, <a href='https://github.com/kassambara/survminer/issues/423'>#423</a></a>).</li>
 </ul>
 </div>
-<div id="minor-changes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
-<ul>
-<li>Adapted to tidyr 1.0.0 (<a href="https://github.com/kassambara/survminer/issues/424">#424</a>
-</li>
-</ul>
-</div>
-</div>
-    <div id="survminer-0-4-5" class="section level1">
-<h1 class="page-header">
-<a href="#survminer-0-4-5" class="anchor"></a>Survminer 0.4.5<small> 2019-08-03 </small>
-</h1>
 <div id="minor-changes-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#minor-changes-1" class="anchor"></a>Minor changes</h2>
 <ul>
-<li>Adding variable with a group-agnostic approach (<a href="https://github.com/kassambara/survminer/pull/414">@jennybc, #414</a>
+<li>Adapted to tidyr 1.0.0 (<a href='https://github.com/kassambara/survminer/issues/424'>#424</a>)</li>
+</ul>
+</div>
+</div>
+    <div id="survminer-0-4-5" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.5">
+<a href="#survminer-0-4-5" class="anchor"></a>Survminer 0.4.5<small> 2019-08-03 </small>
+</h1>
+<div id="minor-changes-2" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-changes-2" class="anchor"></a>Minor changes</h2>
+<ul>
+<li>Adding variable with a group-agnostic approach (<a href="https://github.com/kassambara/survminer/pull/414">@jennybc, <a href='https://github.com/kassambara/survminer/issues/414'>#414</a></a>
 </li>
 <li>
-<code>cmprsk</code> is no longer needed for survminer installation. The package has been moved from Imports to Suggests. It’s only used in documentations (<a href="https://github.com/kassambara/survminer/issues/394">@massimofagg, #394</a>.</li>
+<code>cmprsk</code> is no longer needed for survminer installation. The package has been moved from Imports to Suggests. It’s only used in documentations (<a href="https://github.com/kassambara/survminer/issues/394">@massimofagg, <a href='https://github.com/kassambara/survminer/issues/394'>#394</a></a>.</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li>Now, in <code><a href="../reference/ggflexsurvplot.html">ggflexsurvplot()</a></code>, the grouping variable can be factor or character vector (<a href="https://github.com/kassambara/survminer/issues/408">@andersbergren , #393</a>
+<li>Now, in <code><a href="../reference/ggflexsurvplot.html">ggflexsurvplot()</a></code>, the grouping variable can be factor or character vector (<a href="https://github.com/kassambara/survminer/issues/408">@andersbergren , <a href='https://github.com/kassambara/survminer/issues/393'>#393</a></a>
 </li>
-<li>Bug fixed for plotting confidence intervals for coxph using ggsurvplot (<a href="https://github.com/kassambara/survminer/issues/393">@kharknes, #393</a>
+<li>Bug fixed for plotting confidence intervals for coxph using ggsurvplot (<a href="https://github.com/kassambara/survminer/issues/393">@kharknes, <a href='https://github.com/kassambara/survminer/issues/393'>#393</a></a>
 </li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-4-4" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.4.4">
 <a href="#survminer-0-4-4" class="anchor"></a>Survminer 0.4.4<small> 2019-05-21 </small>
 </h1>
-<div id="minor-changes-2" class="section level2">
+<div id="minor-changes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-2" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-3" class="anchor"></a>Minor changes</h2>
 <ul>
-<li>ggforest updated to take into account interactions and polynomial or spline terms (<a href="https://github.com/kassambara/survminer/issues/306">@fabian-s, #306</a>, <a href="https://github.com/kassambara/survminer/pull/388">@fabian-s, #388</a>
+<li>ggforest updated to take into account interactions and polynomial or spline terms (<a href="https://github.com/kassambara/survminer/issues/306">@fabian-s, <a href='https://github.com/kassambara/survminer/issues/306'>#306</a></a>, <a href="https://github.com/kassambara/survminer/pull/388">@fabian-s, <a href='https://github.com/kassambara/survminer/issues/388'>#388</a></a>
 </li>
-<li>Removed unnecessary call to <code><a href="https://www.rdocumentation.org/packages/stats/topics/anova">anova()</a></code> as requested (<a href="https://github.com/kassambara/survminer/issues/391">@pbiecek, #391</a>
+<li>Removed unnecessary call to <code><a href="https://rdrr.io/r/stats/anova.html">anova()</a></code> as requested (<a href="https://github.com/kassambara/survminer/issues/391">@pbiecek, <a href='https://github.com/kassambara/survminer/issues/391'>#391</a></a>
 </li>
 </ul>
 </div>
@@ -166,64 +200,64 @@
 <h2 class="hasAnchor">
 <a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li>When a factor variable name is the same as one of its level, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> failed (<a href="https://github.com/kassambara/survminer/issues/387">@KohSoonho, #387</a>). Fixed now.</li>
-<li><p><code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can now create correctly faceted survival curves (<a href="https://github.com/kassambara/survminer/pull/254">@uraniborg, #254</a>, <a href="https://github.com/kassambara/survminer/pull/363">@BingxinS, #363</a>)</p></li>
-<li><p>A typo fixed in the formula for weightened log-rank test (<a href="https://github.com/kassambara/survminer/pull/336">@MarcinKosinski, #336</a>.</p></li>
-<li><p><code><a href="../reference/surv_summary.html">surv_summary()</a></code> can now handle the output of <code><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survfit(cox.model, newdata)</a></code> when the option <code>conf.type = "none"</code> is specified by users (<a href="https://github.com/kassambara/survminer/pull/335">@HeidiSeibold, #335</a>.</p></li>
-<li><p><code><a href="../reference/ggadjustedcurves.html">ggadjustedcurves()</a></code> has now flipped labels for <code>conditional</code>/<code>marginal</code> to mach names from ’Adjusted Survival Curves’ by Terry Therneau, Cynthia Crowson, Elizabeth Atkinson (2015) (<a href="https://github.com/kassambara/survminer/pull/358">@pbiecek, #335</a>.</p></li>
+<li>When a factor variable name is the same as one of its level, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> failed (<a href="https://github.com/kassambara/survminer/issues/387">@KohSoonho, <a href='https://github.com/kassambara/survminer/issues/387'>#387</a></a>). Fixed now.</li>
+<li><p><code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can now create correctly faceted survival curves (<a href="https://github.com/kassambara/survminer/pull/254">@uraniborg, <a href='https://github.com/kassambara/survminer/issues/254'>#254</a></a>, <a href="https://github.com/kassambara/survminer/pull/363">@BingxinS, <a href='https://github.com/kassambara/survminer/issues/363'>#363</a></a>)</p></li>
+<li><p>A typo fixed in the formula for weightened log-rank test (<a href="https://github.com/kassambara/survminer/pull/336">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/336'>#336</a></a>.</p></li>
+<li><p><code><a href="../reference/surv_summary.html">surv_summary()</a></code> can now handle the output of <code><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit(cox.model, newdata)</a></code> when the option <code>conf.type = "none"</code> is specified by users (<a href="https://github.com/kassambara/survminer/pull/335">@HeidiSeibold, <a href='https://github.com/kassambara/survminer/issues/335'>#335</a></a>.</p></li>
+<li><p><code><a href="../reference/ggadjustedcurves.html">ggadjustedcurves()</a></code> has now flipped labels for <code>conditional</code>/<code>marginal</code> to mach names from ’Adjusted Survival Curves’ by Terry Therneau, Cynthia Crowson, Elizabeth Atkinson (2015) (<a href="https://github.com/kassambara/survminer/pull/358">@pbiecek, <a href='https://github.com/kassambara/survminer/issues/335'>#335</a></a>.</p></li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-4-3" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.4.3">
 <a href="#survminer-0-4-3" class="anchor"></a>Survminer 0.4.3<small> 2018-08-04 </small>
 </h1>
 <div id="new-features-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features-1" class="anchor"></a>New features</h2>
 <ul>
-<li>Now <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can be used to plot survreg model (<a href="https://github.com/kassambara/survminer/issues/276">@HeidiSeibold, #276</a>, <a href="https://github.com/kassambara/survminer/pull/325">#325</a> ).</li>
+<li>Now <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can be used to plot survreg model (<a href="https://github.com/kassambara/survminer/issues/276">@HeidiSeibold, <a href='https://github.com/kassambara/survminer/issues/276'>#276</a></a>, <a href='https://github.com/kassambara/survminer/issues/325'>#325</a> ).</li>
 </ul>
 </div>
-<div id="minor-changes-3" class="section level2">
+<div id="minor-changes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-3" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-4" class="anchor"></a>Minor changes</h2>
 <ul>
-<li>Now, <code><a href="../reference/ggforest.html">ggforest()</a></code> simply returns a ggplot instead of drawing automatically the plot (<a href="https://github.com/kassambara/survminer/issues/321">@grvsinghal, #267</a>).</li>
+<li>Now, <code><a href="../reference/ggforest.html">ggforest()</a></code> simply returns a ggplot instead of drawing automatically the plot (<a href="https://github.com/kassambara/survminer/issues/321">@grvsinghal, <a href='https://github.com/kassambara/survminer/issues/267'>#267</a></a>).</li>
 </ul>
 </div>
 <div id="bug-fixes-2" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li>Now, hiding strata names in risk table work when combining survfits (<a href="https://github.com/kassambara/survminer/issues/317">@krassowski, #317</a>).</li>
-<li>Now, <code>axes.offset</code> argument is also applied to risk table (<a href="https://github.com/kassambara/survminer/issues/243">@dmartinffm, #243</a>).</li>
-<li>It is now possible to add <code>ggsurvplot</code> to powerpoint document using ReporteRs even if there is no risk table (<a href="https://github.com/kassambara/survminer/issues/314">@DrRZ, #314</a>).</li>
+<li>Now, hiding strata names in risk table work when combining survfits (<a href="https://github.com/kassambara/survminer/issues/317">@krassowski, <a href='https://github.com/kassambara/survminer/issues/317'>#317</a></a>).</li>
+<li>Now, <code>axes.offset</code> argument is also applied to risk table (<a href="https://github.com/kassambara/survminer/issues/243">@dmartinffm, <a href='https://github.com/kassambara/survminer/issues/243'>#243</a></a>).</li>
+<li>It is now possible to add <code>ggsurvplot</code> to powerpoint document using ReporteRs even if there is no risk table (<a href="https://github.com/kassambara/survminer/issues/314">@DrRZ, <a href='https://github.com/kassambara/survminer/issues/314'>#314</a></a>).</li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-4-2" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.4.2">
 <a href="#survminer-0-4-2" class="anchor"></a>Survminer 0.4.2<small> 2018-01-31 </small>
 </h1>
-<div id="minor-changes-4" class="section level2">
+<div id="minor-changes-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-4" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-5" class="anchor"></a>Minor changes</h2>
 <ul>
-<li>New argument <code>size</code> added in <code><a href="../reference/ggadjustedcurves.html">ggadjustedcurves()</a></code> to change the curve size (<a href="https://github.com/kassambara/survminer/issues/267">@MaximilianTscharre, #267</a>).</li>
+<li>New argument <code>size</code> added in <code><a href="../reference/ggadjustedcurves.html">ggadjustedcurves()</a></code> to change the curve size (<a href="https://github.com/kassambara/survminer/issues/267">@MaximilianTscharre, <a href='https://github.com/kassambara/survminer/issues/267'>#267</a></a>).</li>
 </ul>
 </div>
 <div id="bug-fixes-3" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li>Now, confidence interval ribbon works properly (<a href="https://github.com/kassambara/survminer/issues/275">@wp07, #275</a>).</li>
-<li>Now, the argument <code>ggtheme</code> is supported when combining a list of survfit objects in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> (<a href="https://github.com/kassambara/survminer/issues/278">@PhonePong, #278</a>).</li>
+<li>Now, confidence interval ribbon works properly (<a href="https://github.com/kassambara/survminer/issues/275">@wp07, <a href='https://github.com/kassambara/survminer/issues/275'>#275</a></a>).</li>
+<li>Now, the argument <code>ggtheme</code> is supported when combining a list of survfit objects in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> (<a href="https://github.com/kassambara/survminer/issues/278">@PhonePong, <a href='https://github.com/kassambara/survminer/issues/278'>#278</a></a>).</li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-4-1" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.4.1">
 <a href="#survminer-0-4-1" class="anchor"></a>survminer 0.4.1<small> 2017-11-17 </small>
 </h1>
 <div id="new-features-2" class="section level2">
@@ -238,16 +272,16 @@
 <h2 class="hasAnchor">
 <a href="#major-changes" class="anchor"></a>Major changes</h2>
 <ul>
-<li>The function <code>ggcoxadjustedcurves()</code> is replaced by <code><a href="../reference/ggadjustedcurves.html">ggadjustedcurves()</a></code> (<a href="https://github.com/kassambara/survminer/issues/229">#229</a>).</li>
+<li>The function <code>ggcoxadjustedcurves()</code> is replaced by <code><a href="../reference/ggadjustedcurves.html">ggadjustedcurves()</a></code> (<a href='https://github.com/kassambara/survminer/issues/229'>#229</a>).</li>
 </ul>
 </div>
-<div id="minor-changes-5" class="section level2">
+<div id="minor-changes-6" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-5" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-6" class="anchor"></a>Minor changes</h2>
 <ul>
 <li><p>The grouping variable to the <code><a href="../reference/ggadjustedcurves.html">ggadjustedcurves()</a></code> function is now passed as a name (character) of grouping variable not as a vector with values of grouping variable.</p></li>
-<li><p>New argument <code>font.family</code> in <code><a href="../reference/ggsurvtable.html">ggsurvtable()</a></code> to change the font family in the survival tables - such as risk, cummulative events and censoring tables. For example font.family = “Courier New” (<a href="https://github.com/kassambara/survminer/issues/245">@Swechhya, #245</a>).</p></li>
-<li><p>Now, in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> the data argument should be strictly provided (<a href="https://github.com/kassambara/survminer/issues/235">@dnzmarcio, #235</a>)</p></li>
+<li><p>New argument <code>font.family</code> in <code><a href="../reference/ggsurvtable.html">ggsurvtable()</a></code> to change the font family in the survival tables - such as risk, cummulative events and censoring tables. For example font.family = “Courier New” (<a href="https://github.com/kassambara/survminer/issues/245">@Swechhya, <a href='https://github.com/kassambara/survminer/issues/245'>#245</a></a>).</p></li>
+<li><p>Now, in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> the data argument should be strictly provided (<a href="https://github.com/kassambara/survminer/issues/235">@dnzmarcio, <a href='https://github.com/kassambara/survminer/issues/235'>#235</a></a>)</p></li>
 </ul>
 </div>
 <div id="bug-fixes-4" class="section level2">
@@ -255,13 +289,13 @@
 <a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>
-<code><a href="../reference/ggforest.html">ggforest()</a></code> no longer tries to bolt a table full of text to the coefficient plot (<a href="https://github.com/kassambara/survminer/issues/241">@mmoisse, #241</a>), instead the annotations are done via ggplot2::annotate, see example at: <a href="https://github.com/kassambara/survminer/pull/264">@fabian-s, #264</a>
+<code><a href="../reference/ggforest.html">ggforest()</a></code> no longer tries to bolt a table full of text to the coefficient plot (<a href="https://github.com/kassambara/survminer/issues/241">@mmoisse, <a href='https://github.com/kassambara/survminer/issues/241'>#241</a></a>), instead the annotations are done via ggplot2::annotate, see example at: <a href="https://github.com/kassambara/survminer/pull/264">@fabian-s, <a href='https://github.com/kassambara/survminer/issues/264'>#264</a></a>
 </li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-4-0" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.4.0">
 <a href="#survminer-0-4-0" class="anchor"></a>survminer 0.4.0<small> 2017-06-07 </small>
 </h1>
 <div id="new-features-3" class="section level2">
@@ -271,21 +305,21 @@
 <h3 class="hasAnchor">
 <a href="#new-options-in-ggsurvplot" class="anchor"></a>New options in ggsurvplot()</h3>
 <ul>
-<li><p>New argument <code>test.for.trend</code> added in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to perform a log-rank test for trend. logical value. Default is FALSE. If TRUE, returns the test for trend p-values. Tests for trend are designed to detect ordered differences in survival curves. That is, for at least one group. The test for trend can be only performed when the number of groups is &gt; 2 (<a href="https://github.com/kassambara/survminer/issues/188">#188</a>).</p></li>
-<li><p>New argument <code>add.all</code> added now in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to add he survival curves of (all) pooled patients onto the main survival plot stratified by grouping variables. Alias of the <code><a href="../reference/ggsurvplot_add_all.html">ggsurvplot_add_all()</a></code> function (<a href="https://github.com/kassambara/survminer/issues/194">#194</a>).</p></li>
-<li><p>New argument <code>combine = TRUE</code> is now available in the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function to combine a list of survfit objects on the same plot. Alias of the <em>ggsurvplot_combine</em>() function (<a href="https://github.com/kassambara/survminer/issues/195">#195</a>).</p></li>
-<li><p>The standard convention of ggplot2 is to have the axes offset from the origin. This can be annoying with Kaplan-Meier plots. New argument <code>axes.offset</code> added non in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>. logical value. Default is TRUE. If FALSE, set the plot axes to start at the origin (c(0,0)) (<a href="https://github.com/kassambara/survminer/issues/196">#196</a>).</p></li>
-<li><p>The function <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can take a list of survfit objects and produces a list of ggsurvplots (<a href="https://github.com/kassambara/survminer/issues/204">#204</a>).</p></li>
-<li><p>New argument <code>facet.by</code> added now in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to draw multi-panel survival curves of a data set grouped by one or two variables. Alias of the <code><a href="../reference/ggsurvplot_facet.html">ggsurvplot_facet()</a></code> function (<a href="https://github.com/kassambara/survminer/issues/205">#205</a>).</p></li>
+<li><p>New argument <code>test.for.trend</code> added in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to perform a log-rank test for trend. logical value. Default is FALSE. If TRUE, returns the test for trend p-values. Tests for trend are designed to detect ordered differences in survival curves. That is, for at least one group. The test for trend can be only performed when the number of groups is &gt; 2 (<a href="https://github.com/kassambara/survminer/issues/188"><a href='https://github.com/kassambara/survminer/issues/188'>#188</a></a>).</p></li>
+<li><p>New argument <code>add.all</code> added now in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to add he survival curves of (all) pooled patients onto the main survival plot stratified by grouping variables. Alias of the <code><a href="../reference/ggsurvplot_add_all.html">ggsurvplot_add_all()</a></code> function (<a href="https://github.com/kassambara/survminer/issues/194"><a href='https://github.com/kassambara/survminer/issues/194'>#194</a></a>).</p></li>
+<li><p>New argument <code>combine = TRUE</code> is now available in the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function to combine a list of survfit objects on the same plot. Alias of the <em>ggsurvplot_combine</em>() function (<a href="https://github.com/kassambara/survminer/issues/195"><a href='https://github.com/kassambara/survminer/issues/195'>#195</a></a>).</p></li>
+<li><p>The standard convention of ggplot2 is to have the axes offset from the origin. This can be annoying with Kaplan-Meier plots. New argument <code>axes.offset</code> added non in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>. logical value. Default is TRUE. If FALSE, set the plot axes to start at the origin (c(0,0)) (<a href="https://github.com/kassambara/survminer/issues/196"><a href='https://github.com/kassambara/survminer/issues/196'>#196</a></a>).</p></li>
+<li><p>The function <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can take a list of survfit objects and produces a list of ggsurvplots (<a href='https://github.com/kassambara/survminer/issues/204'>#204</a>).</p></li>
+<li><p>New argument <code>facet.by</code> added now in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to draw multi-panel survival curves of a data set grouped by one or two variables. Alias of the <code><a href="../reference/ggsurvplot_facet.html">ggsurvplot_facet()</a></code> function (<a href='https://github.com/kassambara/survminer/issues/205'>#205</a>).</p></li>
 <li><p>New argument <code>group.by</code> added now in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to create survival curves of grouped data sets. Alias of the <code><a href="../reference/ggsurvplot_group_by.html">ggsurvplot_group_by()</a></code> function.</p></li>
-<li><p>In <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, one can specify pval = TRUE/FALSE as a logical value. Now, it’s also possible to specify the argument <code>pval</code> as a numeric value (e.g.: pval = 0.002), that will be passed to the plot, so that user can pass any custom p-value to the final plot (<a href="https://github.com/kassambara/survminer/issues/189">@MarcinKosinski, #189</a>) or one can specify it as a character string (e.g.: pval = “p &lt; 0001”) (<a href="https://github.com/kassambara/survminer/issues/193">@MarcinKosinski, #193</a>).</p></li>
+<li><p>In <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, one can specify pval = TRUE/FALSE as a logical value. Now, it’s also possible to specify the argument <code>pval</code> as a numeric value (e.g.: pval = 0.002), that will be passed to the plot, so that user can pass any custom p-value to the final plot (<a href="https://github.com/kassambara/survminer/issues/189">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/189'>#189</a></a>) or one can specify it as a character string (e.g.: pval = “p &lt; 0001”) (<a href="https://github.com/kassambara/survminer/issues/193">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/193'>#193</a></a>).</p></li>
 <li>New argument <code>xscale</code> in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>: numeric or character value specifying x-axis scale.
 <ul>
 <li>If numeric, the value is used to divide the labels on the x axis. For example, a value of 365.25 will give labels in years instead of the original days.</li>
-<li>If character, allowed options include one of c(“d_m”, “d_y”, “m_d”, “m_y”, “y_d”, “y_m”), where d = days, m = months and y = years. For example, xscale = “d_m” will transform labels from days to months; xscale = “m_y”, will transform labels from months to years (<a href="https://github.com/kassambara/survminer/issues/166">#166</a>).</li>
+<li>If character, allowed options include one of c(“d_m”, “d_y”, “m_d”, “m_y”, “y_d”, “y_m”), where d = days, m = months and y = years. For example, xscale = “d_m” will transform labels from days to months; xscale = “m_y”, will transform labels from months to years (<a href="https://github.com/kassambara/survminer/issues/166"><a href='https://github.com/kassambara/survminer/issues/166'>#166</a></a>).</li>
 </ul>
 </li>
-<li><p>New arguments <code>censor.shape</code> and <code>censor.size</code> to change the shape and the shape of censors (<a href="https://github.com/kassambara/survminer/issues/186">#186</a> &amp; <a href="https://github.com/kassambara/survminer/issues/187">#187</a>).</p></li>
+<li><p>New arguments <code>censor.shape</code> and <code>censor.size</code> to change the shape and the shape of censors (<a href="https://github.com/kassambara/survminer/issues/186"><a href='https://github.com/kassambara/survminer/issues/186'>#186</a></a> &amp; <a href="https://github.com/kassambara/survminer/issues/187"><a href='https://github.com/kassambara/survminer/issues/187'>#187</a></a>).</p></li>
 <li><p>New argument <code>conf.int.alpha</code> added in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>. Numeric value specifying fill color transparency. Value should be in [0, 1], where 0 is full transparency and 1 is no transparency.</p></li>
 </ul>
 </div>
@@ -295,7 +329,7 @@
 <ul>
 <li><p>New function <code><a href="../reference/surv_group_by.html">surv_group_by()</a></code> added to create a grouped data set for survival analysis.</p></li>
 <li><p>New function <code><a href="../reference/ggsurvplot_df.html">ggsurvplot_df()</a></code> added. An extension to ggsurvplot() to plot survival curves from any data frame containing the summary of survival curves as returned the surv_summary() function. Might be useful for a user who wants to use ggsurvplot for visualizing survival curves computed by another method than the standard survfit.formula function. In this case, the user has just to provide the data frame containing the summary of the survival analysis.</p></li>
-<li><p>New function <code><a href="../reference/surv_median.html">surv_median()</a></code> added to easily extract median survivals from one or a list of survfit objects (<a href="https://github.com/kassambara/survminer/issues/207">#207</a>).</p></li>
+<li><p>New function <code><a href="../reference/surv_median.html">surv_median()</a></code> added to easily extract median survivals from one or a list of survfit objects (<a href='https://github.com/kassambara/survminer/issues/207'>#207</a>).</p></li>
 <li><p>New function <code>surv_pvalue</code>() added to compute p-value from survfit objects or parse it when provided by the user. Survival curves are compared using the log-rank test (default). Other methods can be specified using the argument method.</p></li>
 <li>New function <code>surv_fit</code>() added to handle complex situation when computing survival curves (Read more in the doc: <em>?surv_fit</em>). Wrapper arround the standard <code>survfit</code>() [<em>survival</em>] function to create survival curves. Compared to the standard survfit() function, it supports also:
 <ul>
@@ -311,18 +345,18 @@
 <h2 class="hasAnchor">
 <a href="#major-changes-1" class="anchor"></a>Major changes</h2>
 <ul>
-<li>The <code><a href="../reference/ggforest.html">ggforest()</a></code> function has changed a lot. Now presents much more statistics for each level of each variable (extracted with <code><a href="https://www.rdocumentation.org/packages/broom/topics/reexports">broom::tidy</a></code>) and also some statistics for the <code>coxph</code> model, like AIC, p.value, concordance (extracted with <code><a href="https://www.rdocumentation.org/packages/broom/topics/reexports">broom::glance</a></code>) (<a href="https://github.com/kassambara/survminer/issues/178">#178</a>)</li>
+<li>The <code><a href="../reference/ggforest.html">ggforest()</a></code> function has changed a lot. Now presents much more statistics for each level of each variable (extracted with <code><a href="https://rdrr.io/pkg/broom/man/reexports.html">broom::tidy</a></code>) and also some statistics for the <code>coxph</code> model, like AIC, p.value, concordance (extracted with <code><a href="https://rdrr.io/pkg/broom/man/reexports.html">broom::glance</a></code>) (<a href="https://github.com/kassambara/survminer/issues/178"><a href='https://github.com/kassambara/survminer/issues/178'>#178</a></a>)</li>
 </ul>
 </div>
-<div id="minor-changes-6" class="section level2">
+<div id="minor-changes-7" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-6" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-7" class="anchor"></a>Minor changes</h2>
 <ul>
 <li><p>Now, <code><a href="../reference/ggcompetingrisks.html">ggcompetingrisks()</a></code> supports the <code>conf.int</code> argument. If <code>conf.int=TRUE</code> and <code>fit</code> is an object of class <code>cuminc</code> then confidence intervals are plotted with <code>geom_ribbon</code>.</p></li>
-<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> supports the <code><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survfit()</a></code> outputs when used with the argument <code>start.time</code>.</p></li>
-<li><p>Now, the default behaviour of <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> is to round the number at risk using the option <code>digits = 0</code> (<a href="https://github.com/kassambara/survminer/issues/214">214</a>).</p></li>
-<li><p><code><a href="../reference/pairwise_survdiff.html">pairwise_survdiff()</a></code> has been improved to handle a formula with multiple variables (<a href="https://github.com/kassambara/survminer/issues/213">213</a>).</p></li>
-<li>The argument <code>color</code> are updated allowing to assign the same color for same groups accross facets (<a href="https://github.com/kassambara/survminer/issues/99">#99</a> &amp; <a href="https://github.com/kassambara/survminer/issues/185">#185</a>).
+<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> supports the <code><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit()</a></code> outputs when used with the argument <code>start.time</code>.</p></li>
+<li><p>Now, the default behaviour of <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> is to round the number at risk using the option <code>digits = 0</code> (<a href='https://github.com/kassambara/survminer/issues/214'>#214</a>).</p></li>
+<li><p><code><a href="../reference/pairwise_survdiff.html">pairwise_survdiff()</a></code> has been improved to handle a formula with multiple variables (<a href='https://github.com/kassambara/survminer/issues/213'>#213</a>).</p></li>
+<li>The argument <code>color</code> are updated allowing to assign the same color for same groups accross facets (<a href='https://github.com/kassambara/survminer/issues/99'>#99</a> &amp; <a href="https://github.com/kassambara/survminer/issues/185"><a href='https://github.com/kassambara/survminer/issues/185'>#185</a></a>).
 <ul>
 <li>If the number of strata/group (n.strata) = 1, the expected value is the color name. For example color = “blue”.</li>
 <li>If n.strata &gt; 1, the expected value is the grouping variable name. By default, survival curves are colored by strata using the argument color = “strata”, but you can also color survival curves by any other grouping variables used to fit the survival curves.</li>
@@ -330,21 +364,21 @@
 </li>
 </ul>
 <p>For example, in the following script, survival curves are colored by the grouping variable <code>sex</code> in all facets:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(survminer)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(survival)
-fit &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survfit</a></span>( <span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/Surv">Surv</a></span>(time, status) <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>rx <span class="op">+</span><span class="st"> </span>adhere,
-                 <span class="dt">data =</span> colon )
-ggsurv &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> colon,
-               <span class="dt">color =</span> <span class="st">"sex"</span>,
-               <span class="dt">legend.title =</span> <span class="st">"Sex"</span>,
-               <span class="dt">palette =</span> <span class="st">"jco"</span>)
-ggsurv<span class="op">$</span>plot <span class="op">+</span><span class="st"> </span><span class="kw">facet_grid</span>(rx <span class="op">~</span><span class="st"> </span>adhere)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">survminer</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">survival</span>)
+<span class="no">fit</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span>( <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span>(<span class="no">time</span>, <span class="no">status</span>) ~ <span class="no">sex</span> + <span class="no">rx</span> + <span class="no">adhere</span>,
+                 <span class="kw">data</span> <span class="kw">=</span> <span class="no">colon</span> )
+<span class="no">ggsurv</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(<span class="no">fit</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">colon</span>,
+               <span class="kw">color</span> <span class="kw">=</span> <span class="st">"sex"</span>,
+               <span class="kw">legend.title</span> <span class="kw">=</span> <span class="st">"Sex"</span>,
+               <span class="kw">palette</span> <span class="kw">=</span> <span class="st">"jco"</span>)
+<span class="no">ggsurv</span>$<span class="no">plot</span> + <span class="fu">facet_grid</span>(<span class="no">rx</span> ~ <span class="no">adhere</span>)</pre></div>
 <ul>
 <li>Now, the function <code><a href="../reference/pairwise_survdiff.html">pairwise_survdiff()</a></code> checks whether the grouping variable is a factor. If this is not the case, the grouping variable is automatically converted into a factor.</li>
-<li><p><code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>: Now, log scale is used for x-axis when plotting the complementary log−log function (argument `fun = “cloglog”) (<a href="https://github.com/kassambara/survminer/issues/171">#171</a>).</p></li>
-<li><p>Now, the argument <code>palette</code> in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> ccan be also a numeric vector of length(strata); in this case a basic color palette is created using the function <code><a href="https://www.rdocumentation.org/packages/grDevices/topics/palette">grDevices::palette()</a></code>.</p></li>
-<li><p>The <code>%+%</code> function in <code>survminer</code> has been replaced by <code>%++%</code> to avoid breaking the <code>ggplot2::%+%</code> function behavior when using survminer (<a href="https://github.com/kassambara/survminer/issues/199">#199</a> and <a href="https://github.com/kassambara/survminer/issues/200">#200</a>).</p></li>
-<li><p>New argument <code>fun</code> added in <code>ggcoxadjustedcurves()</code> (<a href="https://github.com/kassambara/survminer/issues/202">@meganli, #202</a>).</p></li>
+<li><p><code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>: Now, log scale is used for x-axis when plotting the complementary log−log function (argument `fun = “cloglog”) (<a href="https://github.com/kassambara/survminer/issues/171"><a href='https://github.com/kassambara/survminer/issues/171'>#171</a></a>).</p></li>
+<li><p>Now, the argument <code>palette</code> in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> ccan be also a numeric vector of length(strata); in this case a basic color palette is created using the function <code><a href="https://rdrr.io/r/grDevices/palette.html">grDevices::palette()</a></code>.</p></li>
+<li><p>The <code>%+%</code> function in <code>survminer</code> has been replaced by <code><a href="../reference/add_ggsurvplot.html">%++%</a></code> to avoid breaking the <code>ggplot2::%+%</code> function behavior when using survminer (<a href='https://github.com/kassambara/survminer/issues/199'>#199</a> and <a href='https://github.com/kassambara/survminer/issues/200'>#200</a>).</p></li>
+<li><p>New argument <code>fun</code> added in <code>ggcoxadjustedcurves()</code> (<a href="https://github.com/kassambara/survminer/issues/202">@meganli, <a href='https://github.com/kassambara/survminer/issues/202'>#202</a></a>).</p></li>
 <li><p>The function <code>theme_classic2()</code> removed.</p></li>
 </ul>
 </div>
@@ -352,19 +386,19 @@ ggsurv<span class="op">$</span>plot <span class="op">+</span><span class="st"> <
 <h2 class="hasAnchor">
 <a href="#bug-fixes-5" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li><p>Columns/Rows are now correctly labeled in <code>pairwise_survdiff</code>() display (<a href="https://github.com/kassambara/survminer/issues/212">@mriffle, #212</a>).</p></li>
-<li><p>Now, the <code><a href="../reference/pairwise_survdiff.html">pairwise_survdiff()</a></code> function works when the data contain NAs (<a href="https://github.com/kassambara/survminer/issues/184">@emilelatour , #184</a>).</p></li>
-<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> fully supports different methods, in the <em>survMisc</em> package, for comparing survival curves (<a href="https://github.com/kassambara/survminer/issues/191">#191</a>).</p></li>
+<li><p>Columns/Rows are now correctly labeled in <code>pairwise_survdiff</code>() display (<a href="https://github.com/kassambara/survminer/issues/212">@mriffle, <a href='https://github.com/kassambara/survminer/issues/212'>#212</a></a>).</p></li>
+<li><p>Now, the <code><a href="../reference/pairwise_survdiff.html">pairwise_survdiff()</a></code> function works when the data contain NAs (<a href="https://github.com/kassambara/survminer/issues/184">@emilelatour , <a href='https://github.com/kassambara/survminer/issues/184'>#184</a></a>).</p></li>
+<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> fully supports different methods, in the <em>survMisc</em> package, for comparing survival curves (<a href="https://github.com/kassambara/survminer/issues/191"><a href='https://github.com/kassambara/survminer/issues/191'>#191</a></a>).</p></li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-3-1" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.3.1">
 <a href="#survminer-0-3-1" class="anchor"></a>survminer 0.3.1<small> 2017-03-21 </small>
 </h1>
-<div id="minor-changes-7" class="section level2">
+<div id="minor-changes-8" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-7" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-8" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>The example section of the <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> function and the vignette file <code>Informative_Survival_Plots.Rmd</code> have been updated so that <code>survminer</code> can pass CRAN check under R-oldrelease.</li>
 <li>New example dataset <code>BMT</code> added for competing risk analysis.</li>
@@ -375,13 +409,13 @@ ggsurv<span class="op">$</span>plot <span class="op">+</span><span class="st"> <
 <h2 class="hasAnchor">
 <a href="#bug-fixes-6" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li>Now, <code>palette</code> argument works in `ggcoxadjustedcurves() (<a href="https://github.com/kassambara/survminer/issues/174">#174</a>)</li>
-<li>Now <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> works when the <code>fun</code> argument is an arbitrary function (<a href="https://github.com/kassambara/survminer/issues/176">#176</a>).</li>
+<li>Now, <code>palette</code> argument works in `ggcoxadjustedcurves() (<a href="https://github.com/kassambara/survminer/issues/174"><a href='https://github.com/kassambara/survminer/issues/174'>#174</a></a>)</li>
+<li>Now <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> works when the <code>fun</code> argument is an arbitrary function (<a href="https://github.com/kassambara/survminer/issues/176"><a href='https://github.com/kassambara/survminer/issues/176'>#176</a></a>).</li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-3-0" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.3.0">
 <a href="#survminer-0-3-0" class="anchor"></a>survminer 0.3.0<small> 2017-03-16 </small>
 </h1>
 <div id="new-features-4" class="section level2">
@@ -391,14 +425,14 @@ ggsurv<span class="op">$</span>plot <span class="op">+</span><span class="st"> <
 <h3 class="hasAnchor">
 <a href="#new-options-in-ggsurvplot-1" class="anchor"></a>New options in ggsurvplot()</h3>
 <ul>
-<li><p>Additional <code>data</code> argument added to the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function (<a href="https://github.com/kassambara/survminer/issues/142">\@kassambara, #142</a>). Now, it’s recommended to pass to the function, the data used to fit survival curves. This will avoid the error generated when trying to use the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function inside another functions (<a href="https://github.com/kassambara/survminer/issues/125">\@zzawadz, #125</a>).</p></li>
-<li><p>New argument <code>risk.table.pos</code>, for placing risk table inside survival curves (<a href="https://github.com/kassambara/survminer/issues/69">#69</a>). Allowed options are one of c(“out”, “in”) indicating ‘outside’ or ‘inside’ the main plot, respectively. Default value is “out”.</p></li>
-<li><p>New arguments <code>tables.height, tables.y.text, tables.theme, tables.col</code>: for customizing tables under the main survival plot: (<a href="https://github.com/kassambara/survminer/issues/156">#156</a>).</p></li>
-<li><p>New arguments <code>cumevents</code> and <code>cumcensor</code>: logical value for displaying the cumulative number of events table (<a href="https://github.com/kassambara/survminer/issues/117">#117</a>) and the cumulative number of censored subject (<a href="https://github.com/kassambara/survminer/issues/155">#155</a>), respectively.</p></li>
-<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can display both the number at risk and the cumulative number of censored in the same table using the option <code>risk.table = 'nrisk_cumcenor'</code> (<a href="https://github.com/kassambara/survminer/issues/96">#96</a>). It’s also possible to display the number at risk and the cumulative number of events using the option <code>risk.table = 'nrisk_cumevents'</code>.</p></li>
-<li><p>New arguments <code>pval.method</code> and <code>log.rank.weights</code>: New possibilities to compare survival curves. Functionality based on <code><a href="https://www.rdocumentation.org/packages/survMisc/topics/comp">survMisc::comp</a></code>.</p></li>
+<li><p>Additional <code>data</code> argument added to the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function (<a href="https://github.com/kassambara/survminer/issues/142">\@kassambara, <a href='https://github.com/kassambara/survminer/issues/142'>#142</a></a>). Now, it’s recommended to pass to the function, the data used to fit survival curves. This will avoid the error generated when trying to use the <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function inside another functions (<a href="https://github.com/kassambara/survminer/issues/125">\@zzawadz, <a href='https://github.com/kassambara/survminer/issues/125'>#125</a></a>).</p></li>
+<li><p>New argument <code>risk.table.pos</code>, for placing risk table inside survival curves (<a href='https://github.com/kassambara/survminer/issues/69'>#69</a>). Allowed options are one of c(“out”, “in”) indicating ‘outside’ or ‘inside’ the main plot, respectively. Default value is “out”.</p></li>
+<li><p>New arguments <code>tables.height, tables.y.text, tables.theme, tables.col</code>: for customizing tables under the main survival plot: (<a href="https://github.com/kassambara/survminer/issues/156"><a href='https://github.com/kassambara/survminer/issues/156'>#156</a></a>).</p></li>
+<li><p>New arguments <code>cumevents</code> and <code>cumcensor</code>: logical value for displaying the cumulative number of events table (<a href="https://github.com/kassambara/survminer/issues/117"><a href='https://github.com/kassambara/survminer/issues/117'>#117</a></a>) and the cumulative number of censored subject (<a href="https://github.com/kassambara/survminer/issues/155"><a href='https://github.com/kassambara/survminer/issues/155'>#155</a></a>), respectively.</p></li>
+<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can display both the number at risk and the cumulative number of censored in the same table using the option <code>risk.table = 'nrisk_cumcenor'</code> (<a href='https://github.com/kassambara/survminer/issues/96'>#96</a>). It’s also possible to display the number at risk and the cumulative number of events using the option <code>risk.table = 'nrisk_cumevents'</code>.</p></li>
+<li><p>New arguments <code>pval.method</code> and <code>log.rank.weights</code>: New possibilities to compare survival curves. Functionality based on <code><a href="https://rdrr.io/pkg/survMisc/man/comp.html">survMisc::comp</a></code>.</p></li>
 <li><p>New arguments <code>break.x.by</code> and <code>break.y.by</code>, numeric value controlling x and y axis breaks, respectively.</p></li>
-<li>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> returns an object of class ggsurvplot which is list containing the following components (<a href="https://github.com/kassambara/survminer/issues/158">#158</a>):
+<li>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> returns an object of class ggsurvplot which is list containing the following components (<a href="https://github.com/kassambara/survminer/issues/158"><a href='https://github.com/kassambara/survminer/issues/158'>#158</a></a>):
 <ul>
 <li>
 <strong>plot</strong>: the survival plot (ggplot object)</li>
@@ -420,50 +454,50 @@ ggsurv<span class="op">$</span>plot <span class="op">+</span><span class="st"> <
 <h3 class="hasAnchor">
 <a href="#themes" class="anchor"></a>Themes</h3>
 <ul>
-<li><p>New function <code><a href="../reference/ggsurvtheme.html">theme_survminer()</a></code> to change easily the graphical parameters of plots generated with survminer (<a href="https://github.com/kassambara/survminer/issues/151">#151</a>). A theme similar to theme_classic() with large font size. Used as default theme in survminer functions.</p></li>
-<li><p>New function <code><a href="../reference/ggsurvtheme.html">theme_cleantable()</a></code> to draw a clean risk table and cumulative number of events table. Remove axis lines, x axis ticks and title (<a href="https://github.com/kassambara/survminer/issues/117">#117</a> &amp; <a href="https://github.com/kassambara/survminer/issues/156">#156</a>).</p></li>
+<li><p>New function <code><a href="../reference/ggsurvtheme.html">theme_survminer()</a></code> to change easily the graphical parameters of plots generated with survminer (<a href="https://github.com/kassambara/survminer/issues/151"><a href='https://github.com/kassambara/survminer/issues/151'>#151</a></a>). A theme similar to theme_classic() with large font size. Used as default theme in survminer functions.</p></li>
+<li><p>New function <code><a href="../reference/ggsurvtheme.html">theme_cleantable()</a></code> to draw a clean risk table and cumulative number of events table. Remove axis lines, x axis ticks and title (<a href="https://github.com/kassambara/survminer/issues/117"><a href='https://github.com/kassambara/survminer/issues/117'>#117</a></a> &amp; <a href="https://github.com/kassambara/survminer/issues/156"><a href='https://github.com/kassambara/survminer/issues/156'>#156</a></a>).</p></li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit survival curves</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(<span class="st">"survival"</span>)
-fit&lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survfit</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/Surv">Surv</a></span>(time, status) <span class="op">~</span><span class="st"> </span>sex, <span class="dt">data =</span> lung)
+<div class="sourceCode" id="cb2"><pre class="r"><span class="co"># Fit survival curves</span>
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">require</a></span>(<span class="st">"survival"</span>)
+<span class="no">fit</span><span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span>(<span class="no">time</span>, <span class="no">status</span>) ~ <span class="no">sex</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">lung</span>)
 
 <span class="co"># Survival curves</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(<span class="st">"survminer"</span>)
-<span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> lung, <span class="dt">risk.table =</span> <span class="ot">TRUE</span>,
-    <span class="dt">tables.theme =</span> <span class="kw"><a href="../reference/ggsurvtheme.html">theme_cleantable</a></span>()
-    )</code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">require</a></span>(<span class="st">"survminer"</span>)
+<span class="fu"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(<span class="no">fit</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">lung</span>, <span class="kw">risk.table</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
+    <span class="kw">tables.theme</span> <span class="kw">=</span> <span class="fu"><a href="../reference/ggsurvtheme.html">theme_cleantable</a></span>()
+    )</pre></div>
 </div>
 <div id="new-functions-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#new-functions-1" class="anchor"></a>New functions</h3>
 <ul>
-<li>New function <code>+.ggsurv()</code> to add ggplot components - <code>theme()</code>, <code>labs()</code> - to an object of class ggsurv, which is a list of ggplots. (<a href="https://github.com/kassambara/survminer/issues/151">#151</a>). For example:</li>
+<li>New function <code>+.ggsurv()</code> to add ggplot components - <code>theme()</code>, <code>labs()</code> - to an object of class ggsurv, which is a list of ggplots. (<a href="https://github.com/kassambara/survminer/issues/151"><a href='https://github.com/kassambara/survminer/issues/151'>#151</a></a>). For example:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fit survival curves</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(<span class="st">"survival"</span>)
-fit&lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survfit</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/Surv">Surv</a></span>(time, status) <span class="op">~</span><span class="st"> </span>sex, <span class="dt">data =</span> lung)
+<div class="sourceCode" id="cb3"><pre class="r"><span class="co"># Fit survival curves</span>
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">require</a></span>(<span class="st">"survival"</span>)
+<span class="no">fit</span><span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span>(<span class="no">time</span>, <span class="no">status</span>) ~ <span class="no">sex</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">lung</span>)
 
 <span class="co"># Basic survival curves</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(<span class="st">"survminer"</span>)
-p &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">data =</span> lung, <span class="dt">risk.table =</span> <span class="ot">TRUE</span>)
-p
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">require</a></span>(<span class="st">"survminer"</span>)
+<span class="no">p</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(<span class="no">fit</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">lung</span>, <span class="kw">risk.table</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="no">p</span>
 
 <span class="co"># Customizing the plots</span>
-p <span class="op">%+%</span><span class="st"> </span><span class="kw"><a href="../reference/ggsurvtheme.html">theme_survminer</a></span>(
-     <span class="dt">font.main =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),
-     <span class="dt">font.submain =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),
-     <span class="dt">font.caption =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">14</span>, <span class="st">"plain"</span>, <span class="st">"orange"</span>),
-     <span class="dt">font.x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"red"</span>),
-     <span class="dt">font.y =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkred"</span>),
-     <span class="dt">font.tickslab =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">12</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>)
-)</code></pre></div>
+<span class="no">p</span> <span class="kw">%+%</span> <span class="fu"><a href="../reference/ggsurvtheme.html">theme_survminer</a></span>(
+     <span class="kw">font.main</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),
+     <span class="kw">font.submain</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),
+     <span class="kw">font.caption</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">14</span>, <span class="st">"plain"</span>, <span class="st">"orange"</span>),
+     <span class="kw">font.x</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"red"</span>),
+     <span class="kw">font.y</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkred"</span>),
+     <span class="kw">font.tickslab</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">12</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>)
+)</pre></div>
 <ul>
-<li><p>New function <code><a href="../reference/arrange_ggsurvplots.html">arrange_ggsurvplots()</a></code> to arrange multiple ggsurvplots on the same page (<a href="https://github.com/kassambara/survminer/issues/66">#66</a>).</p></li>
-<li><p>New function <code><a href="../reference/ggsurvevents.html">ggsurvevents()</a></code> to calculate and plot the distribution for events (both status = 0 and status = 1); with <code>type</code> parameter one can plot cumulative distribution of locally smooth density; with normalised, distributions are normalised. This function helps to notice when censorings are more common (<a href="https://github.com/kassambara/survminer/issues/116">\@pbiecek, #116</a>).</p></li>
-<li><p>New function <code>ggcoxadjustedcurves()</code> to plot adjusted survival curves for Cox proportional hazards model (<a href="https://github.com/kassambara/survminer/issues/133">\@pbiecek, #133</a> &amp; <a href="https://github.com/kassambara/survminer/issues/67">\@markdanese, #67</a>).</p></li>
+<li><p>New function <code><a href="../reference/arrange_ggsurvplots.html">arrange_ggsurvplots()</a></code> to arrange multiple ggsurvplots on the same page (<a href='https://github.com/kassambara/survminer/issues/66'>#66</a>).</p></li>
+<li><p>New function <code><a href="../reference/ggsurvevents.html">ggsurvevents()</a></code> to calculate and plot the distribution for events (both status = 0 and status = 1); with <code>type</code> parameter one can plot cumulative distribution of locally smooth density; with normalised, distributions are normalised. This function helps to notice when censorings are more common (<a href="https://github.com/kassambara/survminer/issues/116">\@pbiecek, <a href='https://github.com/kassambara/survminer/issues/116'>#116</a></a>).</p></li>
+<li><p>New function <code>ggcoxadjustedcurves()</code> to plot adjusted survival curves for Cox proportional hazards model (<a href="https://github.com/kassambara/survminer/issues/133">\@pbiecek, <a href='https://github.com/kassambara/survminer/issues/133'>#133</a></a> &amp; \@markdanese, <a href='https://github.com/kassambara/survminer/issues/67'>#67</a>).</p></li>
 <li><p>New function <code><a href="../reference/ggforest.html">ggforest()</a></code> for drawing forest plot for the Cox model.</p></li>
-<li><p>New function <code><a href="../reference/pairwise_survdiff.html">pairwise_survdiff()</a></code> for multiple comparisons of survival Curves (<a href="https://github.com/kassambara/survminer/issues/97">#97</a>).</p></li>
-<li><p>New function <code><a href="../reference/ggcompetingrisks.html">ggcompetingrisks()</a></code> to plot the cumulative incidence curves for competing risks (<a href="https://github.com/kassambara/survminer/issues/168">\@pbiecek, #168</a>.</p></li>
+<li><p>New function <code><a href="../reference/pairwise_survdiff.html">pairwise_survdiff()</a></code> for multiple comparisons of survival Curves (<a href='https://github.com/kassambara/survminer/issues/97'>#97</a>).</p></li>
+<li><p>New function <code><a href="../reference/ggcompetingrisks.html">ggcompetingrisks()</a></code> to plot the cumulative incidence curves for competing risks (<a href="https://github.com/kassambara/survminer/issues/168">\@pbiecek, <a href='https://github.com/kassambara/survminer/issues/168'>#168</a></a>.</p></li>
 </ul>
 </div>
 <div id="helper-functions" class="section level3">
@@ -472,11 +506,11 @@ p <span class="op">%+%</span><span class="st"> </span><span class="kw"><a href="
 <p>New heper functions <code><a href="../reference/ggsurvtable.html">ggrisktable()</a></code>, <code><a href="../reference/ggsurvtable.html">ggcumevents()</a></code>, <code><a href="../reference/ggsurvtable.html">ggcumcensor()</a></code>. Normally, users don’t need to use these function directly. Internally used by the function <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>.</p>
 <ul>
 <li>
-<code><a href="../reference/ggsurvtable.html">ggrisktable()</a></code> for plotting number of subjects at risk by time. (<a href="https://github.com/kassambara/survminer/issues/154">#154</a>).</li>
+<code><a href="../reference/ggsurvtable.html">ggrisktable()</a></code> for plotting number of subjects at risk by time. (<a href="https://github.com/kassambara/survminer/issues/154"><a href='https://github.com/kassambara/survminer/issues/154'>#154</a></a>).</li>
 <li>
-<code><a href="../reference/ggsurvtable.html">ggcumevents()</a></code> for plotting the cumulative number of events table (<a href="https://github.com/kassambara/survminer/issues/117">#117</a>).</li>
+<code><a href="../reference/ggsurvtable.html">ggcumevents()</a></code> for plotting the cumulative number of events table (<a href="https://github.com/kassambara/survminer/issues/117"><a href='https://github.com/kassambara/survminer/issues/117'>#117</a></a>).</li>
 <li>
-<code><a href="../reference/ggsurvtable.html">ggcumcensor()</a></code> for plotting the cumulative number of censored subjects table (<a href="https://github.com/kassambara/survminer/issues/155">#155</a>).</li>
+<code><a href="../reference/ggsurvtable.html">ggcumcensor()</a></code> for plotting the cumulative number of censored subjects table (<a href="https://github.com/kassambara/survminer/issues/155"><a href='https://github.com/kassambara/survminer/issues/155'>#155</a></a>).</li>
 </ul>
 </div>
 </div>
@@ -484,42 +518,42 @@ p <span class="op">%+%</span><span class="st"> </span><span class="kw"><a href="
 <h2 class="hasAnchor">
 <a href="#major-changes-2" class="anchor"></a>Major changes</h2>
 <ul>
-<li><p>New argument <code>sline</code> in the <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> function for adding loess smoothed trend on the residual plots. This will make it easier to spot some problems with residuals (like quadratic relation). (<a href="https://github.com/kassambara/survminer/issues/119">\@pbiecek, #119</a>).</p></li>
-<li><p>The design of <code><a href="../reference/ggcoxfunctional.html">ggcoxfunctional()</a></code> has been changed to be consistent with the other functions in the survminer package. Now, <code><a href="../reference/ggcoxfunctional.html">ggcoxfunctional()</a></code> works with coxph objects not formulas. The arguments formula is now deprecated (<a href="https://github.com/kassambara/survminer/issues/115">\@pbiecek, #115</a>).</p></li>
-<li><p>In the <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> function, it’s now possible to plot Time in the OX axis (<a href="https://github.com/kassambara/survminer/issues/124">\@pbiecek, #124</a>). This is convenient for some residuals like Schoenfeld. The <code>linear.predictions</code> parameter has been replaced with <code>ox.scale = c("linear.predictions", "time", "observation.id")</code>.</p></li>
+<li><p>New argument <code>sline</code> in the <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> function for adding loess smoothed trend on the residual plots. This will make it easier to spot some problems with residuals (like quadratic relation). (<a href="https://github.com/kassambara/survminer/issues/119">\@pbiecek, <a href='https://github.com/kassambara/survminer/issues/119'>#119</a></a>).</p></li>
+<li><p>The design of <code><a href="../reference/ggcoxfunctional.html">ggcoxfunctional()</a></code> has been changed to be consistent with the other functions in the survminer package. Now, <code><a href="../reference/ggcoxfunctional.html">ggcoxfunctional()</a></code> works with coxph objects not formulas. The arguments formula is now deprecated (<a href="https://github.com/kassambara/survminer/issues/115">\@pbiecek, <a href='https://github.com/kassambara/survminer/issues/115'>#115</a></a>).</p></li>
+<li><p>In the <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> function, it’s now possible to plot Time in the OX axis (<a href="https://github.com/kassambara/survminer/issues/124">\@pbiecek, <a href='https://github.com/kassambara/survminer/issues/124'>#124</a></a>). This is convenient for some residuals like Schoenfeld. The <code>linear.predictions</code> parameter has been replaced with <code>ox.scale = c("linear.predictions", "time", "observation.id")</code>.</p></li>
 </ul>
 </div>
-<div id="minor-changes-8" class="section level2">
+<div id="minor-changes-9" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-8" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-9" class="anchor"></a>Minor changes</h2>
 <ul>
-<li><p>New argument <code>tables.height</code> in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to apply the same height to all the tables under the main survival plots (<a href="https://github.com/kassambara/survminer/issues/157">#157</a>).</p></li>
-<li><p>It is possible to specify <code>title</code> and <code>caption</code> for <code>ggcoxfunctional</code> (<a href="https://github.com/kassambara/survminer/issues/138">\@MarcinKosinski, #138</a>) (<code>font.main</code> was removed as it was unused.)</p></li>
-<li><p>It is possible to specify <code>title</code>, <code>subtitle</code> and <code>caption</code> for <code>ggcoxdiagnostics</code> (<a href="https://github.com/kassambara/survminer/issues/139">\@MarcinKosinski, #139</a>) and <code>fonts</code> for them.</p></li>
-<li><p>It is possible to specify global <code>caption</code> for <code>ggcoxzph</code> (<a href="https://github.com/kassambara/survminer/issues/140">\@MarcinKosinski, #140</a>).</p></li>
-<li><p>In <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, more information, about color palettes, have been added in the details section of the documentation (<a href="https://github.com/kassambara/survminer/issues/100">#100</a>).</p></li>
-<li><p>The R package <code>maxstat</code> doesn’t support very well an object of class <code>tbl_df</code>. To fix this issue, now, in the <code><a href="../reference/surv_cutpoint.html">surv_cutpoint()</a></code> function, the input data is systematically transformed into a standard data.frame format (<a href="https://github.com/kassambara/survminer/issues/104">\@MarcinKosinski, #104</a>).</p></li>
-<li><p>It’s now possible to print the output of the survminer packages in a powerpoint created with the ReporteRs package. You should use the argument <em>newpage = FALSE</em> in the <code><a href="https://www.rdocumentation.org/packages/base/topics/print">print()</a></code> function when printing the output in the powerpoint. Thanks to (<a href="https://github.com/kassambara/survminer/issues/110">\@abossenbroek, #110</a>) and (<a href="https://github.com/kassambara/survminer/issues/111">\@zzawadz, #111</a>). For instance:</p></li>
+<li><p>New argument <code>tables.height</code> in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to apply the same height to all the tables under the main survival plots (<a href="https://github.com/kassambara/survminer/issues/157"><a href='https://github.com/kassambara/survminer/issues/157'>#157</a></a>).</p></li>
+<li><p>It is possible to specify <code>title</code> and <code>caption</code> for <code>ggcoxfunctional</code> (<a href="https://github.com/kassambara/survminer/issues/138">\@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/138'>#138</a></a>) (<code>font.main</code> was removed as it was unused.)</p></li>
+<li><p>It is possible to specify <code>title</code>, <code>subtitle</code> and <code>caption</code> for <code>ggcoxdiagnostics</code> (<a href="https://github.com/kassambara/survminer/issues/139">\@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/139'>#139</a></a>) and <code>fonts</code> for them.</p></li>
+<li><p>It is possible to specify global <code>caption</code> for <code>ggcoxzph</code> (<a href="https://github.com/kassambara/survminer/issues/140">\@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/140'>#140</a></a>).</p></li>
+<li><p>In <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, more information, about color palettes, have been added in the details section of the documentation (<a href="https://github.com/kassambara/survminer/issues/100"><a href='https://github.com/kassambara/survminer/issues/100'>#100</a></a>).</p></li>
+<li><p>The R package <code>maxstat</code> doesn’t support very well an object of class <code>tbl_df</code>. To fix this issue, now, in the <code><a href="../reference/surv_cutpoint.html">surv_cutpoint()</a></code> function, the input data is systematically transformed into a standard data.frame format (<a href="https://github.com/kassambara/survminer/issues/104">\@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/104'>#104</a></a>).</p></li>
+<li><p>It’s now possible to print the output of the survminer packages in a powerpoint created with the ReporteRs package. You should use the argument <em>newpage = FALSE</em> in the <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> function when printing the output in the powerpoint. Thanks to (<a href="https://github.com/kassambara/survminer/issues/110">\@abossenbroek, <a href='https://github.com/kassambara/survminer/issues/110'>#110</a></a>) and (<a href="https://github.com/kassambara/survminer/issues/111">\@zzawadz, <a href='https://github.com/kassambara/survminer/issues/111'>#111</a></a>). For instance:</p></li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(survival)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(ReporteRs)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(survminer)
+<div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">require</a></span>(<span class="no">survival</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">require</a></span>(<span class="no">ReporteRs</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">require</a></span>(<span class="no">survminer</span>)
 
-fit &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survfit</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/survival/topics/Surv">Surv</a></span>(time, status) <span class="op">~</span><span class="st"> </span>rx <span class="op">+</span><span class="st"> </span>adhere, <span class="dt">data =</span>colon)
-survplot &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(fit, <span class="dt">pval =</span> <span class="ot">TRUE</span>,
-                       <span class="dt">break.time.by =</span> <span class="dv">400</span>,
-                       <span class="dt">risk.table =</span> <span class="ot">TRUE</span>,
-                       <span class="dt">risk.table.col =</span> <span class="st">"strata"</span>,
-                       <span class="dt">risk.table.height =</span> <span class="fl">0.5</span>, <span class="co"># Useful when you have multiple groups</span>
-                       <span class="dt">palette =</span> <span class="st">"Dark2"</span>)
+<span class="no">fit</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span>(<span class="no">time</span>, <span class="no">status</span>) ~ <span class="no">rx</span> + <span class="no">adhere</span>, <span class="kw">data</span> <span class="kw">=</span><span class="no">colon</span>)
+<span class="no">survplot</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ggsurvplot.html">ggsurvplot</a></span>(<span class="no">fit</span>, <span class="kw">pval</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
+                       <span class="kw">break.time.by</span> <span class="kw">=</span> <span class="fl">400</span>,
+                       <span class="kw">risk.table</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
+                       <span class="kw">risk.table.col</span> <span class="kw">=</span> <span class="st">"strata"</span>,
+                       <span class="kw">risk.table.height</span> <span class="kw">=</span> <span class="fl">0.5</span>, <span class="co"># Useful when you have multiple groups</span>
+                       <span class="kw">palette</span> <span class="kw">=</span> <span class="st">"Dark2"</span>)
 
 
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(ReporteRs)
-doc =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ReporteRs/topics/pptx">pptx</a></span>(<span class="dt">title =</span> <span class="st">"Survival plots"</span>)
-doc =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ReporteRs/topics/addSlide">addSlide</a></span>(doc, <span class="dt">slide.layout =</span> <span class="st">"Title and Content"</span>)
-doc =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ReporteRs/topics/addTitle">addTitle</a></span>(doc, <span class="st">"First try"</span>)
-doc =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ReporteRs/topics/addPlot">addPlot</a></span>(doc, <span class="cf">function</span>() <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(survplot, <span class="dt">newpage =</span> <span class="ot">FALSE</span>), <span class="dt">vector.graphic =</span> <span class="ot">TRUE</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ReporteRs/topics/writeDoc">writeDoc</a></span>(doc, <span class="st">"test.pptx"</span>)</code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">require</a></span>(<span class="no">ReporteRs</span>)
+<span class="no">doc</span> <span class="kw">=</span> <span class="fu">pptx</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Survival plots"</span>)
+<span class="no">doc</span> <span class="kw">=</span> <span class="fu">addSlide</span>(<span class="no">doc</span>, <span class="kw">slide.layout</span> <span class="kw">=</span> <span class="st">"Title and Content"</span>)
+<span class="no">doc</span> <span class="kw">=</span> <span class="fu">addTitle</span>(<span class="no">doc</span>, <span class="st">"First try"</span>)
+<span class="no">doc</span> <span class="kw">=</span> <span class="fu">addPlot</span>(<span class="no">doc</span>, <span class="kw">function</span>() <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">survplot</span>, <span class="kw">newpage</span> <span class="kw">=</span> <span class="fl">FALSE</span>), <span class="kw">vector.graphic</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="fu">writeDoc</span>(<span class="no">doc</span>, <span class="st">"test.pptx"</span>)</pre></div>
 <ul>
 <li>Now, in <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code>, the option <code>ncol = 1</code> is removed from the function <code>facet_wrap()</code>. By default, <code>ncol = NULL</code>. In this case, the number of columns and rows in the plot panels is defined automatically based on the number of covariates included in the cox model.</li>
 </ul>
@@ -528,10 +562,10 @@ doc =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentati
 <h2 class="hasAnchor">
 <a href="#bug-fixes-7" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li><p>Now, risk table align with survival plots when legend = “right” (<a href="https://github.com/kassambara/survminer/issues/102">\@jonlehrer, #102</a>).</p></li>
-<li><p>Now, <code><a href="../reference/ggcoxzph.html">ggcoxzph()</a></code> works for univariate Cox analysis (<a href="https://github.com/kassambara/survminer/issues/103">#103</a>).</p></li>
-<li><p>Now, <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> works properly for schoenfeld residuals (<a href="https://github.com/kassambara/survminer/issues/122">\@pbiecek, #119</a>).</p></li>
-<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> works properly in the situation where <code><a href="https://www.rdocumentation.org/packages/survival/topics/strata">strata()</a></code> is included in the cox formula (<a href="https://github.com/kassambara/survminer/issues/109">#109</a>).</p></li>
+<li><p>Now, risk table align with survival plots when legend = “right” (<a href="https://github.com/kassambara/survminer/issues/102">\@jonlehrer, <a href='https://github.com/kassambara/survminer/issues/102'>#102</a></a>).</p></li>
+<li><p>Now, <code><a href="../reference/ggcoxzph.html">ggcoxzph()</a></code> works for univariate Cox analysis (<a href="https://github.com/kassambara/survminer/issues/103"><a href='https://github.com/kassambara/survminer/issues/103'>#103</a></a>).</p></li>
+<li><p>Now, <code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> works properly for schoenfeld residuals (<a href="https://github.com/kassambara/survminer/issues/122">\@pbiecek, <a href='https://github.com/kassambara/survminer/issues/119'>#119</a></a>).</p></li>
+<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> works properly in the situation where <code><a href="https://rdrr.io/pkg/survival/man/strata.html">strata()</a></code> is included in the cox formula (<a href="https://github.com/kassambara/survminer/issues/109"><a href='https://github.com/kassambara/survminer/issues/109'>#109</a></a>).</p></li>
 </ul>
 </div>
 <div id="vignettes-and-examples" class="section level2">
@@ -544,31 +578,31 @@ doc =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentati
 </div>
 </div>
     <div id="survminer-0-2-4" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.2.4">
 <a href="#survminer-0-2-4" class="anchor"></a>survminer 0.2.4<small> 2016-12-11 </small>
 </h1>
 <div id="bug-fixes-8" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes-8" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li><p><code><a href="../reference/surv_summary.html">surv_summary()</a></code> (v0.2.3) generated an error when the name of the variable used in <code><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survfit()</a></code> can be found multiple times in the levels of the same variable. For example, variable = therapy; levels(therapy) –&gt; “therapy” and “hormone therapy” (<a href="https://github.com/kassambara/survminer/issues/86">#86</a>). This has been now fixed.</p></li>
-<li><p>To extract variable names used in <code><a href="https://www.rdocumentation.org/packages/survival/topics/survfit">survival::survfit()</a></code>, the R code <code><a href="https://www.rdocumentation.org/packages/base/topics/strsplit">strsplit(strata, "=|,\\s+", perl=TRUE)</a></code> was used in the <code><a href="../reference/surv_summary.html">surv_summary()</a></code> function [survminer v0.2.3]. The splitting was done at any “=” symbol in the string, causing an error when special characters (=, &lt;=, &gt;=) are used for the levels of a categorical variable (<a href="https://github.com/kassambara/survminer/issues/91">#91</a>). This has been now fixed.</p></li>
-<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> draws correctly the risk.table (<a href="https://github.com/kassambara/survminer/issues/93">#93</a>).</p></li>
+<li><p><code><a href="../reference/surv_summary.html">surv_summary()</a></code> (v0.2.3) generated an error when the name of the variable used in <code><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit()</a></code> can be found multiple times in the levels of the same variable. For example, variable = therapy; levels(therapy) –&gt; “therapy” and “hormone therapy” (<a href='https://github.com/kassambara/survminer/issues/86'>#86</a>). This has been now fixed.</p></li>
+<li><p>To extract variable names used in <code><a href="https://rdrr.io/pkg/survival/man/survfit.html">survival::survfit()</a></code>, the R code <code><a href="https://rdrr.io/r/base/strsplit.html">strsplit(strata, "=|,\\s+", perl=TRUE)</a></code> was used in the <code><a href="../reference/surv_summary.html">surv_summary()</a></code> function [survminer v0.2.3]. The splitting was done at any “=” symbol in the string, causing an error when special characters (=, &lt;=, &gt;=) are used for the levels of a categorical variable (<a href='https://github.com/kassambara/survminer/issues/91'>#91</a>). This has been now fixed.</p></li>
+<li><p>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> draws correctly the risk.table (<a href='https://github.com/kassambara/survminer/issues/93'>#93</a>).</p></li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-2-3" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.2.3">
 <a href="#survminer-0-2-3" class="anchor"></a>survminer 0.2.3<small> 2016-12-07 </small>
 </h1>
 <div id="new-features-5" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features-5" class="anchor"></a>New features</h2>
 <ul>
-<li>New function <code><a href="../reference/surv_summary.html">surv_summary()</a></code> for creating data frame containing a nice summary of a survival curve (<a href="https://github.com/kassambara/survminer/issues/64">#64</a>).</li>
-<li>It’s possible now to facet the output of <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> by one or more factors (<a href="https://github.com/kassambara/survminer/issues/64">#64</a>):</li>
+<li>New function <code><a href="../reference/surv_summary.html">surv_summary()</a></code> for creating data frame containing a nice summary of a survival curve (<a href='https://github.com/kassambara/survminer/issues/64'>#64</a>).</li>
+<li>It’s possible now to facet the output of <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> by one or more factors (<a href='https://github.com/kassambara/survminer/issues/64'>#64</a>):</li>
 </ul>
-<pre><code><a href="https://www.rdocumentation.org/packages/base/topics/library"># Fit complexe survival curves
+<pre><code><a href="https://rdrr.io/pkg/survival/man"># Fit complexe survival curves
 require("survival")
 fit3 &lt;- survfit( Surv(time, status) ~ sex + rx + adhere,
                 data = colon )
@@ -578,29 +612,31 @@ fit3 &lt;- survfit( Surv(time, status) ~ sex + rx + adhere,
 require("survminer")  
 ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)</a></code></pre>
 <ul>
-<li>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can be used to plot cox model (<a href="https://github.com/kassambara/survminer/issues/67">#67</a>).</li>
+<li>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> can be used to plot cox model (<a href='https://github.com/kassambara/survminer/issues/67'>#67</a>).</li>
 <li>New ‘myeloma’ data sets added.</li>
-<li>New functions added for determining and visualizing the optimal cutpoint of continuous variables for survival analyses:<br>
-</li>
+<li>New functions added for determining and visualizing the optimal cutpoint of continuous variables for survival analyses:
+<ul>
 <li>
 <code><a href="../reference/surv_cutpoint.html">surv_cutpoint()</a></code>: Determine the optimal cutpoint for each variable using ‘maxstat’. Methods defined for surv_cutpoint object are summary(), print() and plot().</li>
 <li>
-<code><a href="../reference/surv_cutpoint.html">surv_categorize()</a></code>: Divide each variable values based on the cutpoint returned by <code><a href="../reference/surv_cutpoint.html">surv_cutpoint()</a></code> (<a href="https://github.com/kassambara/survminer/issues/41">#41</a>).</li>
-<li>New argument ‘ncensor.plot’ added to <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>. A logical value. If TRUE, the number of censored subjects at time t is plotted. Default is FALSE (<a href="https://github.com/kassambara/survminer/issues/18">#18</a>).</li>
+<code><a href="../reference/surv_cutpoint.html">surv_categorize()</a></code>: Divide each variable values based on the cutpoint returned by <code><a href="../reference/surv_cutpoint.html">surv_cutpoint()</a></code> (<a href='https://github.com/kassambara/survminer/issues/41'>#41</a>).</li>
+</ul>
+</li>
+<li>New argument ‘ncensor.plot’ added to <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>. A logical value. If TRUE, the number of censored subjects at time t is plotted. Default is FALSE (<a href="https://github.com/kassambara/survminer/issues/18"><a href='https://github.com/kassambara/survminer/issues/18'>#18</a></a>).</li>
 </ul>
 </div>
-<div id="minor-changes-9" class="section level2">
+<div id="minor-changes-10" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-9" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-10" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>New argument ‘conf.int.style’ added in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> for changing the style of confidence interval bands.</li>
-<li>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> plots a stepped confidence interval when conf.int = TRUE (<a href="https://github.com/kassambara/survminer/issues/65">#65</a>).</li>
+<li>Now, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> plots a stepped confidence interval when conf.int = TRUE (<a href='https://github.com/kassambara/survminer/issues/65'>#65</a>).</li>
 <li>
-<code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> updated for compatibility with the future version of ggplot2 (v2.2.0) (<a href="https://github.com/kassambara/survminer/issues/68">#68</a>)</li>
+<code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> updated for compatibility with the future version of ggplot2 (v2.2.0) (<a href='https://github.com/kassambara/survminer/issues/68'>#68</a>)</li>
 <li>ylab is now automatically adapted according to the value of the argument <code>fun</code>. For example, if fun = “event”, then ylab will be “Cumulative event”.</li>
-<li>In <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, linetypes can now be adjusted by variables used to fit survival curves (<a href="https://github.com/kassambara/survminer/issues/46">#46</a>)</li>
-<li>In <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, the argument risk.table can be either a logical value (TRUE|FALSE) or a string (“absolute”, “percentage”). If risk.table = “absolute”, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> displays the absolute number of subjects at risk. If risk.table = “percentage”, the percentage at risk is displayed. Use “abs_pct” to show both the absolute number and the percentage of subjects at risk. (<a href="https://github.com/kassambara/survminer/issues/70">#70</a>).</li>
-<li>New argument surv.median.line in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>: character vector for drawing a horizontal/vertical line at median (50%) survival. Allowed values include one of c(“none”, “hv”, “h”, “v”). v: vertical, h:horizontal (<a href="https://github.com/kassambara/survminer/issues/61">#61</a>).</li>
+<li>In <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, linetypes can now be adjusted by variables used to fit survival curves (<a href='https://github.com/kassambara/survminer/issues/46'>#46</a>)</li>
+<li>In <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>, the argument risk.table can be either a logical value (TRUE|FALSE) or a string (“absolute”, “percentage”). If risk.table = “absolute”, <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> displays the absolute number of subjects at risk. If risk.table = “percentage”, the percentage at risk is displayed. Use “abs_pct” to show both the absolute number and the percentage of subjects at risk (<a href='https://github.com/kassambara/survminer/issues/70'>#70</a>).</li>
+<li>New argument surv.median.line in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code>: character vector for drawing a horizontal/vertical line at median (50%) survival. Allowed values include one of c(“none”, “hv”, “h”, “v”). v: vertical, h:horizontal (<a href='https://github.com/kassambara/survminer/issues/61'>#61</a>).</li>
 <li>Now, default theme of ggcoxdiagnostics() is ggplot2::theme_bw().</li>
 </ul>
 </div>
@@ -609,69 +645,69 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)</a></code></pre>
 <a href="#bug-fixes-9" class="anchor"></a>Bug fixes</h2>
 <ul>
 <li>
-<code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> can now handle a multivariate Cox model (<a href="https://github.com/kassambara/survminer/issues/62">#62</a>)</li>
+<code><a href="../reference/ggcoxdiagnostics.html">ggcoxdiagnostics()</a></code> can now handle a multivariate Cox model (<a href='https://github.com/kassambara/survminer/issues/62'>#62</a>)</li>
 <li>
-<code><a href="../reference/ggcoxfunctional.html">ggcoxfunctional()</a></code> now displays graphs of continuous variable against martingale residuals of null cox proportional hazards model (<a href="https://github.com/kassambara/survminer/issues/63">#63</a>).</li>
-<li>When subset is specified in the survfit() model, it’s now considered in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to report the right p-value on the subset of the data and not on the whole data sets (<a href="https://github.com/kassambara/survminer/issues/71">@jseoane, #71</a>).</li>
+<code><a href="../reference/ggcoxfunctional.html">ggcoxfunctional()</a></code> now displays graphs of continuous variable against martingale residuals of null cox proportional hazards model (<a href='https://github.com/kassambara/survminer/issues/63'>#63</a>).</li>
+<li>When subset is specified in the survfit() model, it’s now considered in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> to report the right p-value on the subset of the data and not on the whole data sets (<a href="https://github.com/kassambara/survminer/issues/71">@jseoane, <a href='https://github.com/kassambara/survminer/issues/71'>#71</a></a>).</li>
 <li>
-<code><a href="../reference/ggcoxzph.html">ggcoxzph()</a></code> can now produce plots only for specified subset of varibles (<a href="https://github.com/kassambara/survminer/issues/75">@MarcinKosinski, #75</a>)</li>
+<code><a href="../reference/ggcoxzph.html">ggcoxzph()</a></code> can now produce plots only for specified subset of varibles (<a href="https://github.com/kassambara/survminer/issues/75">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/75'>#75</a></a>)</li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-2-2" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.2.2">
 <a href="#survminer-0-2-2" class="anchor"></a>survminer 0.2.2<small> 2016-07-28 </small>
 </h1>
 <div id="new-features-6" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features-6" class="anchor"></a>New features</h2>
 <ul>
-<li>New <code>ggcoxdiagnostics</code> function that plots diagnostic graphs for Cox Proportional Hazards model (<a href="https://github.com/kassambara/survminer/issues/16">@MarcinKosinski, #16</a>).</li>
-<li>Vignette added: <code>Survival plots have never been so informative</code> (<a href="https://github.com/kassambara/survminer/issues/39">@MarcinKosinski, #39</a>)</li>
-<li>New argument linetype in ‘ggsurvplot’ (<a href="https://github.com/kassambara/survminer/issues/45">@MarcinKosinski, #45</a>). Allowed values includes i) “strata” for changing linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a character vector c(“solid”, “dashed”).</li>
+<li>New <code>ggcoxdiagnostics</code> function that plots diagnostic graphs for Cox Proportional Hazards model (<a href="https://github.com/kassambara/survminer/issues/16">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/16'>#16</a></a>).</li>
+<li>Vignette added: <code>Survival plots have never been so informative</code> (<a href="https://github.com/kassambara/survminer/issues/39">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/39'>#39</a></a>)</li>
+<li>New argument linetype in ‘ggsurvplot’ (<a href="https://github.com/kassambara/survminer/issues/45">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/45'>#45</a></a>). Allowed values includes i) “strata” for changing linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a character vector c(“solid”, “dashed”).</li>
 </ul>
 </div>
 <div id="bug-fixes-10" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes-10" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li>lienetype argument changed to linetype in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> documentation. (<a href="https://github.com/kassambara/survminer/issues/43">@ViniciusBRodrigues, #43</a>)</li>
+<li>lienetype argument changed to linetype in <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> documentation. (<a href="https://github.com/kassambara/survminer/issues/43">@ViniciusBRodrigues, <a href='https://github.com/kassambara/survminer/issues/43'>#43</a></a>)</li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-2-1" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.2.1">
 <a href="#survminer-0-2-1" class="anchor"></a>survminer 0.2.1<small> 2016-04-23 </small>
 </h1>
 <div id="new-features-7" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features-7" class="anchor"></a>New features</h2>
 <ul>
-<li><p>New <code>ggcoxzph</code> function that displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ‘ggplot2’. Wrapper around \link{plot.cox.zph}. (<a href="https://github.com/kassambara/survminer/issues/13">@MarcinKosinski, #13</a>)</p></li>
-<li><p>New <code>ggcoxfunctional</code> function that displays graphs of continuous explanatory variable against martingale residuals of null cox proportional hazards model, for each term in of the right side of input formula. This might help to properly choose the functional form of continuous variable in cox model, since fitted lines with <code>lowess</code> function should be linear to satisfy cox proportional hazards model assumptions. (<a href="https://github.com/kassambara/survminer/issues/14">@MarcinKosinski, #14</a>)</p></li>
+<li><p>New <code>ggcoxzph</code> function that displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ‘ggplot2’. Wrapper around \link{plot.cox.zph}. (<a href="https://github.com/kassambara/survminer/issues/13">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/13'>#13</a></a>)</p></li>
+<li><p>New <code>ggcoxfunctional</code> function that displays graphs of continuous explanatory variable against martingale residuals of null cox proportional hazards model, for each term in of the right side of input formula. This might help to properly choose the functional form of continuous variable in cox model, since fitted lines with <code>lowess</code> function should be linear to satisfy cox proportional hazards model assumptions. (<a href="https://github.com/kassambara/survminer/issues/14">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/14'>#14</a></a>)</p></li>
 <li><p>New function <code>theme_classic2</code>: ggplot2 classic theme with axis line. This function replaces ggplot2::theme_classic, which does no longer display axis lines (since ggplot2 v2.1.0)</p></li>
 </ul>
 </div>
-<div id="minor-changes-10" class="section level2">
+<div id="minor-changes-11" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-10" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-11" class="anchor"></a>Minor changes</h2>
 <ul>
-<li>post-customization of color and fill no longer shows warnings like “Scale for ‘fill’ is already present. Adding another scale for ‘fill’, which will replace the existing scale” (<a href="https://github.com/kassambara/survminer/issues/11">@MarcinKosinski, #11</a>).</li>
-<li>now, post-customization of survival curve colors will automatically affect the risk table y axis text colors (<a href="https://github.com/kassambara/survminer/issues/12">@MarcinKosinski, #11</a>).</li>
+<li>post-customization of color and fill no longer shows warnings like “Scale for ‘fill’ is already present. Adding another scale for ‘fill’, which will replace the existing scale” (<a href="https://github.com/kassambara/survminer/issues/11">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/11'>#11</a></a>).</li>
+<li>now, post-customization of survival curve colors will automatically affect the risk table y axis text colors (<a href="https://github.com/kassambara/survminer/issues/12">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/11'>#11</a></a>).</li>
 <li>Default value for the argument <code>risk.table.y.text.col</code> is now TRUE.</li>
-<li>New argument risk.table.y.text for the function <code>ggsurvplot</code>. logical argument. Default is TRUE. If FALSE, risk table y axis tick labels will be hidden (<a href="https://github.com/kassambara/survminer/issues/28">@MarcinKosinski, #28</a>).</li>
+<li>New argument risk.table.y.text for the function <code>ggsurvplot</code>. logical argument. Default is TRUE. If FALSE, risk table y axis tick labels will be hidden (<a href='https://github.com/MarcinKosinski'>@MarcinKosinski</a>, <a href='https://github.com/kassambara/survminer/issues/28'>#28</a>).</li>
 </ul>
 </div>
 <div id="bug-fixes-11" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes-11" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li>Black dots removed from risk table (<a href="https://github.com/kassambara/survminer/issues/25">@Feli-Anna, #25</a>)</li>
+<li>Black dots removed from risk table (<a href="https://github.com/kassambara/survminer/issues/25">@Feli-Anna, <a href='https://github.com/kassambara/survminer/issues/25'>#25</a></a>)</li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-2-0" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.2.0">
 <a href="#survminer-0-2-0" class="anchor"></a>survminer 0.2.0<small> 2016-02-18 </small>
 </h1>
 <div id="new-features-8" class="section level2">
@@ -680,7 +716,7 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)</a></code></pre>
 <ul>
 <li>New arguments in ggsurvplot for changing font style, size and color of main title, axis labels, axis tick labels and legend labels: <em>font.main, font.x, font.y, font.tickslab, font.legend</em>.</li>
 <li>New arguments <em>risk.table.title, risk.table.fontsize</em> in ggsurvplot</li>
-<li><p>New argument <em>risk.table.y.text.col</em>: logical value. Default value is FALSE. If TRUE, risk table tick labels will be colored by strata (<a href="https://github.com/kassambara/survminer/issues/8">@MarcinKosinski, #8</a>).</p></li>
+<li><p>New argument <em>risk.table.y.text.col</em>: logical value. Default value is FALSE. If TRUE, risk table tick labels will be colored by strata (<a href="https://github.com/kassambara/survminer/issues/8">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/8'>#8</a></a>).</p></li>
 <li><p><code><a href="../reference/ggsurvplot.html">print.ggsurvplot()</a></code> function added: S3 method for class ‘ggsurvplot’.</p></li>
 <li>ggsurvplot returns an object of class ggsurvplot which is list containing two ggplot objects:
 <ul>
@@ -690,9 +726,9 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)</a></code></pre>
 <em>table</em>: the number at risk table per time</li>
 </ul>
 </li>
-<li><p>It’s now possible to customize the output survival <em>plot</em> and the <em>risk table</em> returned by ggsurvplot, and to print again the final plot. (<a href="https://github.com/kassambara/survminer/issues/2">@MarcinKosinski, #2</a>):</p></li>
+<li><p>It’s now possible to customize the output survival <em>plot</em> and the <em>risk table</em> returned by ggsurvplot, and to print again the final plot. (<a href="https://github.com/kassambara/survminer/issues/2">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/2'>#2</a></a>):</p></li>
 </ul>
-<pre><code><a href="https://www.rdocumentation.org/packages/base/topics/library"># Fit survival curves
+<pre><code><a href="https://rdrr.io/pkg/survival/man"># Fit survival curves
 require("survival")
 fit&lt;- survfit(Surv(time, status) ~ sex, data = lung)
 
@@ -708,9 +744,9 @@ res$table &lt;- res$table + theme(axis.line = element_blank())
 res$plot &lt;- res$plot + labs(title = "Survival Curves")
 print(res)</a></code></pre>
 </div>
-<div id="minor-changes-11" class="section level2">
+<div id="minor-changes-12" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes-11" class="anchor"></a>Minor changes</h2>
+<a href="#minor-changes-12" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>p &lt; 0.0001 is used (when pvalue &lt; 0.0001).</li>
 </ul>
@@ -719,15 +755,15 @@ print(res)</a></code></pre>
 <h2 class="hasAnchor">
 <a href="#bug-fixes-12" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li><p>ggtheme now affects risk.table (<a href="https://github.com/kassambara/survminer/issues/1">@MarcinKosinski, #1</a>)</p></li>
-<li><p>xlim changed to cartesian coordinates mode (<a href="https://github.com/kassambara/survminer/issues/4">@MarcinKosinski, #4</a>). The Cartesian coordinate system is the most common type of coordinate system. It will zoom the plot (like you’re looking at it with a magnifying glass), without clipping the data.</p></li>
+<li><p>ggtheme now affects risk.table (<a href="https://github.com/kassambara/survminer/issues/1">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/1'>#1</a></a>)</p></li>
+<li><p>xlim changed to cartesian coordinates mode (<a href="https://github.com/kassambara/survminer/issues/4">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/4'>#4</a></a>). The Cartesian coordinate system is the most common type of coordinate system. It will zoom the plot (like you’re looking at it with a magnifying glass), without clipping the data.</p></li>
 <li><p>Risk table and survival curves have now the same color and the same order</p></li>
-<li><p>Plot width is no longer too small when legend position = “left” (<a href="https://github.com/kassambara/survminer/issues/7">@MarcinKosinski, #7</a>).</p></li>
+<li><p>Plot width is no longer too small when legend position = “left” (<a href="https://github.com/kassambara/survminer/issues/7">@MarcinKosinski, <a href='https://github.com/kassambara/survminer/issues/7'>#7</a></a>).</p></li>
 </ul>
 </div>
 </div>
     <div id="survminer-0-1-1" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.1.1">
 <a href="#survminer-0-1-1" class="anchor"></a>survminer 0.1.1<small> 2016-01-18 </small>
 </h1>
 <div id="new-features-9" class="section level2">
@@ -741,30 +777,14 @@ print(res)</a></code></pre>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#survminer-0-4-6">0.4.6</a></li>
-        <li><a href="#survminer-0-4-5">0.4.5</a></li>
-        <li><a href="#survminer-0-4-4">0.4.4</a></li>
-        <li><a href="#survminer-0-4-3">0.4.3</a></li>
-        <li><a href="#survminer-0-4-2">0.4.2</a></li>
-        <li><a href="#survminer-0-4-1">0.4.1</a></li>
-        <li><a href="#survminer-0-4-0">0.4.0</a></li>
-        <li><a href="#survminer-0-3-1">0.3.1</a></li>
-        <li><a href="#survminer-0-3-0">0.3.0</a></li>
-        <li><a href="#survminer-0-2-4">0.2.4</a></li>
-        <li><a href="#survminer-0-2-3">0.2.3</a></li>
-        <li><a href="#survminer-0-2-2">0.2.2</a></li>
-        <li><a href="#survminer-0-2-1">0.2.1</a></li>
-        <li><a href="#survminer-0-2-0">0.2.0</a></li>
-        <li><a href="#survminer-0-1-1">0.1.1</a></li>
-      </ul>
-    </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -772,13 +792,16 @@ print(res)</a></code></pre>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

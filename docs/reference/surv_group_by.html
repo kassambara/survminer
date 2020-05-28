@@ -8,21 +8,29 @@
 
 <title>Create a Grouped Dataset for Survival Analysis — surv_group_by • survminer</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,13 +38,13 @@
 
 
 
-<meta property="og:title" content="Create a Grouped Dataset for Survival Analysis — surv_group_by" />
 
+<meta property="og:title" content="Create a Grouped Dataset for Survival Analysis — surv_group_by" />
 <meta property="og:description" content="Split a data frame into multiple new data frames based on one or
   two grouping variables. The surv_group_by() function takes an
   existing data frame and converts it into a grouped data frame where
   survival analysis are performed &quot;by group&quot;." />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -50,9 +58,10 @@
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -66,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.7</span>
       </span>
     </div>
 
@@ -85,7 +94,6 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/kassambara/survminer">
@@ -100,27 +108,26 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create a Grouped Dataset for Survival Analysis</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/kassambara/survminer/blob/master/R/surv_group_by.R'><code>R/surv_group_by.R</code></a></small>
     <div class="hidden name"><code>surv_group_by.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    
     <p>Split a data frame into multiple new data frames based on one or
   two grouping variables. The <code>surv_group_by()</code> function takes an
   existing data frame and converts it into a grouped data frame where
   survival analysis are performed "by group".</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>surv_group_by</span>(<span class='no'>data</span>, <span class='no'>grouping.vars</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -134,7 +141,7 @@
 variables. Should be of length &lt;= 2</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Returns an object of class <code>surv_group_by</code> which is a
@@ -146,11 +153,10 @@ variables. Should be of length &lt;= 2</p></td>
   grouping variables.</p></li>
 </ul>
 
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='st'>"survival"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='st'>"magrittr"</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"survival"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"magrittr"</span>)
 
 <span class='co'># Grouping by one variables: treatment "rx"</span>
 <span class='co'>#::::::::::::::::::::::::::::::::::::::::::</span>
@@ -159,31 +165,12 @@ variables. Should be of length &lt;= 2</p></td>
 
 <span class='no'>grouped.d</span> <span class='co'># print</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 3 x 2</span><span>
 #&gt; </span><span style='color: #555555;'># Groups:   rx [3]</span><span>
-#&gt;   rx                 data
-#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;list&lt;df[,15]&gt;&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> Obs          [630 × 15]
-#&gt; </span><span style='color: #555555;'>2</span><span> Lev          [620 × 15]
-#&gt; </span><span style='color: #555555;'>3</span><span> Lev+5FU      [608 × 15]</div><div class='input'>
-<span class='no'>grouped.d</span>$<span class='no'>data</span> <span class='co'># Access to the data</span></div><div class='output co'>#&gt; &lt;list_of&lt;
-#&gt;   tbl_df&lt;
-#&gt;     id      : double
-#&gt;     study   : double
-#&gt;     sex     : double
-#&gt;     age     : double
-#&gt;     obstruct: double
-#&gt;     perfor  : double
-#&gt;     adhere  : double
-#&gt;     nodes   : double
-#&gt;     status  : double
-#&gt;     differ  : double
-#&gt;     extent  : double
-#&gt;     surg    : double
-#&gt;     node4   : double
-#&gt;     time    : double
-#&gt;     etype   : double
-#&gt;   &gt;
-#&gt; &gt;[3]&gt;
-#&gt; $rx.Obs
+#&gt;   rx      data               
+#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;named list&gt;</span><span>       
+#&gt; </span><span style='color: #555555;'>1</span><span> Obs     </span><span style='color: #555555;'>&lt;tibble [630 × 15]&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>2</span><span> Lev     </span><span style='color: #555555;'>&lt;tibble [620 × 15]&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>3</span><span> Lev+5FU </span><span style='color: #555555;'>&lt;tibble [608 × 15]&gt;</span><span></div><div class='input'>
+<span class='no'>grouped.d</span>$<span class='no'>data</span> <span class='co'># Access to the data</span></div><div class='output co'>#&gt; $rx.Obs
 #&gt; </span><span style='color: #555555;'># A tibble: 630 x 15</span><span>
 #&gt;       id study   sex   age obstruct perfor adhere nodes status differ extent
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
@@ -197,8 +184,8 @@ variables. Should be of length &lt;= 2</p></td>
 #&gt; </span><span style='color: #555555;'> 8</span><span>    13     1     1    64        0      0      0     1      1      2      3
 #&gt; </span><span style='color: #555555;'> 9</span><span>    15     1     1    46        1      0      0     4      0      2      3
 #&gt; </span><span style='color: #555555;'>10</span><span>    15     1     1    46        1      0      0     4      0      2      3
-#&gt; </span><span style='color: #555555;'># … with 620 more rows, and 4 more variables: surg </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, node4 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,
-#&gt; #   time </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, etype </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'># … with 620 more rows, and 4 more variables: surg </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, node4 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   time </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, etype </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; 
 #&gt; $rx.Lev
 #&gt; </span><span style='color: #555555;'># A tibble: 620 x 15</span><span>
@@ -214,8 +201,8 @@ variables. Should be of length &lt;= 2</p></td>
 #&gt; </span><span style='color: #555555;'> 8</span><span>    14     1     1    68        1      0      0     3      1      2      3
 #&gt; </span><span style='color: #555555;'> 9</span><span>    17     1     1    62        1      0      1     6      1      2      3
 #&gt; </span><span style='color: #555555;'>10</span><span>    17     1     1    62        1      0      1     6      1      2      3
-#&gt; </span><span style='color: #555555;'># … with 610 more rows, and 4 more variables: surg </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, node4 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,
-#&gt; #   time </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, etype </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'># … with 610 more rows, and 4 more variables: surg </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, node4 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   time </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, etype </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; 
 #&gt; $`rx.Lev+5FU`
 #&gt; </span><span style='color: #555555;'># A tibble: 608 x 15</span><span>
@@ -231,37 +218,32 @@ variables. Should be of length &lt;= 2</p></td>
 #&gt; </span><span style='color: #555555;'> 8</span><span>     6     1     0    57        0      0      0     9      1      2      3
 #&gt; </span><span style='color: #555555;'> 9</span><span>    10     1     0    68        0      0      0     1      0      2      3
 #&gt; </span><span style='color: #555555;'>10</span><span>    10     1     0    68        0      0      0     1      0      2      3
-#&gt; </span><span style='color: #555555;'># … with 598 more rows, and 4 more variables: surg </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, node4 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,
-#&gt; #   time </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, etype </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'># … with 598 more rows, and 4 more variables: surg </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, node4 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   time </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, etype </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </div><div class='input'>
 <span class='co'># Grouping by two variables</span>
 <span class='co'>#::::::::::::::::::::::::::::::::::::::::::</span>
 <span class='no'>grouped.d</span> <span class='kw'>&lt;-</span> <span class='no'>colon</span> <span class='kw'>%&gt;%</span>
-   <span class='fu'>surv_group_by</span>(<span class='kw'>grouping.vars</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"rx"</span>, <span class='st'>"adhere"</span>))
+   <span class='fu'>surv_group_by</span>(<span class='kw'>grouping.vars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"rx"</span>, <span class='st'>"adhere"</span>))
    <span class='no'>grouped.d</span></div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 6 x 3</span><span>
 #&gt; </span><span style='color: #555555;'># Groups:   rx, adhere [6]</span><span>
-#&gt;   rx      adhere            data
-#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&lt;df[,14]&gt;&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> Obs          0      [536 × 14]
-#&gt; </span><span style='color: #555555;'>2</span><span> Obs          1       [94 × 14]
-#&gt; </span><span style='color: #555555;'>3</span><span> Lev          0      [522 × 14]
-#&gt; </span><span style='color: #555555;'>4</span><span> Lev          1       [98 × 14]
-#&gt; </span><span style='color: #555555;'>5</span><span> Lev+5FU      0      [530 × 14]
-#&gt; </span><span style='color: #555555;'>6</span><span> Lev+5FU      1       [78 × 14]</div><div class='input'>
+#&gt;   rx      adhere data               
+#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;named list&gt;</span><span>       
+#&gt; </span><span style='color: #555555;'>1</span><span> Obs          0 </span><span style='color: #555555;'>&lt;tibble [536 × 14]&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>2</span><span> Obs          1 </span><span style='color: #555555;'>&lt;tibble [94 × 14]&gt;</span><span> 
+#&gt; </span><span style='color: #555555;'>3</span><span> Lev          0 </span><span style='color: #555555;'>&lt;tibble [522 × 14]&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>4</span><span> Lev          1 </span><span style='color: #555555;'>&lt;tibble [98 × 14]&gt;</span><span> 
+#&gt; </span><span style='color: #555555;'>5</span><span> Lev+5FU      0 </span><span style='color: #555555;'>&lt;tibble [530 × 14]&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>6</span><span> Lev+5FU      1 </span><span style='color: #555555;'>&lt;tibble [78 × 14]&gt;</span><span> </div><div class='input'>
 </div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -269,13 +251,16 @@ variables. Should be of length &lt;= 2</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
