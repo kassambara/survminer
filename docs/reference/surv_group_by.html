@@ -75,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
       </span>
     </div>
 
@@ -163,79 +163,79 @@ variables. Should be of length &lt;= 2</p></td>
 <span class='no'>grouped.d</span> <span class='kw'>&lt;-</span> <span class='no'>colon</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>surv_group_by</span>(<span class='st'>"rx"</span>)
 
-<span class='no'>grouped.d</span> <span class='co'># print</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 3 x 2</span><span>
-#&gt; </span><span style='color: #555555;'># Groups:   rx [3]</span><span>
+<span class='no'>grouped.d</span> <span class='co'># print</span></div><div class='output co'>#&gt; # A tibble: 3 x 2
+#&gt; # Groups:   rx [3]
 #&gt;   rx      data               
-#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;named list&gt;</span><span>       
-#&gt; </span><span style='color: #555555;'>1</span><span> Obs     </span><span style='color: #555555;'>&lt;tibble [630 × 15]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>2</span><span> Lev     </span><span style='color: #555555;'>&lt;tibble [620 × 15]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>3</span><span> Lev+5FU </span><span style='color: #555555;'>&lt;tibble [608 × 15]&gt;</span><span></div><div class='input'>
+#&gt; * &lt;fct&gt;   &lt;named list&gt;       
+#&gt; 1 Obs     &lt;tibble [630 × 15]&gt;
+#&gt; 2 Lev     &lt;tibble [620 × 15]&gt;
+#&gt; 3 Lev+5FU &lt;tibble [608 × 15]&gt;</div><div class='input'>
 <span class='no'>grouped.d</span>$<span class='no'>data</span> <span class='co'># Access to the data</span></div><div class='output co'>#&gt; $rx.Obs
-#&gt; </span><span style='color: #555555;'># A tibble: 630 x 15</span><span>
+#&gt; # A tibble: 630 x 15
 #&gt;       id study   sex   age obstruct perfor adhere nodes status differ extent
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span>     3     1     0    71        0      0      1     7      1      2      2
-#&gt; </span><span style='color: #555555;'> 2</span><span>     3     1     0    71        0      0      1     7      1      2      2
-#&gt; </span><span style='color: #555555;'> 3</span><span>     5     1     1    69        0      0      0    22      1      2      3
-#&gt; </span><span style='color: #555555;'> 4</span><span>     5     1     1    69        0      0      0    22      1      2      3
-#&gt; </span><span style='color: #555555;'> 5</span><span>     8     1     1    54        0      0      0     1      0      2      3
-#&gt; </span><span style='color: #555555;'> 6</span><span>     8     1     1    54        0      0      0     1      0      2      3
-#&gt; </span><span style='color: #555555;'> 7</span><span>    13     1     1    64        0      0      0     1      1      2      3
-#&gt; </span><span style='color: #555555;'> 8</span><span>    13     1     1    64        0      0      0     1      1      2      3
-#&gt; </span><span style='color: #555555;'> 9</span><span>    15     1     1    46        1      0      0     4      0      2      3
-#&gt; </span><span style='color: #555555;'>10</span><span>    15     1     1    46        1      0      0     4      0      2      3
-#&gt; </span><span style='color: #555555;'># … with 620 more rows, and 4 more variables: surg </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, node4 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   time </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, etype </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+#&gt;  1     3     1     0    71        0      0      1     7      1      2      2
+#&gt;  2     3     1     0    71        0      0      1     7      1      2      2
+#&gt;  3     5     1     1    69        0      0      0    22      1      2      3
+#&gt;  4     5     1     1    69        0      0      0    22      1      2      3
+#&gt;  5     8     1     1    54        0      0      0     1      0      2      3
+#&gt;  6     8     1     1    54        0      0      0     1      0      2      3
+#&gt;  7    13     1     1    64        0      0      0     1      1      2      3
+#&gt;  8    13     1     1    64        0      0      0     1      1      2      3
+#&gt;  9    15     1     1    46        1      0      0     4      0      2      3
+#&gt; 10    15     1     1    46        1      0      0     4      0      2      3
+#&gt; # … with 620 more rows, and 4 more variables: surg &lt;dbl&gt;, node4 &lt;dbl&gt;,
+#&gt; #   time &lt;dbl&gt;, etype &lt;dbl&gt;
 #&gt; 
 #&gt; $rx.Lev
-#&gt; </span><span style='color: #555555;'># A tibble: 620 x 15</span><span>
+#&gt; # A tibble: 620 x 15
 #&gt;       id study   sex   age obstruct perfor adhere nodes status differ extent
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span>     7     1     1    77        0      0      0     5      1      2      3
-#&gt; </span><span style='color: #555555;'> 2</span><span>     7     1     1    77        0      0      0     5      1      2      3
-#&gt; </span><span style='color: #555555;'> 3</span><span>     9     1     1    46        0      0      1     2      0      2      3
-#&gt; </span><span style='color: #555555;'> 4</span><span>     9     1     1    46        0      0      1     2      0      2      3
-#&gt; </span><span style='color: #555555;'> 5</span><span>    11     1     0    47        0      0      1     1      0      2      3
-#&gt; </span><span style='color: #555555;'> 6</span><span>    11     1     0    47        0      0      1     1      0      2      3
-#&gt; </span><span style='color: #555555;'> 7</span><span>    14     1     1    68        1      0      0     3      1      2      3
-#&gt; </span><span style='color: #555555;'> 8</span><span>    14     1     1    68        1      0      0     3      1      2      3
-#&gt; </span><span style='color: #555555;'> 9</span><span>    17     1     1    62        1      0      1     6      1      2      3
-#&gt; </span><span style='color: #555555;'>10</span><span>    17     1     1    62        1      0      1     6      1      2      3
-#&gt; </span><span style='color: #555555;'># … with 610 more rows, and 4 more variables: surg </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, node4 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   time </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, etype </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+#&gt;  1     7     1     1    77        0      0      0     5      1      2      3
+#&gt;  2     7     1     1    77        0      0      0     5      1      2      3
+#&gt;  3     9     1     1    46        0      0      1     2      0      2      3
+#&gt;  4     9     1     1    46        0      0      1     2      0      2      3
+#&gt;  5    11     1     0    47        0      0      1     1      0      2      3
+#&gt;  6    11     1     0    47        0      0      1     1      0      2      3
+#&gt;  7    14     1     1    68        1      0      0     3      1      2      3
+#&gt;  8    14     1     1    68        1      0      0     3      1      2      3
+#&gt;  9    17     1     1    62        1      0      1     6      1      2      3
+#&gt; 10    17     1     1    62        1      0      1     6      1      2      3
+#&gt; # … with 610 more rows, and 4 more variables: surg &lt;dbl&gt;, node4 &lt;dbl&gt;,
+#&gt; #   time &lt;dbl&gt;, etype &lt;dbl&gt;
 #&gt; 
 #&gt; $`rx.Lev+5FU`
-#&gt; </span><span style='color: #555555;'># A tibble: 608 x 15</span><span>
+#&gt; # A tibble: 608 x 15
 #&gt;       id study   sex   age obstruct perfor adhere nodes status differ extent
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span>     1     1     1    43        0      0      0     5      1      2      3
-#&gt; </span><span style='color: #555555;'> 2</span><span>     1     1     1    43        0      0      0     5      1      2      3
-#&gt; </span><span style='color: #555555;'> 3</span><span>     2     1     1    63        0      0      0     1      0      2      3
-#&gt; </span><span style='color: #555555;'> 4</span><span>     2     1     1    63        0      0      0     1      0      2      3
-#&gt; </span><span style='color: #555555;'> 5</span><span>     4     1     0    66        1      0      0     6      1      2      3
-#&gt; </span><span style='color: #555555;'> 6</span><span>     4     1     0    66        1      0      0     6      1      2      3
-#&gt; </span><span style='color: #555555;'> 7</span><span>     6     1     0    57        0      0      0     9      1      2      3
-#&gt; </span><span style='color: #555555;'> 8</span><span>     6     1     0    57        0      0      0     9      1      2      3
-#&gt; </span><span style='color: #555555;'> 9</span><span>    10     1     0    68        0      0      0     1      0      2      3
-#&gt; </span><span style='color: #555555;'>10</span><span>    10     1     0    68        0      0      0     1      0      2      3
-#&gt; </span><span style='color: #555555;'># … with 598 more rows, and 4 more variables: surg </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, node4 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   time </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, etype </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+#&gt;  1     1     1     1    43        0      0      0     5      1      2      3
+#&gt;  2     1     1     1    43        0      0      0     5      1      2      3
+#&gt;  3     2     1     1    63        0      0      0     1      0      2      3
+#&gt;  4     2     1     1    63        0      0      0     1      0      2      3
+#&gt;  5     4     1     0    66        1      0      0     6      1      2      3
+#&gt;  6     4     1     0    66        1      0      0     6      1      2      3
+#&gt;  7     6     1     0    57        0      0      0     9      1      2      3
+#&gt;  8     6     1     0    57        0      0      0     9      1      2      3
+#&gt;  9    10     1     0    68        0      0      0     1      0      2      3
+#&gt; 10    10     1     0    68        0      0      0     1      0      2      3
+#&gt; # … with 598 more rows, and 4 more variables: surg &lt;dbl&gt;, node4 &lt;dbl&gt;,
+#&gt; #   time &lt;dbl&gt;, etype &lt;dbl&gt;
 #&gt; </div><div class='input'>
 <span class='co'># Grouping by two variables</span>
 <span class='co'>#::::::::::::::::::::::::::::::::::::::::::</span>
 <span class='no'>grouped.d</span> <span class='kw'>&lt;-</span> <span class='no'>colon</span> <span class='kw'>%&gt;%</span>
    <span class='fu'>surv_group_by</span>(<span class='kw'>grouping.vars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"rx"</span>, <span class='st'>"adhere"</span>))
-   <span class='no'>grouped.d</span></div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 6 x 3</span><span>
-#&gt; </span><span style='color: #555555;'># Groups:   rx, adhere [6]</span><span>
+   <span class='no'>grouped.d</span></div><div class='output co'>#&gt; # A tibble: 6 x 3
+#&gt; # Groups:   rx, adhere [6]
 #&gt;   rx      adhere data               
-#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;named list&gt;</span><span>       
-#&gt; </span><span style='color: #555555;'>1</span><span> Obs          0 </span><span style='color: #555555;'>&lt;tibble [536 × 14]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>2</span><span> Obs          1 </span><span style='color: #555555;'>&lt;tibble [94 × 14]&gt;</span><span> 
-#&gt; </span><span style='color: #555555;'>3</span><span> Lev          0 </span><span style='color: #555555;'>&lt;tibble [522 × 14]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>4</span><span> Lev          1 </span><span style='color: #555555;'>&lt;tibble [98 × 14]&gt;</span><span> 
-#&gt; </span><span style='color: #555555;'>5</span><span> Lev+5FU      0 </span><span style='color: #555555;'>&lt;tibble [530 × 14]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>6</span><span> Lev+5FU      1 </span><span style='color: #555555;'>&lt;tibble [78 × 14]&gt;</span><span> </div><div class='input'>
-</div></span></pre>
+#&gt; * &lt;fct&gt;    &lt;dbl&gt; &lt;named list&gt;       
+#&gt; 1 Obs          0 &lt;tibble [536 × 14]&gt;
+#&gt; 2 Obs          1 &lt;tibble [94 × 14]&gt; 
+#&gt; 3 Lev          0 &lt;tibble [522 × 14]&gt;
+#&gt; 4 Lev          1 &lt;tibble [98 × 14]&gt; 
+#&gt; 5 Lev+5FU      0 &lt;tibble [530 × 14]&gt;
+#&gt; 6 Lev+5FU      1 &lt;tibble [78 × 14]&gt; </div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

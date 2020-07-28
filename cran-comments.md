@@ -23,8 +23,5 @@ All packages that I could install passed.
 
 ## Update
 
-This is an update version 0.4.7
+This is an update version 0.8 (see NEWS.md)
 
-## resubmission
-
-date fixed in the description.

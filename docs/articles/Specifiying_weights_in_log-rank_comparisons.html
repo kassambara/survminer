@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
       </span>
     </div>
 
@@ -130,7 +130,7 @@
 <li>
 <code>srqtN</code> Tharone and Ware proposed to use <span class="math inline">\(w_{t_i} = \sqrt{n_{t_i}}\)</span>,</li>
 <li>
-<code>S1</code> Peto-Peto’s modified survival estimate <span class="math inline">\(w_{t_i} = S1({t_i}) = \prod_{i=1}^{T}(\frac{1-e_{t_i}}{n_{t_i}+1})\)</span>,</li>
+<code>S1</code> Peto-Peto’s modified survival estimate <span class="math inline">\(w_{t_i} = S1({t_i}) = \prod_{i=1}^{T}(1-\frac{e_{t_i}}{n_{t_i}+1})\)</span>,</li>
 <li>
 <code>S2</code> modified Peto-Peto (by Andersen) <span class="math inline">\(w_{t_i} = S2({t_i}) = \frac{S1({t_i})n_{t_i}}{n_{t_i}+1}\)</span>,</li>
 <li>

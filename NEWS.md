@@ -1,11 +1,8 @@
-# survminer 0.4.7.999
-
-## New features
-
-
-## Major changes
+# survminer 0.4.8
 
 ## Minor changes
+
+- Maintenance update due to new broom 0.7.0 version by explicitly setting conf.int = TRUE in the call to tidy.coxph from `ggforest()` (pull 485).
 
 # Survminer 0.4.7
 

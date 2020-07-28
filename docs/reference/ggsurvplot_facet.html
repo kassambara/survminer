@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
       </span>
     </div>
 
@@ -277,8 +277,8 @@ and y direction, respectively.</p></td>
                 <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"jco"</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: `as.tibble()` is deprecated as of tibble 2.0.0.</span>
 #&gt; <span class='warning'>Please use `as_tibble()` instead.</span>
 #&gt; <span class='warning'>The signature and semantics have changed, see `?as_tibble`.</span>
-#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='img'><img src='ggsurvplot_facet-1.png' alt='' width='700' height='433' /></div><div class='input'>
+#&gt; <span class='warning'>This warning is displayed once every 8 hours.</span>
+#&gt; <span class='warning'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span></div><div class='img'><img src='ggsurvplot_facet-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Facet by two grouping variables: rx and adhere</span>
 <span class='co'>#::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
 <span class='fu'>ggsurvplot_facet</span>(<span class='no'>fit</span>, <span class='no'>colon</span>, <span class='kw'>facet.by</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"rx"</span>, <span class='st'>"adhere"</span>),
@@ -289,7 +289,7 @@ and y direction, respectively.</p></td>
 <span class='no'>fit2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survival/man/survfit.html'>survfit</a></span>( <span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span> + <span class='no'>rx</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span> )
 <span class='fu'>ggsurvplot_facet</span>(<span class='no'>fit2</span>, <span class='no'>colon</span>, <span class='kw'>facet.by</span> <span class='kw'>=</span> <span class='st'>"adhere"</span>,
                 <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"jco"</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='ggsurvplot_facet-3.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></span></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
