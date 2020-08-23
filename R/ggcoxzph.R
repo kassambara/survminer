@@ -111,6 +111,10 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
       ylow <- yhat - temp
       yr <- range(yr, yup, ylow)
     }
+
+    if (resid)
+      gplot <- gplot + geom_point(aes(x = xx, y =y),
+                                  col = point.col, shape = point.shape, size = point.size, alpha = point.alpha)
     if (x$transform == "identity") {
       gplot + geom_line(aes(x=pred.x, y=yhat)) +
         xlab("Time") +
@@ -129,10 +133,6 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
                            labels = xaxislab) +
         ylim(yr)-> gplot
     }
-
-    if (resid)
-      gplot <- gplot + geom_point(aes(x = xx, y =y),
-                                  col = point.col, shape = point.shape, size = point.size, alpha = point.alpha)
 
     if (se) {
       gplot <- gplot + geom_line(aes(x=pred.x, y=yup), lty = "dashed") +
