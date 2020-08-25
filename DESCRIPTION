@@ -42,7 +42,7 @@ Suggests:
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Collate: 
     'BMT.R'
     'BRCAOV.survInfo.R'
