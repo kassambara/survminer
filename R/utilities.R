@@ -239,7 +239,7 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 # This is used for tables under the main survival plots
 #
 .set_large_dash_as_ytext <- function(ggp){
-  ggp + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
+  ggp + theme(axis.text.y = ggtext::element_markdown(size = 50, vjust = 0.5),
         axis.ticks.y = element_blank())
 }
 
