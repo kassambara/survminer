@@ -317,10 +317,10 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   # Color table tick labels by strata
   if(is.logical(y.text.col) & y.text.col[1] == TRUE){
     cols <- .extract_ggplot_colors(p, grp.levels = legend.labs)
-    p <- p + theme(axis.text.y = element_text(colour = rev(cols)))
+    p <- p + theme(axis.text.y = ggtext::element_markdown(colour = rev(cols)))
   }
   else if(is.character(y.text.col))
-    p <- p + theme(axis.text.y = element_text(colour = rev(y.text.col)))
+    p <- p + theme(axis.text.y = ggtext::element_markdown(colour = rev(y.text.col)))
 
   p
 
