@@ -32,13 +32,15 @@ Imports:
     tidyr,
     survMisc,
     purrr,
-    tibble, 
-    rlang
+    tibble,
+    rlang,
+    ggtext (>= 0.1.0)
 Suggests:
     knitr,
     flexsurv,
     cmprsk,
-    markdown
+    markdown,
+    testthat
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues

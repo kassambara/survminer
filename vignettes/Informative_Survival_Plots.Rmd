@@ -45,8 +45,7 @@ After regular installation
 
 ```{r, eval = FALSE}
 install.packages('survminer')
-source("https://bioconductor.org/biocLite.R")
-biocLite("RTCGA.clinical") # data for examples
+BiocManager::install("RTCGA.clinical") # data for examples
 ```
 
 we can create simple estimates of survival curves just after we put `survfit` (survival package) object into `ggsurvplot()` function. Let's have a look at differences in survival times between patients suffering from Ovarian Cancer (*Ovarian serous cystadenocarcinoma*) and patients suffering from Breast Cancer (*Breast invasive carcinoma*), where data were collected by [The Cancer Genome Atlas Project](http://cancergenome.nih.gov/).
