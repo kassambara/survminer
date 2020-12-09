@@ -245,7 +245,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   yticklabs <- rev(levels(survsummary$strata))
   n_strata <- length(levels(survsummary$strata))
-  if(!y.text) yticklabs <- rep("-", n_strata)
+  if(!y.text) yticklabs <- rep("\\-", n_strata)
 
   time <- strata <- label <- n.event <- cum.n.event  <- cum.n.censor<- NULL
 
