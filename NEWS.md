@@ -12,6 +12,8 @@
 ## Bug fixes
 
 
+- In `ggsurvplot()` examples, the function `gridExtra::rbind.gtable()` is now replaced by `gridExtra::gtable_rbind()` (@jan-imbi, pull #493).
+
 # survminer 0.4.8
 
 ## Minor changes
