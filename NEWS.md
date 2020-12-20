@@ -7,6 +7,7 @@
 
 ## Minor changes
 
+- A new vignette added to show how to display interaction using ggforest() (#496).
 - Since ggplot2 v3.3.0, the function `element_text()` issues a warning when vectorized arguments are provided, as in colour = c("red", "green", "blue"). This is a breaking change affecting the function `ggsurvtable()`. To fix this, the function `ggtext::element_markdown()` is now used in place of `element_text()` to handle vectorized colors (issue #455 fixed by pull #503).
 
 ## Bug fixes

@@ -40,7 +40,8 @@ Suggests:
     flexsurv,
     cmprsk,
     markdown,
-    testthat
+    testthat,
+    rmarkdown
 VignetteBuilder: knitr
 URL: http://www.sthda.com/english/rpkgs/survminer/
 BugReports: https://github.com/kassambara/survminer/issues
