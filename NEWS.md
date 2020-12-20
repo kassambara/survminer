@@ -12,7 +12,7 @@
 
 ## Bug fixes
 
-
+- The Gehan-Breslow p-value is now correctly computed when the option `log.rank.weights = "n"` is specified in the function `ggsurvplot()` (#453)
 - In `ggsurvplot()` examples, the function `gridExtra::rbind.gtable()` is now replaced by `gridExtra::gtable_rbind()` (@jan-imbi, pull #493).
 
 # survminer 0.4.8
