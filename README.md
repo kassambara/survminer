@@ -1,3 +1,5 @@
+[![R build
+status](https://github.com/kassambara/survminer/workflows/R-CMD-check/badge.svg)](https://github.com/kassambara/survminer/actions)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer)
 [![Downloads](https://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer)
 [![Total

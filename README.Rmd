@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 ```
     
 
+[![R build status](https://github.com/kassambara/survminer/workflows/R-CMD-check/badge.svg)](https://github.com/kassambara/survminer/actions)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer)
 [![Downloads](https://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer)
 [![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](https://cran.r-project.org/package=survminer)
