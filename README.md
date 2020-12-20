@@ -1,87 +1,126 @@
-[![Build Status](https://api.travis-ci.org/kassambara/survminer.png)](https://travis-ci.org/kassambara/survminer) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer) [![Downloads](https://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer) [![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](https://cran.r-project.org/package=survminer)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer)
+[![Downloads](https://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer)
+[![Total
+Downloads](https://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](https://cran.r-project.org/package=survminer)
 
 <br/>
 
--   [survminer: Survival Analysis and Visualization](#survminer-survival-analysis-and-visualization)
+-   [survminer: Survival Analysis and
+    Visualization](#survminer-survival-analysis-and-visualization)
     -   [Installation and loading](#installation-and-loading)
-    -   [ggsurvplot: Drawing survival curves](#ggsurvplot-drawing-survival-curves)
+    -   [ggsurvplot: Drawing survival
+        curves](#ggsurvplot-drawing-survival-curves)
         -   [Fitting survival curves](#fitting-survival-curves)
         -   [Basic plots](#basic-plots)
-        -   [Computing and passing p-values](#computing-and-passin-p-values)
+        -   [Computing and passing
+            p-values](#computing-and-passin-p-values)
         -   [Customized survival curves](#customized-survival-curves)
-        -   [More customized survival curves](#more-customized-survival-curves)
-        -   [Uber customized survival curves](#uber-customized-survival-curves)
-        -   [Uber platinum customized survival curves](#uber-platinum-customized-survival-curves)
-        -   [Uber platinum premium customized survival curves](#uber-platinum-premium-customized-survival-curves)
+        -   [More customized survival
+            curves](#more-customized-survival-curves)
+        -   [Uber customized survival
+            curves](#uber-customized-survival-curves)
+        -   [Uber platinum customized survival
+            curves](#uber-platinum-customized-survival-curves)
+        -   [Uber platinum premium customized survival
+            curves](#uber-platinum-premium-customized-survival-curves)
     -   [Blog posts](#blog-posts)
 
 survminer: Survival Analysis and Visualization
 ==============================================
 
-The **survminer** R package provides functions for facilitating **survival analysis** and **visualization**.
+The **survminer** R package provides functions for facilitating
+**survival analysis** and **visualization**.
 
-The main functions, in the package, are organized in different categories as follow.
+The main functions, in the package, are organized in different
+categories as follow.
 
 **Survival Curves**
 <hr/>
+
 <br/>
 
--   **ggsurvplot**(): Draws survival curves with the 'number at risk' table, the cumulative number of events table and the cumulative number of censored subjects table.
+-   **ggsurvplot**(): Draws survival curves with the ‘number at risk’
+    table, the cumulative number of events table and the cumulative
+    number of censored subjects table.
 
--   **arrange\_ggsurvplots**(): Arranges multiple ggsurvplots on the same page.
+-   **arrange\_ggsurvplots**(): Arranges multiple ggsurvplots on the
+    same page.
 
--   **ggsurvevents**(): Plots the distribution of event's times.
+-   **ggsurvevents**(): Plots the distribution of event’s times.
 
--   **surv\_summary**(): Summary of a survival curve. Compared to the default summary() function, surv\_summary() creates a data frame containing a nice summary from survfit results.
+-   **surv\_summary**(): Summary of a survival curve. Compared to the
+    default summary() function, surv\_summary() creates a data frame
+    containing a nice summary from survfit results.
 
--   **surv\_cutpoint**(): Determines the optimal cutpoint for one or multiple continuous variables at once. Provides a value of a cutpoint that correspond to the most significant relation with survival.
+-   **surv\_cutpoint**(): Determines the optimal cutpoint for one or
+    multiple continuous variables at once. Provides a value of a
+    cutpoint that correspond to the most significant relation with
+    survival.
 
--   **pairwise\_survdiff**(): Multiple comparisons of survival curves. Calculate pairwise comparisons between group levels with corrections for multiple testing.
+-   **pairwise\_survdiff**(): Multiple comparisons of survival curves.
+    Calculate pairwise comparisons between group levels with corrections
+    for multiple testing.
 
 <br/>
 
 **Diagnostics of Cox Model**
 <hr/>
+
 <br/>
 
--   **ggcoxzph**(): Graphical test of proportional hazards. Displays a graph of the scaled Schoenfeld residuals, along with a smooth curve using ggplot2. Wrapper around plot.cox.zph().
+-   **ggcoxzph**(): Graphical test of proportional hazards. Displays a
+    graph of the scaled Schoenfeld residuals, along with a smooth curve
+    using ggplot2. Wrapper around plot.cox.zph().
 
--   **ggcoxdiagnostics**(): Displays diagnostics graphs presenting goodness of Cox Proportional Hazards Model fit.
+-   **ggcoxdiagnostics**(): Displays diagnostics graphs presenting
+    goodness of Cox Proportional Hazards Model fit.
 
--   **ggcoxfunctional**(): Displays graphs of continuous explanatory variable against martingale residuals of null cox proportional hazards model. It helps to properly choose the functional form of continuous variable in cox model.
+-   **ggcoxfunctional**(): Displays graphs of continuous explanatory
+    variable against martingale residuals of null cox proportional
+    hazards model. It helps to properly choose the functional form of
+    continuous variable in cox model.
 
 <br/>
 
 **Summary of Cox Model**
 <hr/>
+
 <br/>
 
 -   **ggforest**(): Draws forest plot for CoxPH model.
 
--   **ggcoxadjustedcurves**(): Plots adjusted survival curves for coxph model.
+-   **ggcoxadjustedcurves**(): Plots adjusted survival curves for coxph
+    model.
 
 <br/>
 
 **Competing Risks**
 <hr/>
-<br/>
-
--   **ggcompetingrisks**(): Plots cumulative incidence curves for competing risks.
 
 <br/>
 
-> Find out more at <http://www.sthda.com/english/rpkgs/survminer/>, and check out the documentation and usage examples of each of the functions in survminer package.
+-   **ggcompetingrisks**(): Plots cumulative incidence curves for
+    competing risks.
+
+<br/>
+
+> Find out more at
+> <a href="http://www.sthda.com/english/rpkgs/survminer/" class="uri">http://www.sthda.com/english/rpkgs/survminer/</a>,
+> and check out the documentation and usage examples of each of the
+> functions in survminer package.
 
 Installation and loading
 ------------------------
 
-Install from [CRAN](https://cran.r-project.org/package=survminer) as follow:
+Install from [CRAN](https://cran.r-project.org/package=survminer) as
+follow:
 
 ``` r
 install.packages("survminer")
 ```
 
-Or, install the latest version from [GitHub](https://github.com/kassambara/survminer):
+Or, install the latest version from
+[GitHub](https://github.com/kassambara/survminer):
 
 ``` r
 if(!require(devtools)) install.packages("devtools")
@@ -140,11 +179,17 @@ ggsurvplot(
 
 ![](tools/README-ggplot2-customized-survival-plot-1.png)
 
-Note that, additional arguments are available to customize the main title, axis labels, the font style, axis limits, legends and the number at risk table.
+Note that, additional arguments are available to customize the main
+title, axis labels, the font style, axis limits, legends and the number
+at risk table.
 
 ### More customized survival curves
 
-Focus on `xlim` and `break.time.by` parameters which do not change the calculations of estimates of survival surves. Also note `risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that provide bars instead of names in text annotations of the legend of risk table.
+Focus on `xlim` and `break.time.by` parameters which do not change the
+calculations of estimates of survival surves. Also note
+`risk.table.y.text.col = TRUE` and `risk.table.y.text = FALSE` that
+provide bars instead of names in text annotations of the legend of risk
+table.
 
 ``` r
 ggsurvplot(
@@ -283,18 +328,31 @@ print(ggsurv)
 Blog posts
 ----------
 
--   M. Kosiński. R-ADDICT January 2017. [Comparing (Fancy) Survival Curves with Weighted Log-rank Tests](http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html)
+-   M. Kosiński. R-ADDICT January 2017. [Comparing (Fancy) Survival
+    Curves with Weighted Log-rank
+    Tests](http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html)
 
--   M. Kosiński. R-ADDICT January 2017. [When You Went too Far with Survival Plots During the survminer 1st Anniversary](http://r-addict.com/2017/01/15/Too-Far-With-Survival-Plots.html)
+-   M. Kosiński. R-ADDICT January 2017. [When You Went too Far with
+    Survival Plots During the survminer 1st
+    Anniversary](http://r-addict.com/2017/01/15/Too-Far-With-Survival-Plots.html)
 
--   A. Kassambara. STHDA December 2016. [Survival Analysis Basics: Curves and Logrank Tests](http://www.sthda.com/english/wiki/survival-analysis-basics)
+-   A. Kassambara. STHDA December 2016. [Survival Analysis Basics:
+    Curves and Logrank
+    Tests](http://www.sthda.com/english/wiki/survival-analysis-basics)
 
--   A. Kassambara. STHDA December 2016. [Cox Proportional Hazards Model](http://www.sthda.com/english/wiki/cox-proportional-hazards-model)
+-   A. Kassambara. STHDA December 2016. [Cox Proportional Hazards
+    Model](http://www.sthda.com/english/wiki/cox-proportional-hazards-model)
 
--   A. Kassambara. STHDA December 2016. [Cox Model Assumptions](http://www.sthda.com/english/wiki/cox-model-assumptions)
+-   A. Kassambara. STHDA December 2016. [Cox Model
+    Assumptions](http://www.sthda.com/english/wiki/cox-model-assumptions)
 
--   M. Kosiński. R-ADDICT November 2016. [Determine optimal cutpoints for numerical variables in survival plots](http://r-addict.com/2016/11/21/Optimal-Cutpoint-maxstat.html)
+-   M. Kosiński. R-ADDICT November 2016. [Determine optimal cutpoints
+    for numerical variables in survival
+    plots](http://r-addict.com/2016/11/21/Optimal-Cutpoint-maxstat.html)
 
--   M. Kosiński. R-ADDICT May 2016. [Survival plots have never been so informative](http://r-addict.com/2016/05/23/Informative-Survival-Plots.html)
+-   M. Kosiński. R-ADDICT May 2016. [Survival plots have never been so
+    informative](http://r-addict.com/2016/05/23/Informative-Survival-Plots.html)
 
--   A. Kassambara. STHDA January 2016. [survminer R package: Survival Data Analysis and Visualization](http://www.sthda.com/english/wiki/survminer-r-package-survival-data-analysis-and-visualization).
+-   A. Kassambara. STHDA January 2016. [survminer R package: Survival
+    Data Analysis and
+    Visualization](http://www.sthda.com/english/wiki/survminer-r-package-survival-data-analysis-and-visualization).
