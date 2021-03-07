@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
       </span>
     </div>
 
@@ -190,9 +190,9 @@ risk.table = FALSE.</p></td>
 <span class='co'># List of ggsurvplots</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>require</a></span>(<span class='st'>"survminer"</span>)
 <span class='no'>splots</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()
-<span class='no'>splots</span><span class='kw'>[[</span><span class='fl'>1</span>]] <span class='kw'>&lt;-</span> <span class='fu'><a href='ggsurvplot.html'>ggsurvplot</a></span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'>theme_minimal</span>())</div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='input'><span class='no'>splots</span><span class='kw'>[[</span><span class='fl'>2</span>]] <span class='kw'>&lt;-</span> <span class='fu'><a href='ggsurvplot.html'>ggsurvplot</a></span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'>theme_grey</span>())</div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='input'>
+<span class='no'>splots</span><span class='kw'>[[</span><span class='fl'>1</span>]] <span class='kw'>&lt;-</span> <span class='fu'><a href='ggsurvplot.html'>ggsurvplot</a></span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'>theme_minimal</span>())
+<span class='no'>splots</span><span class='kw'>[[</span><span class='fl'>2</span>]] <span class='kw'>&lt;-</span> <span class='fu'><a href='ggsurvplot.html'>ggsurvplot</a></span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>lung</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'>theme_grey</span>())
+
 <span class='co'># Arrange multiple ggsurvplots and print the output</span>
 <span class='fu'>arrange_ggsurvplots</span>(<span class='no'>splots</span>, <span class='kw'>print</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>risk.table.height</span> <span class='kw'>=</span> <span class='fl'>0.4</span>)</div><div class='img'><img src='arrange_ggsurvplots-1.png' alt='' width='700' height='433' /></div><div class='input'>

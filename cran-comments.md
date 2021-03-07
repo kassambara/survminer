@@ -1,7 +1,7 @@
 ## Test environments
 * local OS X install, R 3.6.3
 * win-builder 
-* Github Actions
+* Github Action
 
 ## R CMD check results
 There were no ERRORs or WARNINGs.
@@ -23,5 +23,5 @@ All packages that I could install passed.
 
 ## Update
 
-This is an update version 0.8 (see NEWS.md)
+This is an update version 0.4.9 (see NEWS.md)
 

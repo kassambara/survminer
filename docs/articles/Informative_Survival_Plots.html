@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
       </span>
     </div>
 
@@ -96,8 +96,7 @@
 <a href="#example" class="anchor"></a>Example</h1>
 <p>After regular installation</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">'survminer'</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/source.html">source</a></span>(<span class="st">"https://bioconductor.org/biocLite.R"</span>)
-<span class="fu">biocLite</span>(<span class="st">"RTCGA.clinical"</span>) <span class="co"># data for examples</span></pre></body></html></div>
+<span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"RTCGA.clinical"</span>) <span class="co"># data for examples</span></pre></body></html></div>
 <p>we can create simple estimates of survival curves just after we put <code>survfit</code> (survival package) object into <code><a href="../reference/ggsurvplot.html">ggsurvplot()</a></code> function. Let’s have a look at differences in survival times between patients suffering from Ovarian Cancer (<em>Ovarian serous cystadenocarcinoma</em>) and patients suffering from Breast Cancer (<em>Breast invasive carcinoma</em>), where data were collected by <a href="http://cancergenome.nih.gov/">The Cancer Genome Atlas Project</a>.</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">survminer</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">RTCGA.clinical</span>)
