@@ -25,3 +25,9 @@ All packages that I could install passed.
 
 This is an update version 0.4.9 (see NEWS.md)
 
+## Resubmission
+
+We fixed broken web links in the doc.
+
+
+
