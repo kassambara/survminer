@@ -107,7 +107,7 @@ categories as follow.
 <br/>
 
 > Find out more at
-> <a href="http://www.sthda.com/english/rpkgs/survminer/" class="uri">http://www.sthda.com/english/rpkgs/survminer/</a>,
+> <a href="https://rpkgs.datanovia.com/survminer" class="uri">https://rpkgs.datanovia.com/survminer</a>,
 > and check out the documentation and usage examples of each of the
 > functions in survminer package.
 
@@ -248,6 +248,41 @@ ggsurv
 
 ### Uber platinum customized survival curves
 
+Helper function to customize plot labels:
+
+``` r
+customize_labels <- function (p, font.title = NULL,
+                              font.subtitle = NULL, font.caption = NULL,
+                              font.x = NULL, font.y = NULL, font.xtickslab = NULL, font.ytickslab = NULL)
+{
+  original.p <- p
+  if(is.ggplot(original.p)) list.plots <- list(original.p)
+  else if(is.list(original.p)) list.plots <- original.p
+  else stop("Can't handle an object of class ", class (original.p))
+  .set_font <- function(font){
+    font <- ggpubr:::.parse_font(font)
+    ggtext::element_markdown (size = font$size, face = font$face, colour = font$color)
+  }
+  for(i in 1:length(list.plots)){
+    p <- list.plots[[i]]
+    if(is.ggplot(p)){
+      if (!is.null(font.title)) p <- p + theme(plot.title = .set_font(font.title))
+      if (!is.null(font.subtitle)) p <- p + theme(plot.subtitle = .set_font(font.subtitle))
+      if (!is.null(font.caption)) p <- p + theme(plot.caption = .set_font(font.caption))
+      if (!is.null(font.x)) p <- p + theme(axis.title.x = .set_font(font.x))
+      if (!is.null(font.y)) p <- p + theme(axis.title.y = .set_font(font.y))
+      if (!is.null(font.xtickslab)) p <- p + theme(axis.text.x = .set_font(font.xtickslab))
+      if (!is.null(font.ytickslab)) p <- p + theme(axis.text.y = .set_font(font.ytickslab))
+      list.plots[[i]] <- p
+    }
+  }
+  if(is.ggplot(original.p)) list.plots[[1]]
+  else list.plots
+}
+```
+
+Customized plot labels:
+
 ``` r
 # Changing Labels
 # %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -277,15 +312,14 @@ ggsurv$ncensor.plot <- ggsurv$ncensor.plot + labs(
 # Applying the same font style to all the components of ggsurv:
 # survival curves, risk table and censor part
 
-ggsurv <- ggpar(
+ggsurv <- customize_labels(
   ggsurv,
   font.title    = c(16, "bold", "darkblue"),         
   font.subtitle = c(15, "bold.italic", "purple"), 
   font.caption  = c(14, "plain", "orange"),        
   font.x        = c(14, "bold.italic", "red"),          
   font.y        = c(14, "bold.italic", "darkred"),      
-  font.xtickslab = c(12, "plain", "darkgreen"),
-  legend = "top"
+  font.xtickslab = c(12, "plain", "darkgreen")
 )
 
 ggsurv
@@ -300,7 +334,7 @@ Uber platinum premium customized survival curves
 # Using specific fonts for risk table and ncensor plots
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Font for Risk Table
-ggsurv$table <- ggpar(
+ggsurv$table <- customize_labels(
   ggsurv$table,
   font.title    = c(13, "bold.italic", "green"),
   font.subtitle = c(15, "bold", "pink"),
@@ -312,7 +346,7 @@ ggsurv$table <- ggpar(
 
 
 # Font for ncensor plot
-ggsurv$ncensor.plot <- ggpar(
+ggsurv$ncensor.plot <- customize_labels(
   ggsurv$ncensor.plot,
   font.title    = c(13, "bold.italic", "green"),
   font.subtitle = c(15, "bold", "pink"),
