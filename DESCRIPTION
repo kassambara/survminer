@@ -43,7 +43,7 @@ Suggests:
     testthat,
     rmarkdown
 VignetteBuilder: knitr
-URL: http://www.sthda.com/english/rpkgs/survminer/
+URL:  https://rpkgs.datanovia.com/survminer/index.html
 BugReports: https://github.com/kassambara/survminer/issues
 RoxygenNote: 7.1.1
 Collate: 

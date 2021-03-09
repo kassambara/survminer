@@ -107,7 +107,7 @@ categories as follow.
 <br/>
 
 > Find out more at
-> <a href="https://rpkgs.datanovia.com/survminer" class="uri">https://rpkgs.datanovia.com/survminer</a>,
+> <a href="https://rpkgs.datanovia.com/survminer/" class="uri">https://rpkgs.datanovia.com/survminer/</a>,
 > and check out the documentation and usage examples of each of the
 > functions in survminer package.
 
