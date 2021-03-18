@@ -3,6 +3,7 @@
 \name{ggsurvplot}
 \alias{ggsurvplot}
 \alias{print.ggsurvplot}
+\alias{grid.draw.ggsurvplot}
 \title{Drawing Survival Curves Using ggplot2}
 \usage{
 ggsurvplot(
@@ -38,6 +39,8 @@ ggsurvplot(
   newpage = TRUE,
   ...
 )
+
+\method{grid.draw}{ggsurvplot}(x)
 }
 \arguments{
 \item{fit}{allowed values include:
