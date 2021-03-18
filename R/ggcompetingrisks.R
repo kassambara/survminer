@@ -89,7 +89,7 @@ ggcompetingrisks.cuminc <- function(fit, gnames = NULL, gsep=" ",
   if (multiple_panels) {
     pl <- ggplot(df, aes(time, est, color=event)) + facet_wrap(~group)
   } else {
-    pl <- ggplot(df, aes(time, est, color=event, linetype=group))
+    pl <- ggplot(df, aes(time, est, color=event, linetype=group, group=interaction(group, event)))
   }
   if (conf.int) {
     pl <- pl + geom_ribbon(aes(ymin = est - coef*std, ymax=est + coef*std, fill = event), alpha = 0.2, linetype=0)
