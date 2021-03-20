@@ -10,6 +10,8 @@ arrange_ggsurvplots(
   title = NA,
   ncol = 2,
   nrow = 1,
+  byrow = FALSE,
+  layout_matrix = matrix(seq_len(nrow * ncol), nrow = nrow, ncol = ncol, byrow = byrow),
   surv.plot.height = NULL,
   risk.table.height = NULL,
   ncensor.plot.height = NULL,
@@ -23,7 +25,15 @@ arrange_ggsurvplots(
 
 \item{title}{character vector specifying page title. Default is NA.}
 
-\item{ncol, nrow}{the number of columns and rows, respectively.}
+\item{ncol}{the number of columns.}
+
+\item{nrow}{the number of rows.}
+
+\item{byrow}{logical value. Whether to fill the plot matrix by rows, or by columns.
+Default is FALSE (by columns).}
+
+\item{layout_matrix}{optional layout matrix. If not specified, automatically
+created from ncol, nrow, and byrow parameters.}
 
 \item{surv.plot.height}{the height of the survival plot on the grid. Default
 is 0.75. Ignored when risk.table = FALSE. \code{1-risk.table.height -
