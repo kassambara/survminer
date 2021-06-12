@@ -106,6 +106,9 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
       yr <- range(yhat, y)
     else yr <- range(yhat)
     if (se) {
+      bk <- backsolve(qmat$qr[1:df, 1:df], diag(df))
+      xtx <- bk %*% t(bk)
+      seval <- ((pmat %*% xtx) * pmat) %*% rep(1, df)
       temp <- as.vector(2 * sqrt(x$var[i, i] * seval))
       yup <- yhat + temp
       ylow <- yhat - temp
