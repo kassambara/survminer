@@ -171,7 +171,8 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", test.for.trend = 
 
   method.names <- c(rep("survdiff", 4),
                     rep(c("n", "sqrtN", "S1", "S2", "FH_p=1_q=1"), each = 3))
-  choosed.method <- grep(method, allowed.methods, ignore.case = TRUE)
+  # don't use grep which will detect many positions for "n" or "FH
+  choosed.method  <- which(tolower(allowed.methods) %in% tolower(method))
   if(.is_empty(choosed.method))
     stop("Don't support the choosed method: ", choosed.method, ". ",
          "Allowed methods include: ", .collapse(allowed.methods, sep = ", "))
@@ -179,7 +180,6 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", test.for.trend = 
 
   if(test.for.trend & method == "survdiff")
     method <- "1" # use survMisc
-
 
   # Extract fit components
   fit.ext <- .extract.survfit(fit, data)

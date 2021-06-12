@@ -4,14 +4,16 @@
 \name{BRCAOV.survInfo}
 \alias{BRCAOV.survInfo}
 \title{Breast and Ovarian Cancers Survival Information}
-\format{A data frame with 1674 rows and 4 columns.
+\format{
+A data frame with 1674 rows and 4 columns.
 \preformatted{
  - times: follow-up time;
  - bcr_patient_barcode: Patient bar code;
  - patient.vital_status = survival status. 0 = alive, 1 = dead;
  - admin.disease_code: disease code. brca = breast cancer, ov = ovarian
  cancer.
- }}
+ }
+}
 \source{
 From the RTCGA.clinical R/Bioconductor package. The data is generated as follow:
 

@@ -4,7 +4,8 @@
 \name{myeloma}
 \alias{myeloma}
 \title{Multiple Myeloma Data}
-\format{A data frame with 256 rows and 12 columns. \describe{
+\format{
+A data frame with 256 rows and 12 columns. \describe{
 \item{\code{molecular_group}}{Patients' molecular subgroups}
 \item{\code{chr1q21_status}}{Amplification status of the chromosome
 1q21}
@@ -15,7 +16,8 @@ alive, 1 = dead} \item{\code{time}}{Survival time in months}
 \item{\code{TP53}}{Gene expression} \item{\code{WHSC1}}{Gene expression} }
 
 The remaining columns (CCND1, CRIM1, DEPDC1, IRF4, TP53, WHSC1) correspond to
-the gene expression level of specified genes.}
+the gene expression level of specified genes.
+}
 \usage{
 data("myeloma")
 }

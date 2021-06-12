@@ -39,14 +39,13 @@ reference:
       - ggsurvplot_group_by
       - ggsurvplot_add_all
       - ggsurvplot_combine
-      - ggsurvplot_facet_by
+      - ggsurvplot_facet
   - title: Data
     contents:
       - myeloma
       - BMT
   - title: Others
     contents:
-      - ggsurvtheme
       - theme_survminer
       - add_ggsurvplot
 

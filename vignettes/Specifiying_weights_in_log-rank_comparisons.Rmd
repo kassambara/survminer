@@ -71,7 +71,7 @@ Regular Log-rank comparison uses $w_{t_i} = 1$ but many modifications to that ap
 
 - `n` Gehan and Breslow proposed to use $w_{t_i} = n_{t_i}$ (this is also called generalized Wilcoxon),
 - `srqtN` Tharone and Ware proposed to use $w_{t_i} = \sqrt{n_{t_i}}$,
-- `S1` Peto-Peto's modified survival estimate $w_{t_i} = S1({t_i}) = \prod_{i=1}^{T}(\frac{1-e_{t_i}}{n_{t_i}+1})$,
+- `S1` Peto-Peto's modified survival estimate $w_{t_i} = S1({t_i}) = \prod_{i=1}^{T}(1-\frac{e_{t_i}}{n_{t_i}+1})$,
 - `S2` modified Peto-Peto (by Andersen) $w_{t_i} = S2({t_i}) = \frac{S1({t_i})n_{t_i}}{n_{t_i}+1}$,
 - `FH` Fleming-Harrington $w_{t_i} = S(t_i)^p(1 - S(t_i))^q$.
 

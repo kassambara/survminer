@@ -42,7 +42,7 @@ ggforest <- function(model, data = NULL,
   main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
   fontsize = 0.7, refLabel = "reference", noDigits=2) {
   conf.high <- conf.low <- estimate <- NULL
-  stopifnot(class(model) == "coxph")
+  stopifnot(inherits(model, "coxph"))
 
   # get data and variables/terms from cox model
   data  <- .get_data(model, data = data)
@@ -52,7 +52,7 @@ ggforest <- function(model, data = NULL,
 #    gsub(rownames(anova(model))[-1], pattern = "`", replacement = ""))]
 
   # use broom to get some required statistics
-  coef <- as.data.frame(tidy(model))
+  coef <- as.data.frame(tidy(model, conf.int = TRUE))
   gmodel <- glance(model)
 
   # extract statistics for every variable

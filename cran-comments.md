@@ -1,7 +1,7 @@
 ## Test environments
-* local OS X install, R 3.3.2
+* local OS X install, R 3.6.3
 * win-builder 
-* Travis
+* Github Action
 
 ## R CMD check results
 There were no ERRORs or WARNINGs.
@@ -23,8 +23,11 @@ All packages that I could install passed.
 
 ## Update
 
-This is an update version 0.4.5
+This is an update version 0.4.9 (see NEWS.md)
 
 ## Resubmission
 
-Invalid URL removed
+We fixed broken web links in the doc.
+
+
+

@@ -8,21 +8,29 @@
 
 <title>Multiple Comparisons of Survival Curves — pairwise_survdiff • survminer</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,11 +38,11 @@
 
 
 
-<meta property="og:title" content="Multiple Comparisons of Survival Curves — pairwise_survdiff" />
 
+<meta property="og:title" content="Multiple Comparisons of Survival Curves — pairwise_survdiff" />
 <meta property="og:description" content="Calculate pairwise comparisons between group levels with
  corrections for multiple testing." />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -48,9 +56,10 @@
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -64,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
       </span>
     </div>
 
@@ -83,7 +92,6 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/kassambara/survminer">
@@ -98,26 +106,24 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Multiple Comparisons of Survival Curves</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/kassambara/survminer/blob/master/R/pairwise_survdiff.R'><code>R/pairwise_survdiff.R</code></a></small>
     <div class="hidden name"><code>pairwise_survdiff.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    
     <p>Calculate pairwise comparisons between group levels with
  corrections for multiple testing.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>pairwise_survdiff</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='kw'>p.adjust.method</span> <span class='kw'>=</span> <span class='st'>"BH"</span>, <span class='no'>na.action</span>,
-  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>pairwise_survdiff</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='kw'>p.adjust.method</span> <span class='kw'>=</span> <span class='st'>"BH"</span>, <span class='no'>na.action</span>, <span class='kw'>rho</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -134,7 +140,7 @@ formula.</p></td>
     <tr>
       <th>p.adjust.method</th>
       <td><p>method for adjusting p values (see
-<code><a href='https://www.rdocumentation.org/packages/stats/topics/p.adjust'>p.adjust</a></code>). Allowed values include "holm", "hochberg",
+<code><a href='https://rdrr.io/r/stats/p.adjust.html'>p.adjust</a></code>). Allowed values include "holm", "hochberg",
 "hommel", "bonferroni", "BH", "BY", "fdr", "none". If you don't want to
 adjust the p value (not recommended), use p.adjust.method = "none".</p></td>
     </tr>
@@ -149,25 +155,23 @@ options()$na.action.</p></td>
 include 0 (for Log-Rank test) and 1 (for peto &amp; peto test).</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Returns an object of class "pairwise.htest", which is a list
  containing the p values.</p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>survival::survdiff</p></div>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>survival</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>survminer</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>myeloma</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survival</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survminer</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>myeloma</span>)
 
 <span class='co'># Pairwise survdiff</span>
-<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>pairwise_survdiff</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>event</span>) ~ <span class='no'>molecular_group</span>,
+<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>pairwise_survdiff</span>(<span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>event</span>) ~ <span class='no'>molecular_group</span>,
      <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>myeloma</span>)
 <span class='no'>res</span></div><div class='output co'>#&gt; 
 #&gt; 	Pairwise comparisons using Log-Rank test 
@@ -191,8 +195,8 @@ include 0 (for Log-Rank test) and 1 (for peto &amp; peto test).</p></td>
 #&gt; 
 #&gt; P value adjustment method: BH </div><div class='input'>
 <span class='co'># Symbolic number coding</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/symnum'>symnum</a></span>(<span class='no'>res</span>$<span class='no'>p.value</span>, <span class='kw'>cutpoints</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0.0001</span>, <span class='fl'>0.001</span>, <span class='fl'>0.01</span>, <span class='fl'>0.05</span>, <span class='fl'>0.1</span>, <span class='fl'>1</span>),
-   <span class='kw'>symbols</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"****"</span>, <span class='st'>"***"</span>, <span class='st'>"**"</span>, <span class='st'>"*"</span>, <span class='st'>"+"</span>, <span class='st'>" "</span>),
+<span class='fu'><a href='https://rdrr.io/r/stats/symnum.html'>symnum</a></span>(<span class='no'>res</span>$<span class='no'>p.value</span>, <span class='kw'>cutpoints</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0.0001</span>, <span class='fl'>0.001</span>, <span class='fl'>0.01</span>, <span class='fl'>0.05</span>, <span class='fl'>0.1</span>, <span class='fl'>1</span>),
+   <span class='kw'>symbols</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"****"</span>, <span class='st'>"***"</span>, <span class='st'>"**"</span>, <span class='st'>"*"</span>, <span class='st'>"+"</span>, <span class='st'>" "</span>),
    <span class='kw'>abbr.colnames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>na</span> <span class='kw'>=</span> <span class='st'>""</span>)</div><div class='output co'>#&gt;                  Cyclin D-1 Cyclin D-2 Hyperdiploid Low bone disease MAF MMSET
 #&gt; Cyclin D-2                                                                    
 #&gt; Hyperdiploid                                                                  
@@ -205,22 +209,13 @@ include 0 (for Log-Rank test) and 1 (for peto &amp; peto test).</p></td>
 
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#see-also">See also</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
-    <h2>Author</h2>
-    <p>Alboukadel Kassambara, <a href='mailto:alboukadel.kassambara@gmail.com'>alboukadel.kassambara@gmail.com</a></p>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -228,13 +223,16 @@ include 0 (for Log-Rank test) and 1 (for peto &amp; peto test).</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

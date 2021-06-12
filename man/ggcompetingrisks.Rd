@@ -4,9 +4,16 @@
 \alias{ggcompetingrisks}
 \title{Cumulative Incidence Curves for Competing Risks}
 \usage{
-ggcompetingrisks(fit, gnames = NULL, gsep = " ",
-  multiple_panels = TRUE, ggtheme = theme_survminer(), coef = 1.96,
-  conf.int = FALSE, ...)
+ggcompetingrisks(
+  fit,
+  gnames = NULL,
+  gsep = " ",
+  multiple_panels = TRUE,
+  ggtheme = theme_survminer(),
+  coef = 1.96,
+  conf.int = FALSE,
+  ...
+)
 }
 \arguments{
 \item{fit}{an object of a class \code{cmprsk::cuminc} - created with \code{cmprsk::cuminc} function or \code{survfitms} created with \link{survfit} function.}
@@ -34,6 +41,7 @@ This function plots Cumulative Incidence Curves. For \code{cuminc} objects it's 
 For \code{survfitms} objects a different geometry is used, as suggested by \code{@teigentler}.
 }
 \examples{
+\dontrun{
 if(require("cmprsk")){
 
 set.seed(2)
@@ -57,7 +65,7 @@ ggcompetingrisks(fit2)
 fit3 <- survfit(Surv(time, status, type="mstate") ~ group, data=df)
 ggcompetingrisks(fit3)
 }
-\dontrun{
+
   library(ggsci)
   library(cowplot)
   ggcompetingrisks(fit3) + theme_cowplot() + scale_fill_jco()

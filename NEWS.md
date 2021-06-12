@@ -1,16 +1,49 @@
-# Survminer 0.4.5.999
+# Survminer 0.4.9
+
+
+## Minor changes
+
+- A new vignette added to show how to display interaction using ggforest() (#496).
+- Since ggplot2 v3.3.0, the function `element_text()` issues a warning when vectorized arguments are provided, as in colour = c("red", "green", "blue"). This is a breaking change affecting the function `ggsurvtable()`. To fix this, the function `ggtext::element_markdown()` is now used in place of `element_text()` to handle vectorized colors (issue #455 fixed by pull #503).
+
+## Bug fixes
+
+- The Gehan-Breslow p-value is now correctly computed when the option `log.rank.weights = "n"` is specified in the function `ggsurvplot()` (#453)
+- In `ggsurvplot()` examples, the function `gridExtra::rbind.gtable()` is now replaced by `gridExtra::gtable_rbind()` (@jan-imbi, pull #493).
+
+# survminer 0.4.8
+
+## Minor changes
+
+- Maintenance update due to new broom 0.7.0 version by explicitly setting conf.int = TRUE in the call to tidy.coxph from `ggforest()` (pull 485).
+
+# Survminer 0.4.7
+
+## Minor changes
+   
+- In older versions of the survival package, the function `survfit(res.cox)` returned an object of class survfit.cox. The class has been changed to `survfitcox` in the current survival package version. The survminer package has been now updated to take this change into account ([@edvbb, #441](https://github.com/kassambara/survminer/issues/441)).
+
+Fixes to adapt to dplyr 1.0.0 ([@romainfrancois, #460](https://github.com/kassambara/survminer/pull/460)): 
+    
+- Using group_by() instead of group_by_() which is deprecated
+- Putting the extra "surv_group_by" class first where it is supposed to be instead of last, which messes up with some internal processing from vctrs.
+     
+     
+## Bug fxes
+   
+- When the group size is small (i.e. n = 1), NAs are introduced during the computation of the confidence interval leading to a failure when specifying the option `conf.int` in the `ggsurvplot()` function. To fix this issue, Now, NAs are removed by default when drawing the confidence interval (#443 and #315). 
+
+
+# Survminer 0.4.6
     
 ## New features
    
-   
-## Major changes
-     
+- A new function `surv_adjustedcurves` is extracted from `ggadjustedcurves`. This function calculates adjusted survival curves but do not plot them. Its results may be useful for calculation of median survival or some other statistics. ([@pbiecek, #423](https://github.com/kassambara/survminer/pull/423)). 
+
      
 ## Minor changes 
    
-   
-## Bug fixes
-   
+- Adapted to tidyr 1.0.0 (#424)
    
 # Survminer 0.4.5
    
@@ -49,7 +82,7 @@
 
 ## New features
    
-- Now `ggsurvplot()` can be used to plot survreg model ([@HeidiSeibold, #276](https://github.com/kassambara/survminer/issues/276), [#325](https://github.com/kassambara/survminer/pull/325) ).
+- Now `ggsurvplot()` can be used to plot survreg model ([@HeidiSeibold, #276](https://github.com/kassambara/survminer/issues/276), #325 ).
    
    
  
@@ -94,7 +127,7 @@
 
 ## Major changes
 
-- The function `ggcoxadjustedcurves()` is replaced by `ggadjustedcurves()` ([#229](https://github.com/kassambara/survminer/issues/229)). 
+- The function `ggcoxadjustedcurves()` is replaced by `ggadjustedcurves()` (#229). 
    
 ## Minor changes
 
@@ -126,9 +159,9 @@
 
 -  The standard convention of ggplot2 is to have the axes offset from the origin. This can be annoying with Kaplan-Meier plots. New argument `axes.offset` added non in `ggsurvplot()`.  logical value. Default is TRUE. If FALSE, set the plot axes to start at the origin (c(0,0)) ([#196](https://github.com/kassambara/survminer/issues/196)). 
       
-- The function `ggsurvplot()` can take a list of survfit objects and produces a list of ggsurvplots ([#204](https://github.com/kassambara/survminer/issues/204)).
+- The function `ggsurvplot()` can take a list of survfit objects and produces a list of ggsurvplots (#204).
    
-- New argument `facet.by` added now in `ggsurvplot()` to draw multi-panel survival curves of a data set grouped by one or two variables. Alias of the `ggsurvplot_facet()` function ([#205](https://github.com/kassambara/survminer/issues/205)).
+- New argument `facet.by` added now in `ggsurvplot()` to draw multi-panel survival curves of a data set grouped by one or two variables. Alias of the `ggsurvplot_facet()` function (#205).
   
 - New argument `group.by` added now in `ggsurvplot()` to create survival curves of grouped data sets. Alias of the `ggsurvplot_group_by()` function.
    
@@ -152,7 +185,7 @@
    
 - New function `ggsurvplot_df()` added. An extension to ggsurvplot() to plot survival curves from any data frame containing the summary of survival curves as returned the surv_summary() function. Might be useful for a user who wants to use ggsurvplot for visualizing survival curves computed by another method than the standard survfit.formula function. In this case, the user has just to provide the data frame containing the summary of the survival analysis.
    
-- New function `surv_median()` added to easily extract median survivals from one or a list of survfit objects ([#207](https://github.com/kassambara/survminer/issues/207)).
+- New function `surv_median()` added to easily extract median survivals from one or a list of survfit objects (#207).
    
    
 - New function `surv_pvalue`() added to compute p-value from survfit objects or parse it when provided by the user. Survival curves are compared using the log-rank test (default). Other methods can be specified using the argument method.
@@ -174,11 +207,11 @@
   
 - Now, `ggsurvplot()` supports the `survfit()` outputs when used with the argument `start.time`.
   
-- Now, the default behaviour of `ggsurvplot()` is to round the number at risk using the option `digits = 0` ([214](https://github.com/kassambara/survminer/issues/214)).
+- Now, the default behaviour of `ggsurvplot()` is to round the number at risk using the option `digits = 0` (#214).
 
-- `pairwise_survdiff()` has been improved to handle a formula with multiple variables ([213](https://github.com/kassambara/survminer/issues/213)).
+- `pairwise_survdiff()` has been improved to handle a formula with multiple variables (#213).
 
-- The argument `color` are updated allowing to assign the same color for same groups accross facets ([#99](https://github.com/kassambara/survminer/issues/99) & [#185](https://github.com/kassambara/survminer/issues/185)).
+- The argument `color` are updated allowing to assign the same color for same groups accross facets (#99 & [#185](https://github.com/kassambara/survminer/issues/185)).
     - If the number of strata/group (n.strata) = 1, the expected value is the color name. For example color = "blue".
     - If n.strata > 1, the expected value is the grouping variable name. By default, survival curves are colored by strata using the argument color = "strata", but you can also color survival curves by any other grouping variables used to fit the survival curves.
     
@@ -202,7 +235,7 @@ ggsurv$plot + facet_grid(rx ~ adhere)
 
 - Now, the argument `palette` in `ggsurvplot()` ccan be also a numeric vector of length(strata); in this case a basic color palette is created using the function `grDevices::palette()`.
    
-- The `%+%` function in `survminer` has been replaced by `%++%` to avoid breaking the `ggplot2::%+%` function behavior when using survminer ([#199](https://github.com/kassambara/survminer/issues/199) and [#200](https://github.com/kassambara/survminer/issues/200)). 
+- The `%+%` function in `survminer` has been replaced by `%++%` to avoid breaking the `ggplot2::%+%` function behavior when using survminer (#199 and #200). 
    
 - New argument `fun` added in `ggcoxadjustedcurves()` ([@meganli, #202](https://github.com/kassambara/survminer/issues/202)).
 
@@ -240,14 +273,14 @@ ggsurv$plot + facet_grid(rx ~ adhere)
 - Additional `data` argument added to the `ggsurvplot()` function ([\@kassambara, #142](https://github.com/kassambara/survminer/issues/142)). Now, it's recommended to pass to the function, the data used to fit survival curves. This will avoid the error generated when trying to use the `ggsurvplot()` function inside another functions ([\@zzawadz, #125](https://github.com/kassambara/survminer/issues/125)).
    
    
-- New argument `risk.table.pos`, for placing risk table inside survival curves ([#69](https://github.com/kassambara/survminer/issues/69)). Allowed options are one of c("out", "in") indicating 'outside' or 'inside' the main plot, respectively. Default value is "out".  
+- New argument `risk.table.pos`, for placing risk table inside survival curves (#69). Allowed options are one of c("out", "in") indicating 'outside' or 'inside' the main plot, respectively. Default value is "out".  
 
 - New arguments `tables.height, tables.y.text, tables.theme, tables.col`: for customizing tables under the main survival plot:  ([#156](https://github.com/kassambara/survminer/issues/156)). 
    
 - New arguments `cumevents` and `cumcensor`: logical value for displaying the cumulative number of events table ([#117](https://github.com/kassambara/survminer/issues/117)) and the cumulative number of censored subject ([#155](https://github.com/kassambara/survminer/issues/155)), respectively.
    
 
-- Now, `ggsurvplot()` can display both the number at risk and the cumulative number of censored in the same table using the option `risk.table = 'nrisk_cumcenor'` ([#96](https://github.com/kassambara/survminer/issues/96)). It's also possible to display the number at risk and the cumulative number of events using the option `risk.table = 'nrisk_cumevents'`.
+- Now, `ggsurvplot()` can display both the number at risk and the cumulative number of censored in the same table using the option `risk.table = 'nrisk_cumcenor'` (#96). It's also possible to display the number at risk and the cumulative number of events using the option `risk.table = 'nrisk_cumevents'`.
     
 - New arguments `pval.method` and `log.rank.weights`: New possibilities to compare survival curves. Functionality based on `survMisc::comp`.
    
@@ -308,15 +341,15 @@ p %+% theme_survminer(
 
 ```
   
-- New function `arrange_ggsurvplots()` to arrange multiple ggsurvplots on the same page ([#66](https://github.com/kassambara/survminer/issues/66)).
+- New function `arrange_ggsurvplots()` to arrange multiple ggsurvplots on the same page (#66).
   
 - New function `ggsurvevents()` to calculate and plot the distribution for events (both status = 0 and status = 1); with `type` parameter one can plot cumulative distribution of locally smooth density; with normalised, distributions are normalised. This function helps to notice when censorings are more common ([\@pbiecek, #116](https://github.com/kassambara/survminer/issues/116)). 
     
-- New function `ggcoxadjustedcurves()` to plot adjusted survival curves for Cox proportional hazards model ([\@pbiecek, #133](https://github.com/kassambara/survminer/issues/133) & [\@markdanese, #67](https://github.com/kassambara/survminer/issues/67)).
+- New function `ggcoxadjustedcurves()` to plot adjusted survival curves for Cox proportional hazards model ([\@pbiecek, #133](https://github.com/kassambara/survminer/issues/133) & \@markdanese, #67).
    
 - New function `ggforest()` for drawing forest plot for the Cox model.   
     
-- New function `pairwise_survdiff()` for multiple comparisons of survival Curves ([#97](https://github.com/kassambara/survminer/issues/97)).
+- New function `pairwise_survdiff()` for multiple comparisons of survival Curves (#97).
      
 - New function `ggcompetingrisks()` to plot the cumulative incidence curves for competing risks ([\@pbiecek, #168](https://github.com/kassambara/survminer/issues/168).
     
@@ -402,11 +435,11 @@ writeDoc(doc, "test.pptx")
      
 ## Bug fixes
      
-- `surv_summary()` (v0.2.3) generated an error when the name of the variable used in `survfit()` can be found multiple times in the levels of the same variable. For example, variable = therapy; levels(therapy) --> "therapy" and "hormone therapy" ([#86](https://github.com/kassambara/survminer/issues/86)). This has been now fixed.
+- `surv_summary()` (v0.2.3) generated an error when the name of the variable used in `survfit()` can be found multiple times in the levels of the same variable. For example, variable = therapy; levels(therapy) --> "therapy" and "hormone therapy" (#86). This has been now fixed.
 
-- To extract variable names used in `survival::survfit()`, the R code `strsplit(strata, "=|,\\s+", perl=TRUE)` was used in the `surv_summary()` function [survminer v0.2.3]. The splitting was done at any "=" symbol in the string, causing an error when special characters (=, <=, >=) are used for the levels of a categorical variable ([#91](https://github.com/kassambara/survminer/issues/91)). This has been now fixed.
+- To extract variable names used in `survival::survfit()`, the R code `strsplit(strata, "=|,\\s+", perl=TRUE)` was used in the `surv_summary()` function [survminer v0.2.3]. The splitting was done at any "=" symbol in the string, causing an error when special characters (=, <=, >=) are used for the levels of a categorical variable (#91). This has been now fixed.
 
-- Now, `ggsurvplot()` draws correctly the risk.table ([#93](https://github.com/kassambara/survminer/issues/93)).
+- Now, `ggsurvplot()` draws correctly the risk.table (#93).
    
    
 # survminer 0.2.3
@@ -414,8 +447,8 @@ writeDoc(doc, "test.pptx")
     
 ## New features
    
-- New function `surv_summary()` for creating data frame containing a nice summary of a survival curve ([#64](https://github.com/kassambara/survminer/issues/64)).
-- It's possible now to facet the output of `ggsurvplot()` by one or more factors ([#64](https://github.com/kassambara/survminer/issues/64)):
+- New function `surv_summary()` for creating data frame containing a nice summary of a survival curve (#64).
+- It's possible now to facet the output of `ggsurvplot()` by one or more factors (#64):
 
 ```
 # Fit complexe survival curves
@@ -429,30 +462,30 @@ require("survminer")
 ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
 ```
    
-- Now, `ggsurvplot()` can be used to plot cox model ([#67](https://github.com/kassambara/survminer/issues/67)).
+- Now, `ggsurvplot()` can be used to plot cox model (#67).
 - New 'myeloma' data sets added.
 - New functions added for determining and visualizing the optimal cutpoint of continuous variables for survival analyses:   
    - `surv_cutpoint()`: Determine the optimal cutpoint for each variable using 'maxstat'. Methods defined for surv_cutpoint object are summary(), print() and plot().
-   - `surv_categorize()`: Divide each variable values based on the cutpoint returned by `surv_cutpoint()` ([#41](https://github.com/kassambara/survminer/issues/41)).
+   - `surv_categorize()`: Divide each variable values based on the cutpoint returned by `surv_cutpoint()` (#41).
 - New argument 'ncensor.plot' added to `ggsurvplot()`. A logical value. If TRUE, the number of censored subjects at time t is plotted. Default is FALSE ([#18](https://github.com/kassambara/survminer/issues/18)).
   
   
 ## Minor changes
    
 - New argument 'conf.int.style' added in `ggsurvplot()` for changing the style of confidence interval bands.
-- Now, `ggsurvplot()` plots a stepped confidence interval when conf.int = TRUE ([#65](https://github.com/kassambara/survminer/issues/65)).
-- `ggsurvplot()` updated for compatibility with the future version of ggplot2 (v2.2.0) ([#68](https://github.com/kassambara/survminer/issues/68))
+- Now, `ggsurvplot()` plots a stepped confidence interval when conf.int = TRUE (#65).
+- `ggsurvplot()` updated for compatibility with the future version of ggplot2 (v2.2.0) (#68)
 - ylab is now automatically adapted according to the value of the argument `fun`. For example, if fun = "event", then ylab will be "Cumulative event".
-- In `ggsurvplot()`, linetypes can now be adjusted by variables used to fit survival curves ([#46](https://github.com/kassambara/survminer/issues/46))
-- In `ggsurvplot()`, the argument risk.table can be either a logical value (TRUE|FALSE) or a string ("absolute", "percentage"). If risk.table = "absolute", `ggsurvplot()` displays the absolute number of subjects at risk. If risk.table = "percentage", the percentage at risk is displayed. Use "abs_pct" to show both the absolute number and the percentage of subjects at risk. ([#70](https://github.com/kassambara/survminer/issues/70)).
-- New argument surv.median.line in `ggsurvplot()`: character vector for drawing a horizontal/vertical line at median (50%) survival. Allowed values include one of c("none", "hv", "h", "v"). v: vertical, h:horizontal ([#61](https://github.com/kassambara/survminer/issues/61)).
+- In `ggsurvplot()`, linetypes can now be adjusted by variables used to fit survival curves (#46)
+- In `ggsurvplot()`, the argument risk.table can be either a logical value (TRUE|FALSE) or a string ("absolute", "percentage"). If risk.table = "absolute", `ggsurvplot()` displays the absolute number of subjects at risk. If risk.table = "percentage", the percentage at risk is displayed. Use "abs_pct" to show both the absolute number and the percentage of subjects at risk (#70).
+- New argument surv.median.line in `ggsurvplot()`: character vector for drawing a horizontal/vertical line at median (50%) survival. Allowed values include one of c("none", "hv", "h", "v"). v: vertical, h:horizontal (#61).
 - Now, default theme of ggcoxdiagnostics() is ggplot2::theme_bw().
    
    
 ## Bug fixes
     
-- `ggcoxdiagnostics()` can now handle a multivariate Cox model ([#62](https://github.com/kassambara/survminer/issues/62))
-- `ggcoxfunctional()` now displays graphs of continuous variable against martingale residuals of null cox proportional hazards model ([#63](https://github.com/kassambara/survminer/issues/63)).
+- `ggcoxdiagnostics()` can now handle a multivariate Cox model (#62)
+- `ggcoxfunctional()` now displays graphs of continuous variable against martingale residuals of null cox proportional hazards model (#63).
 - When subset is specified in the survfit() model, it's now considered in `ggsurvplot()` to report the right p-value on the subset of the data and not on the whole data sets ([@jseoane, #71](https://github.com/kassambara/survminer/issues/71)).
 - `ggcoxzph()` can now produce plots only for specified subset of varibles ([@MarcinKosinski, #75](https://github.com/kassambara/survminer/issues/75))   
    
@@ -485,7 +518,7 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
 - post-customization of color and fill no longer shows warnings like "Scale for 'fill' is already present. Adding another scale for 'fill', which will replace the existing scale" ([@MarcinKosinski, #11](https://github.com/kassambara/survminer/issues/11)).
 - now, post-customization of survival curve colors will automatically affect the risk table y axis text colors ([@MarcinKosinski, #11](https://github.com/kassambara/survminer/issues/12)).
 - Default value for the argument `risk.table.y.text.col` is now TRUE.
-- New argument risk.table.y.text for the function `ggsurvplot`. logical argument. Default is TRUE. If FALSE, risk table y axis tick labels will be hidden ([@MarcinKosinski, #28](https://github.com/kassambara/survminer/issues/28)).
+- New argument risk.table.y.text for the function `ggsurvplot`. logical argument. Default is TRUE. If FALSE, risk table y axis tick labels will be hidden (@MarcinKosinski, #28).
    
    
 ## Bug fixes

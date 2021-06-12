@@ -8,3 +8,6 @@
 ^ISSUE_TEMPLATE\.md$
 ^docs$
 ^_pkgdown\.yml$
+^doc$
+^Meta$
+^\.github$

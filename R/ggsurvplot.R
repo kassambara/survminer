@@ -316,7 +316,7 @@ NULL
 #' g2 <- ggplotGrob(curv_facet)
 #' g3 <- ggplotGrob(tbl_facet)
 #' min_ncol <- min(ncol(g2), ncol(g3))
-#' g <- gridExtra::rbind.gtable(g2[, 1:min_ncol], g3[, 1:min_ncol], size="last")
+#' g <- gridExtra::gtable_rbind(g2[, 1:min_ncol], g3[, 1:min_ncol], size="last")
 #' g$widths <- grid::unit.pmax(g2$widths, g3$widths)
 #' grid::grid.newpage()
 #' grid::grid.draw(g)

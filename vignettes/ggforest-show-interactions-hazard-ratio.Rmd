@@ -1,0 +1,86 @@
+---
+title: "ggforest: How to Show Interactions Hazard Ratio"
+author: "Alboukadel Kassambara, Przemyslaw Biecek"
+output:
+  html_document:
+    mathjax:  default
+    fig_caption:  true
+    toc: true
+    section_numbering: true
+    css: ggsci.css
+vignette: >
+  %\VignetteIndexEntry{ggforest-show-interactions-hazard-ratio}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Survival plots have never been so informative}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r include = FALSE}
+library(knitr)
+opts_chunk$set(
+	comment = "",
+	message = FALSE,
+	warning = FALSE,
+	tidy.opts = list(
+		keep.blank.line = TRUE,
+		width.cutoff = 150
+		),
+	options(width = 150),
+	eval = TRUE
+)
+```
+
+
+# Introduction
+
+In general case it may be tricky to automatically extract interactions or variable transformations from model objects.
+A suggestion would be to create manually new variables that capture desired effects of interactions and add them to the model in an explicit way. This article describe an example of how to do this.
+
+
+# Load required R packages
+
+```{r setup}
+library(survminer)
+library(survival)
+```
+
+
+# Compute a Cox model with interaction terms
+
+
+```{r}
+res.cox <- coxph(Surv(time, status) ~ ph.karno * age, data=lung)
+summary(res.cox, conf.int = FALSE)
+```
+
+
+Visualization of the hazard ratios using the function `ggforest()`.
+  
+```{r ggforest, fig.width=5, fig.height=4}
+ggforest(res.cox, data = lung)
+```
+
+
+On the plot above, it can be seen that `ggforest()` ignores the interaction term `ph.karno:age`. 
+
+To fix this, a solution is to create manually the variable that handles the interaction: 
+   
+```{r}
+lung$ph.karno_age <- lung$ph.karno * lung$age
+```
+
+
+and now you can fit an additive model and the `ggforest()` function will include it in the plot:
+  
+  
+```{r}
+res.cox2 <- coxph(Surv(time, status) ~ ph.karno + age + ph.karno_age, data = lung)
+summary(res.cox2 , conf.int = FALSE)
+```
+
+
+```{r ggforest-with-interactions, fig.width=5, fig.height=4}
+ggforest(res.cox2, data=lung)
+```
+

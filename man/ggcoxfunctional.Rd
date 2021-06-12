@@ -5,11 +5,24 @@
 \alias{print.ggcoxfunctional}
 \title{Functional Form of Continuous Variable in Cox Proportional Hazards Model}
 \usage{
-ggcoxfunctional(formula, data = NULL, fit, iter = 0, f = 0.6,
-  point.col = "red", point.size = 1, point.shape = 19,
-  point.alpha = 1, xlim = NULL, ylim = NULL,
-  ylab = "Martingale Residuals \\nof Null Cox Model", title = NULL,
-  caption = NULL, ggtheme = theme_survminer(), ...)
+ggcoxfunctional(
+  formula,
+  data = NULL,
+  fit,
+  iter = 0,
+  f = 0.6,
+  point.col = "red",
+  point.size = 1,
+  point.shape = 19,
+  point.alpha = 1,
+  xlim = NULL,
+  ylim = NULL,
+  ylab = "Martingale Residuals \\nof Null Cox Model",
+  title = NULL,
+  caption = NULL,
+  ggtheme = theme_survminer(),
+  ...
+)
 
 \method{print}{ggcoxfunctional}(x, ..., newpage = TRUE)
 }

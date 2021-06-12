@@ -4,14 +4,28 @@
 \alias{ggsurvplot_facet}
 \title{Facet Survival Curves into Multiple Panels}
 \usage{
-ggsurvplot_facet(fit, data, facet.by, color = NULL, palette = NULL,
-  legend.labs = NULL, pval = FALSE, pval.method = FALSE,
-  pval.coord = NULL, pval.method.coord = NULL, nrow = NULL,
-  ncol = NULL, scales = "fixed", short.panel.labs = FALSE,
-  panel.labs = NULL, panel.labs.background = list(color = NULL, fill =
-  NULL), panel.labs.font = list(face = NULL, color = NULL, size = NULL,
-  angle = NULL), panel.labs.font.x = panel.labs.font,
-  panel.labs.font.y = panel.labs.font, ...)
+ggsurvplot_facet(
+  fit,
+  data,
+  facet.by,
+  color = NULL,
+  palette = NULL,
+  legend.labs = NULL,
+  pval = FALSE,
+  pval.method = FALSE,
+  pval.coord = NULL,
+  pval.method.coord = NULL,
+  nrow = NULL,
+  ncol = NULL,
+  scales = "fixed",
+  short.panel.labs = FALSE,
+  panel.labs = NULL,
+  panel.labs.background = list(color = NULL, fill = NULL),
+  panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
+  panel.labs.font.x = panel.labs.font,
+  panel.labs.font.y = panel.labs.font,
+  ...
+)
 }
 \arguments{
 \item{fit}{an object of class survfit.}

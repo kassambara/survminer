@@ -8,21 +8,29 @@
 
 <title>Facet Survival Curves into Multiple Panels — ggsurvplot_facet • survminer</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,11 +38,11 @@
 
 
 
-<meta property="og:title" content="Facet Survival Curves into Multiple Panels — ggsurvplot_facet" />
 
+<meta property="og:title" content="Facet Survival Curves into Multiple Panels — ggsurvplot_facet" />
 <meta property="og:description" content="Draw multi-panel survival curves of a data set grouped by one or
  two variables." />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -48,9 +56,10 @@
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -64,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
       </span>
     </div>
 
@@ -83,7 +92,6 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/kassambara/survminer">
@@ -98,32 +106,45 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Facet Survival Curves into Multiple Panels</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/kassambara/survminer/blob/master/R/ggsurvplot_facet.R'><code>R/ggsurvplot_facet.R</code></a></small>
     <div class="hidden name"><code>ggsurvplot_facet.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    
     <p>Draw multi-panel survival curves of a data set grouped by one or
  two variables.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>ggsurvplot_facet</span>(<span class='no'>fit</span>, <span class='no'>data</span>, <span class='no'>facet.by</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pval.method</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>pval.coord</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pval.method.coord</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scales</span> <span class='kw'>=</span> <span class='st'>"fixed"</span>, <span class='kw'>short.panel.labs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>panel.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>panel.labs.background</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fill</span> <span class='kw'>=</span>
-  <span class='kw'>NULL</span>), <span class='kw'>panel.labs.font</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>face</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>angle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>), <span class='kw'>panel.labs.font.x</span> <span class='kw'>=</span> <span class='no'>panel.labs.font</span>,
-  <span class='kw'>panel.labs.font.y</span> <span class='kw'>=</span> <span class='no'>panel.labs.font</span>, <span class='no'>...</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>ggsurvplot_facet</span>(
+  <span class='no'>fit</span>,
+  <span class='no'>data</span>,
+  <span class='no'>facet.by</span>,
+  <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>palette</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>legend.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>pval.method</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>pval.coord</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>pval.method.coord</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>scales</span> <span class='kw'>=</span> <span class='st'>"fixed"</span>,
+  <span class='kw'>short.panel.labs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>panel.labs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>panel.labs.background</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fill</span> <span class='kw'>=</span> <span class='kw'>NULL</span>),
+  <span class='kw'>panel.labs.font</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>face</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>angle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>),
+  <span class='kw'>panel.labs.font.x</span> <span class='kw'>=</span> <span class='no'>panel.labs.font</span>,
+  <span class='kw'>panel.labs.font.y</span> <span class='kw'>=</span> <span class='no'>panel.labs.font</span>,
+  <span class='no'>...</span>
+)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -164,7 +185,7 @@ e.g. "RdBu", "Blues", ...; or custom color palette e.g. c("blue", "red"); and sc
  "rickandmorty".
 See details section for more information.  Can be also a numeric vector of
 length(groups); in this case a basic color palette is created using the
-function <a href='https://www.rdocumentation.org/packages/grDevices/topics/palette'>palette</a>.</p></td>
+function <a href='https://rdrr.io/r/grDevices/palette.html'>palette</a>.</p></td>
     </tr>
     <tr>
       <th>legend.labs</th>
@@ -244,38 +265,39 @@ and y direction, respectively.</p></td>
       <td><p>other arguments to pass to the function <code><a href='ggsurvplot.html'>ggsurvplot</a></code>.</p></td>
     </tr>
     </table>
-    
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>survival</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survival</span>)
 
 <span class='co'># Facet by one grouping variables: rx</span>
 <span class='co'>#::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/survfit'>survfit</a></span>( <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span> )
+<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survival/man/survfit.html'>survfit</a></span>( <span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span> )
 <span class='fu'>ggsurvplot_facet</span>(<span class='no'>fit</span>, <span class='no'>colon</span>, <span class='kw'>facet.by</span> <span class='kw'>=</span> <span class='st'>"rx"</span>,
-                <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"jco"</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='ggsurvplot_facet-1.png' alt='' width='700' height='433' /></div><div class='input'>
+                <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"jco"</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: `as.tibble()` is deprecated as of tibble 2.0.0.</span>
+#&gt; <span class='warning'>Please use `as_tibble()` instead.</span>
+#&gt; <span class='warning'>The signature and semantics have changed, see `?as_tibble`.</span>
+#&gt; <span class='warning'>This warning is displayed once every 8 hours.</span>
+#&gt; <span class='warning'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span></div><div class='img'><img src='ggsurvplot_facet-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Facet by two grouping variables: rx and adhere</span>
 <span class='co'>#::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
-<span class='fu'>ggsurvplot_facet</span>(<span class='no'>fit</span>, <span class='no'>colon</span>, <span class='kw'>facet.by</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"rx"</span>, <span class='st'>"adhere"</span>),
+<span class='fu'>ggsurvplot_facet</span>(<span class='no'>fit</span>, <span class='no'>colon</span>, <span class='kw'>facet.by</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"rx"</span>, <span class='st'>"adhere"</span>),
                 <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"jco"</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='ggsurvplot_facet-2.png' alt='' width='700' height='433' /></div><div class='input'>
 
 <span class='co'># Another fit</span>
 <span class='co'>#::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
-<span class='no'>fit2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/survfit'>survfit</a></span>( <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span> + <span class='no'>rx</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span> )
+<span class='no'>fit2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survival/man/survfit.html'>survfit</a></span>( <span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>time</span>, <span class='no'>status</span>) ~ <span class='no'>sex</span> + <span class='no'>rx</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>colon</span> )
 <span class='fu'>ggsurvplot_facet</span>(<span class='no'>fit2</span>, <span class='no'>colon</span>, <span class='kw'>facet.by</span> <span class='kw'>=</span> <span class='st'>"adhere"</span>,
                 <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"jco"</span>, <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='ggsurvplot_facet-3.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-            
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -283,13 +305,16 @@ and y direction, respectively.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

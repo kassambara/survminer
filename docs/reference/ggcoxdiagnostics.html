@@ -8,21 +8,29 @@
 
 <title>Diagnostic Plots for Cox Proportional Hazards Model with ggplot2 — ggcoxdiagnostics • survminer</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,11 +38,11 @@
 
 
 
-<meta property="og:title" content="Diagnostic Plots for Cox Proportional Hazards Model with ggplot2 — ggcoxdiagnostics" />
 
+<meta property="og:title" content="Diagnostic Plots for Cox Proportional Hazards Model with ggplot2 — ggcoxdiagnostics" />
 <meta property="og:description" content="Displays diagnostics graphs presenting goodness of Cox Proportional Hazards Model fit, that
 can be calculated with coxph function." />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -48,9 +56,10 @@ can be calculated with coxph function." />
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -64,7 +73,7 @@ can be calculated with coxph function." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
       </span>
     </div>
 
@@ -83,7 +92,6 @@ can be calculated with coxph function." />
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/kassambara/survminer">
@@ -98,35 +106,51 @@ can be calculated with coxph function." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Diagnostic Plots for Cox Proportional Hazards Model with ggplot2</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/kassambara/survminer/blob/master/R/ggcoxdiagnostics.R'><code>R/ggcoxdiagnostics.R</code></a></small>
     <div class="hidden name"><code>ggcoxdiagnostics.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    
     <p>Displays diagnostics graphs presenting goodness of Cox Proportional Hazards Model fit, that
 can be calculated with coxph function.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>fit</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"martingale"</span>, <span class='st'>"deviance"</span>, <span class='st'>"score"</span>,
-  <span class='st'>"schoenfeld"</span>, <span class='st'>"dfbeta"</span>, <span class='st'>"dfbetas"</span>, <span class='st'>"scaledsch"</span>, <span class='st'>"partial"</span>), <span class='no'>...</span>,
-  <span class='kw'>linear.predictions</span> <span class='kw'>=</span> <span class='no'>type</span> <span class='kw'>%in%</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"martingale"</span>, <span class='st'>"deviance"</span>),
-  <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/ifelse'>ifelse</a></span>(<span class='no'>linear.predictions</span>, <span class='st'>"linear.predictions"</span>,
-  <span class='st'>"observation.id"</span>), <span class='kw'>hline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>sline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>sline.se</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>hline.col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>hline.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>hline.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>hline.yintercept</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>hline.lty</span> <span class='kw'>=</span> <span class='st'>"dashed"</span>, <span class='kw'>sline.col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>,
-  <span class='kw'>sline.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>sline.alpha</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>sline.lty</span> <span class='kw'>=</span> <span class='st'>"dashed"</span>,
-  <span class='kw'>point.col</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='kw'>point.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>point.shape</span> <span class='kw'>=</span> <span class='fl'>19</span>,
-  <span class='kw'>point.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>subtitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>())</pre>
-    
+    <pre class="usage"><span class='fu'>ggcoxdiagnostics</span>(
+  <span class='no'>fit</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"martingale"</span>, <span class='st'>"deviance"</span>, <span class='st'>"score"</span>, <span class='st'>"schoenfeld"</span>, <span class='st'>"dfbeta"</span>, <span class='st'>"dfbetas"</span>,
+    <span class='st'>"scaledsch"</span>, <span class='st'>"partial"</span>),
+  <span class='no'>...</span>,
+  <span class='kw'>linear.predictions</span> <span class='kw'>=</span> <span class='no'>type</span> <span class='kw'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"martingale"</span>, <span class='st'>"deviance"</span>),
+  <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>linear.predictions</span>, <span class='st'>"linear.predictions"</span>, <span class='st'>"observation.id"</span>),
+  <span class='kw'>hline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>sline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>sline.se</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>hline.col</span> <span class='kw'>=</span> <span class='st'>"red"</span>,
+  <span class='kw'>hline.size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>hline.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>hline.yintercept</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>hline.lty</span> <span class='kw'>=</span> <span class='st'>"dashed"</span>,
+  <span class='kw'>sline.col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>,
+  <span class='kw'>sline.size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>sline.alpha</span> <span class='kw'>=</span> <span class='fl'>0.3</span>,
+  <span class='kw'>sline.lty</span> <span class='kw'>=</span> <span class='st'>"dashed"</span>,
+  <span class='kw'>point.col</span> <span class='kw'>=</span> <span class='st'>"black"</span>,
+  <span class='kw'>point.size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>point.shape</span> <span class='kw'>=</span> <span class='fl'>19</span>,
+  <span class='kw'>point.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>subtitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>caption</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()
+)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -144,8 +168,8 @@ determine a unique match is required.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>further arguments passed to <code><a href='https://www.rdocumentation.org/packages/survival/topics/residuals.coxph'>residuals.coxph</a></code> or
-to the function <code><a href='https://rpkgs.datanovia.com/ggpubr/reference/ggpar.html'>ggpar</a></code> for customizing the plot.</p></td>
+      <td><p>further arguments passed to <code><a href='https://rdrr.io/pkg/survival/man/residuals.coxph.html'>residuals.coxph</a></code> or
+to the function <code><a href='https://rdrr.io/pkg/ggpubr/man/ggpar.html'>ggpar</a></code> for customizing the plot.</p></td>
     </tr>
     <tr>
       <th>linear.predictions</th>
@@ -155,7 +179,7 @@ predictions for observations (<code>TRUE</code>) or just indexed of observations
     </tr>
     <tr>
       <th>ox.scale</th>
-      <td><p>one value from <code><a href='https://www.rdocumentation.org/packages/base/topics/c'>c("linear.predictions", "observation.id", "time")</a></code>.
+      <td><p>one value from <code><a href='https://rdrr.io/r/base/c.html'>c("linear.predictions", "observation.id", "time")</a></code>.
 It defines what will be presented on OX scale. Possible values: y hat for <code>"linear.predictions"</code>,
 Id of an observation for <code>"observation.id"</code> or Time for <code>"time"</code>.</p></td>
     </tr>
@@ -191,45 +215,35 @@ Used only when <code>sline = TRUE</code>.</p></td>
 Allowed values include ggplot2 official themes: see <code><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></code>.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Returns an object of class <code>ggplot</code>.</p>
-    
     <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
 
-    <ul>
+    
+<ul>
 <li><p><code>ggcoxdiagnostics</code>: Diagnostic Plots for Cox Proportional Hazards Model with <span class="pkg">ggplot2</span></p></li>
 </ul>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>survival</span>)
-<span class='no'>coxph.fit2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/coxph'>coxph</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/survival/topics/Surv'>Surv</a></span>(<span class='no'>futime</span>, <span class='no'>fustat</span>) ~ <span class='no'>age</span> + <span class='no'>ecog.ps</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>ovarian</span>)
-<span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"deviance"</span>)</div><div class='img'><img src='ggcoxdiagnostics-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"schoenfeld"</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Diagnostic plot"</span>)</div><div class='img'><img src='ggcoxdiagnostics-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"deviance"</span>, <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='st'>"time"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: ox.scale='time' works only with type=schoenfeld/scaledsch</span></div><div class='img'><img src='ggcoxdiagnostics-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"schoenfeld"</span>, <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='st'>"time"</span>,
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survival</span>)
+<span class='no'>coxph.fit2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survival/man/coxph.html'>coxph</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>futime</span>, <span class='no'>fustat</span>) ~ <span class='no'>age</span> + <span class='no'>ecog.ps</span>, <span class='kw'>data</span><span class='kw'>=</span><span class='no'>ovarian</span>)
+<span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"deviance"</span>)</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='img'><img src='ggcoxdiagnostics-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"schoenfeld"</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Diagnostic plot"</span>)</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='img'><img src='ggcoxdiagnostics-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"deviance"</span>, <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='st'>"time"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: ox.scale='time' works only with type=schoenfeld/scaledsch</span></div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='img'><img src='ggcoxdiagnostics-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"schoenfeld"</span>, <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='st'>"time"</span>,
                  <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Diagnostic plot"</span>, <span class='kw'>subtitle</span> <span class='kw'>=</span> <span class='st'>"Data comes from survey XYZ"</span>,
-                 <span class='kw'>font.subtitle</span> <span class='kw'>=</span> <span class='fl'>9</span>)</div><div class='img'><img src='ggcoxdiagnostics-4.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"deviance"</span>, <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='st'>"linear.predictions"</span>,
-                 <span class='kw'>caption</span> <span class='kw'>=</span> <span class='st'>"Code is available here - link"</span>, <span class='kw'>font.caption</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='img'><img src='ggcoxdiagnostics-5.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"schoenfeld"</span>, <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='st'>"observation.id"</span>)</div><div class='img'><img src='ggcoxdiagnostics-6.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"scaledsch"</span>, <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='st'>"time"</span>)</div><div class='img'><img src='ggcoxdiagnostics-7.png' alt='' width='700' height='433' /></div><div class='input'>
+                 <span class='kw'>font.subtitle</span> <span class='kw'>=</span> <span class='fl'>9</span>)</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='img'><img src='ggcoxdiagnostics-4.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"deviance"</span>, <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='st'>"linear.predictions"</span>,
+                 <span class='kw'>caption</span> <span class='kw'>=</span> <span class='st'>"Code is available here - link"</span>, <span class='kw'>font.caption</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='img'><img src='ggcoxdiagnostics-5.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"schoenfeld"</span>, <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='st'>"observation.id"</span>)</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='img'><img src='ggcoxdiagnostics-6.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>ggcoxdiagnostics</span>(<span class='no'>coxph.fit2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"scaledsch"</span>, <span class='kw'>ox.scale</span> <span class='kw'>=</span> <span class='st'>"time"</span>)</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='img'><img src='ggcoxdiagnostics-7.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#functions">Functions</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
-    <h2>Author</h2>
-    <p>Marcin Kosinski , <a href='mailto:m.p.kosinski@gmail.com'>m.p.kosinski@gmail.com</a></p>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -237,13 +251,16 @@ Allowed values include ggplot2 official themes: see <code><a href='https://ggplo
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

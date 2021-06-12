@@ -55,7 +55,7 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
                                   if (na.rm) data <- data[stats::complete.cases(self$required_aes), ]
                                   data <- data[order(data$group, data$x), ]
                                   data <- self$stairstep_confint(data)
-                                  ggplot2:::GeomRibbon$draw_group(data, panel_scales, coord, na.rm = FALSE)
+                                  ggplot2:::GeomRibbon$draw_group(data, panel_scales, coord, na.rm = na.rm)
                                 },
                                 stairstep_confint = function (data) {
                                   data <- as.data.frame(data)[order(data$x), ]
@@ -239,7 +239,7 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 # This is used for tables under the main survival plots
 #
 .set_large_dash_as_ytext <- function(ggp){
-  ggp + theme(axis.text.y = element_text(size = 50, vjust = 0.35),
+  ggp + theme(axis.text.y = ggtext::element_markdown(size = 50, vjust = 0.5),
         axis.ticks.y = element_blank())
 }
 
@@ -395,7 +395,7 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 #       - data.formula: data off all variables in the formula including time and status
 .extract.survfit <- function(fit, data = NULL){
 
-  if(inherits(fit, "survfit.cox"))
+  if(inherits(fit, c("survfit.cox", "survfitcox")))
     return(list())
 
   .formula <- fit$call$formula %>%
@@ -448,7 +448,7 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 # Check if is a list
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 .is_list <- function(x){
-  inherits(x, "list")
+  inherits(x, c("list", "vctrs_list_of"))
 }
 
 # Collapse one or two vectors

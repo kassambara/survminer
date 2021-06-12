@@ -16,6 +16,7 @@
 #' @author Przemyslaw Biecek, \email{przemyslaw.biecek@@gmail.com}
 #'
 #' @examples
+#' \dontrun{
 #' if(require("cmprsk")){
 #'
 #' set.seed(2)
@@ -39,7 +40,7 @@
 #' fit3 <- survfit(Surv(time, status, type="mstate") ~ group, data=df)
 #' ggcompetingrisks(fit3)
 #' }
-#' \dontrun{
+#'
 #'   library(ggsci)
 #'   library(cowplot)
 #'   ggcompetingrisks(fit3) + theme_cowplot() + scale_fill_jco()
