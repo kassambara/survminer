@@ -179,7 +179,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
     pvalue <- surv_pvalue(grouped.d$fit, grouped.d$data, pval.coord = pval.coord,
                           pval.method.coord = pval.method.coord,...) %>%
       dplyr::bind_rows() %>%
-      tibble::as.tibble()
+      tibble::as_tibble()
     # Select the grouping variable columns and cbind the corresponding pvalue
     pvals.df <- grouped.d %>%
       dplyr::select_( .dots = facet.by) %>%
