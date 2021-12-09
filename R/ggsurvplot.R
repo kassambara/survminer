@@ -371,17 +371,14 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 
 
 
-  if(.is_list(fit)){
-    if(combine)
-      ggsurv <- do.call(ggsurvplot_combine, opts)
-    else ggsurv <- do.call(ggsurvplot_list, opts)
+  if (.is_list(fit)) {
+    if (combine) return(do.call(ggsurvplot_combine, opts))
+    do.call(ggsurvplot_list, opts)
   }
 
-  else if(is.data.frame(fit))
-    ggsurv <- do.call(ggsurvplot_df, opts_df)
+  if (is.data.frame(fit)) do.call(ggsurvplot_df, opts_df)
 
-  else if(.is_survfit(fit)){
-
+  if (.is_survfit(fit)) {
     if(!is.null(group.by)){
       opts$group.by <- group.by
       ggsurv <- do.call(ggsurvplot_group_by, opts)
@@ -406,11 +403,7 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 
   }
 
-  else if(inherits(fit, "flexsurvreg"))
-    ggsurv <- do.call(ggflexsurvplot, opts)
-
-
-  return(ggsurv)
+  if (inherits(fit, "flexsurvreg")) do.call(ggflexsurvplot, opts)
 }
 
 
