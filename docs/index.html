@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
       </span>
     </div>
 
@@ -140,7 +140,7 @@
 </ul>
 <p><br></p>
 <blockquote>
-<p>Find out more at <a href="http://www.sthda.com/english/rpkgs/survminer/" class="uri">http://www.sthda.com/english/rpkgs/survminer/</a>, and check out the documentation and usage examples of each of the functions in survminer package.</p>
+<p>Find out more at <a href="https://rpkgs.datanovia.com/survminer/" class="uri">https://rpkgs.datanovia.com/survminer/</a>, and check out the documentation and usage examples of each of the functions in survminer package.</p>
 </blockquote>
 <div id="installation-and-loading" class="section level2">
 <h2 class="hasAnchor">
@@ -246,7 +246,37 @@
 <div id="uber-platinum-customized-survival-curves" class="section level3">
 <h3 class="hasAnchor">
 <a href="#uber-platinum-customized-survival-curves" class="anchor"></a>Uber platinum customized survival curves</h3>
-<div class="sourceCode" id="cb10"><pre class="r"><span class="co"># Changing Labels</span>
+<p>Helper function to customize plot labels:</p>
+<div class="sourceCode" id="cb10"><pre class="r"><span class="no">customize_labels</span> <span class="kw">&lt;-</span> <span class="kw">function</span> (<span class="no">p</span>, <span class="no">font.title</span> <span class="kw">=</span> <span class="kw">NULL</span>,
+                              <span class="no">font.subtitle</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="no">font.caption</span> <span class="kw">=</span> <span class="kw">NULL</span>,
+                              <span class="no">font.x</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="no">font.y</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="no">font.xtickslab</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="no">font.ytickslab</span> <span class="kw">=</span> <span class="kw">NULL</span>)
+{
+  <span class="no">original.p</span> <span class="kw">&lt;-</span> <span class="no">p</span>
+  <span class="kw">if</span>(<span class="fu">is.ggplot</span>(<span class="no">original.p</span>)) <span class="no">list.plots</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">original.p</span>)
+  <span class="kw">else</span> <span class="kw">if</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">is.list</a></span>(<span class="no">original.p</span>)) <span class="no">list.plots</span> <span class="kw">&lt;-</span> <span class="no">original.p</span>
+  <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"Can't handle an object of class "</span>, <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span> (<span class="no">original.p</span>))
+  <span class="no">.set_font</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">font</span>){
+    <span class="no">font</span> <span class="kw">&lt;-</span> <span class="kw pkg">ggpubr</span><span class="kw ns">:::</span><span class="fu">.parse_font</span>(<span class="no">font</span>)
+    <span class="kw pkg">ggtext</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggtext/man/element_markdown.html">element_markdown</a></span> (<span class="kw">size</span> <span class="kw">=</span> <span class="no">font</span>$<span class="no">size</span>, <span class="kw">face</span> <span class="kw">=</span> <span class="no">font</span>$<span class="no">face</span>, <span class="kw">colour</span> <span class="kw">=</span> <span class="no">font</span>$<span class="no">color</span>)
+  }
+  <span class="kw">for</span>(<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">list.plots</span>)){
+    <span class="no">p</span> <span class="kw">&lt;-</span> <span class="no">list.plots</span><span class="kw">[[</span><span class="no">i</span>]]
+    <span class="kw">if</span>(<span class="fu">is.ggplot</span>(<span class="no">p</span>)){
+      <span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">font.title</span>)) <span class="no">p</span> <span class="kw">&lt;-</span> <span class="no">p</span> + <span class="fu">theme</span>(<span class="kw">plot.title</span> <span class="kw">=</span> <span class="fu">.set_font</span>(<span class="no">font.title</span>))
+      <span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">font.subtitle</span>)) <span class="no">p</span> <span class="kw">&lt;-</span> <span class="no">p</span> + <span class="fu">theme</span>(<span class="kw">plot.subtitle</span> <span class="kw">=</span> <span class="fu">.set_font</span>(<span class="no">font.subtitle</span>))
+      <span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">font.caption</span>)) <span class="no">p</span> <span class="kw">&lt;-</span> <span class="no">p</span> + <span class="fu">theme</span>(<span class="kw">plot.caption</span> <span class="kw">=</span> <span class="fu">.set_font</span>(<span class="no">font.caption</span>))
+      <span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">font.x</span>)) <span class="no">p</span> <span class="kw">&lt;-</span> <span class="no">p</span> + <span class="fu">theme</span>(<span class="kw">axis.title.x</span> <span class="kw">=</span> <span class="fu">.set_font</span>(<span class="no">font.x</span>))
+      <span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">font.y</span>)) <span class="no">p</span> <span class="kw">&lt;-</span> <span class="no">p</span> + <span class="fu">theme</span>(<span class="kw">axis.title.y</span> <span class="kw">=</span> <span class="fu">.set_font</span>(<span class="no">font.y</span>))
+      <span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">font.xtickslab</span>)) <span class="no">p</span> <span class="kw">&lt;-</span> <span class="no">p</span> + <span class="fu">theme</span>(<span class="kw">axis.text.x</span> <span class="kw">=</span> <span class="fu">.set_font</span>(<span class="no">font.xtickslab</span>))
+      <span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">font.ytickslab</span>)) <span class="no">p</span> <span class="kw">&lt;-</span> <span class="no">p</span> + <span class="fu">theme</span>(<span class="kw">axis.text.y</span> <span class="kw">=</span> <span class="fu">.set_font</span>(<span class="no">font.ytickslab</span>))
+      <span class="no">list.plots</span><span class="kw">[[</span><span class="no">i</span>]] <span class="kw">&lt;-</span> <span class="no">p</span>
+    }
+  }
+  <span class="kw">if</span>(<span class="fu">is.ggplot</span>(<span class="no">original.p</span>)) <span class="no">list.plots</span><span class="kw">[[</span><span class="fl">1</span>]]
+  <span class="kw">else</span> <span class="no">list.plots</span>
+}</pre></div>
+<p>Customized plot labels:</p>
+<div class="sourceCode" id="cb11"><pre class="r"><span class="co"># Changing Labels</span>
 <span class="co"># %%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 <span class="co"># Labels for Survival Curves (plot)</span>
 <span class="no">ggsurv</span>$<span class="no">plot</span> <span class="kw">&lt;-</span> <span class="no">ggsurv</span>$<span class="no">plot</span> + <span class="fu">labs</span>(
@@ -274,15 +304,14 @@
 <span class="co"># Applying the same font style to all the components of ggsurv:</span>
 <span class="co"># survival curves, risk table and censor part</span>
 
-<span class="no">ggsurv</span> <span class="kw">&lt;-</span> <span class="fu">ggpar</span>(
+<span class="no">ggsurv</span> <span class="kw">&lt;-</span> <span class="fu">customize_labels</span>(
   <span class="no">ggsurv</span>,
   <span class="kw">font.title</span>    <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">16</span>, <span class="st">"bold"</span>, <span class="st">"darkblue"</span>),
   <span class="kw">font.subtitle</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">15</span>, <span class="st">"bold.italic"</span>, <span class="st">"purple"</span>),
   <span class="kw">font.caption</span>  <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">14</span>, <span class="st">"plain"</span>, <span class="st">"orange"</span>),
   <span class="kw">font.x</span>        <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"red"</span>),
   <span class="kw">font.y</span>        <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">14</span>, <span class="st">"bold.italic"</span>, <span class="st">"darkred"</span>),
-  <span class="kw">font.xtickslab</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">12</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>),
-  <span class="kw">legend</span> <span class="kw">=</span> <span class="st">"top"</span>
+  <span class="kw">font.xtickslab</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">12</span>, <span class="st">"plain"</span>, <span class="st">"darkgreen"</span>)
 )
 
 <span class="no">ggsurv</span></pre></div>
@@ -292,10 +321,10 @@
 <div id="uber-platinum-premium-customized-survival-curves" class="section level2">
 <h2 class="hasAnchor">
 <a href="#uber-platinum-premium-customized-survival-curves" class="anchor"></a>Uber platinum premium customized survival curves</h2>
-<div class="sourceCode" id="cb11"><pre class="r"><span class="co"># Using specific fonts for risk table and ncensor plots</span>
+<div class="sourceCode" id="cb12"><pre class="r"><span class="co"># Using specific fonts for risk table and ncensor plots</span>
 <span class="co">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
 <span class="co"># Font for Risk Table</span>
-<span class="no">ggsurv</span>$<span class="no">table</span> <span class="kw">&lt;-</span> <span class="fu">ggpar</span>(
+<span class="no">ggsurv</span>$<span class="no">table</span> <span class="kw">&lt;-</span> <span class="fu">customize_labels</span>(
   <span class="no">ggsurv</span>$<span class="no">table</span>,
   <span class="kw">font.title</span>    <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">13</span>, <span class="st">"bold.italic"</span>, <span class="st">"green"</span>),
   <span class="kw">font.subtitle</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">15</span>, <span class="st">"bold"</span>, <span class="st">"pink"</span>),
@@ -307,7 +336,7 @@
 
 
 <span class="co"># Font for ncensor plot</span>
-<span class="no">ggsurv</span>$<span class="no">ncensor.plot</span> <span class="kw">&lt;-</span> <span class="fu">ggpar</span>(
+<span class="no">ggsurv</span>$<span class="no">ncensor.plot</span> <span class="kw">&lt;-</span> <span class="fu">customize_labels</span>(
   <span class="no">ggsurv</span>$<span class="no">ncensor.plot</span>,
   <span class="kw">font.title</span>    <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">13</span>, <span class="st">"bold.italic"</span>, <span class="st">"green"</span>),
   <span class="kw">font.subtitle</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">15</span>, <span class="st">"bold"</span>, <span class="st">"pink"</span>),
@@ -369,7 +398,7 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/kassambara/survminer"><img src="https://api.travis-ci.org/kassambara/survminer.png" alt="Build Status"></a></li>
+<li><a href="https://github.com/kassambara/survminer/actions"><img src="https://github.com/kassambara/survminer/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
 <li><a href="https://cran.r-project.org/package=survminer"><img src="https://www.r-pkg.org/badges/version/survminer" alt="CRAN_Status_Badge"></a></li>
 <li><a href="https://cran.r-project.org/package=survminer"><img src="https://cranlogs.r-pkg.org/badges/survminer" alt="Downloads"></a></li>
 <li><a href="https://cran.r-project.org/package=survminer"><img src="https://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange" alt="Total Downloads"></a></li>

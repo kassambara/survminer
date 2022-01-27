@@ -84,7 +84,7 @@ ggsurvplot_group_by() provides a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
       </span>
     </div>
 
@@ -188,22 +188,15 @@ ggsurvplot_group_by() provides a
 <span class='co'># Visualize: grouped by treatment rx</span>
 <span class='co'>#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
 <span class='no'>ggsurv.list</span> <span class='kw'>&lt;-</span> <span class='fu'>ggsurvplot_group_by</span>(<span class='no'>fit</span>, <span class='no'>colon</span>, <span class='kw'>group.by</span> <span class='kw'>=</span> <span class='st'>"rx"</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-                                 <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"jco"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>ggsurv.list</span>)</div><div class='output co'>#&gt; [1] "rx.Obs::sex"     "rx.Lev::sex"     "rx.Lev+5FU::sex"</div><div class='input'>
+                                 <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"jco"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>ggsurv.list</span>)</div><div class='output co'>#&gt; [1] "rx.Obs::sex"     "rx.Lev::sex"     "rx.Lev+5FU::sex"</div><div class='input'>
 
 <span class='co'># Visualize: grouped by treatment rx and adhere</span>
 <span class='co'>#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
 <span class='no'>ggsurv.list</span> <span class='kw'>&lt;-</span> <span class='fu'>ggsurvplot_group_by</span>(<span class='no'>fit</span>, <span class='no'>colon</span>, <span class='kw'>group.by</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"rx"</span>, <span class='st'>"adhere"</span>),
                                  <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-                                 <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"jco"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='input'>
+                                 <span class='kw'>pval</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>conf.int</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"jco"</span>)
+
 <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>ggsurv.list</span>)</div><div class='output co'>#&gt; [1] "rx:Obs, adhere:0::sex"     "rx:Obs, adhere:1::sex"    
 #&gt; [3] "rx:Lev, adhere:0::sex"     "rx:Lev, adhere:1::sex"    
 #&gt; [5] "rx:Lev+5FU, adhere:0::sex" "rx:Lev+5FU, adhere:1::sex"</div></pre>

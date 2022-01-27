@@ -98,7 +98,7 @@ plot survival curves from
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
       </span>
     </div>
 
@@ -645,8 +645,7 @@ risk.table = FALSE.</p></td>
  <span class='co'># or brewer color (e.g.: "Dark2"), or ggsci color (e.g.: "jco")</span>
  <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"#E7B800"</span>, <span class='st'>"#2E9FDF"</span>),
  <span class='kw'>ggtheme</span> <span class='kw'>=</span> <span class='fu'>theme_bw</span>() <span class='co'># Change ggplot2 theme</span>
-)</div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='img'><img src='ggsurvplot-2.png' alt='' width='700' height='433' /></div><div class='input'>
+)</div><div class='img'><img src='ggsurvplot-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Change font size, style and color</span>
 <span class='co'>#++++++++++++++++++++++++++++++++++++</span>
 <span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
@@ -696,7 +695,7 @@ risk.table = FALSE.</p></td>
 <span class='no'>g2</span> <span class='kw'>&lt;-</span> <span class='fu'>ggplotGrob</span>(<span class='no'>curv_facet</span>)
 <span class='no'>g3</span> <span class='kw'>&lt;-</span> <span class='fu'>ggplotGrob</span>(<span class='no'>tbl_facet</span>)
 <span class='no'>min_ncol</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>g2</span>), <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>g3</span>))
-<span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>gridExtra</span><span class='kw ns'>::</span><span class='fu'>rbind.gtable</span>(<span class='no'>g2</span>[, <span class='fl'>1</span>:<span class='no'>min_ncol</span>], <span class='no'>g3</span>[, <span class='fl'>1</span>:<span class='no'>min_ncol</span>], <span class='kw'>size</span><span class='kw'>=</span><span class='st'>"last"</span>)
+<span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>gridExtra</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gridExtra/man/bind.html'>gtable_rbind</a></span>(<span class='no'>g2</span>[, <span class='fl'>1</span>:<span class='no'>min_ncol</span>], <span class='no'>g3</span>[, <span class='fl'>1</span>:<span class='no'>min_ncol</span>], <span class='kw'>size</span><span class='kw'>=</span><span class='st'>"last"</span>)
 <span class='no'>g</span>$<span class='no'>widths</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.pmin.html'>unit.pmax</a></span>(<span class='no'>g2</span>$<span class='no'>widths</span>, <span class='no'>g3</span>$<span class='no'>widths</span>)
 <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/grid.newpage.html'>grid.newpage</a></span>()
 <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/grid.draw.html'>grid.draw</a></span>(<span class='no'>g</span>)

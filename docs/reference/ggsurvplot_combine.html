@@ -76,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
       </span>
     </div>
 
@@ -254,10 +254,7 @@ tick labels will be hidden.</p></td>
  <span class='fu'>ggsurvplot_combine</span>(<span class='no'>fit</span>, <span class='no'>demo.data</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: `select_()` is deprecated as of dplyr 0.7.0.</span>
 #&gt; <span class='warning'>Please use `select()` instead.</span>
 #&gt; <span class='warning'>This warning is displayed once every 8 hours.</span>
-#&gt; <span class='warning'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='img'><img src='ggsurvplot_combine-1.png' alt='' width='700' height='433' /></div><div class='input'>
+#&gt; <span class='warning'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span></div><div class='img'><img src='ggsurvplot_combine-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Combine survival curves stratified by treatment assignment rx</span>
 <span class='co'>#::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span>
 <span class='co'># Fit</span>
@@ -265,10 +262,7 @@ tick labels will be hidden.</p></td>
 <span class='no'>os</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survival/man/survfit.html'>survfit</a></span>( <span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>os.time</span>, <span class='no'>os.status</span>) ~ <span class='no'>rx</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>demo.data</span>)
 <span class='co'># Combine on the same plot</span>
 <span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>PFS</span> <span class='kw'>=</span> <span class='no'>pfs</span>, <span class='kw'>OS</span> <span class='kw'>=</span> <span class='no'>os</span>)
-<span class='fu'>ggsurvplot_combine</span>(<span class='no'>fit</span>, <span class='no'>demo.data</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='img'><img src='ggsurvplot_combine-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>ggsurvplot_combine</span>(<span class='no'>fit</span>, <span class='no'>demo.data</span>)</div><div class='img'><img src='ggsurvplot_combine-2.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

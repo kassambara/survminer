@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">survminer</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
       </span>
     </div>
 
@@ -155,8 +155,7 @@ extract.cols = "admin.disease_code") -&amp;gt; BRCAOV.survInfo
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survival</span>)
 <span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survival/man/survfit.html'>survfit</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv</a></span>(<span class='no'>times</span>, <span class='no'>patient.vital_status</span>) ~ <span class='no'>admin.disease_code</span>,
            <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>BRCAOV.survInfo</span>)
-<span class='fu'><a href='ggsurvplot.html'>ggsurvplot</a></span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>BRCAOV.survInfo</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Vectorized input to `element_text()` is not officially supported.</span>
-#&gt; <span class='warning'>Results may be unexpected or may change in future versions of ggplot2.</span></div><div class='img'><img src='BRCAOV.survInfo-1.png' alt='' width='700' height='433' /></div></pre>
+<span class='fu'><a href='ggsurvplot.html'>ggsurvplot</a></span>(<span class='no'>fit</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>BRCAOV.survInfo</span>, <span class='kw'>risk.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='BRCAOV.survInfo-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

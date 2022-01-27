@@ -1,8 +1,8 @@
 Package: survminer
 Type: Package
 Title: Drawing Survival Curves using 'ggplot2'
-Version: 0.4.8.999
-Date: 2020-07-25
+Version: 0.4.9
+Date: 2021-03-09
 Authors@R: c(
     person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"),
     person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@@gmail.com"),
@@ -32,17 +32,20 @@ Imports:
     tidyr,
     survMisc,
     purrr,
-    tibble, 
-    rlang
+    tibble,
+    rlang,
+    ggtext (>= 0.1.0)
 Suggests:
     knitr,
     flexsurv,
     cmprsk,
-    markdown
+    markdown,
+    testthat,
+    rmarkdown
 VignetteBuilder: knitr
-URL: http://www.sthda.com/english/rpkgs/survminer/
+URL:  https://rpkgs.datanovia.com/survminer/index.html
 BugReports: https://github.com/kassambara/survminer/issues
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Collate: 
     'BMT.R'
     'BRCAOV.survInfo.R'
