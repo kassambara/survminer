@@ -162,7 +162,7 @@ ggsurvplot_combine <- function(fit, data,
         factor(levels = strata.levels)
       survtable %>%
         dplyr::select(strata, time, n.risk, pct.risk, n.event, cum.n.event,
-                      n.censor, cum.n.censor, strata_size)))
+                      n.censor, cum.n.censor, strata_size)
     }
 
     grouped.d <- grouped.d %>%
@@ -198,8 +198,8 @@ ggsurvplot_combine <- function(fit, data,
     #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     if(keep.data){
-    res$data.survplot <- tibble::as.tibble(all.survsummary)
-    res$data.survtable <- tibble::as.tibble(all.survtable)
+    res$data.survplot <- tibble::as_tibble(all.survsummary)
+    res$data.survtable <- tibble::as_tibble(all.survtable)
     }
 
 
