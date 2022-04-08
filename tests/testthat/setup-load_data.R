@@ -1,0 +1,2 @@
+library(survival)
+data('cancer')
