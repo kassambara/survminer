@@ -199,8 +199,8 @@ ggsurvplot_combine <- function(fit, data,
     #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     if(keep.data){
-    res$data.survplot <- tibble::as.tibble(all.survsummary)
-    res$data.survtable <- tibble::as.tibble(all.survtable)
+    res$data.survplot <- tibble::as_tibble(all.survsummary)
+    res$data.survtable <- tibble::as_tibble(all.survtable)
     }
 
 
