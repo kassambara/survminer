@@ -72,8 +72,10 @@ ggforest <- function(model, data = NULL,
                  pos = seq_along(vars))
     }
   })
+  for (i in 1:length(allTerms)) {
+    colnames(allTerms[[i]]) <- c("var", "level", "N", "pos")
+  }
   allTermsDF <- do.call(rbind, allTerms)
-  colnames(allTermsDF) <- c("var", "level", "N", "pos")
   inds <- apply(allTermsDF[,1:2], 1, paste0, collapse="")
 
   # use broom again to get remaining required statistics
