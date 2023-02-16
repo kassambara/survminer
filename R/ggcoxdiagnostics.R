@@ -99,9 +99,9 @@ ggcoxdiagnostics <- function (fit,
   else col_names <- names(stats::coef(fit))
   colnames(res) <- col_names
   res$xval <- xval
-  data2plot <- tidyr::gather_(res,
-                              key_col = "covariate", value_col = "res",
-                              gather_col = col_names)
+  data2plot <- tidyr::gather(res,
+                              key = "covariate", value = "res",
+                              col_names)
 
   gplot <- ggplot(aes(xval, res), data = data2plot) +
            geom_point(col = point.col, shape = point.shape,

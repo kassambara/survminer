@@ -67,9 +67,9 @@ should be linear to satisfy cox proportional hazards model assumptions.
 }
 \section{Functions}{
 \itemize{
-\item \code{ggcoxfunctional}: Functional Form of Continuous Variable in Cox Proportional Hazards Model.
-}}
+\item \code{ggcoxfunctional()}: Functional Form of Continuous Variable in Cox Proportional Hazards Model.
 
+}}
 \examples{
 
 library(survival)

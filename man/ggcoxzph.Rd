@@ -74,9 +74,9 @@ Displays a graph of the scaled Schoenfeld residuals, along with a
 }
 \section{Functions}{
 \itemize{
-\item \code{ggcoxzph}: Graphical Test of Proportional Hazards using ggplot2.
-}}
+\item \code{ggcoxzph()}: Graphical Test of Proportional Hazards using ggplot2.
 
+}}
 \examples{
 
 library(survival)
