@@ -161,8 +161,9 @@ ggsurvplot_combine <- function(fit, data,
       survtable$strata <- paste(fitname, "::", survtable$strata, sep = "") %>%
         factor(levels = strata.levels)
       survtable %>%
-        dplyr::select(strata, time, n.risk, pct.risk, n.event, cum.n.event,
-                      n.censor, cum.n.censor, strata_size)
+        dplyr::select( dplyr::all_of(c("strata", "time", "n.risk", "pct.risk",
+                                       "n.event", "cum.n.event", "n.censor",
+                                       "cum.n.censor", "strata_size")))
     }
 
     grouped.d <- grouped.d %>%
