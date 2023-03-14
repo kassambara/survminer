@@ -69,7 +69,9 @@ ggcoxdiagnostics <- function (fit,
     stop("Can't handle an object of class ", class(fit))
   type <- match.arg(type)
 
-  res <- as.data.frame(resid(fit, type = type))
+  # raw_res needed for eventimes, when ox.scale = time and there are non-unique eventtimes
+  raw_res <- resid(fit, type = type)
+  res <- as.data.frame(raw_res)
   .facet <- FALSE
 
   xlabel <- "The index number of observations"
@@ -89,7 +91,8 @@ ggcoxdiagnostics <- function (fit,
          time = {
            if (!(type %in% c("schoenfeld", "scaledsch")))
              warning("ox.scale='time' works only with type=schoenfeld/scaledsch")
-           xval <- as.numeric(rownames(res))
+           xval <- as.numeric(rownames(raw_res)) # see comment raw_res
+           raw_res <- NULL # no longer needed and potentially large
            xlabel <- "Time"
          },
          {warning("ox.scale should be one of linear.predictions/observation.id/time")})
