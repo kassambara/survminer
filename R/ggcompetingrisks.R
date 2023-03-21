@@ -106,6 +106,7 @@ ggcompetingrisks.survfitms <- function(fit) {
     psta$strata <- "all"
   } else {
     psta$strata <- rep(names(fit$strata), fit$strata)
+    psta$strata <- factor(psta$strata, levels = names(fit$strata))
   }
   psta$times <- times
   psta <- .rename_empty_colname(
