@@ -94,9 +94,9 @@ ggsurvplot_facet <- function(fit, data, facet.by,
   if(!is.null(panel.labs)){
     for(.grouping.var in facet.by){
       if(!is.null(panel.labs[[.grouping.var]])){
-        if(!is.factor(data[, .grouping.var]))
-          data[, .grouping.var] <- as.factor(data[, .grouping.var])
-        levels(data[, .grouping.var]) <- panel.labs[[.grouping.var]]
+        if(!is.factor(data[[.grouping.var]]))
+          data[[.grouping.var]] <- as.factor(data[[.grouping.var]])
+        levels(data[[.grouping.var]]) <- panel.labs[[.grouping.var]]
       }
     }
   }
