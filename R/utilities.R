@@ -169,9 +169,9 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
     n.risk = round(survsummary$n.risk, digits = decimal.place),
     pct.risk = round(survsummary$n.risk*100/strata_size),
     n.event = round(survsummary$n.event, digits = decimal.place),
-    cum.n.event = unlist(by(survsummary$n.event, strata, cumsum)),
+    cum.n.event = round(unlist(by(survsummary$n.event, strata, cumsum)), digits = decimal.place),
     n.censor = round(survsummary$n.censor, digits = decimal.place),
-    cum.n.censor = unlist(by(survsummary$n.censor, strata, cumsum)),
+    cum.n.censor = round(unlist(by(survsummary$n.censor, strata, cumsum)), digits = decimal.place),
     strata_size = strata_size
   )
 
