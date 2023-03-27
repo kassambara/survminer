@@ -364,13 +364,8 @@ print(ggsurv)
 Blog posts
 ----------
 
--   M. Kosiński. R-ADDICT January 2017. [Comparing (Fancy) Survival
-    Curves with Weighted Log-rank
-    Tests](http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html)
-
--   M. Kosiński. R-ADDICT January 2017. [When You Went too Far with
-    Survival Plots During the survminer 1st
-    Anniversary](http://r-addict.com/2017/01/15/Too-Far-With-Survival-Plots.html)
+-   M. Kosiński. January 2017. [Weighted Log-rank
+    Tests](https://rpkgs.datanovia.com/survminer/articles/Specifiying_weights_in_log-rank_comparisons.html)
 
 -   A. Kassambara. STHDA December 2016. [Survival Analysis Basics:
     Curves and Logrank
@@ -382,12 +377,8 @@ Blog posts
 -   A. Kassambara. STHDA December 2016. [Cox Model
     Assumptions](http://www.sthda.com/english/wiki/cox-model-assumptions)
 
--   M. Kosiński. R-ADDICT November 2016. [Determine optimal cutpoints
-    for numerical variables in survival
-    plots](http://r-addict.com/2016/11/21/Optimal-Cutpoint-maxstat.html)
-
--   M. Kosiński. R-ADDICT May 2016. [Survival plots have never been so
-    informative](http://r-addict.com/2016/05/23/Informative-Survival-Plots.html)
+-   M. Kosiński. May 2016. [Survival plots have never been so
+    informative](https://rpkgs.datanovia.com/survminer/articles/Informative_Survival_Plots.html)
 
 -   A. Kassambara. STHDA January 2016. [survminer R package: Survival
     Data Analysis and
