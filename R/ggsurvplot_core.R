@@ -145,6 +145,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   pms <- attr(p, "parameters")
   surv.color <- pms$color
 
+  pms = c(pms,list(...))
   pms$fit <- fit
   pms$data <- data
   pms$risk.table.type <- risk.table.type
