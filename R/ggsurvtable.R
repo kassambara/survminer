@@ -33,6 +33,8 @@ NULL
 #'  labels will be colored by strata.
 #'@param fontsize text font size.
 #'@param font.family character vector specifying text element font family, e.g.: font.family = "Courier New".
+#'@param obscure.less.than numeric, obscure numbers smaller than this.
+#'@param obscure.zero logical, obscure or keep zero.
 #'@param ... other arguments passed to the function \code{\link{ggsurvtable}} and \code{\link[ggpubr]{ggpar}}.
 #'@return a ggplot.
 #'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
@@ -188,6 +190,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                          font.family = "",
                          axes.offset = TRUE,
                          ggtheme = theme_survminer(), tables.theme = ggtheme,
+                         obscure.less.than = -1, obscure.zero = FALSE,
                           ...)
 {
 
@@ -254,11 +257,12 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   if(survtable == "cumevents"){
     mapping <- aes(x = time, y = rev(strata),
                    label = cum.n.event, shape = rev(strata))
+    survsummary$cum.n.event[survsummary$cum.n.event<obscure.less.than & (survsummary$cum.n.event>0 | obscure.zero)] <- paste0('<',obscure.less.than)
   }
   else if (survtable == "cumcensor"){
     mapping <- aes(x = time, y = rev(strata),
                    label = cum.n.censor, shape = rev(strata))
-
+    survsummary$cum.n.event[survsummary$cum.n.censor<obscure.less.than & (survsummary$cum.n.censor>0 | obscure.zero)] <- paste0('<',obscure.less.than)
   }
   else if (survtable == "risk.table"){
     # risk table labels depending on the type argument
@@ -270,6 +274,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                       nrisk_cumevents = paste0(survsummary$n.risk, " (", survsummary$cum.n.event, ")"),
                       survsummary$n.risk
     )
+    llabels[llabels<obscure.less.than & (llabels>0 | obscure.zero)] <- paste0('<',obscure.less.than)
     survsummary$llabels <- llabels
     mapping <- aes(x = time, y = rev(strata),
                    label = llabels, shape = rev(strata))
