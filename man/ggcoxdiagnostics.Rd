@@ -79,9 +79,9 @@ can be calculated with \link{coxph} function.
 }
 \section{Functions}{
 \itemize{
-\item \code{ggcoxdiagnostics}: Diagnostic Plots for Cox Proportional Hazards Model with \pkg{ggplot2}
-}}
+\item \code{ggcoxdiagnostics()}: Diagnostic Plots for Cox Proportional Hazards Model with \pkg{ggplot2}
 
+}}
 \examples{
 
 library(survival)

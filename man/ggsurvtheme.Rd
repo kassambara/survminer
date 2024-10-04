@@ -45,13 +45,13 @@ Default theme for plots generated with survminer.
 }
 \section{Functions}{
 \itemize{
-\item \code{theme_survminer}: Default theme for survminer plots. A theme similar to theme_classic() with large font size.
+\item \code{theme_survminer()}: Default theme for survminer plots. A theme similar to theme_classic() with large font size.
 
-\item \code{theme_cleantable}: theme for drawing a clean risk table and cumulative
+\item \code{theme_cleantable()}: theme for drawing a clean risk table and cumulative
 number of events table. A theme similar to theme_survminer() without i)
 axis lines and, ii) x axis ticks and title.
-}}
 
+}}
 \examples{
 
 # Fit survival curves
