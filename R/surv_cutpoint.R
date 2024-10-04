@@ -181,8 +181,7 @@ print.surv_cutpoint <- function(x, ...){
 
 
 #' @param ggtheme function, ggplot2 theme name. Default value is
-#'   \link[ggplot2]{theme_classic}. Allowed values include ggplot2 official themes. see
-#'   ?ggplot2::ggtheme.
+#'   \link[ggplot2]{theme_classic}. Allowed values include ggplot2 official themes. See \code{\link[ggplot2]{theme}()}.
 #' @param bins Number of bins for histogram. Defaults to 30.
 #' @method plot surv_cutpoint
 #' @rdname surv_cutpoint

@@ -50,8 +50,7 @@ shown only, when the number of variables > 5.}
 \item{...}{other arguments. For plots, see ?ggpubr::ggpar}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is
-\link[ggplot2]{theme_classic}. Allowed values include ggplot2 official themes. see
-?ggplot2::ggtheme.}
+\link[ggplot2]{theme_classic}. Allowed values include ggplot2 official themes. See \code{\link[ggplot2]{theme}()}.}
 
 \item{bins}{Number of bins for histogram. Defaults to 30.}
 
