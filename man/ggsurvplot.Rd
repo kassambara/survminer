@@ -153,7 +153,7 @@ risk.table = FALSE.}
 \item{ncensor.plot.height}{The height of the censor plot. Used when
 \code{ncensor.plot = TRUE}.}
 
-\item{newpage}{open a new page. See \code{\link{grid.arrange}}}
+\item{newpage}{open a new page. See \code{\link[gridExtra]{grid.arrange}}}
 }
 \value{
 return an object of class ggsurvplot which is list containing the

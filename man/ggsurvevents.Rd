@@ -17,9 +17,9 @@ ggsurvevents(
 )
 }
 \arguments{
-\item{surv}{an object of \link{Surv}. If not suplied, the censoring variable is extracted from the model.}
+\item{surv}{an object of \link[survival]{Surv}. If not suplied, the censoring variable is extracted from the model.}
 
-\item{fit}{an object of class \link{survfit}.}
+\item{fit}{an object of class \link[survival]{survfit}.}
 
 \item{data}{a dataset for predictions. If not supplied then data will be extracted from `fit` object.}
 

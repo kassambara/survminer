@@ -30,7 +30,7 @@ surv_adjustedcurves(
 )
 }
 \arguments{
-\item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
+\item{fit}{an object of class \link[survival]{coxph.object} - created with \link[survival]{coxph} function.}
 
 \item{variable}{a character, name of the grouping variable to be plotted. If not supplied then it will be extracted from the model formula from the \code{strata()} component. If there is no \code{strata()} component then only a single curve will be plotted - average for the thole population.}
 
