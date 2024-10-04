@@ -97,6 +97,8 @@ function \link[grDevices]{palette}.}
 \item{break.time.by}{numeric value controlling time axis breaks. Default value
 is NULL.}
 
+\item{xlim}{x axis limits e.g. \code{xlim = c(0, 1000)}.}
+
 \item{xscale}{numeric or character value specifying x-axis scale. \itemize{
 \item If numeric, the value is used to divide the labels on the x axis. For
 example, a value of 365.25 will give labels in years instead of the original
@@ -104,6 +106,10 @@ days. \item If character, allowed options include one of c("d_m", "d_y",
 "m_d", "m_y", "y_d", "y_m"), where d = days, m = months and y = years. For
 example, xscale = "d_m" will transform labels from days to months; xscale =
 "m_y", will transform labels from months to years.}}
+
+\item{xlab}{x axis label}
+
+\item{ylab}{y axis label}
 
 \item{xlog}{logical value. If TRUE, x axis is tansformed into log scale.}
 

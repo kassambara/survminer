@@ -59,8 +59,11 @@
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
-#'@param title,xlab,ylab main title and axis labels
-#'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
+#'@param title main title
+#'@param xlab x axis label
+#'@param ylab y axis label
+#'@param xlim x axis limits e.g. \code{xlim = c(0, 1000)}.
+#'@param ylim y axis limits e.g. \code{xlim = c(0, 1)}.
 #'@param axes.offset logical value. Default is TRUE. If FALSE, set the plot axes
 #'  to start at the origin.
 #'@param legend character specifying legend position. Allowed values are one of

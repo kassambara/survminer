@@ -111,9 +111,15 @@ censors. Default value is "+" (3), a sensible choice is "|" (124).}
 \item{censor.size}{numveric value specifying the point size of censors.
 Default is 4.5.}
 
-\item{title, xlab, ylab}{main title and axis labels}
+\item{title}{main title}
 
-\item{xlim, ylim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
+\item{xlab}{x axis label}
+
+\item{ylab}{y axis label}
+
+\item{xlim}{x axis limits e.g. \code{xlim = c(0, 1000)}.}
+
+\item{ylim}{y axis limits e.g. \code{xlim = c(0, 1)}.}
 
 \item{axes.offset}{logical value. Default is TRUE. If FALSE, set the plot axes
 to start at the origin.}
