@@ -59,7 +59,7 @@ surv_median <- function(fit, combine = FALSE){
     .table$strata <- rownames(.table)
 
     .table <- .table %>%
-      dplyr::select_(.dots = c("strata",  "median", "`0.95LCL`", "`0.95UCL`"))
+      dplyr::select(dplyr::all_of(c("strata",  "median", "0.95LCL", "0.95UCL")))
     colnames(.table) <- c("strata", "median", "lower", "upper")
     rownames(.table) <- NULL
     .table

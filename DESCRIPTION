@@ -16,7 +16,7 @@ License: GPL-2
 LazyData: TRUE
 Encoding: UTF-8
 Depends:
-    ggplot2,
+    ggplot2(>= 3.4.0),
     ggpubr(>= 0.1.6)
 Imports:
     grid,

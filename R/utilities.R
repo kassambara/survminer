@@ -10,6 +10,7 @@
 #' @importFrom stats pchisq
 #' @importFrom survMisc ten comp
 #' @importFrom utils capture.output
+#' @importFrom rlang !! sym
 
 
 # Count the number of ggplots in a list

@@ -114,7 +114,7 @@ ggsurvplot_combine <- function(fit, data,
       all.levels <- c(all.levels, .levels(ss$strata))
     # convert strata into character before binding
     # avoid this warning: Unequal factor levels: coercing to character
-    grouped.d$survsummary <- map(grouped.d$survsummary,
+    grouped.d$survsummary <- purrr::map(grouped.d$survsummary,
                                  function(x){
                                    x$strata <- as.character(x$strata)
                                    x
@@ -161,9 +161,9 @@ ggsurvplot_combine <- function(fit, data,
       survtable$strata <- paste(fitname, "::", survtable$strata, sep = "") %>%
         factor(levels = strata.levels)
       survtable %>%
-        dplyr::select_( .dots = c("strata", "time", "n.risk", "pct.risk",
-                                  "n.event", "cum.n.event", "n.censor",
-                                  "cum.n.censor", "strata_size"))
+        dplyr::select( dplyr::all_of(c("strata", "time", "n.risk", "pct.risk",
+                                       "n.event", "cum.n.event", "n.censor",
+                                       "cum.n.censor", "strata_size")))
     }
 
     grouped.d <- grouped.d %>%
@@ -199,8 +199,8 @@ ggsurvplot_combine <- function(fit, data,
     #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     if(keep.data){
-    res$data.survplot <- tibble::as.tibble(all.survsummary)
-    res$data.survtable <- tibble::as.tibble(all.survtable)
+    res$data.survplot <- tibble::as_tibble(all.survsummary)
+    res$data.survtable <- tibble::as_tibble(all.survtable)
     }
 
 
