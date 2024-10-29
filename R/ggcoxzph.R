@@ -1,7 +1,7 @@
 #'Graphical Test of Proportional Hazards with ggplot2
 #'@description Displays a graph of the scaled Schoenfeld residuals, along with a
-#'  smooth curve using \pkg{ggplot2}. Wrapper around \link{plot.cox.zph}.
-#'@param fit an object of class \link{cox.zph}.
+#'  smooth curve using \pkg{ggplot2}. Wrapper around \link[survival]{plot.cox.zph}.
+#'@param fit an object of class \link[survival]{cox.zph}.
 #'@param resid	a logical value, if TRUE the residuals are included on the plot,
 #'  as well as the smooth fit.
 #'@param se a logical value, if TRUE, confidence bands at two standard errors
@@ -12,7 +12,7 @@
 #'@param var the set of variables for which plots are desired. By default, plots
 #'  are produced in turn for each variable of a model.
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
-#'@param caption the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})
+#'@param caption the caption of the final \link[grid]{grob} (\code{bottom} in \link[gridExtra]{arrangeGrob})
 #'@param ggtheme function, ggplot2 theme name.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@param ... further arguments passed to either the print() function or to the \code{\link[ggpubr]{ggpar}} function for customizing the plot (see Details section).
@@ -106,6 +106,9 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
       yr <- range(yhat, y)
     else yr <- range(yhat)
     if (se) {
+      bk <- backsolve(qmat$qr[1:df, 1:df], diag(df))
+      xtx <- bk %*% t(bk)
+      seval <- ((pmat %*% xtx) * pmat) %*% rep(1, df)
       temp <- as.vector(2 * sqrt(x$var[i, i] * seval))
       yup <- yhat + temp
       ylow <- yhat - temp
@@ -156,7 +159,7 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
 }
 
 #' @param x an object of class ggcoxzph
-#' @param newpage open a new page. See \code{\link{grid.arrange}}.
+#' @param newpage open a new page. See \code{\link[gridExtra]{grid.arrange}}.
 #' @method print ggcoxzph
 #' @rdname ggcoxzph
 #' @export

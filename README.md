@@ -1,6 +1,5 @@
-[![R build
-status](https://github.com/kassambara/survminer/workflows/R-CMD-check/badge.svg)](https://github.com/kassambara/survminer/actions)
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer)
+[![R-CMD-check](https://github.com/kassambara/survminer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kassambara/survminer/actions/workflows/R-CMD-check.yaml)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/survminer)](https://cran.r-project.org/package=survminer)
 [![Downloads](https://cranlogs.r-pkg.org/badges/survminer)](https://cran.r-project.org/package=survminer)
 [![Total
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)](https://cran.r-project.org/package=survminer)
@@ -27,8 +26,7 @@ Downloads](https://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)
             curves](#uber-platinum-premium-customized-survival-curves)
     -   [Blog posts](#blog-posts)
 
-survminer: Survival Analysis and Visualization
-==============================================
+# survminer: Survival Analysis and Visualization
 
 The **survminer** R package provides functions for facilitating
 **survival analysis** and **visualization**.
@@ -45,21 +43,21 @@ categories as follow.
     table, the cumulative number of events table and the cumulative
     number of censored subjects table.
 
--   **arrange\_ggsurvplots**(): Arranges multiple ggsurvplots on the
-    same page.
+-   **arrange_ggsurvplots**(): Arranges multiple ggsurvplots on the same
+    page.
 
 -   **ggsurvevents**(): Plots the distribution of event’s times.
 
--   **surv\_summary**(): Summary of a survival curve. Compared to the
-    default summary() function, surv\_summary() creates a data frame
+-   **surv_summary**(): Summary of a survival curve. Compared to the
+    default summary() function, surv_summary() creates a data frame
     containing a nice summary from survfit results.
 
--   **surv\_cutpoint**(): Determines the optimal cutpoint for one or
+-   **surv_cutpoint**(): Determines the optimal cutpoint for one or
     multiple continuous variables at once. Provides a value of a
     cutpoint that correspond to the most significant relation with
     survival.
 
--   **pairwise\_survdiff**(): Multiple comparisons of survival curves.
+-   **pairwise_survdiff**(): Multiple comparisons of survival curves.
     Calculate pairwise comparisons between group levels with corrections
     for multiple testing.
 
@@ -106,13 +104,11 @@ categories as follow.
 
 <br/>
 
-> Find out more at
-> <a href="https://rpkgs.datanovia.com/survminer/" class="uri">https://rpkgs.datanovia.com/survminer/</a>,
-> and check out the documentation and usage examples of each of the
-> functions in survminer package.
+> Find out more at <https://rpkgs.datanovia.com/survminer/>, and check
+> out the documentation and usage examples of each of the functions in
+> survminer package.
 
-Installation and loading
-------------------------
+## Installation and loading
 
 Install from [CRAN](https://cran.r-project.org/package=survminer) as
 follow:
@@ -135,8 +131,7 @@ Load survminer:
 library("survminer")
 ```
 
-ggsurvplot: Drawing survival curves
------------------------------------
+## ggsurvplot: Drawing survival curves
 
 ### Fitting survival curves
 
@@ -327,8 +322,7 @@ ggsurv
 
 ![](tools/README-ggplot2-uber-platinium-customized-survival-plot-1.png)
 
-Uber platinum premium customized survival curves
-------------------------------------------------
+## Uber platinum premium customized survival curves
 
 ``` r
 # Using specific fonts for risk table and ncensor plots
@@ -361,16 +355,10 @@ print(ggsurv)
 
 ![](tools/README-ggplot2-uber-platinium-premium-customized-survival-plot-1.png)
 
-Blog posts
-----------
+## Blog posts
 
--   M. Kosiński. R-ADDICT January 2017. [Comparing (Fancy) Survival
-    Curves with Weighted Log-rank
-    Tests](http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html)
-
--   M. Kosiński. R-ADDICT January 2017. [When You Went too Far with
-    Survival Plots During the survminer 1st
-    Anniversary](http://r-addict.com/2017/01/15/Too-Far-With-Survival-Plots.html)
+-   M. Kosiński. January 2017. [Weighted Log-rank
+    Tests](https://rpkgs.datanovia.com/survminer/articles/Specifiying_weights_in_log-rank_comparisons.html)
 
 -   A. Kassambara. STHDA December 2016. [Survival Analysis Basics:
     Curves and Logrank
@@ -382,12 +370,8 @@ Blog posts
 -   A. Kassambara. STHDA December 2016. [Cox Model
     Assumptions](http://www.sthda.com/english/wiki/cox-model-assumptions)
 
--   M. Kosiński. R-ADDICT November 2016. [Determine optimal cutpoints
-    for numerical variables in survival
-    plots](http://r-addict.com/2016/11/21/Optimal-Cutpoint-maxstat.html)
-
--   M. Kosiński. R-ADDICT May 2016. [Survival plots have never been so
-    informative](http://r-addict.com/2016/05/23/Informative-Survival-Plots.html)
+-   M. Kosiński. May 2016. [Survival plots have never been so
+    informative](https://rpkgs.datanovia.com/survminer/articles/Informative_Survival_Plots.html)
 
 -   A. Kassambara. STHDA January 2016. [survminer R package: Survival
     Data Analysis and
