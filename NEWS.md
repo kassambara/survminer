@@ -7,6 +7,7 @@
 ## Minor changes
 
 - R-ADDICT website is no longer live, so updating links in README (#622)
+- ggplot2 minimum version is now 3.4.0
 
 ## Bug fixes
 
