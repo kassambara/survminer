@@ -53,7 +53,7 @@ reference:
 navbar:
   title: "survminer"
   left:
-  - text: Cheatseet
+  - text: Cheatsheet
     href: survminer_cheatsheet.pdf
   - text: Reference
     href: reference/index.html
