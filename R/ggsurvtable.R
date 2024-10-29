@@ -179,6 +179,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
 # Helper function to plot a specific survival table
 .plot_survtable <- function (survsummary, times, survtable = c("cumevents", "risk.table", "cumcensor"),
                              risk.table.type = c("absolute", "percentage", "abs_pct", "nrisk_cumcensor", "nrisk_cumevents"),
+                             risk.table.pos = risk.table.pos,
                          color = "black", palette = NULL, xlim = NULL,
                          xscale = 1,
                          title = NULL, xlab = "Time", ylab = "Strata",
@@ -193,6 +194,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
 
   survtable <- match.arg(survtable)
   risk.table.type <- match.arg(risk.table.type)
+  risk.table.pos <- match.arg(risk.table.pos)
 
   # Defining plot title
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -280,12 +282,16 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   # Plotting survival table
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   .expand <- ggplot2::waiver()
-  # Tables labels Offset from origing
+  # Set first risk table value offset from origin and set y-axis margin size
+  risktable.ytick.rmargin <- 0
   if(!axes.offset){
     .expand <- c(0,0)
-    offset <- max(xlim)/30
+    offset <- 0
     survsummary <- survsummary %>%
       dplyr::mutate(time = ifelse(time == 0, offset, time))
+    
+    if (risk.table.pos=="out")
+      risktable.ytick.rmargin <- 15
   }
 
   p <- ggplot(survsummary, mapping) +
@@ -293,7 +299,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
     ggpubr::geom_exec(geom_text, data = survsummary, size = fontsize, color = color, family = font.family) +
     ggtheme +
     scale_y_discrete(breaks = as.character(levels(survsummary$strata)),labels = yticklabs ) +
-    coord_cartesian(xlim = xlim) +
+    coord_cartesian(xlim = xlim, clip='off') +
     labs(title = title, x = xlab, y = ylab, color = legend.title, shape = legend.title)
 
   if (survtable == "risk.table")
@@ -309,6 +315,17 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                                             trans = "log10", labels = xticklabels)
 
   p <- p + tables.theme
+  
+  # Apply y-axis margin and prevent lines being drawn on first risk table value
+  if (risk.table.pos=="out" & !axes.offset) {
+      p <- p +
+        theme(
+          axis.text.y = element_text(hjust = 0, margin = margin(r=risktable.ytick.rmargin)),
+          axis.ticks.y = element_blank(),
+          axis.line.y = element_blank(),
+          panel.border = element_blank()
+        )
+  }
 
   if(!y.text) {
     p <- .set_large_dash_as_ytext(p)
