@@ -8,6 +8,15 @@
 
 ## Bug fixes
 
+- Fixing Rd cross-references issue in the documentation (@HenningLorenzen-ext-bayer, #663). RD `\link{}` targets missing package added in the following Rd files:
+  -  ggadjustedcurves.Rd: coxph.object, coxph
+  -  ggcompetingrisks.Rd: survfit
+  -  ggcoxdiagnostics.Rd: coxph, coxph.object, residuals.coxph, geom_hline, geom_smooth
+  -  ggcoxfunctional.Rd: coxph, Surv, coxph.object, arrangeGrob, grid.arrange
+  -  ggcoxzph.Rd: plot.cox.zph, cox.zph, arrangeGrob, grid.arrange
+  -  ggsurvevents.Rd: Surv, survfit
+  -  ggsurvplot.Rd: grid.arrange
+  -  surv_cutpoint.Rd: theme_classic, grid.arrange
 - Fixing issue in the scaling factor for sd in `ggcoxzph()` (#534 and #535)
    
 # Survminer 0.4.9
