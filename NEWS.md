@@ -6,6 +6,8 @@
 
 ## Minor changes
 
+- R-ADDICT website is no longer live, so updating links in README (#622)
+
 ## Bug fixes
 
 - Fixing Rd cross-references issue in the documentation (@HenningLorenzen-ext-bayer, #663). RD `\link{}` targets missing package added in the following Rd files:
