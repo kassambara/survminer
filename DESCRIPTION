@@ -5,7 +5,7 @@ Version: 0.4.9.999
 Date: 2021-03-09
 Authors@R: c(
     person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"),
-    person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@@gmail.com"),
+    person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@gmail.com"),
     person("Przemyslaw", "Biecek", role = c("aut"), email = "przemyslaw.biecek@gmail.com"),
     person("Scheipl", "Fabian", role = c("ctb"), email = "fabian.scheipl@gmail.com"))
 Description: Contains the function 'ggsurvplot()' for drawing easily beautiful
