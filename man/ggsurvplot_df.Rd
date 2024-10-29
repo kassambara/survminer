@@ -111,7 +111,6 @@ censors. Default value is "+" (3), a sensible choice is "|" (124).}
 \item{censor.size}{numveric value specifying the point size of censors.
 Default is 4.5.}
 
-
 \item{title}{main title}
 
 \item{xlab}{x axis label}

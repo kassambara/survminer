@@ -176,7 +176,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   df[, .strata.var] <- factor( df[, .strata.var], levels = .levels(.strata), labels = legend.labs)
 
-  p <- ggplot2::ggplot(df, ggplot2::aes_string("time", "surv")) +
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = !!sym("time"), y = !!sym("surv"))) +
     ggpubr::geom_exec(surv.geom, data = df, size = size, color = color, linetype = linetype, ...) +
     ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim, expand = .expand) +
     ggplot2::coord_cartesian(xlim = xlim)+
