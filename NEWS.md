@@ -8,6 +8,10 @@
 
 - R-ADDICT website is no longer live, so updating links in README (#622)
 - ggplot2 minimum version is now 3.4.0
+- Fixing tidyverse deprecated functions to minimize warnings (@tbaer-c7ks7s, #579):
+  - dplyr::select_() -> dplyr::select()
+  - tidyr::gather_() -> tidyr::pivot_longer()
+  - ggplot2::aes_string() -> ggplot2::aes()
 
 ## Bug fixes
 
