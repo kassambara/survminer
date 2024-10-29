@@ -99,19 +99,20 @@ ggcoxdiagnostics <- function (fit,
   else col_names <- names(stats::coef(fit))
   colnames(res) <- col_names
   res$xval <- xval
-  data2plot <- tidyr::gather(res,
-                              key = "covariate", value = "res",
-                              col_names)
+  data2plot <- tidyr::pivot_longer(
+    data = res, cols = dplyr::all_of(col_names),  
+    names_to = "covariate", values_to = "res"
+  )
 
   gplot <- ggplot(aes(xval, res), data = data2plot) +
            geom_point(col = point.col, shape = point.shape,
                        size = point.size, alpha = point.alpha)
 
   if (hline) gplot <- gplot + geom_hline(yintercept=hline.yintercept, col = hline.col,
-                                         size = hline.size, lty = hline.lty, alpha = hline.alpha)
+                                         linewidth = hline.size, lty = hline.lty, alpha = hline.alpha)
 
   if (sline) gplot <- gplot + geom_smooth(col = sline.col, se = sline.se, method = "loess",
-                                         size = sline.size, lty = sline.lty, alpha = sline.alpha)
+                                         linewidth = sline.size, lty = sline.lty, alpha = sline.alpha)
 
   gplot <- gplot + labs(x = xlabel, y = ylabel, title = title, subtitle = subtitle, caption = caption) + ggtheme
   # customization
