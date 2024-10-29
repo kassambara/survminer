@@ -16,7 +16,7 @@ ggcompetingrisks(
 )
 }
 \arguments{
-\item{fit}{an object of a class \code{cmprsk::cuminc} - created with \code{cmprsk::cuminc} function or \code{survfitms} created with \link{survfit} function.}
+\item{fit}{an object of a class \code{cmprsk::cuminc} - created with \code{cmprsk::cuminc} function or \code{survfitms} created with \link[survival]{survfit} function.}
 
 \item{gnames}{a vector with group names. If not supplied then will be extracted from \code{fit} object (\code{cuminc} only).}
 

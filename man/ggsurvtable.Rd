@@ -97,7 +97,7 @@ function \link[grDevices]{palette}.}
 \item{break.time.by}{numeric value controlling time axis breaks. Default value
 is NULL.}
 
-\item{xlim}{x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).}
+\item{xlim}{x axis limits e.g. \code{xlim = c(0, 1000)}.}
 
 \item{xscale}{numeric or character value specifying x-axis scale. \itemize{
 \item If numeric, the value is used to divide the labels on the x axis. For
@@ -107,9 +107,9 @@ days. \item If character, allowed options include one of c("d_m", "d_y",
 example, xscale = "d_m" will transform labels from days to months; xscale =
 "m_y", will transform labels from months to years.}}
 
-\item{xlab}{main title and axis labels}
+\item{xlab}{x axis label}
 
-\item{ylab}{main title and axis labels}
+\item{ylab}{y axis label}
 
 \item{xlog}{logical value. If TRUE, x axis is tansformed into log scale.}
 
@@ -163,15 +163,15 @@ Normally, users don't need to use this function directly. Internally used by the
 }
 \section{Functions}{
 \itemize{
-\item \code{ggrisktable}: Plot the number at risk table.
+\item \code{ggrisktable()}: Plot the number at risk table.
 
-\item \code{ggcumevents}: Plot the cumulative number of events table
+\item \code{ggcumevents()}: Plot the cumulative number of events table
 
-\item \code{ggcumcensor}: Plot the cumulative number of censor table
+\item \code{ggcumcensor()}: Plot the cumulative number of censor table
 
-\item \code{ggsurvtable}: Generic function to plot survival tables: risk.table, cumevents and cumcensor
+\item \code{ggsurvtable()}: Generic function to plot survival tables: risk.table, cumevents and cumcensor
+
 }}
-
 \examples{
 # Fit survival curves
 #:::::::::::::::::::::::::::::::::::::::::::::::

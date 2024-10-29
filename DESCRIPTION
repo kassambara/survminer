@@ -43,9 +43,9 @@ Suggests:
     testthat,
     rmarkdown
 VignetteBuilder: knitr
-URL:  https://rpkgs.datanovia.com/survminer/index.html
+URL: https://rpkgs.datanovia.com/survminer/index.html
 BugReports: https://github.com/kassambara/survminer/issues
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.2
 Collate: 
     'BMT.R'
     'BRCAOV.survInfo.R'

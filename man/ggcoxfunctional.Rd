@@ -27,15 +27,15 @@ ggcoxfunctional(
 \method{print}{ggcoxfunctional}(x, ..., newpage = TRUE)
 }
 \arguments{
-\item{formula}{a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \link{Surv} function.}
+\item{formula}{a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \link[survival]{Surv} function.}
 
 \item{data}{a \code{data.frame} in which to interpret the variables named in the formula,}
 
-\item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
+\item{fit}{an object of class \link[survival]{coxph.object} - created with \link[survival]{coxph} function.}
 
-\item{iter}{parameter of \link{lowess}.}
+\item{iter}{parameter of \link[stats]{lowess}.}
 
-\item{f}{parameter of \link{lowess}.}
+\item{f}{parameter of \link[stats]{lowess}.}
 
 \item{point.col, point.size, point.shape, point.alpha}{color, size, shape and visibility to be used for points.}
 
@@ -43,9 +43,9 @@ ggcoxfunctional(
 
 \item{ylab}{y axis label.}
 
-\item{title}{the title of the final \link{grob} (\code{top} in \link{arrangeGrob})}
+\item{title}{the title of the final \link[grid]{grob} (\code{top} in \link[gridExtra]{arrangeGrob})}
 
-\item{caption}{the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})}
+\item{caption}{the caption of the final \link[grid]{grob} (\code{bottom} in \link[gridExtra]{arrangeGrob})}
 
 \item{ggtheme}{function, ggplot2 theme name.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
@@ -54,7 +54,7 @@ Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}
 
 \item{x}{an object of class ggcoxfunctional}
 
-\item{newpage}{open a new page. See \code{\link{grid.arrange}}.}
+\item{newpage}{open a new page. See \code{\link[gridExtra]{grid.arrange}}.}
 }
 \value{
 Returns an object of class \code{ggcoxfunctional} which is a list of ggplots.
@@ -62,14 +62,14 @@ Returns an object of class \code{ggcoxfunctional} which is a list of ggplots.
 \description{
 Displays graphs of continuous explanatory variable against martingale residuals of null
 cox proportional hazards model, for each term in of the right side of \code{formula}. This might help to properly
-choose the functional form of continuous variable in cox model (\link{coxph}). Fitted lines with \link{lowess} function
+choose the functional form of continuous variable in cox model (\link[survival]{coxph}). Fitted lines with \link[stats]{lowess} function
 should be linear to satisfy cox proportional hazards model assumptions.
 }
 \section{Functions}{
 \itemize{
-\item \code{ggcoxfunctional}: Functional Form of Continuous Variable in Cox Proportional Hazards Model.
-}}
+\item \code{ggcoxfunctional()}: Functional Form of Continuous Variable in Cox Proportional Hazards Model.
 
+}}
 \examples{
 
 library(survival)

@@ -24,7 +24,7 @@ ggcoxzph(
 \method{print}{ggcoxzph}(x, ..., newpage = TRUE)
 }
 \arguments{
-\item{fit}{an object of class \link{cox.zph}.}
+\item{fit}{an object of class \link[survival]{cox.zph}.}
 
 \item{resid}{a logical value, if TRUE the residuals are included on the plot,
 as well as the smooth fit.}
@@ -42,7 +42,7 @@ are produced in turn for each variable of a model.}
 
 \item{point.col, point.size, point.shape, point.alpha}{color, size, shape and visibility to be used for points.}
 
-\item{caption}{the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})}
+\item{caption}{the caption of the final \link[grid]{grob} (\code{bottom} in \link[gridExtra]{arrangeGrob})}
 
 \item{ggtheme}{function, ggplot2 theme name.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
@@ -51,14 +51,14 @@ Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}
 
 \item{x}{an object of class ggcoxzph}
 
-\item{newpage}{open a new page. See \code{\link{grid.arrange}}.}
+\item{newpage}{open a new page. See \code{\link[gridExtra]{grid.arrange}}.}
 }
 \value{
 Returns an object of class \code{ggcoxzph} which is a list of ggplots.
 }
 \description{
 Displays a graph of the scaled Schoenfeld residuals, along with a
- smooth curve using \pkg{ggplot2}. Wrapper around \link{plot.cox.zph}.
+ smooth curve using \pkg{ggplot2}. Wrapper around \link[survival]{plot.cox.zph}.
 }
 \details{
 \strong{Customizing the plots}: The plot can be easily
@@ -74,9 +74,9 @@ Displays a graph of the scaled Schoenfeld residuals, along with a
 }
 \section{Functions}{
 \itemize{
-\item \code{ggcoxzph}: Graphical Test of Proportional Hazards using ggplot2.
-}}
+\item \code{ggcoxzph()}: Graphical Test of Proportional Hazards using ggplot2.
 
+}}
 \examples{
 
 library(survival)

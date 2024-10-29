@@ -34,10 +34,10 @@ ggcoxdiagnostics(
 )
 }
 \arguments{
-\item{fit}{an object of class \link{coxph.object} - created with \link{coxph} function.}
+\item{fit}{an object of class \link[survival]{coxph.object} - created with \link[survival]{coxph} function.}
 
 \item{type}{the type of residuals to present on Y axis of a diagnostic plot.
-The same as in \link{residuals.coxph}: character string indicating the type of
+The same as in \link[survival]{residuals.coxph}: character string indicating the type of
 residual desired. Possible values are \code{"martingale", "deviance", "score", "schoenfeld", "dfbeta", "dfbetas"}
 and \code{"scaledsch"}. Only enough of the string to
 determine a unique match is required.}
@@ -57,10 +57,10 @@ Id of an observation for \code{"observation.id"} or Time for \code{"time"}.}
 
 \item{sline, sline.se}{a logical - should the smooth line be added to highlight the local average for residuals.}
 
-\item{hline.col, hline.size, hline.lty, hline.alpha, hline.yintercept}{color, size, linetype, visibility and Y-axis coordinate to be used for \link{geom_hline}.
+\item{hline.col, hline.size, hline.lty, hline.alpha, hline.yintercept}{color, size, linetype, visibility and Y-axis coordinate to be used for \link[ggplot2]{geom_hline}.
 Used only when \code{hline = TRUE}.}
 
-\item{sline.col, sline.size, sline.lty, sline.alpha}{color, size, linetype and visibility to be used for \link{geom_smooth}.
+\item{sline.col, sline.size, sline.lty, sline.alpha}{color, size, linetype and visibility to be used for \link[ggplot2]{geom_smooth}.
 Used only when \code{sline = TRUE}.}
 
 \item{point.col, point.size, point.shape, point.alpha}{color, size, shape and visibility to be used for points.}
@@ -75,13 +75,13 @@ Returns an object of class \code{ggplot}.
 }
 \description{
 Displays diagnostics graphs presenting goodness of Cox Proportional Hazards Model fit, that
-can be calculated with \link{coxph} function.
+can be calculated with \link[survival]{coxph} function.
 }
 \section{Functions}{
 \itemize{
-\item \code{ggcoxdiagnostics}: Diagnostic Plots for Cox Proportional Hazards Model with \pkg{ggplot2}
-}}
+\item \code{ggcoxdiagnostics()}: Diagnostic Plots for Cox Proportional Hazards Model with \pkg{ggplot2}
 
+}}
 \examples{
 
 library(survival)

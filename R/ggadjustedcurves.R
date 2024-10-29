@@ -24,7 +24,7 @@ NULL
 #' Note that \code{surv_adjustedcurves} function calculates survival curves and based on this function one can calculate median survival.
 #'
 #'@inheritParams ggsurvplot_arguments
-#'@param fit an object of class \link{coxph.object} - created with \link{coxph} function.
+#'@param fit an object of class \link[survival]{coxph.object} - created with \link[survival]{coxph} function.
 #'@param data a dataset for predictions. If not supplied then data will be extracted from the \code{fit} object.
 #'@param reference a dataset for reference population, to which dependent variables should be balanced. If not specified, then the \code{data} will be used instead. Note that the \code{reference} dataset should contain all variables used in \code{fit} object.
 #'@param method a character, describes how the expected survival curves shall be calculated. Possible options:

@@ -1,7 +1,7 @@
 #' Distribution of Events' Times
 #'
-#' @param surv an object of \link{Surv}. If not suplied, the censoring variable is extracted from the model.
-#' @param fit an object of class \link{survfit}.
+#' @param surv an object of \link[survival]{Surv}. If not suplied, the censoring variable is extracted from the model.
+#' @param fit an object of class \link[survival]{survfit}.
 #' @param data a dataset for predictions. If not supplied then data will be extracted from `fit` object.
 #' @param type one of \code{c("cumulative", "radius", "fraction")}. \code{"cumulative"} stands for cumulative number of events, \code{"radius"} stands for number of events within a given radius,
 #' @param normalized if \code{TRUE} relative number of events is presented,

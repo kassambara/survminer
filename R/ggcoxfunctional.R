@@ -8,17 +8,17 @@ NULL
 #' Functional Form of Continuous Variable in Cox Proportional Hazards Model
 #'@description Displays graphs of continuous explanatory variable against martingale residuals of null
 #'cox proportional hazards model, for each term in of the right side of \code{formula}. This might help to properly
-#'choose the functional form of continuous variable in cox model (\link{coxph}). Fitted lines with \link{lowess} function
+#'choose the functional form of continuous variable in cox model (\link[survival]{coxph}). Fitted lines with \link[stats]{lowess} function
 #'should be linear to satisfy cox proportional hazards model assumptions.
-#'@param fit an object of class \link{coxph.object} - created with \link{coxph} function.
-#'@param formula a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \link{Surv} function.
+#'@param fit an object of class \link[survival]{coxph.object} - created with \link[survival]{coxph} function.
+#'@param formula a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \link[survival]{Surv} function.
 #'@param data a \code{data.frame} in which to interpret the variables named in the formula,
-#'@param iter parameter of \link{lowess}.
-#'@param f parameter of \link{lowess}.
+#'@param iter parameter of \link[stats]{lowess}.
+#'@param f parameter of \link[stats]{lowess}.
 #'@param xlim,ylim x and y axis limits e.g. xlim = c(0, 1000), ylim = c(0, 1).
 #'@param ylab y axis label.
-#'@param title the title of the final \link{grob} (\code{top} in \link{arrangeGrob})
-#'@param caption the caption of the final \link{grob} (\code{bottom} in \link{arrangeGrob})
+#'@param title the title of the final \link[grid]{grob} (\code{top} in \link[gridExtra]{arrangeGrob})
+#'@param caption the caption of the final \link[grid]{grob} (\code{bottom} in \link[gridExtra]{arrangeGrob})
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
 #'@param ggtheme function, ggplot2 theme name.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
@@ -104,7 +104,7 @@ ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6,
 }
 
 #' @param x an object of class ggcoxfunctional
-#' @param newpage open a new page. See \code{\link{grid.arrange}}.
+#' @param newpage open a new page. See \code{\link[gridExtra]{grid.arrange}}.
 #' @method print ggcoxfunctional
 #' @rdname ggcoxfunctional
 #' @export
