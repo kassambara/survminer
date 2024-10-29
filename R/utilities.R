@@ -104,14 +104,20 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 .trim <- function(x){gsub("^\\s+|\\s+$", "", x)}
 
 # Take a data frame and return a flatten value
-.flat <- function(x){
-  if(is.null(x)) return(NA)
+# Replacement of deprecated tidyr::gather_() by pivot_longer()
+# Use col_vary = "slowest" to keep the same behavior as gather_()
+.flat <- function(x) {
+  if (is.null(x)) return(NA)
   x <- as.data.frame(x)
-  x <- tidyr::gather_(x,
-                      key_col = "key", value_col = "value",
-                      gather_cols = colnames(x))
+  x <- tidyr::pivot_longer(x,
+                           cols = colnames(x), 
+                           names_to = "key",
+                           values_to = "value",
+                           cols_vary = "slowest")
+
   x$value
 }
+
 
 # extract dataset if not provided
 .get_data <- function(fit, data = NULL, complain = TRUE) {

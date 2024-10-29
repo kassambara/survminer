@@ -101,7 +101,8 @@ ggcoxdiagnostics <- function (fit,
   res$xval <- xval
   data2plot <- tidyr::pivot_longer(
     data = res, cols = dplyr::all_of(col_names),  
-    names_to = "covariate", values_to = "res"
+    names_to = "covariate", values_to = "res",
+    cols_vary = "slowest"
   )
 
   gplot <- ggplot(aes(xval, res), data = data2plot) +
