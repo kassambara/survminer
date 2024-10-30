@@ -1,21 +1,11 @@
 ## Test environments
-* local OS X install, R 3.6.3
-* win-builder 
-* Github Action
+* local Ubuntu 22.04.5 LTS install, R 4.4.1
+* Github Action, set up using `usethis::use_github_action("check-standard")`
 
 ## R CMD check results
 There were no ERRORs or WARNINGs.
 
-There was one note concerning the subdirectory "doc", which contains vignette files.  
-   
-checking installed package size ... NOTE
-  installed size is  5.1Mb
-  sub-directories of 1Mb or more:
-    doc   5.1Mb
-   
-Would you be so kind to ignore this note.
-    
-    
+       
 ## Downstream dependencies
   
 I have also run R CMD check on downstream dependencies of survminer. 
@@ -23,11 +13,9 @@ All packages that I could install passed.
 
 ## Update
 
-This is an update version 0.4.9 (see NEWS.md)
+This is an update version 0.5.0 (see NEWS.md)
 
-## Resubmission
 
-We fixed broken web links in the doc.
 
 
 
