@@ -15,6 +15,12 @@ All packages that I could install passed.
 
 This is an update version 0.5.0 (see NEWS.md)
 
+## Resubmission
+
+This is a resubmission. In this version I have:
+
+- Updated broken URLs found in inst/doc/Informative_Survival_Plots.html and man/surv_pvalue.Rd
+
 
 
 

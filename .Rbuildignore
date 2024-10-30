@@ -13,3 +13,4 @@
 ^\.github$
 ^pkgdown$
 ^Makefile$
+^CRAN-SUBMISSION$

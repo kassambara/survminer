@@ -3,6 +3,7 @@ test:
 
 check:
 	Rscript -e "devtools::check()"
+	Rscript -e "urlchecker::url_check()"
 
 build_site:
 	Rscript -e "pkgdown::build_site()"

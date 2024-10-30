@@ -23,7 +23,7 @@ NULL
 #'  .... Case insensitive partial match is allowed.\cr\cr To learn more about
 #'  the mathematical background behind the different log-rank weights, read the
 #'  following blog post on R-Addict:
-#'  \href{http://r-addict.com/2017/02/09/Fancy-Survival-Plots.html}{Comparing
+#'  \href{https://rpkgs.datanovia.com/survminer/articles/Specifiying_weights_in_log-rank_comparisons.html}{Comparing
 #'  (Fancy) Survival Curves with Weighted Log-rank Tests}
 #'@param test.for.trend logical value. Default is FALSE. If TRUE, returns the
 #'  test for trend p-values. Tests for trend are designed to detect ordered
