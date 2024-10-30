@@ -189,7 +189,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   # Add ncensor.plot or cumcensor plot
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if(ncensor.plot){
-    ncensor_plot <- ggplot(d, aes_string("time", "n.censor")) +
+    ncensor_plot <- ggplot(d, ggplot2::aes(x = !!sym("time"), y = !!sym("n.censor"))) +
       ggpubr::geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
                         stat = "identity", position = "dodge")+
       coord_cartesian(xlim = xlim)+

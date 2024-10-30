@@ -214,8 +214,8 @@ plot.surv_cutpoint <- function(x, variables = NULL, ggtheme = theme_classic(), b
                            y1 = 0, y2 = max(p_data$stats))
     cutpoint_label <- paste0("Cutpoint: ", round(max_stat$estimate,2))
     x1 <- y1 <- x2 <- y2 <- NULL
-    max_stat_p <- ggplot(data = p_data, mapping=aes_string("cuts", "stats"))+
-      geom_point(aes_string(color = "grps"), shape = 19, size = 0.5)+
+    max_stat_p <- ggplot(data = p_data, mapping=ggplot2::aes(x = !!sym("cuts"), y = !!sym("stats")))+
+      geom_point(aes(color = !!sym("grps")), shape = 19, size = 0.5)+
       geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2),
                    data = vline_df, linetype = "dashed", size = 0.5)+
       ggplot2::annotate("text", x = max_stat$estimate, y = 0.5,
