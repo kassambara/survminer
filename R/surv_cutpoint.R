@@ -123,7 +123,7 @@ surv_categorize <- function(x,  variables = NULL, labels = c("low", "high")){
 
   if(is.null(variables)) variables <- colnames(data)
   data <- data[, variables, drop = FALSE]
-  cutpoints <- x$cutpoint[variables,"cutpoint"]
+  cutpoints <- x$cutpoint[make.names(variables),"cutpoint"]
   nvar <- length(variables)
   if(nvar >=2){
     res <- apply(t(data), 2, .dichotomize, cutpoints, labels)
