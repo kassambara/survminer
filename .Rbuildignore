@@ -11,3 +11,5 @@
 ^doc$
 ^Meta$
 ^\.github$
+^pkgdown$
+^Makefile$

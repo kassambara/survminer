@@ -1,10 +1,21 @@
-templates:
-  params:
-    bootswatch: lumen
-    ganalytics: UA-54921687-5
+url: https://rpkgs.datanovia.com/survminer/index.html
+
+template:
+  bootstrap: 5
+  bootswatch: lumen
+  ganalytics: UA-54921687-5
+
+development:
+  mode: "auto"
+
+copy:
+  - pkgdown/cheatsheet/survminer_cheatsheet.pdf
+  - tools
+
 reference:
   - title: Fit survival curves
-    Contents:
+    desc: Fit survival curves and compute p-values as well as median survival times.
+    contents:
       - surv_group_by
       - surv_fit
       - surv_median
@@ -48,13 +59,15 @@ reference:
     contents:
       - theme_survminer
       - add_ggsurvplot
+      - ggsurvplot_arguments
+      - BRCAOV.survInfo
 
 
 navbar:
   title: "survminer"
   left:
   - text: Cheatsheet
-    href: survminer_cheatsheet.pdf
+    href: https://rpkgs.datanovia.com/survminer/survminer_cheatsheet.pdf
   - text: Reference
     href: reference/index.html
   - text: Articles
@@ -64,6 +77,7 @@ navbar:
   right:
     - icon: fa-github
       href: https://github.com/kassambara/survminer
+      text: GitHub
 
 
 
