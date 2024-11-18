@@ -165,7 +165,8 @@ ggsurvplot_facet <- function(fit, data, facet.by,
               panel.labs.background = panel.labs.background,
               panel.labs.font = panel.labs.font,
               panel.labs.font.x =panel.labs.font.x,
-              panel.labs.font.y = panel.labs.font.y)
+              panel.labs.font.y = panel.labs.font.y,
+              labeller = labeller)
 
   # Pvalues
   #:::::::::::::::::::::::::::::::::::::::::
