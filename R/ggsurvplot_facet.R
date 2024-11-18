@@ -63,6 +63,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                              panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
                              panel.labs.font.x = panel.labs.font,
                              panel.labs.font.y = panel.labs.font,
+                             labeller = NULL
                              ...)
   {
 
@@ -221,6 +222,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
   .labeller <- "label_value"
   if(!short.panel.labs) .labeller <- label_both
+  if(!is.null(labeller)) .labeller <- labeller
 
   if(length(facet.by) == 1){
     facet.formula <- paste0("~", facet.by) %>% stats::as.formula()
