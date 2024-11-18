@@ -63,7 +63,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                              panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
                              panel.labs.font.x = panel.labs.font,
                              panel.labs.font.y = panel.labs.font,
-                             labeller = NULL
+                             labeller = NULL,
                              ...)
   {
 
