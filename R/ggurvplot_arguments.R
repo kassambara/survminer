@@ -53,7 +53,7 @@
 #'@param censor.size numveric value specifying the point size of censors.
 #'  Default is 4.5.
 #'@param pval logical value, a numeric or a string. If logical and TRUE, the
-#'  p-value is added on the plot. If numeric, than the computet p-value is
+#'  p-value is added on the plot. If numeric, then the computed p-value is
 #'  substituted with the one passed with this parameter. If character, then the
 #'  customized string appears on the plot. See examples - Example 3.
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
