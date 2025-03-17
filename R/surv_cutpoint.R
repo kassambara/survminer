@@ -95,6 +95,7 @@ surv_cutpoint <- function(data, time = "time", event = "event", variables,
                                       smethod = "LogRank", pmethod="none",
                                       minprop = minprop, maxprop = 1-minprop,
                                       alpha = alpha)
+    max_stat_i$stats <- data[, var_i]
     res[[var_i]] <- max_stat_i
     if(progressbar) utils::setTxtProgressBar(pb, i)
   }
