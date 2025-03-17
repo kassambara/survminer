@@ -18,6 +18,8 @@
 #'@param minprop the minimal proportion of observations per group.
 #'@param progressbar logical value. If TRUE, show progress bar. Progressbar is
 #'  shown only, when the number of variables > 5.
+#'@param pmethod the method used to compute the p-value. Default is "none", options are 'none', 'Lau92', 'Lau94', 'exactGauss', 'HL', 'condMC', 'min'
+#'@param ... other arguments passed to the core function \code{\link{maxstat::maxstat}}.
 #'
 #'@return \itemize{
 #'
@@ -68,7 +70,7 @@
 #'@rdname surv_cutpoint
 #'@export
 surv_cutpoint <- function(data, time = "time", event = "event", variables,
-                    minprop = 0.1, progressbar = TRUE)
+                    minprop = 0.1, pmethod="none", progressbar = TRUE, ...)
   {
   if(!inherits(data, "data.frame"))
     stop("data should be an object of class data.frame")
@@ -92,10 +94,9 @@ surv_cutpoint <- function(data, time = "time", event = "event", variables,
     var_i <- variables[i]
     surv_data$var <- data[, var_i]
     max_stat_i <- maxstat::maxstat.test(survival::Surv(time, event) ~ var, data = surv_data,
-                                      smethod = "LogRank", pmethod="none",
-                                      minprop = minprop, maxprop = 1-minprop,
-                                      alpha = alpha)
-    max_stat_i$stats <- data[, var_i]
+                                      smethod = "LogRank", pmethod = pmethod,
+                                      minprop = minprop, maxprop = 1-minprop, ...)
+    #max_stat_i$stats <- data[, var_i]
     res[[var_i]] <- max_stat_i
     if(progressbar) utils::setTxtProgressBar(pb, i)
   }
@@ -205,20 +206,31 @@ plot.surv_cutpoint <- function(x, variables = NULL, ggtheme = theme_classic(), b
   for(variable in variables){
     max_stat <- x[[variable]]
 
-    p_data <- data.frame(
+    p_data_old <- data.frame(
       stats = max_stat$stats,
       cuts = max_stat$cuts,
       grps = .dichotomize(max_stat$cuts, max_stat$estimate)
      )
 
+    p_data <- as.data.frame(data[, variable])
+
+    colnames(p_data) <- "cuts"
+    p_data <- p_data %>%
+      left_join(p_data_old,
+                by = 'cuts'
+                )
+
+    p_data <- p_data %>%
+      mutate(grps = .dichotomize(cuts, max_stat$estimate))
+
     vline_df <- data.frame(x1 = max_stat$estimate, x2 = max_stat$estimate,
-                           y1 = 0, y2 = max(p_data$stats))
+                           y1 = 0, y2 = max(max_stat$stats, na.rm = TRUE))
     cutpoint_label <- paste0("Cutpoint: ", round(max_stat$estimate,2))
     x1 <- y1 <- x2 <- y2 <- NULL
     max_stat_p <- ggplot(data = p_data, mapping=ggplot2::aes(x = !!sym("cuts"), y = !!sym("stats")))+
       geom_point(aes(color = !!sym("grps")), shape = 19, size = 0.5)+
       geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2),
-                   data = vline_df, linetype = "dashed", size = 0.5)+
+                   data = vline_df, linetype = "dashed", linewidth = 0.5)+
       ggplot2::annotate("text", x = max_stat$estimate, y = 0.5,
                         label = cutpoint_label, size = 4)+
       labs(y = "Standardized Log-Rank Statistic",
