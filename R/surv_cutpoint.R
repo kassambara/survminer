@@ -216,13 +216,13 @@ plot.surv_cutpoint <- function(x, variables = NULL, ggtheme = theme_classic(), b
 
     colnames(p_data) <- "cuts"
     p_data <- p_data %>%
-      left_join(p_data_old,
+      dplyr::left_join(p_data_old,
                 by = 'cuts'
                 )
 
     p_data <- p_data %>%
-      mutate(grps = .dichotomize(cuts, max_stat$estimate)) %>% # replace with dichotomize
-      mutate(stats = ifelse(is.na(stats), 0, stats)) # if the stat wasn't computed just put 0
+      dplyr::mutate(grps = .dichotomize(cuts, max_stat$estimate)) %>% # replace with dichotomize
+      dplyr::mutate(stats = dplyr::if_else(is.na(stats), 0, stats)) # if the stat wasn't computed just put 0
 
     vline_df <- data.frame(x1 = max_stat$estimate, x2 = max_stat$estimate,
                            y1 = 0, y2 = max(max_stat$stats, na.rm = TRUE))

@@ -15,7 +15,9 @@ surv_cutpoint(
   event = "event",
   variables,
   minprop = 0.1,
-  progressbar = TRUE
+  pmethod = "none",
+  progressbar = TRUE,
+  ...
 )
 
 surv_categorize(x, variables = NULL, labels = c("low", "high"))
@@ -40,14 +42,16 @@ interest, for wich we want to estimate the optimal cutpoint.}
 
 \item{minprop}{the minimal proportion of observations per group.}
 
+\item{pmethod}{the method used to compute the p-value. Default is "none", options are 'none', 'Lau92', 'Lau94', 'exactGauss', 'HL', 'condMC', 'min'}
+
 \item{progressbar}{logical value. If TRUE, show progress bar. Progressbar is
 shown only, when the number of variables > 5.}
+
+\item{...}{other arguments. For plots, see ?ggpubr::ggpar}
 
 \item{x, object}{an object of class surv_cutpoint}
 
 \item{labels}{labels for the levels of the resulting category.}
-
-\item{...}{other arguments. For plots, see ?ggpubr::ggpar}
 
 \item{ggtheme}{function, ggplot2 theme name. Default value is
 \link[ggplot2]{theme_classic}. Allowed values include ggplot2 official themes. See \code{\link[ggplot2]{theme}()}.}
