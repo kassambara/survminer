@@ -41,6 +41,9 @@
 #'
 #'  }
 #'
+#' @import dplyr
+#' @import ggplot2
+#'
 #'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #'
 #'@examples
@@ -199,7 +202,7 @@ plot.surv_cutpoint <- function(x, variables = NULL, ggtheme = theme_classic(), b
   data <- x$data[, -1*c(1:2), drop = FALSE]
   if(is.null(variables)) variables <- colnames(data)
   data <- data[, variables, drop = FALSE]
-  cutpoints <- x$cutpoint[variables,"cutpoint"]
+  #cutpoints <- x$cutpoint[variables,"cutpoint"]
   nvar <- length(variables)
 
   p <- list()
