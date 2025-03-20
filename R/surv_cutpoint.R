@@ -41,8 +41,6 @@
 #'
 #'  }
 #'
-#' @import dplyr
-#' @import ggplot2
 #'
 #'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #'
@@ -96,9 +94,20 @@ surv_cutpoint <- function(data, time = "time", event = "event", variables,
   for (i in 1:nvar){
     var_i <- variables[i]
     surv_data$var <- data[, var_i]
+    # we run maxstat twice once to compute all statistics
+    temp_max_stat_i <- maxstat::maxstat.test(survival::Surv(time, event) ~ var, data = surv_data,
+                                      smethod = "LogRank", pmethod = pmethod,
+                                      minprop = 0, maxprop = 1-0, ...)
+    # and once to get the cutpoint, using the minprop argument
     max_stat_i <- maxstat::maxstat.test(survival::Surv(time, event) ~ var, data = surv_data,
                                       smethod = "LogRank", pmethod = pmethod,
                                       minprop = minprop, maxprop = 1-minprop, ...)
+
+    # this will be used for the plot method below, this will make it so
+    #   only the two endpoints will have a Standardized Log-Rank Statistic will
+    #   be calculated where possible
+    max_stat_i$stats <- temp_max_stat_i$stats
+    max_stat_i$cuts <- temp_max_stat_i$cuts
     #max_stat_i$stats <- data[, var_i]
     res[[var_i]] <- max_stat_i
     if(progressbar) utils::setTxtProgressBar(pb, i)
@@ -218,14 +227,14 @@ plot.surv_cutpoint <- function(x, variables = NULL, ggtheme = theme_classic(), b
     p_data <- as.data.frame(data[, variable])
 
     colnames(p_data) <- "cuts"
-    p_data <- p_data %>%
+    p_data <- p_data |>
       dplyr::left_join(p_data_old,
                 by = 'cuts'
                 )
 
-    p_data <- p_data %>%
-      dplyr::mutate(grps = .dichotomize(cuts, max_stat$estimate)) %>% # replace with dichotomize
-      dplyr::mutate(stats = dplyr::if_else(is.na(stats), 0, stats)) # if the stat wasn't computed just put 0
+    p_data <- p_data |>
+      dplyr::mutate(grps = .dichotomize(cuts, max_stat$estimate)) |> # replace with dichotomize
+      dplyr::mutate(stats = dplyr::if_else(is.na(stats), 0, stats)) # if the stat wasn't computed just put 0, now this will only occur for thw two endpoints
 
     vline_df <- data.frame(x1 = max_stat$estimate, x2 = max_stat$estimate,
                            y1 = 0, y2 = max(max_stat$stats, na.rm = TRUE))

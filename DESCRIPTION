@@ -1,50 +1,53 @@
-Package: survminer
 Type: Package
+Package: survminer
 Title: Drawing Survival Curves using 'ggplot2'
 Version: 0.5.0.1000
 Date: 2024-10-30
 Authors@R: c(
-    person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"),
-    person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@gmail.com"),
-    person("Przemyslaw", "Biecek", role = c("aut"), email = "przemyslaw.biecek@gmail.com"),
-    person("Scheipl", "Fabian", role = c("ctb"), email = "fabian.scheipl@gmail.com"))
-Description: Contains the function 'ggsurvplot()' for drawing easily beautiful
-    and 'ready-to-publish' survival curves with the 'number at risk' table
-    and 'censoring count plot'. Other functions are also available to plot 
-    adjusted curves for `Cox` model and to visually examine 'Cox' model assumptions.
+    person("Alboukadel", "Kassambara", , "alboukadel.kassambara@gmail.com", role = c("aut", "cre")),
+    person("Marcin", "Kosinski", , "m.p.kosinski@gmail.com", role = "aut"),
+    person("Przemyslaw", "Biecek", , "przemyslaw.biecek@gmail.com", role = "aut"),
+    person("Scheipl", "Fabian", , "fabian.scheipl@gmail.com", role = "ctb")
+  )
+Description: Contains the function 'ggsurvplot()' for drawing easily
+    beautiful and 'ready-to-publish' survival curves with the 'number at
+    risk' table and 'censoring count plot'. Other functions are also
+    available to plot adjusted curves for `Cox` model and to visually
+    examine 'Cox' model assumptions.
 License: GPL-2
-LazyData: TRUE
-Encoding: UTF-8
+URL: https://rpkgs.datanovia.com/survminer/index.html
+BugReports: https://github.com/kassambara/survminer/issues
 Depends:
     ggplot2(>= 3.4.0),
     ggpubr(>= 0.1.6)
 Imports:
+    broom,
+    dplyr,
+    ggtext (>= 0.1.0),
     grid,
     gridExtra (>= 2.0),
     magrittr,
     maxstat,
     methods,
-    scales,
-    survival,
-    stats,
-    broom,
-    dplyr,
-    tidyr,
-    survMisc,
     purrr,
-    tibble,
     rlang,
-    ggtext (>= 0.1.0)
+    scales,
+    stats,
+    survival,
+    survMisc,
+    tibble,
+    tidyr
 Suggests:
-    knitr,
-    flexsurv,
     cmprsk,
+    flexsurv,
+    knitr,
     markdown,
-    testthat,
-    rmarkdown
-VignetteBuilder: knitr
-URL: https://rpkgs.datanovia.com/survminer/index.html
-BugReports: https://github.com/kassambara/survminer/issues
+    rmarkdown,
+    testthat
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+LazyData: TRUE
 RoxygenNote: 7.3.2
 Collate: 
     'BMT.R'
