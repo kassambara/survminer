@@ -362,17 +362,17 @@ print(ggsurv)
 
 -   A. Kassambara. STHDA December 2016. [Survival Analysis Basics:
     Curves and Logrank
-    Tests](http://www.sthda.com/english/wiki/survival-analysis-basics)
+    Tests](https://www.sthda.com/english/wiki/survival-analysis-basics)
 
 -   A. Kassambara. STHDA December 2016. [Cox Proportional Hazards
-    Model](http://www.sthda.com/english/wiki/cox-proportional-hazards-model)
+    Model](https://www.sthda.com/english/wiki/cox-proportional-hazards-model)
 
 -   A. Kassambara. STHDA December 2016. [Cox Model
-    Assumptions](http://www.sthda.com/english/wiki/cox-model-assumptions)
+    Assumptions](https://www.sthda.com/english/wiki/cox-model-assumptions)
 
 -   M. Kosiński. May 2016. [Survival plots have never been so
     informative](https://rpkgs.datanovia.com/survminer/articles/Informative_Survival_Plots.html)
 
 -   A. Kassambara. STHDA January 2016. [survminer R package: Survival
     Data Analysis and
-    Visualization](http://www.sthda.com/english/wiki/survminer-r-package-survival-data-analysis-and-visualization).
+    Visualization](https://www.sthda.com/english/wiki/survminer-r-package-survival-data-analysis-and-visualization).
