@@ -3,6 +3,7 @@
 ## Bug fixes
 
 - Fix chart/risk table misalignment with ggplot2 >= 3.5.0 by using dynamic panel detection instead of hardcoded grob indices (#649, #675)
+- Fix R CMD check global variable binding warnings in `.add_surv_median()`
 - Fix `ggcoxdiagnostics()` x-axis scaling when using `ox.scale = "time"` with Schoenfeld residuals (#608)
 - Fix ggplot2 3.5.0 aesthetic length warning when using `surv.median.line = "hv"` or `"h"` with multiple survival curves (#643)
 - Fix compatibility with ggplot2 development version (#681): Remove manual class assignment in `theme_survminer()` to ensure proper theme object construction
