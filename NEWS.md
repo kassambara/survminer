@@ -12,6 +12,7 @@
 - Fix test suite compatibility with ggplot2 development version (#681): Update layer access syntax in tests to support both stable (`$layers`) and development (`@layers`) versions
 - Fix "Ignoring unknown labels" warnings by conditionally setting legend titles only for aesthetics that are actually used in plots
 - Update documentation to recommend `%++%` operator instead of `+` for adding themes to ggsurv objects with ggplot2 v >= 3.5.2
+- Fix documentation examples to consistently use `%++%` operator in `theme_survminer()` help
 
 
 
