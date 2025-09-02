@@ -14,3 +14,4 @@
 ^pkgdown$
 ^Makefile$
 ^CRAN-SUBMISSION$
+^CLAUDE\.md$

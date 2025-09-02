@@ -13,6 +13,14 @@
 #' @importFrom rlang !! sym
 
 
+# Check if an installed package version is superior to a specified version
+# Version, pkg: character vector
+is_pkg_version_sup<- function(pkg, version){
+  vv <- as.character(utils::packageVersion(pkg))
+  cc <- utils::compareVersion(vv, version) > 0
+  cc
+}
+
 # Count the number of ggplots in a list
 .count_ggplots <- function(list.objects){
   nplot <- 0

@@ -121,7 +121,6 @@ theme_survminer <-
       legend.text = legend.text,
       legend.title = legend.text
     )
-    class(result) <- "theme"
     result
   }
 
