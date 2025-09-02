@@ -40,7 +40,7 @@ NULL
 #' # Change font size, style and color at the same time
 #' # Use font.x = 14, to change only font size; or use
 #' # font.x = "bold", to change only font face.
-#'ggsurv %+% theme_survminer(
+#'ggsurv %++% theme_survminer(
 #'      font.main = c(16, "bold", "darkblue"),
 #'      font.submain = c(15, "bold.italic", "purple"),
 #'      font.caption = c(14, "plain", "orange"),
@@ -121,6 +121,9 @@ theme_survminer <-
       legend.text = legend.text,
       legend.title = legend.text
     )
+    if (!is_pkg_version_sup("ggplot2", "3.5.2")){
+      class(result) <- "theme"  
+    }
     result
   }
 

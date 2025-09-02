@@ -232,10 +232,21 @@ ggsurvplot_df <- function(fit, fun = NULL,
   # Axis label and legend title
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   lty.leg.title <- ifelse(linetype == "strata", legend.title, linetype)
-  p <- p + ggplot2::labs(x = xlab, y = ylab, title = title,
-                         color = legend.title, fill = legend.title,
-                         linetype = lty.leg.title
-  )
+  
+  # Build labs() arguments - only include aesthetics that are actually used
+  labs_args <- list(x = xlab, y = ylab, title = title, color = legend.title)
+  
+  # Add fill legend only if confidence interval ribbon is used
+  if(conf.int && conf.int.style == "ribbon") {
+    labs_args$fill <- legend.title
+  }
+  
+  # Add linetype legend only if linetype is used as an aesthetic mapping
+  if(linetype == "strata") {
+    labs_args$linetype <- lty.leg.title
+  }
+  
+  p <- p + do.call(ggplot2::labs, labs_args)
   p <-  .set_general_gpar(p, legend = legend, ...) # general graphical parameters
   if(!is.null(linetype.manual)) p <- p + scale_linetype_manual(values = linetype.manual)
 
