@@ -334,12 +334,30 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   for (i in 1:length(plots)) {
     if(is.ggplot(plots[[i]])){
       grobs[[i]] <- ggplotGrob(plots[[i]])
-      widths[[i]] <- grobs[[i]]$widths[2:5]
+      # Find panel columns dynamically instead of hardcoding [2:5]
+      panel_cols <- which(grepl("panel", grobs[[i]]$layout$name))
+      if(length(panel_cols) == 0) {
+        # Fallback to traditional approach if no panel found
+        panel_range <- 2:min(5, ncol(grobs[[i]]))
+      } else {
+        # Use actual panel column range
+        panel_range <- min(panel_cols):max(panel_cols)
+      }
+      widths[[i]] <- grobs[[i]]$widths[panel_range]
     }
   }
   maxwidth <- do.call(grid::unit.pmax, widths)
   for (i in 1:length(grobs)) {
-    grobs[[i]]$widths[2:5] <- as.list(maxwidth)
+    if(!is.null(grobs[[i]])){
+      # Apply same panel range logic for setting widths
+      panel_cols <- which(grepl("panel", grobs[[i]]$layout$name))
+      if(length(panel_cols) == 0) {
+        panel_range <- 2:min(5, ncol(grobs[[i]]))
+      } else {
+        panel_range <- min(panel_cols):max(panel_cols)
+      }
+      grobs[[i]]$widths[panel_range] <- as.list(maxwidth)
+    }
   }
 
 
