@@ -412,10 +412,13 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     df <- stats::na.omit(df)
 
     if(nrow(df)>0){
-      if(type %in% c("hv", "h"))
+      if(type %in% c("hv", "h")){
+        # Create single-row dataframe for horizontal line to avoid aesthetic length warning
+        h_line_data <- data.frame(x = 0, y = max(df$y2), xend = max(df$x1), yend = max(df$y2))
         p <- p +
-          geom_segment(aes(x = 0, y = max(y2), xend = max(x1), yend = max(y2)),
-                       data = df, linetype = linetype, size = size, color = color) # horizontal segment
+          geom_segment(aes(x = x, y = y, xend = xend, yend = yend),
+                       data = h_line_data, linetype = linetype, size = size, color = color) # horizontal segment
+      }
 
       if(type %in% c("hv", "v"))
         p <- p + geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2), data = df,
