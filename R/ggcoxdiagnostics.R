@@ -89,7 +89,13 @@ ggcoxdiagnostics <- function (fit,
          time = {
            if (!(type %in% c("schoenfeld", "scaledsch")))
              warning("ox.scale='time' works only with type=schoenfeld/scaledsch")
-           xval <- as.numeric(rownames(res))
+           # Extract time values from residuals attributes
+           residuals_obj <- resid(fit, type = type)
+           if(NCOL(residuals_obj) == 1) {
+             xval <- as.numeric(attr(residuals_obj, "names"))
+           } else {
+             xval <- as.numeric(attr(residuals_obj, "dimnames")[[1]])
+           }
            xlabel <- "Time"
          },
          {warning("ox.scale should be one of linear.predictions/observation.id/time")})
