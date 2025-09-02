@@ -121,6 +121,9 @@ theme_survminer <-
       legend.text = legend.text,
       legend.title = legend.text
     )
+    if (!is_pkg_version_sup("ggplot2", "3.5.2")){
+      class(result) <- "theme"  
+    }
     result
   }
 
