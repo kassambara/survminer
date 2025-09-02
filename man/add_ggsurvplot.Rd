@@ -19,6 +19,10 @@ e1 \%++\% e2
 Allows to add ggplot components - theme(), labs(), ... - to an
  object of class ggsurv, which is a list of ggplots.
 }
+\note{
+For ggplot2 v >= 3.5.2 compatibility, use \code{\%++\%} operator
+ instead of \code{+} when adding themes to ggsurv objects.
+}
 \examples{
 # Fit survival curves
 require("survival")
@@ -33,7 +37,7 @@ p <- ggsurvplot(fit, data = lung, risk.table = TRUE,
 p
 
 # Customizing the plots
-p + theme_survminer(
+p \%++\% theme_survminer(
      font.main = c(16, "bold", "darkblue"),
      font.submain = c(15, "bold.italic", "purple"),
      font.caption = c(14, "plain", "orange"),
