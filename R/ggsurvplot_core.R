@@ -435,12 +435,12 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
         h_line_data <- data.frame(x = 0, y = max(df$y2), xend = max(df$x1), yend = max(df$y2))
         p <- p +
           geom_segment(aes(x = .data$x, y = .data$y, xend = .data$xend, yend = .data$yend),
-                       data = h_line_data, linetype = linetype, size = size, color = color) # horizontal segment
+                       data = h_line_data, linetype = linetype, linewidth = size, color = color) # horizontal segment
       }
 
       if(type %in% c("hv", "v"))
         p <- p + geom_segment(aes(x = .data$x1, y = .data$y1, xend = .data$x2, yend = .data$y2), data = df,
-                              linetype = linetype, size = size, color = color) # vertical segments
+                              linetype = linetype, linewidth = size, color = color) # vertical segments
     }
     else warning("Median survival not reached.")
   }
