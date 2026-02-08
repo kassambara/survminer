@@ -185,8 +185,8 @@ surv_fit <- function(formula, data, group.by = NULL, match.fd = FALSE, ...){
     .map_each <- function(formula, data){
       purrr::map(data, .survfit2, formula, ...)
     }
-    res <- purrr::map(formula, .map_each , data) %>%
-      dplyr::combine()
+    res <- purrr::map(formula, .map_each , data)
+    res <- unlist(res, recursive = FALSE)
   }
 
   # List of formulas and One data set
