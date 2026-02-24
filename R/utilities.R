@@ -8,7 +8,6 @@
 #' @importFrom purrr map
 #' @importFrom methods is
 #' @importFrom stats pchisq
-#' @importFrom survMisc ten comp
 #' @importFrom utils capture.output
 #' @importFrom rlang !! sym
 

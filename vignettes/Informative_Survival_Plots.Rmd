@@ -97,7 +97,7 @@ Each parameter is described in the correspoding comment, but I would like to emp
 
 # Comparisons
 
-Even though [`survMisc`](https://cran.r-project.org/package=survMisc) have returned on CRAN, I've appreciated survminer so much that I would not look anymore for other solutions. Check why: at the end I present survival curves that can be obtained with the usage of `base` package and `survMisc` package.
+For comparison, below are survival curves obtained with the `base` package.
 
 ### base package
 
@@ -117,32 +117,4 @@ legend(100, .2, c("Ovarian Cancer", "Breast Cancer"),
 
 I haven't seen examples with risk table and adding legend isn't so quick as in survminer. Moreover, there are no minor axis breaks lines.
 
-### survMisc package
-
-```{r, fig.width=10, eval=FALSE}
-# install.packages('survMisc')
-library(survMisc)
-survMisc:::autoplot.survfit(fit) # no customization
-
-```
-
-*Why colours are not asigned to any group? Where is the legend? Why there is so much white space to the right?* (Those were questions for the version of survMisc where this was an issue.) Where is OX axis?
-
-```{r, fig.width=10, eval = FALSE}
-survMisc:::autoplot.survfit( # with some hard customization
-   fit,
-   type = "fill",
-   pVal=TRUE
-) -> fit.survMisc 
-fit.survMisc$table <- fit.survMisc$table +
-   theme_minimal() + # theme(legend.position = "top")
-   coord_cartesian(xlim = c(0,2000))
-fit.survMisc$plot <- fit.survMisc$plot +
-   theme_minimal() + 
-   coord_cartesian(xlim = c(0,2000))
-survMisc:::print.tableAndPlot(fit.survMisc)
-```
-
-Where is risk table? Why I can't pass `break.by.time` to have informative minor X axis breaks? Why the plot gets narrower when the legend in risk table gets wider and why I can't do anything to workaround this? 
-
-> Never mind -> `install.packages('survminer')`
+> The `survminer` package provides a much richer and more flexible interface for survival plots compared to base R graphics.

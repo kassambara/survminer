@@ -67,7 +67,7 @@ that's why we can substitute group $A$ with $B$ in $U$ and receive same results.
 
 # Weighted Log-rank extensions
 
-Regular Log-rank comparison uses $w_{t_i} = 1$ but many modifications to that approach have been proposed. The most popular modifications, called weighted Log-rank tests, are available in `?survMisc::comp`
+Regular Log-rank comparison uses $w_{t_i} = 1$ but many modifications to that approach have been proposed. The most popular modifications, called weighted Log-rank tests, are
 
 - `n` Gehan and Breslow proposed to use $w_{t_i} = n_{t_i}$ (this is also called generalized Wilcoxon),
 - `srqtN` Tharone and Ware proposed to use $w_{t_i} = \sqrt{n_{t_i}}$,
@@ -75,7 +75,7 @@ Regular Log-rank comparison uses $w_{t_i} = 1$ but many modifications to that ap
 - `S2` modified Peto-Peto (by Andersen) $w_{t_i} = S2({t_i}) = \frac{S1({t_i})n_{t_i}}{n_{t_i}+1}$,
 - `FH` Fleming-Harrington $w_{t_i} = S(t_i)^p(1 - S(t_i))^q$.
 
-> Watch out for `FH` as I [submitted an info on survMisc repository](https://github.com/dardisco/survMisc/issues/15) where I think their mathematical notation is misleading for Fleming-Harrington.
+> Note: the Fleming-Harrington weight uses $S(t^-)$ which is the left-continuous Kaplan-Meier estimate (the value just before time $t$).
 
 ## Why are they useful?
 
@@ -98,7 +98,7 @@ After preparing a functionality for this GitHub's issue [Other tests than log-ra
 ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE)
 ```
 
-## Log-rank (comp)
+## Log-rank (weighted)
 
 ```{r}
 ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE,
