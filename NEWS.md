@@ -8,6 +8,8 @@
 
 ## Bug fixes
 
+- Fix `surv_fit()` error when using list of formulas with list of data sets (`match.fd = FALSE`): replace defunct `dplyr::combine()` with `unlist(recursive = FALSE)` (#697, #699)
+
 
 # survminer 0.5.1
 
