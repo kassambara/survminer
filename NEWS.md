@@ -4,6 +4,8 @@
 
 ## Major changes
 
+- Remove `survMisc` dependency: weighted log-rank tests (Gehan-Breslow, Tarone-Ware, Peto-Peto, modified Peto-Peto, Fleming-Harrington, test-for-trend) are now computed internally using base R, avoiding the at-risk `survMisc` package. All existing `method` arguments in `surv_pvalue()` and `log.rank.weights` in `ggsurvplot()` continue to work identically.
+
 ## Minor changes
 
 - Update ggplot2 API usage: replace deprecated `size` with `linewidth` for line geoms, and `is.ggplot()` with `is_ggplot()` (#692, #693)

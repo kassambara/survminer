@@ -149,11 +149,10 @@
 #'@param log.rank.weights The name for the type of weights to be used in
 #'  computing the p-value for log-rank test. By default \code{survdiff} is used
 #'  to calculate regular log-rank test (with weights == 1). A user can specify
-#'  \code{"1", "n", "sqrtN", "S1", "S2", "FH"} to use weights specified in
-#'  \link[survMisc]{comp}, so that weight correspond to the test as : 1 -
-#'  log-rank, n - Gehan-Breslow (generalized Wilcoxon), sqrtN - Tarone-Ware, S1
-#'  - Peto-Peto's modified survival estimate, S2 - modified Peto-Peto (by
-#'  Andersen), FH - Fleming-Harrington(p=1, q=1).
+#'  \code{"1", "n", "sqrtN", "S1", "S2", "FH"} so that weights correspond to
+#'  the test as: 1 - log-rank, n - Gehan-Breslow (generalized Wilcoxon),
+#'  sqrtN - Tarone-Ware, S1 - Peto-Peto's modified survival estimate,
+#'  S2 - modified Peto-Peto (by Andersen), FH - Fleming-Harrington(p=1, q=1).
 #'@param pval.method whether to add a text with the test name used for
 #'  calculating the pvalue, that corresponds to survival curves' comparison -
 #'  used only when \code{pval=TRUE}

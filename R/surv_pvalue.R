@@ -215,38 +215,17 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", test.for.trend = 
                        paste("p =", signif(pvalue, 2)))
     res <- list(pval = pvalue, method = "Log-rank", pval.txt = pval.txt)
   }
-  # Other possibilities to compute pvalue using the survMisc package
+  # Weighted log-rank tests (internal implementation)
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   else {
-    tenfit <- ten(eval(fit$call$formula), data = data)
-    capture.output(comp(tenfit)) -> null_dev
-    # comp modifies tenfit object (ten class: ?survMisc::ten)
-    # and adds attributes with tests
-    if(test.for.trend)
-      attributes(tenfit)$tft$tft -> tests
-    else
-    attributes(tenfit)$lrt -> tests
-
-    if(test.for.trend & is.null(tests))
-      stop("Test for trend is NULL. ",
-           "Note that, the number of groups should be > 2 to perform the test for trend. ")
-
-    lr_p <- tests$pChisq
-    if(is.null(lr_p)) lr_p <- tests$pNorm
-    lr_w <- tests$W
-
-    # check str(tests) -> W:weights / pNorm:p-values
-    pvalue <- round(lr_p[lr_w == method], 4)
+    wlr <- .weighted_logrank_test(
+      formula = eval(fit$call$formula), data = data,
+      method = method, test.for.trend = test.for.trend
+    )
+    pvalue <- round(wlr$pvalue, 4)
     pval.txt <- ifelse(pvalue < 1e-04, "p < 0.0001",
                        paste("p =", signif(pvalue, 2)))
-    test_name <- c("Log-rank", "Gehan-Breslow",
-                   "Tarone-Ware", "Peto-Peto",
-                   "modified Peto-Peto", "Fleming-Harrington (p=1, q=1)")
-    # taken from ?survMisc::comp
-    method <- test_name[lr_w == method]
-    if(test.for.trend)
-      method <- paste0(method, ", tft")
-    res <- list(pval = pvalue, method = method, pval.txt = pval.txt)
+    res <- list(pval = pvalue, method = wlr$method_name, pval.txt = pval.txt)
   }
   res$variable <- .collapse(surv.vars, sep =  "+")
   # Pvalue coordinates to annotate the plot
