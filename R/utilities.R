@@ -63,6 +63,8 @@ GeomConfint <- ggplot2::ggproto('GeomConfint', ggplot2::GeomRibbon,
                                   if (na.rm) data <- data[stats::complete.cases(self$required_aes), ]
                                   data <- data[order(data$group, data$x), ]
                                   data <- self$stairstep_confint(data)
+                                  if (!is.null(data$linewidth)) data$linewidth <- data$linewidth[1]
+                                  if (!is.null(data$linetype)) data$linetype <- data$linetype[1]
                                   ggplot2::GeomRibbon$draw_group(data, panel_scales, coord, na.rm = na.rm)
                                 },
                                 stairstep_confint = function (data) {

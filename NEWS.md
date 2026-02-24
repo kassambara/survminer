@@ -12,6 +12,7 @@
 
 ## Bug fixes
 
+- Fix `GeomConfint` incompatibility with ggplot2 4.0.x: normalize `linewidth` and `linetype` after stairstep transformation to prevent "Aesthetics can not vary along a ribbon" error (#694)
 - Fix `surv_fit()` error when using list of formulas with list of data sets (`match.fd = FALSE`): replace defunct `dplyr::combine()` with `unlist(recursive = FALSE)` (#697, #699)
 
 
