@@ -6,6 +6,8 @@
 
 ## Minor changes
 
+- Update ggplot2 API usage: replace deprecated `size` with `linewidth` for line geoms, and `is.ggplot()` with `is_ggplot()` (#692, #693)
+
 ## Bug fixes
 
 - Fix `surv_fit()` error when using list of formulas with list of data sets (`match.fd = FALSE`): replace defunct `dplyr::combine()` with `unlist(recursive = FALSE)` (#697, #699)

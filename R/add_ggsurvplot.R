@@ -36,7 +36,7 @@
 {
 
   original.p <- e1
-  if(is.ggplot(original.p)) list.plots <- list(original.p)
+  if(ggplot2::is_ggplot(original.p)) list.plots <- list(original.p)
   else if(is.list(original.p)) list.plots <- original.p
   else stop("Can't handle an object of class ", class (original.p))
 
@@ -44,10 +44,10 @@
 
   for(i in 1:length(list.plots)){
     p <- list.plots[[i]]
-    if(is.ggplot(p)) list.plots[[i]] <- p + e2
+    if(ggplot2::is_ggplot(p)) list.plots[[i]] <- p + e2
   }
 
-  if(is.ggplot(original.p)) list.plots[[1]]
+  if(ggplot2::is_ggplot(original.p)) list.plots[[1]]
   else list.plots
 }
 

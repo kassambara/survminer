@@ -112,7 +112,7 @@ ggadjustedcurves <- function(fit,
                                ...)
   time <- surv <- NULL
   pl <- ggplot(curve, aes(x = time, y = surv, color = variable)) +
-    geom_step(size = size) + ggtheme +
+    geom_step(linewidth = size) + ggtheme +
     scale_y_continuous(limits = ylim) +
     ylab(ylab)
 

@@ -332,7 +332,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   plots <- x
   grobs <- widths <- list()
   for (i in 1:length(plots)) {
-    if(is.ggplot(plots[[i]])){
+    if(ggplot2::is_ggplot(plots[[i]])){
       grobs[[i]] <- ggplotGrob(plots[[i]])
       # Find panel columns dynamically instead of hardcoding [2:5]
       panel_cols <- which(grepl("panel", grobs[[i]]$layout$name))

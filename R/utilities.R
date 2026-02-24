@@ -21,16 +21,11 @@ is_pkg_version_sup<- function(pkg, version){
   cc
 }
 
-# shim for ggplot2 prior to 3.5.2
-if (!exists("is_ggplot") && exists("is.ggplot")) {
-  is_ggplot <- is.ggplot
-}
-
 # Count the number of ggplots in a list
 .count_ggplots <- function(list.objects){
   nplot <- 0
   for(i in 1:length(list.objects)){
-    if(is.ggplot(list.objects[[i]])) nplot <- nplot +1
+    if(ggplot2::is_ggplot(list.objects[[i]])) nplot <- nplot +1
   }
   nplot
 }
