@@ -1,8 +1,8 @@
 Package: survminer
 Type: Package
 Title: Drawing Survival Curves using 'ggplot2'
-Version: 0.5.2
-Date: 2026-02-24
+Version: 0.5.2.999
+Date: 2026-02-25
 Authors@R: c(
     person("Alboukadel", "Kassambara", role = c("aut", "cre"), email = "alboukadel.kassambara@gmail.com"),
     person("Marcin", "Kosinski", role = c("aut"), email = "m.p.kosinski@gmail.com"),
