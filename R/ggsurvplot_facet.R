@@ -19,6 +19,9 @@ NULL
 #'  the labels for the "sex" variable. For two grouping variables, you can use
 #'  for example panel.labs = list(sex = c("Male", "Female"), rx = c("Obs",
 #'  "Lev", "Lev2") ).
+#'@param labeller A labeller function as described in
+#'\code{\link[ggplot2:facet_wrap]{ggplot2:facet_wrap}}. This function overrides
+#'  short.panel.labs and panel.labs.
 #'@param panel.labs.background a list to customize the background of panel
 #'  labels. Should contain the combination of the following elements: \itemize{
 #'  \item \code{color, linetype, size}: background line color, type and size
@@ -59,6 +62,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                              nrow = NULL, ncol = NULL,
                              scales = "fixed",
                              short.panel.labs = FALSE, panel.labs = NULL,
+                             labeller = NULL,
                              panel.labs.background = list(color = NULL, fill = NULL),
                              panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
                              panel.labs.font.x = panel.labs.font,
@@ -164,7 +168,8 @@ ggsurvplot_facet <- function(fit, data, facet.by,
               panel.labs.background = panel.labs.background,
               panel.labs.font = panel.labs.font,
               panel.labs.font.x =panel.labs.font.x,
-              panel.labs.font.y = panel.labs.font.y)
+              panel.labs.font.y = panel.labs.font.y,
+              labeller = labeller)
 
   # Pvalues
   #:::::::::::::::::::::::::::::::::::::::::
@@ -211,7 +216,8 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                    panel.labs.background = list(color = NULL, fill = NULL),
                    panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
                    panel.labs.font.x = panel.labs.font,
-                   panel.labs.font.y = panel.labs.font
+                   panel.labs.font.y = panel.labs.font,
+                   labeller = NULL
                    )
 {
 
@@ -221,6 +227,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
   .labeller <- "label_value"
   if(!short.panel.labs) .labeller <- label_both
+  if(!is.null(labeller)) .labeller <- labeller
 
   if(length(facet.by) == 1){
     facet.formula <- paste0("~", facet.by) %>% stats::as.formula()
