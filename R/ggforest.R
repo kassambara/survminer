@@ -40,7 +40,7 @@
 
 ggforest <- function(model, data = NULL,
   main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
-  fontsize = 0.7, refLabel = "reference", noDigits=2) {
+  fontsize = 0.7, refLabel = "reference", noDigits=2, refDisplay = TRUE) {
   conf.high <- conf.low <- estimate <- NULL
   stopifnot(inherits(model, "coxph"))
 
@@ -79,6 +79,9 @@ ggforest <- function(model, data = NULL,
   # use broom again to get remaining required statistics
   rownames(coef) <- gsub(coef$term, pattern = "`", replacement = "")
   toShow <- cbind(allTermsDF, coef[inds,])[,c("var", "level", "N", "p.value", "estimate", "conf.low", "conf.high", "pos")]
+  if (!refDisplay){
+    toShow <- na.omit(toShow)
+  }
   toShowExp <- toShow[,5:7]
   toShowExp[is.na(toShowExp)] <- 0
   toShowExp <- format(exp(toShowExp), digits=noDigits)
