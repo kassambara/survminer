@@ -1,4 +1,4 @@
-# survminer 0.5.1.999
+# survminer 0.5.2
 
 ## New features
 
