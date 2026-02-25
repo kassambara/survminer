@@ -170,6 +170,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     pms$y.text.col <- risk.table.y.text.col
     pms$fontsize <- risk.table.fontsize
     pms$survtable <- "risk.table"
+    pms$risk.table.pos <- risk.table.pos
     # color risk.table ticks by strata
     if(risk.table.y.text.col) pms$y.text.col <- scurve_cols
     res$table <- risktable <- do.call(ggsurvtable, pms)
@@ -241,6 +242,10 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     cumevents = cumevents.y.text.col,
     cumcensor = cumcensor.y.text.col
   )
+  x.axis.limits <- list(
+    x.axis.min = xlim[1],
+    x.axis.max = xlim[2]
+  )
 
   # Returning the data used to generate the survival plots
   res$data.survplot <- d
@@ -255,6 +260,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   attr(res, "cumcensor") <- cumcensor
   attr(res, "risk.table.pos") <- risk.table.pos
   attr(res, "axes.offset") <- axes.offset
+  attr(res, "x.axis.limits") <- x.axis.limits
   res
 }
 
@@ -483,14 +489,24 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   .time <- survplot$data$time
   ymax <- nstrata*0.05
   ymin <- -0.05
-  xmin <- -max(.time)/20
+  x.axis.limits <- attr(ggsurv, "x.axis.limits")
+  xlim.lower <- x.axis.limits$x.axis.min
+  xlim.upper <- x.axis.limits$x.axis.max
+  expansion.lower <- (xlim.upper-xlim.lower)*0.05
+  expansion.upper <- (xlim.upper-xlim.lower)*0.05
 
-  if(!axes.offset){
-    ymin <- -0.02
-    xmin <- -max(.time)/50
+  if (axes.offset) {
+    xmin <- xlim.lower-expansion.lower
+    xmax <- xlim.upper+expansion.upper
+  }
+  else if(!axes.offset){
+    ymin <- 0
+    ymax <- nstrata*0.06
+    xmin <- xlim.lower
+    xmax <- xlim.upper
   }
   risktable_grob = ggplotGrob(risktable)
-  survplot <- survplot + annotation_custom(grob = risktable_grob, xmin = xmin,
+  survplot <- survplot + annotation_custom(grob = risktable_grob, xmin = xmin, xmax = xmax,
                                            ymin = ymin, ymax = ymax)
   ggsurv$plot <- survplot
   ggsurv$table <- NULL
