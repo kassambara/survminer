@@ -56,7 +56,7 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
   # Removing missing value
   # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   .is.na <- data[, group_var, drop = FALSE] %>%
-    apply(1, function(.row){NA %in% .row})
+    apply(MARGIN = 1L, anyNA)
   data <- data[!.is.na, ]
 
   # Grouping variables
