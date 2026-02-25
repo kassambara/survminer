@@ -5,14 +5,19 @@
 #'@param x a list of ggsurvplots.
 #'@param print logical value. If TRUE, the arranged plots are displayed.
 #'@param title character vector specifying page title. Default is NA.
-#'@param ncol,nrow the number of columns and rows, respectively.
-#'@param risk.table.height the height of the risk table on the grid. Increase
-#'  the value when you have many strata. Default is 0.25. Ignored when
-#'  risk.table = FALSE.
+#'@param ncol the number of columns.
+#'@param nrow the number of rows.
+#'@param byrow logical value. Whether to fill the plot matrix by rows, or by columns.
+#'  Default is FALSE (by columns).
+#'@param layout_matrix optional layout matrix. If not specified, automatically
+#'  created from ncol, nrow, and byrow parameters.
 #'@param surv.plot.height the height of the survival plot on the grid. Default
 #'  is 0.75. Ignored when risk.table = FALSE. \code{1-risk.table.height -
 #'  ncensor.plot.height} when \code{risk.table = TRUE} and \code{ncensor.plot =
 #'  TRUE}
+#'@param risk.table.height the height of the risk table on the grid. Increase
+#'  the value when you have many strata. Default is 0.25. Ignored when
+#'  risk.table = FALSE.
 #'@param ncensor.plot.height The height of the censor plot. Used when
 #'  \code{ncensor.plot = TRUE}.
 #'@param ... not used
@@ -47,7 +52,9 @@
 #'
 #'@rdname arrange_ggsurvplots
 #'@export
-arrange_ggsurvplots <- function(x,  print = TRUE, title = NA, ncol = 2, nrow = 1, surv.plot.height = NULL,
+arrange_ggsurvplots <- function(x,  print = TRUE, title = NA, ncol = 2, nrow = 1, byrow=FALSE,
+                                         layout_matrix = matrix(seq_len(nrow*ncol), nrow=nrow,
+                                         ncol=ncol, byrow=byrow), surv.plot.height = NULL,
                                          risk.table.height = NULL, ncensor.plot.height = NULL, ...)
 {
 
@@ -59,7 +66,8 @@ arrange_ggsurvplots <- function(x,  print = TRUE, title = NA, ncol = 2, nrow = 1
 
   # Arrange multiple ggsurvplots
   survs <- do.call(gridExtra::marrangeGrob,
-                  list(grobs = survs, ncol = ncol, nrow = nrow, top = title))
+                  list(grobs = survs, ncol = ncol, nrow = nrow, byrow = byrow,
+                       layout_matrix = layout_matrix, top = title))
 
   if(print) print(survs)
 
