@@ -9,4 +9,5 @@ build_site:
 	Rscript -e "pkgdown::build_site()"
 	cp pkgdown/cheatsheet/survminer_cheatsheet.pdf docs/
 	cp -r tools docs/tools
-	rm docs/CLAUDE.html
+	rm -f docs/CLAUDE.html docs/CLAUDE.md
+	rm -f docs/ISSUE_TEMPLATE.html docs/ISSUE_TEMPLATE.md
