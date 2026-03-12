@@ -20,6 +20,7 @@ ggsurvplot_facet(
   scales = "fixed",
   short.panel.labs = FALSE,
   panel.labs = NULL,
+  labeller = NULL,
   panel.labs.background = list(color = NULL, fill = NULL),
   panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
   panel.labs.font.x = panel.labs.font,
@@ -88,6 +89,10 @@ text. For example, panel.labs = list(sex = c("Male", "Female")) specifies
 the labels for the "sex" variable. For two grouping variables, you can use
 for example panel.labs = list(sex = c("Male", "Female"), rx = c("Obs",
 "Lev", "Lev2") ).}
+
+\item{labeller}{A labeller function as described in
+\code{\link[ggplot2:facet_wrap]{ggplot2:facet_wrap}}. This function overrides
+ short.panel.labs and panel.labs.}
 
 \item{panel.labs.background}{a list to customize the background of panel
 labels. Should contain the combination of the following elements: \itemize{
