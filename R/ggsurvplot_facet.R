@@ -135,8 +135,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
   . <- NULL # used in pipes
 
-  .labeller <- "label_value"
-  if(short.panel.labs) .labeller <- label_both
+  .labeller <- if(short.panel.labs) "label_value" else "label_both"
   .dots <- list(...)
 
   # Extract fit components
@@ -267,8 +266,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
   # Create custom labeller with p-values if requested
   #:::::::::::::::::::::::::::::::::::::::::
-  .labeller <- "label_value"
-  if(short.panel.labs) .labeller <- label_both
+  .labeller <- if(short.panel.labs) "label_value" else "label_both"
   
   if(pval.in.label && !is.null(pvals.df)) {
     # Create a lookup table for p-values based on facet combinations
@@ -457,8 +455,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
   panel.labs.font.x <- .compact(panel.labs.font.x)
   panel.labs.font.y <- .compact(panel.labs.font.y)
 
-  .labeller <- "label_value"
-  if(short.panel.labs) .labeller <- label_both
+  .labeller <- if(short.panel.labs) "label_value" else "label_both"
   
   # Use custom labeller if provided
   if(!is.null(custom.labeller) && !is.character(custom.labeller)){
