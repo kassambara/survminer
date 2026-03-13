@@ -46,7 +46,7 @@ library(survival)
 
 # Create a list of formulas
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::
-data(colon)
+colon <- colon
 f1 <- survfit(Surv(time, status) ~ adhere, data = colon)
 f2 <- survfit(Surv(time, status) ~ rx, data = colon)
 fits <- list(sex = f1, rx = f2)
