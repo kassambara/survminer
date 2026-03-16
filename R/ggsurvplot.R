@@ -428,3 +428,11 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   grid::grid.draw(res)
 
 }
+
+#' @param x an object of class ggsurvplot
+#' @method grid.draw ggsurvplot
+#' @rdname ggsurvplot
+#' @export
+grid.draw.ggsurvplot <- function(x){
+  print(x, newpage = FALSE)
+}
