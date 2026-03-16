@@ -15,6 +15,7 @@ ggsurvplot_facet(
   pval.method = FALSE,
   pval.coord = NULL,
   pval.method.coord = NULL,
+  pval.in.label = FALSE,
   nrow = NULL,
   ncol = NULL,
   scales = "fixed",
@@ -24,6 +25,13 @@ ggsurvplot_facet(
   panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
   panel.labs.font.x = panel.labs.font,
   panel.labs.font.y = panel.labs.font,
+  risk.table = FALSE,
+  risk.table.height = 0.25,
+  surv.plot.height = 0.75,
+  tables.y.text = TRUE,
+  tables.col = "black",
+  tables.theme = theme_survminer(),
+  fontsize = 4.5,
   ...
 )
 }
@@ -73,6 +81,10 @@ coordinates of the p-value. Default values are NULL.}
 \item{pval.method.coord}{the same as \code{pval.coord} but for displaying
 \code{log.rank.weights} name}
 
+\item{pval.in.label}{logical. If TRUE, p-values are added to facet labels.
+Each facet displays only its corresponding p-value. Default is FALSE. 
+Requires pval = TRUE.}
+
 \item{nrow, ncol}{Number of rows and columns in the pannel. Used only when the
 data is faceted by one grouping variable.}
 
@@ -102,6 +114,27 @@ face/style (e.g.: "plain", "bold", "italic", "bold.italic") and the color
 \item{panel.labs.font.x, panel.labs.font.y}{same as panel.labs.font but for x
 and y direction, respectively.}
 
+\item{risk.table}{logical. If TRUE, risk tables are displayed below faceted plots.
+Default is FALSE. Risk tables will match the faceting structure of the main plot.
+For a 2x2 grid of survival plots, you'll get a 2x2 grid of risk tables directly below.
+See \code{\link{ggsurvplot}} for more details.}
+
+\item{risk.table.height}{the height of the risk table on the grid. Increase
+the value when you have many strata. Default is 0.25.}
+
+\item{surv.plot.height}{the height of the survival plot on the grid. Default
+is 0.75.}
+
+\item{tables.y.text}{logical. Default is TRUE. If FALSE, risk table y axis
+tick labels will be hidden.}
+
+\item{tables.col}{color to be used for risk table. Default value is "black".}
+
+\item{tables.theme}{function, ggplot2 theme name. Default value is
+\link{theme_survminer}.}
+
+\item{fontsize}{font size to be used for the risk table.}
+
 \item{...}{other arguments to pass to the function \code{\link{ggsurvplot}}.}
 }
 \description{
@@ -117,16 +150,52 @@ fit <- survfit( Surv(time, status) ~ sex, data = colon )
 ggsurvplot_facet(fit, colon, facet.by = "rx",
                 palette = "jco", pval = TRUE)
 
+# Facet with p-values in labels
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ggsurvplot_facet(fit, colon, facet.by = "rx",
+                palette = "jco", pval = TRUE,
+                pval.in.label = TRUE)
+
+# Facet with risk table
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ggsurvplot_facet(fit, colon, facet.by = "rx",
+                palette = "jco",
+                risk.table = TRUE,
+                risk.table.height = 0.3)
+
+# Note: Risk tables are aligned below each facet panel
+# For 1 faceting variable (e.g., rx with 3 levels), you get:
+#  - Row 1: 3 survival plot panels side-by-side
+#  - Row 2: 3 risk table panels side-by-side (aligned with plots above)
+
+# Facet with both risk table and p-values in labels
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ggsurvplot_facet(fit, colon, facet.by = "rx",
+                palette = "jco", 
+                pval = TRUE,
+                pval.in.label = TRUE,
+                risk.table = TRUE)
+
 # Facet by two grouping variables: rx and adhere
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ggsurvplot_facet(fit, colon, facet.by = c("rx", "adhere"),
                 palette = "jco", pval = TRUE)
 
+# With risk table
+ggsurvplot_facet(fit, colon, facet.by = c("rx", "adhere"),
+                palette = "jco", risk.table = TRUE)
+
+# Note: For 2 faceting variables, you get a grid layout:
+#  - Top: Grid of survival plots (e.g., 3x2 for rx × adhere)
+#  - Bottom: Grid of risk tables matching the same layout
+#  Each risk table aligns perfectly with its corresponding survival plot above
 
 # Another fit
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 fit2 <- survfit( Surv(time, status) ~ sex + rx, data = colon )
 ggsurvplot_facet(fit2, colon, facet.by = "adhere",
-                palette = "jco", pval = TRUE)
+                palette = "jco", pval = TRUE,
+                pval.in.label = TRUE,
+                risk.table = TRUE)
 
 }
