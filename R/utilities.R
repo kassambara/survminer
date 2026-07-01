@@ -293,7 +293,13 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 # Will be used to color the y.text of risk table and cumevents table
 .extract_ggplot_colors <- function(p, grp.levels){
   g <- ggplot_build(p)
-  .cols <- unlist(unique(g$data[[1]]["colour"]))
+  .d <- g$data[[1]]
+  # One colour per group, in group order. Using unique() here would collapse
+  # duplicated palette colours and return a vector shorter than the number of
+  # groups, so naming it with grp.levels then failed with "'names' attribute
+  # [n] must be the same length as the vector [m]" (#397, #519, #595, #691).
+  # For a palette of distinct colours this yields the same result as before.
+  .cols <- .d$colour[match(sort(unique(.d$group)), .d$group)]
   if(!is.null(grp.levels)){
     if(length(.cols)==1) .cols <- rep(.cols, length(grp.levels))
     names(.cols) <- grp.levels

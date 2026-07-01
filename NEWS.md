@@ -13,6 +13,7 @@
 - Fix `ggflexsurvplot()` erroring with "object '<name>' not found" when the model's data object is out of scope at plot time (even with `data =` supplied): the already-resolved `data` is now forwarded to the internal `.extract.survfit()` instead of being re-derived from `fit$call$data` (#436).
 - Fix `ggsurvplot(..., ncensor.plot = TRUE)` erroring at draw time with "Unknown colour name: strata" for a single-group fit (`~ 1`): the default `color = "strata"` was passed to the censoring bar plot as a literal colour when the data has no `strata` column. The bars now use the survival curve's own colour for that case only (falling back to black if it cannot be resolved), leaving grouped fits and explicit colours unchanged (#298).
 - Fix `ggadjustedcurves()` / `surv_adjustedcurves()` failing with "cannot xtfrm data frame" when a tibble is passed as `data` (or as `reference` for the marginal method): both are coerced to a plain data.frame so the internal `data[, variable]` extractions return a vector (#501, #628).
+- Fix `ggsurvplot()` erroring with "'names' attribute [n] must be the same length as the vector [m]" when the `palette` contains a duplicated colour (or a default palette rendered a repeated hue) together with `risk.table` / `ncensor.plot`: the internal colour extractor used `unique()`, collapsing duplicate colours; it now returns one colour per group (#397, #519, #595, #691).
 
 # survminer 0.5.2
 
