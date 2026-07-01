@@ -145,5 +145,5 @@ ggflexsurvplot <- function(fit, data = NULL,
 }
 
 is_factor_or_character <- function(x){
-  is.facet(x) | is.character(x)
+  is.factor(x) | is.character(x)
 }
