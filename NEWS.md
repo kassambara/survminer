@@ -8,6 +8,8 @@
 
 ## Bug fixes
 
+- Fix `surv_group_by()` (and downstream `ggsurvplot_facet()` / grouped `surv_pvalue()`) failing with "cannot xtfrm data frame" when the input is a tibble: extract the grouping column with `data[[var]]` (a vector) instead of `data[, var]` (a one-column tibble) (#548, #670).
+
 # survminer 0.5.2
 
 ## New features
