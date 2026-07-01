@@ -53,7 +53,7 @@ surv_group_by <- function(data, grouping.vars){
   # We should do this because original level orders are altered by the nest() function
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   if(length(grouping.vars) == 1){
-    grp.levels <- .levels(data[, grouping.vars])
+    grp.levels <- .levels(data[[grouping.vars]])
     current.order <- grouped.d[, grouping.vars] %>% as.data.frame() %>% .[,1]
     grouped.d <- grouped.d[match(grp.levels, current.order), , drop = FALSE]
   }

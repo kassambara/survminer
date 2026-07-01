@@ -9,7 +9,7 @@
 ## Bug fixes
 
 - Fix `ggflexsurvplot()` collapsing a grouped Kaplan-Meier curve to a single "All" stratum when the grouping covariate is a factor: `is_factor_or_character()` called ggplot2's `is.facet()` (a Facet-object test, always `FALSE` for a data column) instead of `is.factor()` (#408).
-
+- Fix `surv_group_by()` (and downstream `ggsurvplot_facet()` / grouped `surv_pvalue()`) failing with "cannot xtfrm data frame" when the input is a tibble: extract the grouping column with `data[[var]]` (a vector) instead of `data[, var]` (a one-column tibble) (#548, #670).
 # survminer 0.5.2
 
 ## New features
