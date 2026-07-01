@@ -189,8 +189,20 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   # Add ncensor.plot or cumcensor plot
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if(ncensor.plot){
+    # A single-group fit (e.g. ~ 1) has no 'strata' column, so the default
+    # color = "strata" would be passed to geom_bar as a literal colour and
+    # error ("Unknown colour name: strata"). For that sentinel only, use the
+    # survival curve's own colour (so the bars match the curve, as grouped
+    # bars do), falling back to black if it can't be resolved. A real strata
+    # column (grouped) or a user-supplied colour is left untouched.
+    ncensor.color <- surv.color
+    if(identical(surv.color, "strata") && !("strata" %in% colnames(d))){
+      ncensor.color <- unname(scurve_cols)[1]
+      if(length(ncensor.color) == 0 || is.na(ncensor.color))
+        ncensor.color <- "black"
+    }
     ncensor_plot <- ggplot(d, ggplot2::aes(x = !!sym("time"), y = !!sym("n.censor"))) +
-      ggpubr::geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
+      ggpubr::geom_exec(geom_bar, d, color = ncensor.color, fill = ncensor.color,
                         stat = "identity", position = "dodge")+
       coord_cartesian(xlim = xlim)+
       scale_y_continuous(breaks = sort(unique(d$n.censor))) +
