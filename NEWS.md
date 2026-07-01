@@ -11,6 +11,8 @@
 - Fix `ggflexsurvplot()` collapsing a grouped Kaplan-Meier curve to a single "All" stratum when the grouping covariate is a factor: `is_factor_or_character()` called ggplot2's `is.facet()` (a Facet-object test, always `FALSE` for a data column) instead of `is.factor()` (#408).
 - Fix `surv_group_by()` (and downstream `ggsurvplot_facet()` / grouped `surv_pvalue()`) failing with "cannot xtfrm data frame" when the input is a tibble: extract the grouping column with `data[[var]]` (a vector) instead of `data[, var]` (a one-column tibble) (#548, #670).
 - Fix `ggflexsurvplot()` erroring with "object '<name>' not found" when the model's data object is out of scope at plot time (even with `data =` supplied): the already-resolved `data` is now forwarded to the internal `.extract.survfit()` instead of being re-derived from `fit$call$data` (#436).
+- Fix `ggsurvplot(..., ncensor.plot = TRUE)` erroring at draw time with "Unknown colour name: strata" for a single-group fit (`~ 1`): the default `color = "strata"` was passed to the censoring bar plot as a literal colour when the data has no `strata` column. The bars now use the survival curve's own colour for that case only (falling back to black if it cannot be resolved), leaving grouped fits and explicit colours unchanged (#298).
+
 # survminer 0.5.2
 
 ## New features
