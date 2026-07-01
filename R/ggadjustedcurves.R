@@ -134,10 +134,19 @@ surv_adjustedcurves <- function(fit,
                              ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
   data <- .get_data(fit, data)
+  # Coerce to a plain data.frame: the curve helpers index columns with
+  # data[, variable], which returns a one-column tibble (not a vector) for a
+  # tibble input and then fails in sort()/unique() with "cannot xtfrm data
+  # frame". A no-op for a data.frame, so existing results are unchanged.
+  data <- as.data.frame(data)
   # deal with default arguments
   # reference = NULL
   if (is.null(reference))
     reference <- data
+  # coerce a user-supplied reference too: the marginal method indexes
+  # reference[, variable] and rbind()s it with data, so a tibble reference
+  # would re-introduce the "cannot xtfrm data frame" error.
+  reference <- as.data.frame(reference)
 
   # variable = NULL
   if (is.null(variable)) {
