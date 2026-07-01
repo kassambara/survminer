@@ -55,7 +55,7 @@ ggflexsurvplot <- function(fit, data = NULL,
   .strata <- summ$strata
   n.strata <- .strata %>% .levels() %>% length()
 
-   fit.ext <- .extract.survfit(fit)
+   fit.ext <- .extract.survfit(fit, data = data)
    surv.obj <- fit.ext$surv
    surv.vars <- fit.ext$variables
    .formula <- fit.ext$formula
