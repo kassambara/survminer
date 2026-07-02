@@ -16,6 +16,8 @@
 
 ## Bug fixes
 
+- Fix the cumulative number-of-events and number-censored columns showing decimals for a weighted `survfit()` (in the risk/cumevents/cumcensor tables): the cumulative sums of the fractional weighted counts were not rounded, unlike the per-interval columns. They are now rounded to the same precision (#560, #554).
+
 - Fix `surv_categorize()` returning the raw numeric values (instead of `"high"`/`"low"`) for variables whose names contain characters that `make.names()` alters, such as a hyphen (e.g. gene names like `"A1BG-AS1"`): `summary.surv_cutpoint()` now builds its row names with `check.names = FALSE` so the name still matches (#609).
 
 - Remove an unused, undefined `alpha` argument passed by `surv_cutpoint()` to `maxstat::maxstat.test()` (it only worked by lazy evaluation); no change to computed cut points (#598).
