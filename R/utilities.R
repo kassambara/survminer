@@ -320,8 +320,14 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 }
 
 .get_fit_formula <- function(fit){
-  fit$call$formula %>%
-    stats::as.formula()
+  # fit$call$formula may be an unevaluated symbol when the fit was built from a
+  # formula stored in a variable (e.g. survfit(frm, data)); as.formula() then
+  # fails with "object of type 'symbol' is not subsettable". stats::formula()
+  # resolves it via survival's method; fall back to the old path if unavailable.
+  tryCatch(
+    stats::formula(fit),
+    error = function(e) stats::as.formula(fit$call$formula)
+  )
 }
 
 .build_formula <- function(surv.obj, variables){
@@ -420,8 +426,10 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
   if(inherits(fit, c("survfit.cox", "survfitcox")))
     return(list())
 
-  .formula <- fit$call$formula %>%
-    stats::as.formula()
+  .formula <- tryCatch(
+    stats::formula(fit),
+    error = function(e) stats::as.formula(fit$call$formula)
+  )
   surv.obj <- deparse(.formula[[2]])
   surv.vars <- attr(stats::terms(.formula), "term.labels")
   data.all <- data <- .get_data(fit, data = data, complain = FALSE)
