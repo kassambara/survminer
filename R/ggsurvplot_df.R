@@ -86,6 +86,18 @@ ggsurvplot_df <- function(fit, fun = NULL,
     stop("fit should be a data frame.")
   df <- fit
 
+  # Negative survival times are not meaningful for a Kaplan-Meier estimate and
+  # make the curve appear to increase. survfit()/survminer plot them as-is, so
+  # warn the user rather than silently drawing a misleading (up-ticking) curve
+  # (#523). This is the common draw point for all entry points (ggsurvplot(),
+  # ggsurvplot_combine(), ggsurvplot_facet(), ...), so the warning fires once
+  # per plot regardless of route. The plot itself is unchanged.
+  if(any(df$time < 0, na.rm = TRUE))
+    warning("Negative survival times are present in the data. ",
+            "The survival curve can appear to increase, which is not meaningful ",
+            "for a Kaplan-Meier estimate. Consider removing observations with ",
+            "negative times.", call. = FALSE)
+
   # if(!is.null(.dots$risk.table))
   #   warning("Can't extract risk.table from a data frame.", call. = FALSE)
   # if(!is.null(.dots$pval))
