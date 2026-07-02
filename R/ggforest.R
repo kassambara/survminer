@@ -9,6 +9,10 @@
 #' @param fontsize relative size of annotations in the plot. Default value: 0.7.
 #' @param refLabel label for reference levels of factor variables.
 #' @param noDigits number of digits for estimates and p-values in the plot.
+#' @param global.stats logical value. Default is TRUE. If FALSE, the bottom
+#'   caption reporting the global statistics (number of events, global log-rank
+#'   p-value, AIC and concordance index) is omitted. Useful when arranging
+#'   several forest plots in a panel.
 #'
 #' @return returns a ggplot2 object (invisibly)
 #'
@@ -40,7 +44,8 @@
 
 ggforest <- function(model, data = NULL,
   main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
-  fontsize = 0.7, refLabel = "reference", noDigits=2) {
+  fontsize = 0.7, refLabel = "reference", noDigits=2,
+  global.stats = TRUE) {
   conf.high <- conf.low <- estimate <- NULL
   stopifnot(inherits(model, "coxph"))
 
@@ -166,7 +171,11 @@ ggforest <- function(model, data = NULL,
       vjust = 1.1,  fontface = "italic") +
     annotate(geom = "text", x = x_annotate, y = exp(y_stars),
       label = toShowExpClean$stars, size = annot_size_mm,
-      hjust = -0.2,  fontface = "italic") +
+      hjust = -0.2,  fontface = "italic")
+  # Global statistics caption (# events, global p-value, AIC, concordance).
+  # Optional: set global.stats = FALSE to omit it (e.g. panels of forest plots).
+  if (global.stats)
+    p <- p +
     annotate(geom = "text", x = 0.5, y = exp(y_variable),
       label = paste0("# Events: ", gmodel$nevent, "; Global p-value (Log-Rank): ",
         format.pval(gmodel$p.value.log, eps = ".001"), " \nAIC: ", round(gmodel$AIC,2),
