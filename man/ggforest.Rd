@@ -11,7 +11,8 @@ ggforest(
   cpositions = c(0.02, 0.22, 0.4),
   fontsize = 0.7,
   refLabel = "reference",
-  noDigits = 2
+  noDigits = 2,
+  global.stats = TRUE
 )
 }
 \arguments{
@@ -29,6 +30,11 @@ will be extracted from 'fit' object.}
 \item{refLabel}{label for reference levels of factor variables.}
 
 \item{noDigits}{number of digits for estimates and p-values in the plot.}
+
+\item{global.stats}{logical value. Default is TRUE. If FALSE, the bottom caption
+reporting the global statistics (number of events, global log-rank p-value, AIC
+and concordance index) is omitted. Useful when arranging several forest plots in
+a panel.}
 }
 \value{
 returns a ggplot2 object (invisibly)
