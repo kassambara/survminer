@@ -85,7 +85,15 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   # Axis limits
    xmin <- ifelse(.is_cloglog(fun), min(c(1, d$time)), 0)
    if(!is.null(fit$start.time)) xmin <- fit$start.time
-   xmax <- .get_default_breaks(d$time, .log = .is_cloglog(fun)) %>% max()
+   # Extend the upper x-limit to cover the largest event/censoring time, not
+   # just the largest "nice" axis break. scales::extended_breaks() can return a
+   # last break below max(d$time), which previously clipped events beyond it
+   # from the default plot (#655). This is a no-op when the data already fit
+   # within the breaks; the axis tick breaks are unchanged (computed separately
+   # in ggsurvplot_df()), and a user-supplied xlim is unaffected (gated below).
+   xmax <- max(c(max(d$time, na.rm = TRUE),
+                 .get_default_breaks(d$time, .log = .is_cloglog(fun)) %>% max()),
+               na.rm = TRUE)
    if(is.null(xlim)) xlim <- c(xmin, xmax)
 
   # Main survival curves
