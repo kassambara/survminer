@@ -3,6 +3,7 @@
 \name{ggsurvplot}
 \alias{ggsurvplot}
 \alias{print.ggsurvplot}
+\alias{grid.draw.ggsurvplot}
 \title{Drawing Survival Curves Using ggplot2}
 \usage{
 ggsurvplot(
@@ -38,6 +39,8 @@ ggsurvplot(
   newpage = TRUE,
   ...
 )
+
+\method{grid.draw}{ggsurvplot}(x, recording = TRUE)
 }
 \arguments{
 \item{fit}{allowed values include:
@@ -154,6 +157,9 @@ risk.table = FALSE.}
 \code{ncensor.plot = TRUE}.}
 
 \item{newpage}{open a new page. See \code{\link[gridExtra]{grid.arrange}}}
+
+\item{recording}{kept for consistency with the \code{\link[grid]{grid.draw}}
+generic; not used.}
 }
 \value{
 return an object of class ggsurvplot which is list containing the
