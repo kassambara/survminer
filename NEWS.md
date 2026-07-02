@@ -16,6 +16,8 @@
 
 ## Bug fixes
 
+- Fix `ggforest()` crashing (`axisTicks(): '_LARGE_ range'`) for a Cox model with complete/quasi-complete separation, where a coefficient is near-infinite: the x-axis range is now clamped to a finite window (with a warning) so the plot still renders (#570, #590).
+
 - Fix `ggforest()` reference level inheriting the statistics of a similarly-named non-reference level (e.g. a reference level `Bar` showing the hazard ratio of `Barb`): term rows were matched by character row indexing, which partial-matches. They are now matched exactly, so the reference level is correctly shown as the reference (#312).
 
 - Fix `ggforest()` erroring with "undefined columns selected" when the Cox formula contains an in-formula factor transformation such as `as.factor(x)`: the term is now evaluated rather than looked up as a column name (a plain column name is unaffected) (#240).
