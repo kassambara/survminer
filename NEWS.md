@@ -14,6 +14,8 @@
 
 ## Bug fixes
 
+- Fix `ggcoxfunctional()` erroring with a cryptic "'x' and 'y' lengths differ" when the Cox formula contains a factor/character covariate (or a `strata()` term): such terms are renamed/expanded in the model matrix and cannot be checked for functional form. They are now dropped with a warning, and only continuous covariates are plotted (#357).
+
 - Fix `ggsurvplot_combine(..., surv.median.line = "hv")` (or `"h"`/`"v"`) not drawing the median survival lines: `surv.median.line` was forwarded to `ggsurvplot_df()` (which does not handle it) and silently ignored. The median lines are now computed from the combined fits and drawn on the plot (#316).
 
 - Fix `ggsurvplot_facet(..., pval = TRUE, pval.size = <n>)` ignoring `pval.size`: the per-facet p-value (and `pval.method`) text was drawn with ggplot2's default size and `pval.size` was silently routed into `...`. `pval.size` is now an explicit argument applied to the text; its default is `5`, consistent with `ggsurvplot()` (previously the faceted p-value text rendered at ggplot2's default size ~3.88) (#338).
