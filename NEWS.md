@@ -16,6 +16,10 @@
 
 ## Bug fixes
 
+- Fix `surv_categorize()` returning the raw numeric values (instead of `"high"`/`"low"`) for variables whose names contain characters that `make.names()` alters, such as a hyphen (e.g. gene names like `"A1BG-AS1"`): `summary.surv_cutpoint()` now builds its row names with `check.names = FALSE` so the name still matches (#609).
+
+- Remove an unused, undefined `alpha` argument passed by `surv_cutpoint()` to `maxstat::maxstat.test()` (it only worked by lazy evaluation); no change to computed cut points (#598).
+
 - Fix `ggsurvplot()` clipping events that occur after the last x-axis break: the default upper x-limit was the largest "nice" axis break, which can fall below the largest event/censoring time, so those events were invisible unless `xlim` was set manually. The upper x-limit now extends to cover the maximum time; the axis tick breaks (and risk-table columns) are unchanged, and a user-supplied `xlim` is still honoured (#655).
 
 - `ggsurvplot()` (and the related builders such as `ggsurvplot_combine()`) now warn when the survival data contain negative times, which make the Kaplan-Meier curve appear to increase (not meaningful for a survival estimate). Previously such times were plotted silently. The plot itself is unchanged (#523).
