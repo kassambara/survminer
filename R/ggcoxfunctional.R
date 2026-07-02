@@ -61,6 +61,12 @@ ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6,
 
   attr(stats::terms(formula), "term.labels") -> explanatory.variables.names
   stats::model.matrix(formula, data = data) -> explanatory.variables.values
+  # Restrict data to the model-matrix rows (i.e. the complete cases for the
+  # formula). model.matrix() drops rows with a missing value in any term, so
+  # without this the null-model martingale residuals (computed from data below)
+  # would be longer than the covariate values and error with "'x' and 'y'
+  # lengths differ" (#248). For data without missing values this is a no-op.
+  data <- data[rownames(explanatory.variables.values), , drop = FALSE]
   SurvFormula <- deparse(formula[[2]])
 
   # Keep only continuous terms. A functional-form (linearity) check plots

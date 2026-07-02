@@ -16,6 +16,8 @@
 
 ## Bug fixes
 
+- Fix `ggcoxfunctional()` erroring with "'x' and 'y' lengths differ" when the Cox formula contains a covariate with missing values: `model.matrix()` drops rows with missing terms, but the null-model martingale residuals were computed from the full data. The data is now restricted to the complete-case (model-matrix) rows so the lengths match (#248).
+
 - Fix `ggcoxfunctional()` erroring with a cryptic "'x' and 'y' lengths differ" when the Cox formula contains a factor/character covariate (or a `strata()` term): such terms are renamed/expanded in the model matrix and cannot be checked for functional form. They are now dropped with a warning, and only continuous covariates are plotted (#357).
 
 - Fix `ggsurvplot_combine(..., surv.median.line = "hv")` (or `"h"`/`"v"`) not drawing the median survival lines: `surv.median.line` was forwarded to `ggsurvplot_df()` (which does not handle it) and silently ignored. The median lines are now computed from the combined fits and drawn on the plot (#316).
