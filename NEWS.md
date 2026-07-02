@@ -16,6 +16,10 @@
 
 ## Bug fixes
 
+- Fix `ggsurvplot_combine()` ignoring the risk-table type: `risk.table = "nrisk_cumcensor"` (and other types) is now honoured instead of always showing the absolute number at risk (#641).
+
+- Fix `ggsurvplot_combine()` ignoring `risk.table.fontsize`: the risk-table text size can now be set with `risk.table.fontsize` (as in `ggsurvplot()`), not only with `fontsize` (#514).
+
 - Fix `surv_categorize()` returning the raw numeric values (instead of `"high"`/`"low"`) for variables whose names contain characters that `make.names()` alters, such as a hyphen (e.g. gene names like `"A1BG-AS1"`): `summary.surv_cutpoint()` now builds its row names with `check.names = FALSE` so the name still matches (#609).
 
 - Remove an unused, undefined `alpha` argument passed by `surv_cutpoint()` to `maxstat::maxstat.test()` (it only worked by lazy evaluation); no change to computed cut points (#598).
