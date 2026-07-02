@@ -8,6 +8,8 @@
 
 ## Minor changes
 
+- `arrange_ggsurvplots()` gains a `layout_matrix` argument (forwarded to `gridExtra::marrangeGrob()`) to control the position/order of the plots — e.g. `layout_matrix = matrix(seq_along(splots), nrow = nrow, byrow = TRUE)` orders them by row. Default is unchanged (plots fill column-wise) (#300).
+
 - `ggforest()` gains a `global.stats` argument. Set `global.stats = FALSE` to omit the bottom caption reporting the global statistics (number of events, global log-rank p-value, AIC, concordance index) — useful when arranging several forest plots in a panel. Default is `TRUE` (unchanged) (#392).
 
 - `surv_pvalue()` gains a `pval.digits` argument controlling the number of significant digits used to format the p-value in `pval.txt` (default `2`, unchanged; e.g. `pval.digits = 3` gives `"p = 0.00131"`). Requested for journals that report p-values to 3 digits (#343).

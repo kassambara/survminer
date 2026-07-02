@@ -13,6 +13,7 @@ arrange_ggsurvplots(
   surv.plot.height = NULL,
   risk.table.height = NULL,
   ncensor.plot.height = NULL,
+  layout_matrix = NULL,
   ...
 )
 }
@@ -36,6 +37,11 @@ risk.table = FALSE.}
 
 \item{ncensor.plot.height}{The height of the censor plot. Used when
 \code{ncensor.plot = TRUE}.}
+
+\item{layout_matrix}{optional layout matrix passed to
+\code{\link[gridExtra]{marrangeGrob}} to control the position/order of the
+plots. For example, \code{matrix(seq_along(x), nrow = nrow, byrow = TRUE)}
+orders the plots by row. Default is NULL (plots are filled column-wise).}
 
 \item{...}{not used}
 }

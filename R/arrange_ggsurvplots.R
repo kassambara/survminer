@@ -15,6 +15,10 @@
 #'  TRUE}
 #'@param ncensor.plot.height The height of the censor plot. Used when
 #'  \code{ncensor.plot = TRUE}.
+#'@param layout_matrix optional layout matrix passed to
+#'  \code{\link[gridExtra]{marrangeGrob}} to control the position/order of the
+#'  plots. For example, \code{matrix(seq_along(x), nrow = nrow, byrow = TRUE)}
+#'  orders the plots by row. Default is NULL (plots are filled column-wise).
 #'@param ... not used
 #'
 #'@return returns an invisible object of class arrangelist (see
@@ -48,7 +52,8 @@
 #'@rdname arrange_ggsurvplots
 #'@export
 arrange_ggsurvplots <- function(x,  print = TRUE, title = NA, ncol = 2, nrow = 1, surv.plot.height = NULL,
-                                         risk.table.height = NULL, ncensor.plot.height = NULL, ...)
+                                         risk.table.height = NULL, ncensor.plot.height = NULL,
+                                         layout_matrix = NULL, ...)
 {
 
   # Build each ggsurvplot in the list
@@ -57,9 +62,12 @@ arrange_ggsurvplots <- function(x,  print = TRUE, title = NA, ncol = 2, nrow = 1
                          risk.table.height = risk.table.height,
                          ncensor.plot.height = ncensor.plot.height)
 
-  # Arrange multiple ggsurvplots
-  survs <- do.call(gridExtra::marrangeGrob,
-                  list(grobs = survs, ncol = ncol, nrow = nrow, top = title))
+  # Arrange multiple ggsurvplots. layout_matrix (passed to marrangeGrob) lets
+  # users control the plot order, e.g. fill by row with
+  # matrix(seq_along(x), nrow = nrow, byrow = TRUE) (#300).
+  .marrange.args <- list(grobs = survs, ncol = ncol, nrow = nrow, top = title)
+  if(!is.null(layout_matrix)) .marrange.args$layout_matrix <- layout_matrix
+  survs <- do.call(gridExtra::marrangeGrob, .marrange.args)
 
   if(print) print(survs)
 
