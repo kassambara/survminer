@@ -428,3 +428,17 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   grid::grid.draw(res)
 
 }
+
+#' @param recording kept for consistency with the \code{\link[grid]{grid.draw}}
+#'   generic; not used.
+#' @method grid.draw ggsurvplot
+#' @rdname ggsurvplot
+#' @export
+grid.draw.ggsurvplot <- function(x, recording = TRUE){
+  # A ggsurvplot object is a list of ggplots, so ggsave() (which calls
+  # grid::grid.draw() on the plot) has no applicable method and errors. This
+  # method draws the assembled plot onto the current device without opening a
+  # new page, so `ggsave(filename, plot = p)` works directly for a ggsurvplot
+  # (curve + risk table) and no leading blank page is produced (#152).
+  print(x, newpage = FALSE)
+}
