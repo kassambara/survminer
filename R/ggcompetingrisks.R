@@ -92,7 +92,13 @@ ggcompetingrisks.cuminc <- function(fit, gnames = NULL, gsep=" ",
     pl <- ggplot(df, aes(time, est, color=event, linetype=group))
   }
   if (conf.int) {
-    pl <- pl + geom_ribbon(aes(ymin = est - coef*std, ymax=est + coef*std, fill = event), alpha = 0.2, linetype=0)
+    # Group the ribbon by event AND group. Mapping only fill=event makes the
+    # ribbon's implicit grouping ignore `group`, so in a single panel the bands
+    # jump between groups of the same event (#490). interaction(event, group) is
+    # a no-op for the faceted case (one group per panel).
+    pl <- pl + geom_ribbon(aes(ymin = est - coef*std, ymax = est + coef*std,
+                               fill = event, group = interaction(event, group)),
+                           alpha = 0.2, linetype = 0)
   }
   pl +
     geom_line()
