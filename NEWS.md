@@ -16,6 +16,10 @@
 
 ## Bug fixes
 
+- Fix `ggsurvplot_combine()` ignoring the risk-table type: `risk.table = "nrisk_cumcensor"` (and other types) is now honoured instead of always showing the absolute number at risk (#641).
+
+- Fix `ggsurvplot_combine()` ignoring `risk.table.fontsize`: the risk-table text size can now be set with `risk.table.fontsize` (as in `ggsurvplot()`), not only with `fontsize` (#514).
+
 - Fix `ggsurvplot()` clipping events that occur after the last x-axis break: the default upper x-limit was the largest "nice" axis break, which can fall below the largest event/censoring time, so those events were invisible unless `xlim` was set manually. The upper x-limit now extends to cover the maximum time; the axis tick breaks (and risk-table columns) are unchanged, and a user-supplied `xlim` is still honoured (#655).
 
 - `ggsurvplot()` (and the related builders such as `ggsurvplot_combine()`) now warn when the survival data contain negative times, which make the Kaplan-Meier curve appear to increase (not meaningful for a survival estimate). Previously such times were plotted silently. The plot itself is unchanged (#523).
