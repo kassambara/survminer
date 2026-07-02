@@ -64,7 +64,15 @@ ggforest <- function(model, data = NULL,
   allTerms <- lapply(seq_along(terms), function(i){
     var <- names(terms)[i]
     if (terms[i] %in% c("factor", "character")) {
-      adf <- as.data.frame(table(data[, var]))
+      # A plain column name is extracted directly with data[[var]] (this also
+      # handles non-syntactic names such as "risk group"/"a-b", which parse()
+      # would choke on, and sidesteps the tibble one-column-data-frame gotcha);
+      # only an in-formula transformation (e.g. as.factor(rx), which is not a
+      # column) is evaluated. The lookup is kept inline so the column keeps its
+      # own name for the later rbind (#240).
+      adf <- as.data.frame(table(
+        if (var %in% colnames(data)) data[[var]]
+        else eval(parse(text = var), envir = data)))
       cbind(var = var, adf, pos = 1:nrow(adf))
     }
     else if (terms[i] == "numeric") {
@@ -83,7 +91,11 @@ ggforest <- function(model, data = NULL,
 
   # use broom again to get remaining required statistics
   rownames(coef) <- gsub(coef$term, pattern = "`", replacement = "")
-  toShow <- cbind(allTermsDF, coef[inds,])[,c("var", "level", "N", "p.value", "estimate", "conf.low", "conf.high", "pos")]
+  # Match term rows EXACTLY: character row indexing (coef[inds, ]) partial-
+  # matches, so a reference level (e.g. "grpBar", absent from coef) would wrongly
+  # inherit a prefix-colliding level's statistics (e.g. "grpBarb") instead of
+  # being left as the reference (NA). match() gives an exact lookup (#312).
+  toShow <- cbind(allTermsDF, coef[match(inds, rownames(coef)),])[,c("var", "level", "N", "p.value", "estimate", "conf.low", "conf.high", "pos")]
   toShowExp <- toShow[,5:7]
   toShowExp[is.na(toShowExp)] <- 0
   toShowExp <- format(exp(toShowExp), digits=noDigits)

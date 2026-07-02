@@ -16,6 +16,10 @@
 
 ## Bug fixes
 
+- Fix `ggforest()` reference level inheriting the statistics of a similarly-named non-reference level (e.g. a reference level `Bar` showing the hazard ratio of `Barb`): term rows were matched by character row indexing, which partial-matches. They are now matched exactly, so the reference level is correctly shown as the reference (#312).
+
+- Fix `ggforest()` erroring with "undefined columns selected" when the Cox formula contains an in-formula factor transformation such as `as.factor(x)`: the term is now evaluated rather than looked up as a column name (a plain column name is unaffected) (#240).
+
 - Fix `ggsurvplot_combine()` ignoring the risk-table type: `risk.table = "nrisk_cumcensor"` (and other types) is now honoured instead of always showing the absolute number at risk (#641).
 
 - Fix `ggsurvplot_combine()` ignoring `risk.table.fontsize`: the risk-table text size can now be set with `risk.table.fontsize` (as in `ggsurvplot()`), not only with `fontsize` (#514).
