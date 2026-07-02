@@ -104,7 +104,11 @@ ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6,
                                              f = f)$y)
 
     if(is.null(xlim)) xlim <- c(min(data2viz$explanatory), max(data2viz$explanatory))
-    if(is.null(ylim)) ylim <- c(min(data2viz$lowess_y), max(data2viz$lowess_y))
+    # ylim is left as supplied (NULL by default) so coord_cartesian() auto-scales
+    # the y-axis to include ALL martingale-residual points. Previously ylim
+    # defaulted to the range of the lowess smoother (lowess_y), which is much
+    # narrower than the residuals and clipped most of the plotted points from
+    # view (#465). A user-supplied ylim is still honoured unchanged.
 
     ggplot(data2viz, aes(x = explanatory,
                          y = martingale_resid)) +
