@@ -16,6 +16,8 @@
 
 ## Bug fixes
 
+- `ggsurvplot()` (and the related builders such as `ggsurvplot_combine()`) now warn when the survival data contain negative times, which make the Kaplan-Meier curve appear to increase (not meaningful for a survival estimate). Previously such times were plotted silently. The plot itself is unchanged (#523).
+
 - Fix `ggcoxfunctional()` clipping most of its own points: the default y-axis limits were set to the range of the lowess smoother, which is much narrower than the martingale residuals plotted as points, so points with large residuals fell outside the visible panel. The y-axis now auto-scales to include all points by default; a user-supplied `ylim` is still honoured (#465).
 
 - Fix `ggcoxfunctional()` erroring with "'x' and 'y' lengths differ" when the Cox formula contains a covariate with missing values: `model.matrix()` drops rows with missing terms, but the null-model martingale residuals were computed from the full data. The data is now restricted to the complete-case (model-matrix) rows so the lengths match (#248).
