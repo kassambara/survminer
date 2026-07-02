@@ -80,7 +80,14 @@ ggforest <- function(model, data = NULL,
                  pos = 1)
     }
     else {
-      vars = grep(paste0("^", var, "*."), coef$term, value=TRUE)
+      # Map coefficients to this term via model$assign, which is reliable,
+      # rather than a regex on the coefficient names. The old pattern
+      # "^var*." treated trailing digits of the name as a regex quantifier, so
+      # e.g. term "add11" matched coefficient "add17TRUE" and vice-versa,
+      # producing duplicated/wrong rows for prefix-colliding names (#689).
+      idx <- model$assign[[var]]
+      if (is.null(idx)) idx <- which(startsWith(coef$term, var)) # literal fallback
+      vars = coef$term[idx]
       data.frame(var = vars, Var1 = "", Freq = nrow(data),
                  pos = seq_along(vars))
     }
