@@ -55,7 +55,8 @@ NULL
 ggsurvplot_facet <- function(fit, data, facet.by,
                              color = NULL, palette = NULL,
                              legend.labs = NULL,
-                             pval = FALSE, pval.method = FALSE, pval.coord = NULL, pval.method.coord = NULL,
+                             pval = FALSE, pval.method = FALSE, pval.size = 5,
+                             pval.coord = NULL, pval.method.coord = NULL,
                              nrow = NULL, ncol = NULL,
                              scales = "fixed",
                              short.panel.labs = FALSE, panel.labs = NULL,
@@ -187,10 +188,10 @@ ggsurvplot_facet <- function(fit, data, facet.by,
     pval.x <- pval.y <- pval.txt <- method.x <- method.y <- method <-  NULL
     p <- p +
       geom_text(data = pvals.df, aes(x = pval.x, y = pval.y, label = pval.txt),
-                hjust = 0)
+                hjust = 0, size = pval.size)
     if(pval.method)
       p <- p + geom_text(data = pvals.df,  aes(x = method.x, y = method.y, label = method),
-                         hjust = 0)
+                         hjust = 0, size = pval.size)
   }
 
   # To do

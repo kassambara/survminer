@@ -13,6 +13,7 @@ ggsurvplot_facet(
   legend.labs = NULL,
   pval = FALSE,
   pval.method = FALSE,
+  pval.size = 5,
   pval.coord = NULL,
   pval.method.coord = NULL,
   nrow = NULL,
@@ -66,6 +67,8 @@ customized string appears on the plot. See examples - Example 3.}
 \item{pval.method}{whether to add a text with the test name used for
 calculating the pvalue, that corresponds to survival curves' comparison -
 used only when \code{pval=TRUE}}
+
+\item{pval.size}{numeric value specifying the p-value text size. Default is 5.}
 
 \item{pval.coord}{numeric vector, of length 2, specifying the x and y
 coordinates of the p-value. Default values are NULL.}

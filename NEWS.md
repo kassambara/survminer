@@ -10,6 +10,8 @@
 
 ## Bug fixes
 
+- Fix `ggsurvplot_facet(..., pval = TRUE, pval.size = <n>)` ignoring `pval.size`: the per-facet p-value (and `pval.method`) text was drawn with ggplot2's default size and `pval.size` was silently routed into `...`. `pval.size` is now an explicit argument applied to the text; its default is `5`, consistent with `ggsurvplot()` (previously the faceted p-value text rendered at ggplot2's default size ~3.88) (#338).
+
 - Fix `ggcompetingrisks(..., multiple_panels = FALSE, conf.int = TRUE)` drawing incorrect confidence bands that jumped between groups of the same event: the ribbon was grouped only by `event`; it is now grouped by `interaction(event, group)` (#490).
 
 - Fix `ggsurvplot(..., add.all = TRUE)` (and `ggsurvplot_add_all()`) erroring with "argument matches multiple formal arguments" when a `legend` position was supplied: `legend` partial-matched `legend.title`/`legend.labs`; it is now an explicit forwarded argument (#566).
