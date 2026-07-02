@@ -44,10 +44,14 @@ for trend can be only performed when the number of groups is > 2.}
 \item{combine}{logical value. Used only when fit is a list of survfit objects.
 If TRUE, combine the results for multiple fits.}
 
-\item{...}{other arguments including pval, pval.coord, pval.method.coord.
-These are only used internally to specify custom pvalue, pvalue and pvalue
-method coordinates on the survival plot. Normally, users don't need these
-arguments.}
+\item{...}{other arguments. One useful argument is \code{pval.digits}: the
+number of significant digits used to format the p-value in the returned
+\code{pval.txt}. Default is 2 (e.g. \code{"p = 0.0013"}); set
+\code{pval.digits = 3} for \code{"p = 0.00131"}, etc. P-values below 0.0001
+are still reported as \code{"p < 0.0001"}. The remaining arguments (pval,
+pval.coord, pval.method.coord) are only used internally to specify custom
+pvalue and pvalue-method coordinates on the survival plot; normally users
+don't need them.}
 }
 \value{
 Return a data frame with the columns (pval, method, pval.txt and

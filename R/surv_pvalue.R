@@ -31,10 +31,14 @@ NULL
 #'  for trend can be only performed when the number of groups is > 2.
 #'@param combine logical value. Used only when fit is a list of survfit objects.
 #'  If TRUE, combine the results for multiple fits.
-#'@param ... other arguments including pval, pval.coord, pval.method.coord.
-#'  These are only used internally to specify custom pvalue, pvalue and pvalue
-#'  method coordinates on the survival plot. Normally, users don't need these
-#'  arguments.
+#'@param ... other arguments. One useful argument is \code{pval.digits}: the
+#'  number of significant digits used to format the p-value in the returned
+#'  \code{pval.txt}. Default is 2 (e.g. \code{"p = 0.0013"}); set
+#'  \code{pval.digits = 3} for \code{"p = 0.00131"}, etc. P-values below 0.0001
+#'  are still reported as \code{"p < 0.0001"}. The remaining arguments (pval,
+#'  pval.coord, pval.method.coord) are only used internally to specify custom
+#'  pvalue and pvalue-method coordinates on the survival plot; normally users
+#'  don't need them.
 #'
 #'@return  Return a data frame with the columns (pval, method, pval.txt and
 #'  variable). If additional arguments (pval, pval.coord, pval.method.coord,
@@ -104,6 +108,10 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", test.for.trend = 
   if("pval" %in% .dots_n) pval <- .dots$pval
   if("pval.coord" %in% .dots_n) pval.coord <- .dots$pval.coord
   if("pval.method.coord" %in% .dots_n) pval.method.coord <- .dots$pval.method.coord
+  # pval.digits is read from ... (rather than a formal) so that a bare `pval`
+  # argument passed by callers does not partial-match it (#343).
+  pval.digits <- 2
+  if("pval.digits" %in% .dots_n) pval.digits <- .dots$pval.digits
 
   get_coord <- ("pval.coord" %in% .dots_n) | ("pval.method.coord" %in% .dots_n) | !is.null(.dots$get_coord)
 
@@ -117,18 +125,21 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", test.for.trend = 
     res <- purrr::map2(fit, data, .pvalue,
                        method = method,  pval = pval,
                        pval.coord = pval.coord,  pval.method.coord = pval.method.coord,
-                       get_coord =  get_coord, test.for.trend = test.for.trend )
+                       get_coord =  get_coord, test.for.trend = test.for.trend,
+                       pval.digits = pval.digits )
   }
   else if(.is_list(fit)){
     res <- purrr::map(fit, .pvalue,
                       data = data, method = method,  pval = pval,
                       pval.coord = pval.coord,  pval.method.coord = pval.method.coord,
-                      get_coord  =  get_coord, test.for.trend = test.for.trend)
+                      get_coord  =  get_coord, test.for.trend = test.for.trend,
+                      pval.digits = pval.digits)
   }
   else{
     res <- .pvalue(fit, data = data, method = method,  pval = pval,
                    pval.coord = pval.coord,  pval.method.coord = pval.method.coord,
-                   get_coord  =  get_coord, test.for.trend = test.for.trend ) %>%
+                   get_coord  =  get_coord, test.for.trend = test.for.trend,
+                   pval.digits = pval.digits ) %>%
       dplyr::select(variable, dplyr::everything())
   }
 
@@ -153,7 +164,7 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", test.for.trend = 
 # Will be used for a list of fits
 .pvalue <- function(fit, data, method = "survdiff",  pval = TRUE,
                     pval.coord = NULL,  pval.method.coord = NULL, get_coord = FALSE,
-                    test.for.trend = FALSE)
+                    test.for.trend = FALSE, pval.digits = 2)
 {
 
   if(is.null(method)) method <- "survdiff"
@@ -212,7 +223,7 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", test.for.trend = 
                                   subset = eval(fit$call$subset))
     pvalue <- stats::pchisq(sdiff$chisq, length(sdiff$n) - 1, lower.tail = FALSE)
     pval.txt <- ifelse(pvalue < 1e-04, "p < 0.0001",
-                       paste("p =", signif(pvalue, 2)))
+                       paste("p =", signif(pvalue, pval.digits)))
     res <- list(pval = pvalue, method = "Log-rank", pval.txt = pval.txt)
   }
   # Weighted log-rank tests (internal implementation)
@@ -224,7 +235,7 @@ surv_pvalue <- function(fit, data = NULL, method = "survdiff", test.for.trend = 
     )
     pvalue <- round(wlr$pvalue, 4)
     pval.txt <- ifelse(pvalue < 1e-04, "p < 0.0001",
-                       paste("p =", signif(pvalue, 2)))
+                       paste("p =", signif(pvalue, pval.digits)))
     res <- list(pval = pvalue, method = wlr$method_name, pval.txt = pval.txt)
   }
   res$variable <- .collapse(surv.vars, sep =  "+")
