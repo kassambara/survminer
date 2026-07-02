@@ -16,6 +16,8 @@
 
 ## Bug fixes
 
+- Fix `ggadjustedcurves(..., fun = ...)` not transforming the curve: `fun` (e.g. `"event"`, `"cumhaz"`, `"pct"`) only changed the y-axis limits, while the plotted curve stayed the raw survival probability. The transformation is now applied to the curve (a no-op when `fun = NULL`, the default) (#287, #498, #660).
+
 - Fix `ggforest()` producing duplicated/crossed rows for prefix-colliding non-factor term names (e.g. logical covariates `add11` and `add17`): coefficients were matched to terms with a regex (`"^var*."`) that treated trailing digits as a quantifier, so each name matched the other's coefficient. Coefficients are now mapped to their term via `model$assign` (#689).
 
 - Fix `ggforest()` reference level inheriting the statistics of a similarly-named non-reference level (e.g. a reference level `Bar` showing the hazard ratio of `Barb`): term rows were matched by character row indexing, which partial-matches. They are now matched exactly, so the reference level is correctly shown as the reference (#312).
