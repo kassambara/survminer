@@ -16,6 +16,8 @@
 
 ## Bug fixes
 
+- Fix `ggforest()` producing duplicated/crossed rows for prefix-colliding non-factor term names (e.g. logical covariates `add11` and `add17`): coefficients were matched to terms with a regex (`"^var*."`) that treated trailing digits as a quantifier, so each name matched the other's coefficient. Coefficients are now mapped to their term via `model$assign` (#689).
+
 - Fix the cumulative number-of-events and number-censored columns showing decimals for a weighted `survfit()` (in the risk/cumevents/cumcensor tables): the cumulative sums of the fractional weighted counts were not rounded, unlike the per-interval columns. They are now rounded to the same precision (#560, #554).
 
 - Fix `ggsurvplot_combine()` ignoring the risk-table type: `risk.table = "nrisk_cumcensor"` (and other types) is now honoured instead of always showing the absolute number at risk (#641).
