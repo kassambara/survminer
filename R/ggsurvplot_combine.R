@@ -149,13 +149,19 @@ ggsurvplot_combine <- function(fit, data,
     # The main plot parameters, will be used to plot survival tables
     pms <- attr(p, "parameters")
     surv.color <- pms$color
-    pms$risk.table.type <- ifelse(is.null(.dots$risk.table.type),
-                                  "absolute", .dots$risk.table.type)
+    # Honour the risk-table type parsed from the `risk.table` argument (e.g.
+    # risk.table = "nrisk_cumcensor"), falling back to an explicit
+    # risk.table.type in ... and then to "absolute" (#641).
+    pms$risk.table.type <- if(!is.null(.dots$risk.table.type)) .dots$risk.table.type
+                           else risk.table.type
 
     pms$risk.table.title <- .dots$risk.table.title
     pms$cumevents.title <- .dots$cumevents.title
     pms$cumcensor.title <- .dots$cumcensor.title
-    pms$fontsize <- .dots$fontsize
+    # Honour risk.table.fontsize (as ggsurvplot() does), falling back to
+    # fontsize (#514).
+    pms$fontsize <- if(!is.null(.dots$risk.table.fontsize)) .dots$risk.table.fontsize
+                    else .dots$fontsize
     pms$ggtheme <- ggtheme
     pms$ylab <- pms$legend.title
     pms$tables.theme <- tables.theme
