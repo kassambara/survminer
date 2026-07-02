@@ -125,6 +125,24 @@ ggsurvplot_combine <- function(fit, data,
     # Survplot of combined survsummary data frame
     #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     p <- ggsurvplot_df(all.survsummary, ggtheme = ggtheme, ...)
+
+    # Median survival lines. ggsurvplot_df() does not draw them (that is handled
+    # in ggsurvplot_core for a single fit); forward surv.median.line here by
+    # computing the medians from the list of fits (#316).
+    surv.median.line <- .dots$surv.median.line
+    if(is.null(surv.median.line)) surv.median.line <- "none"
+    surv.median.line <- match.arg(surv.median.line, c("none", "hv", "h", "v"))
+    if(surv.median.line %in% c("hv", "h", "v")){
+      .fun <- .dots$fun
+      if(!is.null(.fun) && .fun %in% c("cumhaz", "cloglog"))
+        warning("Adding survival median lines is not allowed when fun is: ", .fun)
+      else {
+        med_y <- if(!is.null(.fun) && .fun == "pct") 50 else 0.5
+        medians <- surv_median(fit, combine = TRUE)$median
+        p <- .add_median_lines(p, medians, type = surv.median.line, med_y = med_y)
+      }
+    }
+
     res <- list(plot = p)
 
 

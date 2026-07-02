@@ -461,6 +461,36 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 }
 
 
+# Draw median survival lines from a precomputed vector of median survival
+# times. Used by ggsurvplot_combine(), which works from a list of fits (combined
+# into one data frame) rather than a single survfit object, so it cannot use
+# .add_surv_median() above. NA medians (median not reached) are dropped.
+.add_median_lines <- function(p, medians, type = "hv", med_y = 0.5,
+                              color = "black", linetype = "dashed", size = 0.5){
+  x <- y <- xend <- yend <- x1 <- x2 <- y1 <- y2 <- NULL
+  medians <- medians[!is.na(medians)]
+  if(length(medians) == 0){
+    warning("Median survival not reached.")
+    return(p)
+  }
+  if(type %in% c("hv", "h")){
+    h_line_data <- data.frame(x = 0, y = med_y, xend = max(medians), yend = med_y)
+    p <- p +
+      geom_segment(aes(x = .data$x, y = .data$y, xend = .data$xend, yend = .data$yend),
+                   data = h_line_data, linetype = linetype, linewidth = size, color = color)
+  }
+  if(type %in% c("hv", "v")){
+    v_line_data <- data.frame(x1 = medians, x2 = medians,
+                              y1 = rep(0, length(medians)),
+                              y2 = rep(med_y, length(medians)))
+    p <- p +
+      geom_segment(aes(x = .data$x1, y = .data$y1, xend = .data$x2, yend = .data$y2),
+                   data = v_line_data, linetype = linetype, linewidth = size, color = color)
+  }
+  p
+}
+
+
 
 # Put risk table inside main plot
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
