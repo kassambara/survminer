@@ -128,6 +128,20 @@ ggforest <- function(model, data = NULL,
   toShowExpClean <- toShowExpClean[nrow(toShowExpClean):1, ]
 
   rangeb <- range(toShowExpClean$conf.low, toShowExpClean$conf.high, na.rm = TRUE)
+  # (Quasi-)complete separation in the Cox model yields near-infinite
+  # coefficients, whose exp()-ed confidence limits overflow and make
+  # axisTicks() error with "'at' creation, _LARGE_ range". Clamp the (log-scale)
+  # axis range to a finite window and warn, so the plot still renders (#570,
+  # #590). This is a no-op for ordinary models (their range sits well inside).
+  finite.range <- log(c(1e-6, 1e6))
+  if (any(!is.finite(rangeb)) || rangeb[1] < finite.range[1] || rangeb[2] > finite.range[2]) {
+    warning("Some hazard ratios or confidence limits are extreme or non-finite ",
+            "(possible complete/quasi-complete separation in the Cox model); ",
+            "the x-axis range has been clamped so the plot can be drawn.",
+            call. = FALSE)
+    rangeb <- c(max(rangeb[1], finite.range[1], na.rm = TRUE),
+                min(rangeb[2], finite.range[2], na.rm = TRUE))
+  }
   breaks <- axisTicks(rangeb/2, log = TRUE, nint = 7)
   rangeplot <- rangeb
   # make plot twice as wide as needed to create space for annotations
