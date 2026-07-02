@@ -8,6 +8,8 @@
 
 ## Minor changes
 
+- `surv_pvalue()` gains a `pval.digits` argument controlling the number of significant digits used to format the p-value in `pval.txt` (default `2`, unchanged; e.g. `pval.digits = 3` gives `"p = 0.00131"`). Requested for journals that report p-values to 3 digits (#343).
+
 ## Bug fixes
 
 - Fix `ggsurvplot_facet(..., pval = TRUE, pval.size = <n>)` ignoring `pval.size`: the per-facet p-value (and `pval.method`) text was drawn with ggplot2's default size and `pval.size` was silently routed into `...`. `pval.size` is now an explicit argument applied to the text; its default is `5`, consistent with `ggsurvplot()` (previously the faceted p-value text rendered at ggplot2's default size ~3.88) (#338).
