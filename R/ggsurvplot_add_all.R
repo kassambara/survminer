@@ -27,8 +27,11 @@ NULL
 #'
 #' @export
 ggsurvplot_add_all <- function(fit, data, legend.title = "Strata", legend.labs = NULL,
-                               pval = FALSE,  ...)
+                               pval = FALSE, legend = "top", ...)
 {
+  # `legend` is an explicit argument (not left to `...`) because it partial-matches
+  # both `legend.title` and `legend.labs`, which made `legend = "right"` raise
+  # "argument matches multiple formal arguments" before reaching ggsurvplot_core (#566).
 
   .dots <- list(...)
   # Extract fit components
@@ -69,7 +72,8 @@ ggsurvplot_add_all <- function(fit, data, legend.title = "Strata", legend.labs =
                       pval = pval, pval.coord = .dots$pval.coord,
                       pval.method.coord = .dots$pval.method.coord)
 
-  p <- ggsurvplot_core(newfit, data = data, legend.title = legend.title, legend.labs = legend.labs,
+  p <- ggsurvplot_core(newfit, data = data, legend = legend,
+                       legend.title = legend.title, legend.labs = legend.labs,
                        pval = pval$pval.txt,  ...)
 
   p
