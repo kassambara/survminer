@@ -10,6 +10,8 @@
 
 ## Bug fixes
 
+- Fix `ggcompetingrisks(..., multiple_panels = FALSE, conf.int = TRUE)` drawing incorrect confidence bands that jumped between groups of the same event: the ribbon was grouped only by `event`; it is now grouped by `interaction(event, group)` (#490).
+
 - Fix `ggsurvplot(..., add.all = TRUE)` (and `ggsurvplot_add_all()`) erroring with "argument matches multiple formal arguments" when a `legend` position was supplied: `legend` partial-matched `legend.title`/`legend.labs`; it is now an explicit forwarded argument (#566).
 
 - Fix `ggflexsurvplot()` collapsing a grouped Kaplan-Meier curve to a single "All" stratum when the grouping covariate is a factor: `is_factor_or_character()` called ggplot2's `is.facet()` (a Facet-object test, always `FALSE` for a data column) instead of `is.factor()` (#408).
