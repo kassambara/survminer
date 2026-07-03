@@ -225,7 +225,15 @@ ggforest <- function(model, data = NULL,
       label = paste0("# Events: ", gmodel$nevent, "; Global p-value (Log-Rank): ",
         format.pval(gmodel$p.value.log, eps = ".001"), " \nAIC: ", round(gmodel$AIC,2),
         "; Concordance Index: ", round(gmodel$concordance,2)),
-      size = annot_size_mm, hjust = 0, vjust = 1.2,  fontface = "italic")
+      size = annot_size_mm, hjust = 0, vjust = 1.2,  fontface = "italic") +
+    # The caption sits just below the first row (x = 0.5) and, in short plots, the
+    # default axis expansion leaves too little room so the two-line caption is cut
+    # off (#696). Reserve about one row-height of space below the last row (and a
+    # little extra bottom margin) so the caption always fits, whatever the plot
+    # height. Only applied when the caption is drawn, so global.stats = FALSE is
+    # unchanged.
+    scale_x_continuous(expand = expansion(mult = c(0.05, 0.05), add = c(1, 0))) +
+    theme(plot.margin = grid::unit(c(0.5, 0.5, 1, 0.5), "lines"))
   # switch off clipping for p-vals, bottom annotation:
   gt <- ggplot_gtable(ggplot_build(p))
   gt$layout$clip[gt$layout$name == "panel"] <- "off"
