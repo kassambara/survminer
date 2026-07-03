@@ -14,6 +14,8 @@
 
 - `surv_pvalue()` gains a `pval.digits` argument controlling the number of significant digits used to format the p-value in `pval.txt` (default `2`, unchanged; e.g. `pval.digits = 3` gives `"p = 0.00131"`). Requested for journals that report p-values to 3 digits (#343).
 
+- `ggsurvtable()` gains an `hjust` argument to control the horizontal justification of the table text (passed to `geom_text`). Default is `0.5` (centered, unchanged); use e.g. `hjust = 0` for left-aligned counts (#629).
+
 ## Bug fixes
 
 - Fix `pairwise_survdiff()` erroring with "undefined columns selected" when the formula contains a `strata()` term (e.g. `~ rx + strata(sex)`): `strata(sex)` is not a data column, so it could not be used to group/subset. `strata()` terms are now separated from the grouping variable and kept in the `survdiff` formula, giving a stratified pairwise test (#648).
