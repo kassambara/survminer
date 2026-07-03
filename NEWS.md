@@ -16,6 +16,8 @@
 
 - `ggsurvtable()` gains an `hjust` argument to control the horizontal justification of the table text (passed to `geom_text`). Default is `0.5` (centered, unchanged); use e.g. `hjust = 0` for left-aligned counts (#629).
 
+- `ggsurvplot()` gains a `linejoin` argument controlling the line join of the survival curve. Default is `"round"` (unchanged); use `linejoin = "mitre"` for sharp corners that mark event times precisely (requires a `ggplot2` version that passes `linejoin` through `geom_step()`). Previously `linejoin` passed via `...` was silently dropped (#653).
+
 ## Bug fixes
 
 - Fix `ggsurvplot(fit, facet.by = "X")` erroring with "subscript out of bounds" when every variable of the survival formula is also a `facet.by` variable, e.g. a null model `Surv(...) ~ 1` faceted by `X`, or `Surv(...) ~ X` faceted by `X`. Each panel then shows a single curve with no within-panel grouping, so there is no extra strata to build; this case no longer calls the strata builder with zero variables (#304).
