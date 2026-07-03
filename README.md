@@ -89,7 +89,7 @@ categories as follow.
 
 -   **ggforest**(): Draws forest plot for CoxPH model.
 
--   **ggcoxadjustedcurves**(): Plots adjusted survival curves for coxph
+-   **ggadjustedcurves**(): Plots adjusted survival curves for coxph
     model.
 
 <br/>
