@@ -174,7 +174,21 @@ ggsurvplot_df <- function(fit, fun = NULL,
   xlog <- .is_cloglog(fun)
 
   y.breaks <- ggplot2::waiver()
-  if(!is.null(break.y.by)) y.breaks <- seq(0, 1, by = break.y.by)
+  if(!is.null(break.y.by)){
+    # Derive the break range from the displayed y-range instead of the hardcoded
+    # 0..1: for transformed curves (fun = "cloglog"/"event"/"cumhaz", or a custom
+    # ylim) the y-values fall outside [0, 1], so seq(0, 1, ...) produced too few
+    # (or no) breaks (#378, #442). The default survival plot (fun = NULL, no
+    # ylim) still uses 0..1, so its breaks are unchanged.
+    y.range <- ylim
+    if(is.null(y.range) && is.null(fun)) y.range <- c(0, 1)
+    if(is.null(y.range)) y.range <- range(df$surv, na.rm = TRUE)
+    # round the endpoints out to multiples of break.y.by so the breaks are on a
+    # clean grid; breaks that fall outside the axis limits are dropped by ggplot2
+    y.breaks <- seq(floor(min(y.range) / break.y.by) * break.y.by,
+                    ceiling(max(y.range) / break.y.by) * break.y.by,
+                    by = break.y.by)
+  }
   # Axis limits
   xmin <- ifelse(.is_cloglog(fun), min(c(1, df$time)), 0)
   if(is.null(xlim)) xlim <- c(xmin, max(df$time))
