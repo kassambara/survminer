@@ -120,10 +120,17 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
         ylab(ylab[i]) +
         ylim(yr) -> gplot
     } else if (x$transform == "log") {
-      gplot + geom_line(aes(x=log(pred.x), y=yhat)) +
+      # pred.x is already on the original time scale (exp()-ed above), like the
+      # residual points (xx) and the SE bands. Draw the fit line on that same
+      # scale and put the axis on a log scale, instead of drawing the line at
+      # log(pred.x) (which put the fit line on a different x-scale than the
+      # points, squeezing it to the left); reproduces plot.cox.zph(log = "x")
+      # (#454, #588).
+      gplot + geom_line(aes(x=pred.x, y=yhat)) +
         xlab("Time") +
         ylab(ylab[i]) +
-        ylim(yr)  -> gplot
+        ylim(yr) +
+        scale_x_log10() -> gplot
     } else {
       gplot + geom_line(aes(x=pred.x, y=yhat)) +
         xlab("Time") +
