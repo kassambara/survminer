@@ -44,7 +44,17 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
 
 {
   if(missing(na.action)) na.action <- options()$na.action
-  group_var <- attr(stats::terms(formula), "term.labels")
+  all_terms <- attr(stats::terms(formula), "term.labels")
+  # Separate strata() terms (an adjustment, not a grouping variable): they are
+  # not data columns, so using them to subset/group crashed with "undefined
+  # columns selected". They are kept in the survdiff formula so the pairwise
+  # test is stratified (#648).
+  is_strata <- grepl("^strata\\(", all_terms)
+  strata_terms <- all_terms[is_strata]
+  group_var <- all_terms[!is_strata]
+  if(length(group_var) == 0)
+    stop("The formula must contain at least one grouping variable ",
+         "(besides strata() terms).", call. = FALSE)
   surv_obj <- deparse(formula[[2]])
 
   DNAME <- paste(deparse(substitute(data)), "and", .collapse(group_var, sep = " + " ))
@@ -63,15 +73,18 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
   # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   if(length(group_var) == 1){
     group <- unlist(data[, group_var])
+    rhs <- group_var
   }
-  else if(length(group_var) >1){
-    # Create strata with multiple variables and add it in the data
+  else {
+    # Create strata with multiple grouping variables and add it in the data
     group <- data[, group_var] %>%
       survival::strata()
     data <- data %>% mutate(..group.. = group)
-    # update formula
-    formula <- .build_formula(surv_obj, "..group..")
+    rhs <- "..group.."
   }
+  # Rebuild the formula from the grouping variable, keeping any strata() terms
+  # so the pairwise comparison is stratified (#648).
+  formula <- .build_formula(surv_obj, paste(c(rhs, strata_terms), collapse = " + "))
   if(!is.factor(group)) group <- as.factor(group)
   group <- droplevels(group)
 

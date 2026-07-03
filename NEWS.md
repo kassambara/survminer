@@ -18,6 +18,8 @@
 
 ## Bug fixes
 
+- Fix `pairwise_survdiff()` erroring with "undefined columns selected" when the formula contains a `strata()` term (e.g. `~ rx + strata(sex)`): `strata(sex)` is not a data column, so it could not be used to group/subset. `strata()` terms are now separated from the grouping variable and kept in the `survdiff` formula, giving a stratified pairwise test (#648).
+
 - Fix `ggsurvplot(..., add.all = TRUE, pval = TRUE, pval.method = TRUE)` drawing the p-value method (test name) as an empty string: the p-value is computed on the original fit and forwarded as text, so `ggsurvplot_core()` re-derived the method from the "all"-augmented fit and got `""`. The method is now drawn by `ggsurvplot_add_all()` (#673).
 
 - Fix `ggsurvplot_facet(..., pval = "<string>")` erroring with "argument is not interpretable as logical", and clarify the documentation: `ggsurvplot_facet()` computes a p-value for each panel, so (unlike `ggsurvplot()`) a numeric or character `pval` cannot be substituted. Such a value is now ignored with a warning instead of crashing (#636).
