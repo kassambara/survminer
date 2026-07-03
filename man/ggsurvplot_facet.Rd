@@ -59,10 +59,10 @@ function \link[grDevices]{palette}.}
 the names of the strata from the fit. Should be given in the same order as
 those strata.}
 
-\item{pval}{logical value, a numeric or a string. If logical and TRUE, the
-p-value is added on the plot. If numeric, than the computet p-value is
-substituted with the one passed with this parameter. If character, then the
-customized string appears on the plot. See examples - Example 3.}
+\item{pval}{logical value. If TRUE, a log-rank p-value is computed and
+displayed for each panel. Note that, unlike \code{\link{ggsurvplot}()},
+a numeric or character \code{pval} is not substituted here (there is one
+p-value per panel); such a value is ignored with a warning.}
 
 \item{pval.method}{whether to add a text with the test name used for
 calculating the pvalue, that corresponds to survival curves' comparison -

@@ -5,6 +5,10 @@ NULL
 #'@description Draw multi-panel survival curves of a data set grouped by one or
 #'  two variables.
 #'@inheritParams ggsurvplot_arguments
+#'@param pval logical value. If TRUE, a log-rank p-value is computed and
+#'  displayed for each panel. Note that, unlike \code{\link{ggsurvplot}()},
+#'  a numeric or character \code{pval} is not substituted here (there is one
+#'  p-value per panel); such a value is ignored with a warning.
 #'@param facet.by character vector, of length 1 or 2, specifying grouping
 #'  variables for faceting the plot. Should be in the data.
 #'@param nrow,ncol Number of rows and columns in the pannel. Used only when the
@@ -173,7 +177,17 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
   # Pvalues
   #:::::::::::::::::::::::::::::::::::::::::
-  if(pval){
+  # ggsurvplot_facet() computes and shows a p-value for EACH panel, so unlike
+  # ggsurvplot() a single numeric/character `pval` cannot be substituted. Treat
+  # any non-FALSE `pval` as a request to draw the per-panel p-values (this also
+  # stops a character `pval` from erroring in `if(pval)` with "argument is not
+  # interpretable as logical"), and warn that the supplied value is ignored (#636).
+  draw.pval <- !is.null(pval) && !isFALSE(pval) && !identical(pval, "")
+  if(draw.pval && !isTRUE(pval))
+    warning("ggsurvplot_facet() displays a p-value computed for each panel; a ",
+            "numeric or character `pval` is not substituted. Use `pval = TRUE`.",
+            call. = FALSE)
+  if(draw.pval){
     # Grouped data
     grouped.d <- surv_group_by(data, grouping.vars = facet.by)
     # Compute survfit on each subset ==> list of fits
