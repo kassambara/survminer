@@ -20,6 +20,8 @@
 
 ## Bug fixes
 
+- Fix `ggforest()` clipping the bottom global-statistics caption (number of events, global p-value, AIC, concordance index) in short plots (small figure heights): too little space was reserved below the last row. Space is now reserved so the caption always renders; it is only added when the caption is drawn, so `global.stats = FALSE` is unchanged (#696).
+
 - Fix `ggforest()` reporting a sample size that includes subjects with missing values: `coxph()` drops rows with a missing value in any model variable (`na.action = na.omit`), but `ggforest()` counted all rows of `data`, overstating the per-term/level `N`. The reported `N` now reflects the complete cases the model actually used (`model$n`). Models fit on data without missing values are unaffected (#597).
 
 - Fix `ggsurvplot(fit, facet.by = "X")` erroring with "subscript out of bounds" when every variable of the survival formula is also a `facet.by` variable, e.g. a null model `Surv(...) ~ 1` faceted by `X`, or `Surv(...) ~ X` faceted by `X`. Each panel then shows a single curve with no within-panel grouping, so there is no extra strata to build; this case no longer calls the strata builder with zero variables (#304).
