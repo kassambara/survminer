@@ -20,6 +20,8 @@
 
 ## Bug fixes
 
+- `ggadjustedcurves()`/`surv_adjustedcurves()` now warn when the default `method = "conditional"` is used with a grouping `variable` that is not in the Cox model: in that case every group's curve is identical (a single visible line), which silently confused users. The warning points to `method = "average"`/`"marginal"` (which are designed for a variable absent from the model). The computed curves are unchanged (message only), and no warning fires for the other methods or when the variable is in the model (#623).
+
 - Fix `ggforest()` clipping the bottom global-statistics caption (number of events, global p-value, AIC, concordance index) in short plots (small figure heights): too little space was reserved below the last row. Space is now reserved so the caption always renders; it is only added when the caption is drawn, so `global.stats = FALSE` is unchanged (#696).
 
 - Fix `ggforest()` reporting a sample size that includes subjects with missing values: `coxph()` drops rows with a missing value in any model variable (`na.action = na.omit`), but `ggforest()` counted all rows of `data`, overstating the per-term/level `N`. The reported `N` now reflects the complete cases the model actually used (`model$n`). Models fit on data without missing values are unaffected (#597).

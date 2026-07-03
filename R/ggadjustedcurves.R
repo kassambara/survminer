@@ -172,6 +172,24 @@ surv_adjustedcurves <- function(fit,
     }
   }
 
+  # With the default method = "conditional", the curves are built from the
+  # fitted model's predictions. If the grouping `variable` is NOT in the Cox
+  # model it never enters the linear predictor, so every group gets an identical
+  # curve (a single visible line) with no error -- a common source of confusion
+  # (#623). Warn and point to method = "average"/"marginal", which are the
+  # methods meant for a grouping variable absent from the model. Message-only:
+  # the returned curves are unchanged. Not triggered for "average"/"marginal"/
+  # "single", nor when the variable is in the model (incl. via a transform such
+  # as strata()/ns(), which all.vars() still resolves to the underlying name).
+  if (method == "conditional" && !is.null(variable) &&
+      !(variable %in% all.vars(stats::formula(fit))))
+    warning("method = \"conditional\" (the default) builds each group's curve ",
+            "from the Cox model, but the grouping variable '", variable,
+            "' is not in the model, so the curves for all groups are identical. ",
+            "Use method = \"average\" or \"marginal\" to draw distinct curves for ",
+            "a variable that is not in the model, or add '", variable,
+            "' to the Cox model.", call. = FALSE)
+
   curve <- switch(method,
                   single = ggadjustedcurves.single(data, fit, size = size),
                   average =  ggadjustedcurves.average(data, fit, variable, size = size),
