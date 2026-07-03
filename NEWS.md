@@ -16,6 +16,8 @@
 
 ## Bug fixes
 
+- Fix `ggsurvplot(..., add.all = TRUE, pval = TRUE, pval.method = TRUE)` drawing the p-value method (test name) as an empty string: the p-value is computed on the original fit and forwarded as text, so `ggsurvplot_core()` re-derived the method from the "all"-augmented fit and got `""`. The method is now drawn by `ggsurvplot_add_all()` (#673).
+
 - Fix `ggsurvplot_facet(..., pval = "<string>")` erroring with "argument is not interpretable as logical", and clarify the documentation: `ggsurvplot_facet()` computes a p-value for each panel, so (unlike `ggsurvplot()`) a numeric or character `pval` cannot be substituted. Such a value is now ignored with a warning instead of crashing (#636).
 
 - Fix `ggsurvplot_facet(..., panel.labs = ...)` failing with "cannot xtfrm data frames" when the data is a tibble: the panel-label code did `as.factor(data[, var])`, and `tibble[, var]` returns a one-column tibble rather than a vector. The data is now coerced to a plain data.frame at entry (#591).
