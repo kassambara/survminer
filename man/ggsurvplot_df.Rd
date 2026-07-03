@@ -15,6 +15,7 @@ ggsurvplot_df(
   break.y.by = NULL,
   surv.scale = c("default", "percent"),
   surv.geom = geom_step,
+  linejoin = "round",
   xscale = 1,
   conf.int = FALSE,
   conf.int.fill = "gray",
@@ -84,6 +85,11 @@ is NULL.}
 
 \item{surv.geom}{survival curve style. Is the survival curve entered a step
 function (\link[ggplot2]{geom_step}) or a smooth function (\link[ggplot2]{geom_line}).}
+
+\item{linejoin}{line join style for the survival curve, passed to the survival
+geom. Default is \code{"round"} (unchanged). Use \code{"mitre"} for sharp,
+precisely-marked corners at event times (requires a \pkg{ggplot2} version that
+passes \code{linejoin} through \code{\link[ggplot2]{geom_step}}).}
 
 \item{xscale}{numeric or character value specifying x-axis scale. \itemize{
 \item If numeric, the value is used to divide the labels on the x axis. For
