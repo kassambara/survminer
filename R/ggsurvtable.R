@@ -266,7 +266,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
     # risk table labels depending on the type argument
     pct.risk <- abs_pct.risk <- n.risk <- NULL
     llabels <- switch(risk.table.type,
-                      percentage = round(survsummary$n.risk*100/survsummary$strata_size),
+                      percentage = survsummary$pct.risk,
                       abs_pct = paste0(survsummary$n.risk, " (", survsummary$pct.risk, ")"),
                       nrisk_cumcensor = paste0(survsummary$n.risk, " (", survsummary$cum.n.censor, ")"),
                       nrisk_cumevents = paste0(survsummary$n.risk, " (", survsummary$cum.n.event, ")"),

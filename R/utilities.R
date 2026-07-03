@@ -178,12 +178,28 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
     strata_size <- rep(fit$n, each = length(.strata)/nstrata)
   }
 
+  # Percentage at risk. The denominator is normally the (unweighted) stratum size
+  # fit$n. For a WEIGHTED survfit, n.risk is weighted and can exceed fit$n, which
+  # made pct.risk > 100% (#561). Only in that case fall back to the weighted
+  # number at risk at the origin (a proper denominator that makes the curve start
+  # at 100%). For any UNWEIGHTED fit n.risk <= fit$n always -- including
+  # left-truncated Surv(start, stop) data -- so the guard never fires and the
+  # output is byte-identical to before.
+  pct.denom <- strata_size
+  if (any(survsummary$n.risk > strata_size, na.rm = TRUE)) {
+    n0.risk <- summary(fit, times = 0, extend = TRUE)$n.risk
+    if (is.null(fit$strata))
+      pct.denom <- rep(n0.risk[1], length(.strata))
+    else
+      pct.denom <- rep(n0.risk, each = length(.strata)/nstrata)
+  }
+
   strata <- .clean_strata(.strata)
   res <- data.frame(
     strata = strata,
     time = survsummary$time,
     n.risk = round(survsummary$n.risk, digits = decimal.place),
-    pct.risk = round(survsummary$n.risk*100/strata_size),
+    pct.risk = round(survsummary$n.risk*100/pct.denom),
     n.event = round(survsummary$n.event, digits = decimal.place),
     cum.n.event = round(unlist(by(survsummary$n.event, strata, cumsum)), digits = decimal.place),
     n.censor = round(survsummary$n.censor, digits = decimal.place),
