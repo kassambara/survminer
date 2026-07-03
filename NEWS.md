@@ -18,6 +18,8 @@
 
 ## Bug fixes
 
+- Fix `ggforest()` reporting a sample size that includes subjects with missing values: `coxph()` drops rows with a missing value in any model variable (`na.action = na.omit`), but `ggforest()` counted all rows of `data`, overstating the per-term/level `N`. The reported `N` now reflects the complete cases the model actually used (`model$n`). Models fit on data without missing values are unaffected (#597).
+
 - Fix `ggsurvplot(fit, facet.by = "X")` erroring with "subscript out of bounds" when every variable of the survival formula is also a `facet.by` variable, e.g. a null model `Surv(...) ~ 1` faceted by `X`, or `Surv(...) ~ X` faceted by `X`. Each panel then shows a single curve with no within-panel grouping, so there is no extra strata to build; this case no longer calls the strata builder with zero variables (#304).
 
 - Fix the percentage at risk (`pct.risk`, used in `risk.table = "percentage"`/`"abs_pct"`) exceeding 100% for a weighted `survfit()`: it was computed as `n.risk * 100 / fit$n`, but `fit$n` is the unweighted subject count while `n.risk` is weighted. When the weighting makes `n.risk` exceed `fit$n`, the denominator now falls back to the weighted number at risk at the origin. Unweighted fits (for which `n.risk` never exceeds `fit$n`) keep `fit$n`, so their output is unchanged (#561).
