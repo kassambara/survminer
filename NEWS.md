@@ -16,6 +16,8 @@
 
 ## Bug fixes
 
+- Fix `ggsurvplot(..., add.all = TRUE, pval = TRUE, pval.method = TRUE)` drawing the p-value method (test name) as an empty string: the p-value is computed on the original fit and forwarded as text, so `ggsurvplot_core()` re-derived the method from the "all"-augmented fit and got `""`. The method is now drawn by `ggsurvplot_add_all()` (#673).
+
 - Fix `ggsurvplot_facet(..., panel.labs = ...)` failing with "cannot xtfrm data frames" when the data is a tibble: the panel-label code did `as.factor(data[, var])`, and `tibble[, var]` returns a one-column tibble rather than a vector. The data is now coerced to a plain data.frame at entry (#591).
 
 - Fix `ggadjustedcurves(..., fun = ...)` not transforming the curve: `fun` (e.g. `"event"`, `"cumhaz"`, `"pct"`) only changed the y-axis limits, while the plotted curve stayed the raw survival probability. The transformation is now applied to the curve (a no-op when `fun = NULL`, the default) (#287, #498, #660).

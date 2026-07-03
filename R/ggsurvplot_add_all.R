@@ -66,15 +66,36 @@ ggsurvplot_add_all <- function(fit, data, legend.title = "Strata", legend.labs =
 
   # Visualize using core ggsurvplot
   if(is.null(legend.labs)) legend.labs <- c("all", strata.levels)
+  # The p-value must be computed on the ORIGINAL fit (comparing the real strata),
+  # not on newfit which contains the extra "all" curve; it is then passed to
+  # ggsurvplot_core() as pre-formatted text. get_coord = TRUE so we also get the
+  # method-annotation coordinates.
   pval <- surv_pvalue(fit,
                       method = .dots$log.rank.weights,
                       data = fit.ext$data.all,
                       pval = pval, pval.coord = .dots$pval.coord,
-                      pval.method.coord = .dots$pval.method.coord)
+                      pval.method.coord = .dots$pval.method.coord,
+                      get_coord = TRUE)
 
-  p <- ggsurvplot_core(newfit, data = data, legend = legend,
-                       legend.title = legend.title, legend.labs = legend.labs,
-                       pval = pval$pval.txt,  ...)
+  # Draw the p-value method (test name) here rather than in ggsurvplot_core:
+  # because the p-value is forwarded as text, core would re-derive the method
+  # from newfit and get an empty string, so pval.method was rendered blank (#673).
+  show.method <- isTRUE(.dots$pval.method)
+  .dots$pval.method <- NULL
+  p <- do.call(ggsurvplot_core,
+               c(list(newfit, data = data, legend = legend,
+                      legend.title = legend.title, legend.labs = legend.labs,
+                      pval = pval$pval.txt),
+                 .dots))
+
+  if(show.method && is.data.frame(pval) && "method" %in% colnames(pval) &&
+     length(pval$method) > 0 && nzchar(pval$method[1])){
+    method.size <- if(!is.null(.dots$pval.method.size)) .dots$pval.method.size
+                   else if(!is.null(.dots$pval.size)) .dots$pval.size else 5
+    p$plot <- p$plot +
+      ggplot2::annotate("text", x = pval$method.x[1], y = pval$method.y[1],
+                        label = pval$method[1], size = method.size, hjust = 0)
+  }
 
   p
 }
