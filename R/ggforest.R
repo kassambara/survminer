@@ -51,6 +51,18 @@ ggforest <- function(model, data = NULL,
 
   # get data and variables/terms from cox model
   data  <- .get_data(model, data = data)
+
+  # coxph() drops rows with missing values in any model variable
+  # (na.action = na.omit by default), so counting all rows of `data` would
+  # overstate the sample size reported per term/level. Restrict `data` to the
+  # complete cases the model actually used, matching model$n. Models fit on data
+  # with no missing values are unaffected (the subset is a no-op) (#597).
+  .model.vars <- intersect(all.vars(stats::terms(model)), colnames(data))
+  if (length(.model.vars) > 0) {
+    .complete <- stats::complete.cases(data[, .model.vars, drop = FALSE])
+    if (any(!.complete)) data <- data[.complete, , drop = FALSE]
+  }
+
   terms <- attr(model$terms, "dataClasses")[-1]
 # removed as requested in #388
 #  terms <- terms[intersect(names(terms),
