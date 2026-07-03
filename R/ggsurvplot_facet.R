@@ -122,7 +122,17 @@ ggsurvplot_facet <- function(fit, data, facet.by,
       surv_fit(., data = data)
   }
 
-  if(length(vars.notin.groupby) == 1){
+  if(length(vars.notin.groupby) == 0){
+    # All the survival-formula variables are used for faceting, e.g. a null model
+    # `~ 1` faceted by X, or `~ X` faceted by X. Each panel then holds a single
+    # curve with no extra within-panel grouping, so there is nothing to combine
+    # into a `.strata.` column (calling .create_strata() with no variable errors
+    # with "subscript out of bounds"). `fit` has already been (re)built above as
+    # `Surv ~ facet.by`, giving one stratum per panel (#304).
+    if(is.null(color)) color <- "strata"
+    .survformula <- .build_formula(surv.obj, "1")
+  }
+  else if(length(vars.notin.groupby) == 1){
     if(is.null(color)) color <- vars.notin.groupby
     .survformula <- .build_formula(surv.obj, vars.notin.groupby)
   }
