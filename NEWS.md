@@ -18,6 +18,8 @@
 
 - Fix `ggsurvplot_facet(..., pval = "<string>")` erroring with "argument is not interpretable as logical", and clarify the documentation: `ggsurvplot_facet()` computes a p-value for each panel, so (unlike `ggsurvplot()`) a numeric or character `pval` cannot be substituted. Such a value is now ignored with a warning instead of crashing (#636).
 
+- Fix `ggsurvplot_facet(..., panel.labs = ...)` failing with "cannot xtfrm data frames" when the data is a tibble: the panel-label code did `as.factor(data[, var])`, and `tibble[, var]` returns a one-column tibble rather than a vector. The data is now coerced to a plain data.frame at entry (#591).
+
 - Fix `ggadjustedcurves(..., fun = ...)` not transforming the curve: `fun` (e.g. `"event"`, `"cumhaz"`, `"pct"`) only changed the y-axis limits, while the plotted curve stayed the raw survival probability. The transformation is now applied to the curve (a no-op when `fun = NULL`, the default) (#287, #498, #660).
 
 - Fix `ggforest()` crashing (`axisTicks(): '_LARGE_ range'`) for a Cox model with complete/quasi-complete separation, where a coefficient is near-infinite: the x-axis range is now clamped to a finite window (with a warning) so the plot still renders (#570, #590).

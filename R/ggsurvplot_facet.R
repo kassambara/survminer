@@ -92,7 +92,11 @@ ggsurvplot_facet <- function(fit, data, facet.by,
   all.variables <- c(surv.vars, facet.by) %>%
     unique()
   vars.notin.groupby <- setdiff(all.variables, facet.by)
-  data <- fit.ext$data.all
+  # Coerce to a plain data.frame so single-column extractions like
+  # data[, .grouping.var] return a vector: for a tibble they return a
+  # one-column tibble, so as.factor() below fails with "cannot xtfrm data
+  # frames" (#591; same tibble gotcha as #548/#670).
+  data <- as.data.frame(fit.ext$data.all)
 
   # Changing panel labs if specified
   #:::::::::::::::::::::::::::::::::::::::::
