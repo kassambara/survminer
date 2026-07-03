@@ -18,6 +18,8 @@
 
 ## Bug fixes
 
+- Fix `ggcoxzph()` with `cox.zph(..., transform = "log")` drawing the fitted line on a different x-scale than the residual points (the line was squeezed to the far left): the fit line was drawn at `log(pred.x)` while the points and confidence bands were on the original time scale. The fit line now uses the same scale and the x-axis is log-scaled, matching `survival::plot.cox.zph(log = "x")` (#454, #588).
+
 - Fix `pairwise_survdiff()` erroring with "undefined columns selected" when the formula contains a `strata()` term (e.g. `~ rx + strata(sex)`): `strata(sex)` is not a data column, so it could not be used to group/subset. `strata()` terms are now separated from the grouping variable and kept in the `survdiff` formula, giving a stratified pairwise test (#648).
 
 - Fix `ggsurvplot(..., add.all = TRUE, pval = TRUE, pval.method = TRUE)` drawing the p-value method (test name) as an empty string: the p-value is computed on the original fit and forwarded as text, so `ggsurvplot_core()` re-derived the method from the "all"-augmented fit and got `""`. The method is now drawn by `ggsurvplot_add_all()` (#673).
