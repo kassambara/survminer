@@ -21,6 +21,10 @@ NULL
 #'  end of confidence interval }
 #' @param surv.geom survival curve style. Is the survival curve entered a step
 #'  function (\link[ggplot2]{geom_step}) or a smooth function (\link[ggplot2]{geom_line}).
+#' @param linejoin line join style for the survival curve, passed to the survival
+#'  geom. Default is \code{"round"} (unchanged). Use \code{"mitre"} for sharp,
+#'  precisely-marked corners at event times (requires a \pkg{ggplot2} version that
+#'  passes \code{linejoin} through \code{\link[ggplot2]{geom_step}}).
 #'
 #' @examples
 #' library(survival)
@@ -68,6 +72,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
                           color = NULL, palette = NULL, linetype = 1,
                           break.x.by = NULL, break.time.by = NULL, break.y.by = NULL,
                           surv.scale = c("default", "percent"), surv.geom = geom_step,
+                          linejoin = "round",
                           xscale = 1,
                           conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                           conf.int.alpha = 0.3,
@@ -202,8 +207,21 @@ ggsurvplot_df <- function(fit, fun = NULL,
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   df[, .strata.var] <- factor( df[, .strata.var], levels = .levels(.strata), labels = legend.labs)
 
+  surv.layer <- ggpubr::geom_exec(surv.geom, data = df, linewidth = size, color = color, linetype = linetype, ...)
+  # ggpubr::geom_exec() does not forward `linejoin` to the step geom, so set it
+  # directly on the built layer. The default "round" reproduces geom_step()'s own
+  # default, so the curve is byte-identical unless the user opts into another join
+  # such as "mitre", which marks event-time corners precisely (#653). Guarded so
+  # the default path never touches the layer, and so a custom surv.geom without a
+  # linejoin parameter is left untouched.
+  if (!identical(linejoin, "round") &&
+      !is.null(surv.layer$geom_params) &&
+      "linejoin" %in% names(surv.layer$geom_params)) {
+    surv.layer$geom_params$linejoin <- linejoin
+  }
+
   p <- ggplot2::ggplot(df, ggplot2::aes(x = !!sym("time"), y = !!sym("surv"))) +
-    ggpubr::geom_exec(surv.geom, data = df, linewidth = size, color = color, linetype = linetype, ...) +
+    surv.layer +
     ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim, expand = .expand) +
     ggplot2::coord_cartesian(xlim = xlim)+
     ggtheme

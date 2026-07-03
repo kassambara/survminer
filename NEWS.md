@@ -16,6 +16,8 @@
 
 - `ggsurvtable()` gains an `hjust` argument to control the horizontal justification of the table text (passed to `geom_text`). Default is `0.5` (centered, unchanged); use e.g. `hjust = 0` for left-aligned counts (#629).
 
+- `ggsurvplot()` gains a `linejoin` argument controlling the line join of the survival curve. Default is `"round"` (unchanged); use `linejoin = "mitre"` for sharp corners that mark event times precisely (requires a `ggplot2` version that passes `linejoin` through `geom_step()`). Previously `linejoin` passed via `...` was silently dropped (#653).
+
 ## Bug fixes
 
 - Fix `ggforest()` clipping the bottom global-statistics caption (number of events, global p-value, AIC, concordance index) in short plots (small figure heights): too little space was reserved below the last row. Space is now reserved so the caption always renders; it is only added when the caption is drawn, so `global.stats = FALSE` is unchanged (#696).
