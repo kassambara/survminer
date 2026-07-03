@@ -107,7 +107,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
 
   # Define time axis breaks
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  xmin <- ifelse(xlog, min(c(1, fit$time)), 0)
+  xmin <- ifelse(xlog, min(c(1, fit$time)), min(c(0, fit$time), na.rm = TRUE))
   if(is.null(xlim)) xlim <- c(xmin, max(fit$time))
   times <- .get_default_breaks(fit$time, .log = xlog)
   if(!is.null(break.time.by) &!xlog) times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)

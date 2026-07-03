@@ -195,7 +195,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
                     by = break.y.by)
   }
   # Axis limits
-  xmin <- ifelse(.is_cloglog(fun), min(c(1, df$time)), 0)
+  xmin <- ifelse(.is_cloglog(fun), min(c(1, df$time)), min(c(0, df$time), na.rm = TRUE))
   if(is.null(xlim)) xlim <- c(xmin, max(df$time))
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
 
@@ -358,8 +358,13 @@ ggsurvplot_df <- function(fit, fun = NULL,
   n.risk <- strata <- NULL
   # if("n.risk" %in% colnames(d)){d <- dplyr::arrange(d, dplyr::desc(n.risk))}
   origin <- d %>% dplyr::distinct(strata, .keep_all = TRUE)
-  origin[intersect(c('time', 'n.censor', 'std.err', "n.event"), colnames(origin))] <- 0
+  origin[intersect(c('n.censor', 'std.err', "n.event"), colnames(origin))] <- 0
   origin[c('surv', 'upper', 'lower')] <- 1.0
+  # Origin x-position: 0 for ordinary data (byte-identical), or the smallest
+  # observed time when negative, so each curve starts at the first time like
+  # base plot.survfit() instead of injecting a spurious (0, 1) point that would
+  # sort into the middle of negative-time data (#389).
+  origin['time'] <- min(c(0, d$time), na.rm = TRUE)
   dplyr::bind_rows(origin, d)
 }
 

@@ -83,7 +83,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   if(!is.null(fit$start.time)) d <- subset(d, d$time >= fit$start.time )
 
   # Axis limits
-   xmin <- ifelse(.is_cloglog(fun), min(c(1, d$time)), 0)
+   xmin <- ifelse(.is_cloglog(fun), min(c(1, d$time)), min(c(0, d$time), na.rm = TRUE))
    if(!is.null(fit$start.time)) xmin <- fit$start.time
    # Extend the upper x-limit to cover the largest event/censoring time, not
    # just the largest "nice" axis break. scales::extended_breaks() can return a
