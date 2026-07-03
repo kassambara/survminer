@@ -110,6 +110,12 @@ ggadjustedcurves <- function(fit,
                                method = method,
                                size = size,
                                ...)
+  # Apply the transformation requested via `fun` (e.g. "event", "cumhaz",
+  # "pct"). Previously `fun` only affected the y-axis limits and the plotted
+  # curve was always the raw survival probability (#287, #498, #630, #660).
+  # This is a no-op when fun = NULL (the default), so ordinary calls are
+  # unchanged.
+  curve <- .apply_surv_func(curve, fun = fun)
   time <- surv <- NULL
   pl <- ggplot(curve, aes(x = time, y = surv, color = variable)) +
     geom_step(linewidth = size) + ggtheme +
