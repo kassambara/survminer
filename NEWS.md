@@ -14,6 +14,8 @@
 
 - `surv_pvalue()` gains a `pval.digits` argument controlling the number of significant digits used to format the p-value in `pval.txt` (default `2`, unchanged; e.g. `pval.digits = 3` gives `"p = 0.00131"`). Requested for journals that report p-values to 3 digits (#343).
 
+- `ggsurvtable()` gains an `hjust` argument to control the horizontal justification of the table text (passed to `geom_text`). Default is `0.5` (centered, unchanged); use e.g. `hjust = 0` for left-aligned counts (#629).
+
 ## Bug fixes
 
 - Fix `ggsurvplot(..., add.all = TRUE, pval = TRUE, pval.method = TRUE)` drawing the p-value method (test name) as an empty string: the p-value is computed on the original fit and forwarded as text, so `ggsurvplot_core()` re-derived the method from the "all"-augmented fit and got `""`. The method is now drawn by `ggsurvplot_add_all()` (#673).

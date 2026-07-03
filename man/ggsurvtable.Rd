@@ -44,6 +44,7 @@ ggsurvtable(
   y.text.col = TRUE,
   fontsize = 4.5,
   font.family = "",
+  hjust = 0.5,
   axes.offset = TRUE,
   ggtheme = theme_survminer(),
   tables.theme = ggtheme,
@@ -133,6 +134,9 @@ labels will be colored by strata.}
 \item{fontsize}{text font size.}
 
 \item{font.family}{character vector specifying text element font family, e.g.: font.family = "Courier New".}
+
+\item{hjust}{horizontal justification of the table text (passed to
+\code{geom_text}). Default is 0.5 (centered); use e.g. 0 for left-aligned.}
 
 \item{axes.offset}{logical value. Default is TRUE. If FALSE, set the plot axes
 to start at the origin.}
