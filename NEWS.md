@@ -16,6 +16,8 @@
 
 ## Bug fixes
 
+- Fix `ggsurvplot_facet(..., panel.labs = ...)` failing with "cannot xtfrm data frames" when the data is a tibble: the panel-label code did `as.factor(data[, var])`, and `tibble[, var]` returns a one-column tibble rather than a vector. The data is now coerced to a plain data.frame at entry (#591).
+
 - Fix `ggforest()` crashing (`axisTicks(): '_LARGE_ range'`) for a Cox model with complete/quasi-complete separation, where a coefficient is near-infinite: the x-axis range is now clamped to a finite window (with a warning) so the plot still renders (#570, #590).
 
 - Fix `ggforest()` producing duplicated/crossed rows for prefix-colliding non-factor term names (e.g. logical covariates `add11` and `add17`): coefficients were matched to terms with a regex (`"^var*."`) that treated trailing digits as a quantifier, so each name matched the other's coefficient. Coefficients are now mapped to their term via `model$assign` (#689).
