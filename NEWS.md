@@ -20,6 +20,8 @@
 
 - Fix `ggsurvplot(fit, facet.by = "X")` erroring with "subscript out of bounds" when every variable of the survival formula is also a `facet.by` variable, e.g. a null model `Surv(...) ~ 1` faceted by `X`, or `Surv(...) ~ X` faceted by `X`. Each panel then shows a single curve with no within-panel grouping, so there is no extra strata to build; this case no longer calls the strata builder with zero variables (#304).
 
+- Fix the percentage at risk (`pct.risk`, used in `risk.table = "percentage"`/`"abs_pct"`) exceeding 100% for a weighted `survfit()`: it was computed as `n.risk * 100 / fit$n`, but `fit$n` is the unweighted subject count while `n.risk` is weighted. When the weighting makes `n.risk` exceed `fit$n`, the denominator now falls back to the weighted number at risk at the origin. Unweighted fits (for which `n.risk` never exceeds `fit$n`) keep `fit$n`, so their output is unchanged (#561).
+
 - Fix `break.y.by` producing wrong axis breaks for transformed survival curves (`fun = "cloglog"`, `"event"`, `"cumhaz"`) or a custom `ylim` outside [0, 1]: the y breaks were computed as `seq(0, 1, by = break.y.by)`, so values outside [0, 1] had no breaks. They are now derived from the displayed y-range (the default survival plot is unchanged) (#378, #442).
 
 - Fix `ggcoxzph()` with `cox.zph(..., transform = "log")` drawing the fitted line on a different x-scale than the residual points (the line was squeezed to the far left): the fit line was drawn at `log(pred.x)` while the points and confidence bands were on the original time scale. The fit line now uses the same scale and the x-axis is log-scaled, matching `survival::plot.cox.zph(log = "x")` (#454, #588).
