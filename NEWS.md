@@ -18,6 +18,8 @@
 
 ## Bug fixes
 
+- Fix `break.y.by` producing wrong axis breaks for transformed survival curves (`fun = "cloglog"`, `"event"`, `"cumhaz"`) or a custom `ylim` outside [0, 1]: the y breaks were computed as `seq(0, 1, by = break.y.by)`, so values outside [0, 1] had no breaks. They are now derived from the displayed y-range (the default survival plot is unchanged) (#378, #442).
+
 - Fix `ggcoxzph()` with `cox.zph(..., transform = "log")` drawing the fitted line on a different x-scale than the residual points (the line was squeezed to the far left): the fit line was drawn at `log(pred.x)` while the points and confidence bands were on the original time scale. The fit line now uses the same scale and the x-axis is log-scaled, matching `survival::plot.cox.zph(log = "x")` (#454, #588).
 
 - Fix `pairwise_survdiff()` erroring with "undefined columns selected" when the formula contains a `strata()` term (e.g. `~ rx + strata(sex)`): `strata(sex)` is not a data column, so it could not be used to group/subset. `strata()` terms are now separated from the grouping variable and kept in the `survdiff` formula, giving a stratified pairwise test (#648).
