@@ -32,9 +32,9 @@ will be extracted from 'fit' object.}
 \item{noDigits}{number of digits for estimates and p-values in the plot.}
 
 \item{global.stats}{logical value. Default is TRUE. If FALSE, the bottom caption
-reporting the global statistics (number of events, global log-rank p-value, AIC
-and concordance index) is omitted. Useful when arranging several forest plots in
-a panel.}
+reporting the global statistics (number of events, global likelihood-ratio-test
+p-value, AIC and concordance index) is omitted. Useful when arranging several
+forest plots in a panel.}
 }
 \value{
 returns a ggplot2 object (invisibly)
