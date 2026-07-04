@@ -49,6 +49,22 @@ test_that("ref.display = FALSE does not drop continuous-only estimates (#563)", 
   expect_setequal(forest_text(p_on), forest_text(p_off))
 })
 
+test_that("ref.display = FALSE also drops aliased/non-estimable (NA-estimate) terms (#563)", {
+  # Documented behavior: the drop targets rows with no hazard ratio (NA estimate),
+  # which is a superset of factor baselines -- it also includes aliased/collinear
+  # terms that coxph sets to NA. These are already shown as "reference" in the
+  # default plot (they have no plottable HR), so dropping them is self-consistent.
+  d <- lung
+  d$age2 <- 2 * d$age                       # perfectly collinear -> coxph aliases it
+  fit_alias <- suppressWarnings(coxph(Surv(time, status) ~ age + age2, data = d))
+  # sanity: age2 is aliased to an NA estimate
+  expect_true(is.na(broom::tidy(fit_alias)$estimate[broom::tidy(fit_alias)$term == "age2"]))
+  # default shows it (as a "reference"-labelled row); ref.display = FALSE drops it
+  expect_true(any(grepl("reference", forest_text(suppressWarnings(ggforest(fit_alias, data = d))))))
+  expect_false(any(grepl("reference",
+                         forest_text(suppressWarnings(ggforest(fit_alias, data = d, ref.display = FALSE))))))
+})
+
 test_that("no-regression: ref.display = FALSE keeps a non-reference row whose CI is wide (#563)", {
   # ph.ecog level 3 (N=1) has a very wide but finite interval -- a real estimate,
   # not a reference -- so it must survive the drop.

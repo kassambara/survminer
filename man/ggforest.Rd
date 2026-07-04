@@ -37,10 +37,11 @@ reporting the global statistics (number of events, global likelihood-ratio-test
 p-value, AIC and concordance index) is omitted. Useful when arranging several
 forest plots in a panel.}
 
-\item{ref.display}{logical value. Default is TRUE. If FALSE, the reference level
-rows of factor variables (the baselines, which have no hazard ratio) are omitted
-from both the plot and the table, keeping only the compared levels. Default TRUE
-shows every level (unchanged).}
+\item{ref.display}{logical value. Default is TRUE. If FALSE, the rows that have
+no hazard ratio -- factor baselines, and any non-estimable / aliased or
+\code{strata()} terms, i.e. the rows labelled \code{refLabel} ("reference") --
+are omitted from both the plot and the table, keeping only the estimated levels.
+Default TRUE shows every row (unchanged).}
 }
 \value{
 returns a ggplot2 object (invisibly)
