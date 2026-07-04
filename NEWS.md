@@ -82,7 +82,7 @@
 
 - Fix `ggsurvplot_combine()` ignoring `risk.table.fontsize`: the risk-table text size can now be set with `risk.table.fontsize` (as in `ggsurvplot()`), not only with `fontsize` (#514).
 
-- Fix `surv_categorize()` returning the raw numeric values (instead of `"high"`/`"low"`) for variables whose names contain characters that `make.names()` alters, such as a hyphen (e.g. gene names like `"A1BG-AS1"`): `summary.surv_cutpoint()` now builds its row names with `check.names = FALSE` so the name still matches (#609).
+- Fix `surv_categorize()` returning the raw numeric values (instead of `"high"`/`"low"`) for variables whose names contain characters that `make.names()` alters, such as a hyphen (e.g. gene names like `"A1BG-AS1"`): `summary.surv_cutpoint()` now builds its row names with `check.names = FALSE` so the name still matches (#609). The hyphenated-gene-name case was also reported by @hmkim (#502).
 
 - Remove an unused, undefined `alpha` argument passed by `surv_cutpoint()` to `maxstat::maxstat.test()` (it only worked by lazy evaluation); no change to computed cut points (#598).
 
@@ -94,7 +94,7 @@
 
 - Fix `ggcoxfunctional()` erroring with "'x' and 'y' lengths differ" when the Cox formula contains a covariate with missing values: `model.matrix()` drops rows with missing terms, but the null-model martingale residuals were computed from the full data. The data is now restricted to the complete-case (model-matrix) rows so the lengths match (#248).
 
-- Fix `ggcoxfunctional()` erroring with a cryptic "'x' and 'y' lengths differ" when the Cox formula contains a factor/character covariate (or a `strata()` term): such terms are renamed/expanded in the model matrix and cannot be checked for functional form. They are now dropped with a warning, and only continuous covariates are plotted (#357).
+- Fix `ggcoxfunctional()` erroring with a cryptic "'x' and 'y' lengths differ" when the Cox formula contains a factor/character covariate (or a `strata()` term): such terms are renamed/expanded in the model matrix and cannot be checked for functional form. They are now dropped with a warning, and only continuous covariates are plotted (#357). Dropping non-continuous terms was also proposed by @DanChaltiel (#410).
 
 - Fix `ggsurvplot_combine(..., surv.median.line = "hv")` (or `"h"`/`"v"`) not drawing the median survival lines: `surv.median.line` was forwarded to `ggsurvplot_df()` (which does not handle it) and silently ignored. The median lines are now computed from the combined fits and drawn on the plot (#316).
 
@@ -105,7 +105,7 @@
 - Fix `ggsurvplot(..., add.all = TRUE)` (and `ggsurvplot_add_all()`) erroring with "argument matches multiple formal arguments" when a `legend` position was supplied: `legend` partial-matched `legend.title`/`legend.labs`; it is now an explicit forwarded argument (#566).
 
 - Fix `ggflexsurvplot()` collapsing a grouped Kaplan-Meier curve to a single "All" stratum when the grouping covariate is a factor: `is_factor_or_character()` called ggplot2's `is.facet()` (a Facet-object test, always `FALSE` for a data column) instead of `is.factor()` (#408).
-- Fix `surv_group_by()` (and downstream `ggsurvplot_facet()` / grouped `surv_pvalue()`) failing with "cannot xtfrm data frame" when the input is a tibble: extract the grouping column with `data[[var]]` (a vector) instead of `data[, var]` (a one-column tibble) (#548, #670).
+- Fix `surv_group_by()` (and downstream `ggsurvplot_facet()` / grouped `surv_pvalue()`) failing with "cannot xtfrm data frame" when the input is a tibble: extract the grouping column with `data[[var]]` (a vector) instead of `data[, var]` (a one-column tibble) (#548, #670). The same one-line fix was earlier contributed by @yonicd (#549).
 - Fix `ggflexsurvplot()` erroring with "object '<name>' not found" when the model's data object is out of scope at plot time (even with `data =` supplied): the already-resolved `data` is now forwarded to the internal `.extract.survfit()` instead of being re-derived from `fit$call$data` (#436).
 - Fix `ggsurvplot(..., ncensor.plot = TRUE)` erroring at draw time with "Unknown colour name: strata" for a single-group fit (`~ 1`): the default `color = "strata"` was passed to the censoring bar plot as a literal colour when the data has no `strata` column. The bars now use the survival curve's own colour for that case only (falling back to black if it cannot be resolved), leaving grouped fits and explicit colours unchanged (#298).
 - Fix `ggadjustedcurves()` / `surv_adjustedcurves()` failing with "cannot xtfrm data frame" when a tibble is passed as `data` (or as `reference` for the marginal method): both are coerced to a plain data.frame so the internal `data[, variable]` extractions return a vector (#501, #628).
