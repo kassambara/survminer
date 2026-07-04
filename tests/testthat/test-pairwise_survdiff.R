@@ -37,3 +37,37 @@ test_that("a formula with only strata() terms errors clearly (#648)", {
     "at least one grouping variable"
   )
 })
+
+test_that("rows with a missing grouping value are dropped (#635)", {
+  # pairwise_survdiff() removes rows with NA in any grouping column before the
+  # pairwise tests. This locks that behavior after switching the row-wise check
+  # to anyNA() (byte-identical to the previous `NA %in% .row` for grouping
+  # variables). A run with NAs must match a run on the NA-free subset.
+  d <- colon
+  set.seed(42)
+  na_idx <- sample(nrow(d), 20)
+  d$rx[na_idx] <- NA
+  res_na  <- pairwise_survdiff(Surv(time, status) ~ rx, data = d)
+  res_cc  <- pairwise_survdiff(Surv(time, status) ~ rx, data = d[!is.na(d$rx), ])
+  expect_equal(res_na$p.value, res_cc$p.value)
+  # NA is not carried in as a spurious extra group
+  expect_false(anyNA(rownames(res_na$p.value)))
+  expect_false(any(c("NA", NA) %in% rownames(res_na$p.value)))
+})
+
+test_that("rows with a missing value in ANY of several grouping vars are dropped (#635)", {
+  # The drop matters most for the multiple-grouping-variable path: an undropped
+  # NA would form a spurious combined strata() level. NAs seeded into different
+  # rows of two grouping columns must give the same result as the complete-case
+  # run, with no NA-bearing combined group.
+  d <- colon
+  set.seed(7)
+  d$rx[sample(nrow(d), 15)]     <- NA
+  d$adhere[sample(nrow(d), 15)] <- NA
+  res_na <- pairwise_survdiff(Surv(time, status) ~ rx + adhere, data = d)
+  cc <- d[!is.na(d$rx) & !is.na(d$adhere), ]
+  res_cc <- pairwise_survdiff(Surv(time, status) ~ rx + adhere, data = cc)
+  expect_equal(res_na$p.value, res_cc$p.value)
+  expect_false(any(grepl("NA", rownames(res_na$p.value))))
+  expect_false(any(grepl("NA", colnames(res_na$p.value))))
+})
