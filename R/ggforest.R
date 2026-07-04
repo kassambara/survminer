@@ -46,7 +46,7 @@ ggforest <- function(model, data = NULL,
   main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
   fontsize = 0.7, refLabel = "reference", noDigits=2,
   global.stats = TRUE) {
-  conf.high <- conf.low <- estimate <- NULL
+  conf.high <- conf.low <- estimate <- .row <- NULL
   stopifnot(inherits(model, "coxph"))
 
   # get data and variables/terms from cox model
@@ -131,6 +131,21 @@ ggforest <- function(model, data = NULL,
   toShowExpClean$stars[is.na(toShowExpClean$estimate)] = ""
   toShowExpClean$ci[is.na(toShowExpClean$estimate)] = ""
   toShowExpClean$estimate[is.na(toShowExpClean$estimate)] = 0
+  # Rows whose hazard ratio or a confidence limit is non-finite on the drawn
+  # (exp / log10) scale come from a Cox model that did not converge -- usually
+  # complete/quasi-complete separation. The stored coefficient may be a large but
+  # finite log value whose exp() overflows to Inf (upper limit) or underflows to
+  # 0 (lower limit); either way it cannot be placed on the log axis, and drawing
+  # it yields a misleading full-width interval plus a "log-10 transformation
+  # introduced infinite values" warning. Flag these rows (tested on the exp'd
+  # values) so the point/error-bar layers skip them; the row still appears in the
+  # table with its numeric labels. NA (reference) levels are NOT flagged -- their
+  # exp'd coordinates are NA, guarded below -- so they are still drawn at HR = 1.
+  # Converged models have no such rows -> no-op, output unchanged (#406).
+  .undrawable <- function(v){ v <- exp(v); !is.na(v) & (!is.finite(v) | v <= 0) }
+  toShowExpClean$.nonfinite <- .undrawable(toShowExpClean$estimate) |
+    .undrawable(toShowExpClean$conf.low) | .undrawable(toShowExpClean$conf.high)
+  nonfinite_terms <- unique(as.character(toShowExpClean$var)[toShowExpClean$.nonfinite])
   toShowExpClean$var = as.character(toShowExpClean$var)
   toShowExpClean$var[duplicated(toShowExpClean$var)] = ""
   # make label strings:
@@ -138,8 +153,33 @@ ggforest <- function(model, data = NULL,
 
   #flip order
   toShowExpClean <- toShowExpClean[nrow(toShowExpClean):1, ]
+  # Stable row index for the drawn layers, so that subsetting the point/error-bar
+  # data to finite rows does not renumber x (the geoms otherwise use
+  # seq_along(var), which would misalign a subset from the rects/annotations).
+  toShowExpClean$.row <- seq_len(nrow(toShowExpClean))
+  if (length(nonfinite_terms) > 0)
+    warning("ggforest: the hazard ratio / confidence interval for term(s) ",
+            paste(nonfinite_terms, collapse = ", "), " is non-finite -- the Cox ",
+            "model likely did not converge (e.g. complete/quasi-complete ",
+            "separation). Those rows are listed in the table but not drawn as a ",
+            "point/interval.", call. = FALSE)
 
-  rangeb <- range(toShowExpClean$conf.low, toShowExpClean$conf.high, na.rm = TRUE)
+  # Axis range from the DRAWABLE rows only (a non-finite row is not plotted, so it
+  # must not stretch the axis). For converged models no row is dropped, so this is
+  # identical to the previous range over all rows. Fall back to the full range (the
+  # clamp below then bounds it to a finite window) when the drawable rows give no
+  # finite range -- e.g. a single factor covariate whose only drawable row is the
+  # NA-CI reference level, or every row non-finite -- so axisTicks() never receives
+  # an empty/inverted range.
+  .drawable <- !toShowExpClean$.nonfinite
+  # suppressWarnings: when the drawable subset is empty / all-NA (e.g. a single
+  # separated factor covariate whose only drawable row is the NA-CI reference),
+  # range(na.rm=TRUE) warns "no non-missing arguments to min"; the fallback below
+  # then supplies a finite range, so that warning is just noise.
+  rangeb <- suppressWarnings(range(toShowExpClean$conf.low[.drawable],
+                                   toShowExpClean$conf.high[.drawable], na.rm = TRUE))
+  if (!all(is.finite(rangeb)))
+    rangeb <- range(toShowExpClean$conf.low, toShowExpClean$conf.high, na.rm = TRUE)
   # (Quasi-)complete separation in the Cox model yields near-infinite
   # coefficients, whose exp()-ed confidence limits overflow and make
   # axisTicks() error with "'at' creation, _LARGE_ range". Clamp the (log-scale)
@@ -178,8 +218,10 @@ ggforest <- function(model, data = NULL,
       ymin = exp(rangeplot[1]), ymax = exp(rangeplot[2]),
       fill = ordered(seq_along(var) %% 2 + 1))) +
     scale_fill_manual(values = c("#FFFFFF33", "#00000033"), guide = "none") +
-    geom_point(pch = 15, size = 4) +
-    geom_errorbar(aes(ymin = exp(conf.low), ymax = exp(conf.high)), width = 0.15) +
+    geom_point(data = toShowExpClean[!toShowExpClean$.nonfinite, , drop = FALSE],
+      aes(x = .row, y = exp(estimate)), pch = 15, size = 4) +
+    geom_errorbar(data = toShowExpClean[!toShowExpClean$.nonfinite, , drop = FALSE],
+      aes(x = .row, ymin = exp(conf.low), ymax = exp(conf.high)), width = 0.15) +
     geom_hline(yintercept = 1, linetype = 3) +
     coord_flip(ylim = exp(rangeplot)) +
     ggtitle(main) +

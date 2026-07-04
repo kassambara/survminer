@@ -22,6 +22,8 @@
 
 ## Bug fixes
 
+- Improve `ggforest()` handling of a non-converged Cox model (complete / quasi-complete separation), whose coefficient has a hazard ratio or confidence limit that overflows to `Inf` (or underflows to 0). Such a row can't be placed on the log axis; it previously produced a misleading full-width interval and a cryptic "log-10 transformation introduced infinite values" warning. `ggforest()` now emits a clear message naming the affected term(s), omits those rows from the drawn point/interval (they still appear in the table with their numeric labels), and sizes the axis from the finite rows. Converged models are unchanged (#406).
+
 - Fix customizing the risk table failing under `ggplot2 >= 4.0` with "Can't merge the `axis.text.y` theme element" (e.g. `p$table + theme(axis.text.y = element_text(...))`, or `ggsave()`ing a customized table). In ggplot2 4.x theme elements are S7 objects and `ggtext::element_markdown()` (used to colour the risk-table y labels per strata) can no longer be merged with a user `element_text()`. On ggplot2 >= 4.0 the per-strata label colours are now applied with `element_text(colour = <vector>)` (native and mergeable); on older ggplot2 `element_markdown()` is kept (it merges fine there). The coloured labels are unchanged (#557).
 
 - Fix a factor **level** with a genuine trailing or leading space (e.g. `"Obs, "`) being parsed as `NA` in the grouping/facet columns. `survfit` right-pads level names in strata labels, so survminer must trim them; the trimmed value is now matched against the (also trimmed) factor levels while keeping the original levels, so such labels are recovered instead of dropped. Completes the strata special-character fixes (#616).
