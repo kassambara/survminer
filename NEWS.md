@@ -2,7 +2,7 @@
 
 ## New features
 
-- `ggsave()` now works directly on a `ggsurvplot` object: a `grid.draw()` method for the `ggsurvplot` class is registered, so `ggsave(filename, plot = p)` saves the assembled plot (survival curve + risk table) without needing the `print(p, newpage = FALSE)` workaround, and no leading blank page is produced (#152).
+- `ggsave()` now works directly on a `ggsurvplot` object: a `grid.draw()` method for the `ggsurvplot` class is registered, so `ggsave(filename, plot = p)` saves the assembled plot (survival curve + risk table) without needing the `print(p, newpage = FALSE)` workaround, and no leading blank page is produced (#152). Same approach independently contributed by @mjakubczak (#522).
 
 ## Major changes
 
