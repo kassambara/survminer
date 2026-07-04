@@ -198,6 +198,33 @@ ggsurvplot_facet <- function(fit, data, facet.by,
             "numeric or character `pval` is not substituted. Use `pval = TRUE`.",
             call. = FALSE)
   if(draw.pval){
+    # If the response is a Surv object built OUTSIDE `data` -- a bare-symbol
+    # formula LHS such as `Survival <- Surv(...); survfit(Survival ~ x, data = D)`,
+    # as opposed to `Surv(time, status) ~ x` -- the per-panel p-value below
+    # row-subsets `data` and refits `.survformula` on each subset, re-evaluating
+    # the full-length global response against a shorter subset -> model.frame
+    # "variable lengths differ" (#467). Materialise that response once on the full
+    # data (in the same scope the formula was created in) and point the p-value
+    # formula at that column, so subsetting keeps it row-aligned. Gated to the
+    # bare-symbol-not-a-column case: `Surv(...) ~ x` (a call, not a symbol) and a
+    # response that is already a data column both take the unchanged path.
+    resp.expr <- .formula[[2]]
+    if (is.symbol(resp.expr) && !(as.character(resp.expr) %in% colnames(data))) {
+      .resp.env <- environment(.formula)
+      if (is.null(.resp.env)) .resp.env <- parent.frame()
+      # Resolve the response only if the symbol is reachable and matches the data
+      # length; otherwise fall back to the unchanged path (same error as before,
+      # never a new/worse one). This resolves the common case where the Surv
+      # object lives in an accessible (e.g. global) scope, as in the report.
+      resp.val <- tryCatch(eval(resp.expr, envir = data, enclos = .resp.env),
+                           error = function(e) NULL)
+      if (!is.null(resp.val) && NROW(resp.val) == nrow(data)) {
+        .resp.col <- ".survminer.response."
+        data[[.resp.col]] <- resp.val
+        .survformula <- stats::update(.survformula,
+                                      stats::as.formula(paste(.resp.col, "~ .")))
+      }
+    }
     # Grouped data
     grouped.d <- surv_group_by(data, grouping.vars = facet.by)
     # Compute survfit on each subset ==> list of fits
