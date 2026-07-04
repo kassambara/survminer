@@ -20,6 +20,8 @@
 
 ## Bug fixes
 
+- Fix customizing the risk table failing under `ggplot2 >= 4.0` with "Can't merge the `axis.text.y` theme element" (e.g. `p$table + theme(axis.text.y = element_text(...))`, or `ggsave()`ing a customized table). In ggplot2 4.x theme elements are S7 objects and `ggtext::element_markdown()` (used to colour the risk-table y labels per strata) can no longer be merged with a user `element_text()`. On ggplot2 >= 4.0 the per-strata label colours are now applied with `element_text(colour = <vector>)` (native and mergeable); on older ggplot2 `element_markdown()` is kept (it merges fine there). The coloured labels are unchanged (#557).
+
 - Fix a factor **level** with a genuine trailing or leading space (e.g. `"Obs, "`) being parsed as `NA` in the grouping/facet columns. `survfit` right-pads level names in strata labels, so survminer must trim them; the trimmed value is now matched against the (also trimmed) factor levels while keeping the original levels, so such labels are recovered instead of dropped. Completes the strata special-character fixes (#616).
 
 - Fix `ggsurvplot(..., risk.table = TRUE)` erroring with "gridtext has encountered a tag that isn't supported yet: &lt;blockquote&gt;" when a strata label / `legend.labs` entry contains `<`, `>` or `&` (e.g. `"> 1 Risk factor"`). The risk-table y-axis labels are drawn with `ggtext::element_markdown()` (to colour them per strata), which parsed those characters as HTML tags; they are now HTML-escaped so they render literally. Ordinary labels are unchanged, and the plain-text path (`risk.table.y.text.col = FALSE`) is untouched (#532).

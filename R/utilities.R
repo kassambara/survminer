@@ -20,6 +20,16 @@ is_pkg_version_sup<- function(pkg, version){
   cc
 }
 
+# TRUE for ggplot2 >= 4.0.0. In 4.x theme elements are S7 objects, and ggtext's
+# element_markdown() (still an old-style S3 element) can no longer be merged with
+# a user-supplied element_text() ("Can't merge the `axis.text.y` theme element",
+# #557). ggplot2 4.x does support a per-label colour vector in element_text(), so
+# on 4.x we colour risk-table y labels with element_text() instead of
+# element_markdown(); < 4.0 keeps element_markdown() (which merges fine there).
+.ggplot2_ge_4 <- function(){
+  utils::compareVersion(as.character(utils::packageVersion("ggplot2")), "4.0.0") >= 0
+}
+
 # Count the number of ggplots in a list
 .count_ggplots <- function(list.objects){
   nplot <- 0
@@ -379,6 +389,31 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 .set_large_dash_as_ytext <- function(ggp){
   ggp + theme(axis.text.y = ggtext::element_markdown(size = 50, vjust = 0.5),
         axis.ticks.y = element_blank())
+}
+
+# Colour the (risk) table y tick labels per strata with a colour vector.
+# On ggplot2 >= 4.0 use element_text() -- it accepts a per-label colour vector and,
+# unlike ggtext's element_markdown(), can be merged with a user element_text() when
+# customizing the table (#557). ggplot2 4.x prints a one-time "Vectorized input to
+# element_text() is not officially supported" note at theme-assembly time; it is
+# muffled here so it doesn't reach users on every render (the assembled element is
+# stored and does not re-warn at draw time). On ggplot2 < 4.0, where element_text()
+# has no colour vector, keep element_markdown() (which merges fine there).
+# markdown = TRUE forces element_markdown() (used on ggplot2 < 4.0, and on 4.x when
+# y.text = FALSE where the labels are already an element_markdown() large dash that
+# an element_text() could not be merged onto).
+.set_ytext_colour <- function(ggp, colour, markdown = !.ggplot2_ge_4()){
+  if(markdown){
+    ggp + theme(axis.text.y = ggtext::element_markdown(colour = colour))
+  } else {
+    withCallingHandlers(
+      ggp + theme(axis.text.y = ggplot2::element_text(colour = colour)),
+      warning = function(w){
+        if(grepl("Vectorized input to", conditionMessage(w), fixed = TRUE))
+          invokeRestart("muffleWarning")
+      }
+    )
+  }
 }
 
 

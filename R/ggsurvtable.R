@@ -248,11 +248,13 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   yticklabs <- rev(levels(survsummary$strata))
   n_strata <- length(levels(survsummary$strata))
   if(!y.text) yticklabs <- rep("\\-", n_strata)
-  else if((is.logical(y.text.col) && isTRUE(y.text.col[1])) || is.character(y.text.col))
-    # These labels are rendered with ggtext::element_markdown() below (coloured
-    # per strata), so HTML-escape <, >, & to render them literally instead of as
-    # markdown/HTML tags (#532). No-op for ordinary labels; when y.text.col is
-    # FALSE the labels use plain element_text and are left untouched.
+  else if(!.ggplot2_ge_4() && ((is.logical(y.text.col) && isTRUE(y.text.col[1])) || is.character(y.text.col)))
+    # On ggplot2 < 4.0 these labels are rendered with ggtext::element_markdown()
+    # below (coloured per strata), so HTML-escape <, >, & to render them literally
+    # instead of as markdown/HTML tags (#532). No-op for ordinary labels; when
+    # y.text.col is FALSE the labels use plain element_text and are left untouched.
+    # On ggplot2 >= 4.0 we use element_text() (see below), which shows the label
+    # literally, so no escaping is needed (and would show "&gt;").
     yticklabs <- .escape_markdown(yticklabs)
 
   time <- strata <- label <- n.event <- cum.n.event  <- cum.n.censor<- NULL
@@ -322,13 +324,19 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
     p <- .set_large_dash_as_ytext(p)
   }
 
-  # Color table tick labels by strata
-  if(is.logical(y.text.col) & y.text.col[1] == TRUE){
-    cols <- .extract_ggplot_colors(p, grp.levels = legend.labs)
-    p <- p + theme(axis.text.y = ggtext::element_markdown(colour = rev(cols)))
+  # Color table tick labels by strata. On ggplot2 >= 4.0 use element_text() with a
+  # per-label colour vector (native, and mergeable with a user-supplied
+  # element_text() -- ggtext's element_markdown() is not, which broke risk-table
+  # customization under ggplot2 4.x, #557). On ggplot2 < 4.0, where element_text()
+  # does not accept a colour vector, keep element_markdown() (it merges fine there).
+  if((is.logical(y.text.col) & y.text.col[1] == TRUE) || is.character(y.text.col)){
+    ytext.cols <- if(is.character(y.text.col)) y.text.col
+                  else .extract_ggplot_colors(p, grp.levels = legend.labs)
+    # When y.text = FALSE the labels are an element_markdown() large dash (set
+    # above), so the colour must also be element_markdown() to merge; otherwise use
+    # element_text() on ggplot2 >= 4.0 for user-override compatibility (#557).
+    p <- .set_ytext_colour(p, rev(ytext.cols), markdown = !.ggplot2_ge_4() || !y.text)
   }
-  else if(is.character(y.text.col))
-    p <- p + theme(axis.text.y = ggtext::element_markdown(colour = rev(y.text.col)))
 
   p
 
