@@ -13,6 +13,11 @@
 #'   caption reporting the global statistics (number of events, global
 #'   likelihood-ratio-test p-value, AIC and concordance index) is omitted. Useful
 #'   when arranging several forest plots in a panel.
+#' @param ref.display logical value. Default is TRUE. If FALSE, the rows that
+#'   have no hazard ratio -- factor baselines, and any non-estimable / aliased or
+#'   \code{strata()} terms, i.e. the rows labelled \code{refLabel} ("reference")
+#'   -- are omitted from both the plot and the table, keeping only the estimated
+#'   levels. Default TRUE shows every row (unchanged).
 #'
 #' @return returns a ggplot2 object (invisibly)
 #'
@@ -45,7 +50,7 @@
 ggforest <- function(model, data = NULL,
   main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
   fontsize = 0.7, refLabel = "reference", noDigits=2,
-  global.stats = TRUE) {
+  global.stats = TRUE, ref.display = TRUE) {
   conf.high <- conf.low <- estimate <- .row <- NULL
   stopifnot(inherits(model, "coxph"))
 
@@ -121,6 +126,15 @@ ggforest <- function(model, data = NULL,
   toShowExpClean <- data.frame(toShow,
     pvalue = signif(toShow[,4],noDigits+1),
     toShowExp)
+  # ref.display = FALSE drops the rows with no hazard ratio -- factor baselines,
+  # plus any non-estimable / aliased or strata() terms -- from both the drawn
+  # point and the table, keeping only the estimated levels. These are exactly the
+  # rows with an NA estimate, i.e. the ones already labelled refLabel ("reference")
+  # below, so the drop is self-consistent with the default display. A non-converged
+  # (separation) coefficient is a large finite value, not NA, so no genuine
+  # estimate is dropped. Default TRUE keeps every row -> existing plots unchanged (#563).
+  if (!ref.display)
+    toShowExpClean <- toShowExpClean[!is.na(toShowExpClean$estimate), , drop = FALSE]
   toShowExpClean$stars <- paste0(round(toShowExpClean$p.value, noDigits+1), " ",
     ifelse(toShowExpClean$p.value < 0.05, "*",""),
     ifelse(toShowExpClean$p.value < 0.01, "*",""),

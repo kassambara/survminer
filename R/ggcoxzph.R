@@ -1,7 +1,9 @@
 #'Graphical Test of Proportional Hazards with ggplot2
 #'@description Displays a graph of the scaled Schoenfeld residuals, along with a
 #'  smooth curve using \pkg{ggplot2}. Wrapper around \link[survival]{plot.cox.zph}.
-#'@param fit an object of class \link[survival]{cox.zph}.
+#'@param fit an object of class \link[survival]{cox.zph}, or a
+#'  \link[survival]{coxph} model, in which case \code{\link[survival]{cox.zph}()}
+#'  is run on it automatically.
 #'@param resid	a logical value, if TRUE the residuals are included on the plot,
 #'  as well as the smooth fit.
 #'@param se a logical value, if TRUE, confidence bands at two standard errors
@@ -50,6 +52,11 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
                       ggtheme = theme_survminer(), ...){
 
   x <- fit
+  # Accept a coxph model directly and run the proportional-hazards test on it, so
+  # users don't have to call survival::cox.zph() first. A cox.zph object (the
+  # previous input) is not a coxph, so it takes the unchanged path (#410).
+  if(methods::is(x, "coxph"))
+    x <- survival::cox.zph(x)
   if(!methods::is(x, "cox.zph"))
     stop("Can't handle an object of class ", class(x))
 
