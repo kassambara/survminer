@@ -248,6 +248,12 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   yticklabs <- rev(levels(survsummary$strata))
   n_strata <- length(levels(survsummary$strata))
   if(!y.text) yticklabs <- rep("\\-", n_strata)
+  else if((is.logical(y.text.col) && isTRUE(y.text.col[1])) || is.character(y.text.col))
+    # These labels are rendered with ggtext::element_markdown() below (coloured
+    # per strata), so HTML-escape <, >, & to render them literally instead of as
+    # markdown/HTML tags (#532). No-op for ordinary labels; when y.text.col is
+    # FALSE the labels use plain element_text and are left untouched.
+    yticklabs <- .escape_markdown(yticklabs)
 
   time <- strata <- label <- n.event <- cum.n.event  <- cum.n.censor<- NULL
 
