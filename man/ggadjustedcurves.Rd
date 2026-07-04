@@ -25,6 +25,7 @@ surv_adjustedcurves(
   data = NULL,
   reference = NULL,
   method = "conditional",
+  fun = NULL,
   size = 1,
   ...
 )
@@ -42,10 +43,12 @@ surv_adjustedcurves(
 'single' (average for population), 'average' (averages for subpopulations), 'marginal', 'conditional' (averages for subpopulations after rebalancing). See the Details section  for further information.}
 
 \item{fun}{an arbitrary function defining a transformation of the survival
-curve.  Often used transformations can be specified with a character
-argument: "event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the
-cumulative hazard function (f(y) = -log(y)), and "pct" for survival
-probability in percentage.}
+curve. Often used transformations can be specified with a character argument:
+"event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the cumulative
+hazard function (f(y) = -log(y)), and "pct" for survival probability in
+percentage. For \code{surv_adjustedcurves()} the transformation is applied to
+the returned survival column; the default \code{NULL} leaves the survival
+probabilities unchanged.}
 
 \item{palette}{the color palette to be used. Allowed values include "hue" for
 the default hue color scale; "grey" for grey color palettes; brewer palettes
