@@ -24,7 +24,9 @@ ggcoxzph(
 \method{print}{ggcoxzph}(x, ..., newpage = TRUE)
 }
 \arguments{
-\item{fit}{an object of class \link[survival]{cox.zph}.}
+\item{fit}{an object of class \link[survival]{cox.zph}, or a
+\link[survival]{coxph} model, in which case \code{\link[survival]{cox.zph}()} is
+run on it automatically.}
 
 \item{resid}{a logical value, if TRUE the residuals are included on the plot,
 as well as the smooth fit.}
