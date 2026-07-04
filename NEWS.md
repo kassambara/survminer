@@ -20,6 +20,8 @@
 
 ## Bug fixes
 
+- Fix `ggforest()` mislabeling the global p-value in the bottom caption as "Log-Rank": the value shown (`broom::glance()$p.value.log`) is the p-value of the *likelihood ratio test* (`survival` stores it in `logtest`), not the score/log-rank test (`p.value.sc`/`sctest`). The caption now reads "Global p-value (Likelihood ratio test)". The value itself is unchanged — only the label is corrected (#640).
+
 - Fix `ggsurvplot()` mis-rendering negative survival times: the x-axis was clipped at 0 (hiding the negative-time region) and a spurious vertical drop was drawn at `x = 0`. The plot now behaves like base `plot.survfit()` — the panel spans the true time range and each curve starts at survival = 1 from its first observed time, with no injected `(0, 1)` point. For all non-negative data (the common case) the output is byte-identical (the x-origin still resolves to exactly 0). The `#523` warning that negative survival times are likely invalid is retained (#389).
 
 - `ggadjustedcurves()`/`surv_adjustedcurves()` now warn when the default `method = "conditional"` is used with a grouping `variable` that is not in the Cox model: in that case every group's curve is identical (a single visible line), which silently confused users. The warning points to `method = "average"`/`"marginal"` (which are designed for a variable absent from the model). The computed curves are unchanged (message only), and no warning fires for the other methods or when the variable is in the model (#623).

@@ -10,9 +10,9 @@
 #' @param refLabel label for reference levels of factor variables.
 #' @param noDigits number of digits for estimates and p-values in the plot.
 #' @param global.stats logical value. Default is TRUE. If FALSE, the bottom
-#'   caption reporting the global statistics (number of events, global log-rank
-#'   p-value, AIC and concordance index) is omitted. Useful when arranging
-#'   several forest plots in a panel.
+#'   caption reporting the global statistics (number of events, global
+#'   likelihood-ratio-test p-value, AIC and concordance index) is omitted. Useful
+#'   when arranging several forest plots in a panel.
 #'
 #' @return returns a ggplot2 object (invisibly)
 #'
@@ -219,10 +219,14 @@ ggforest <- function(model, data = NULL,
       hjust = -0.2,  fontface = "italic")
   # Global statistics caption (# events, global p-value, AIC, concordance).
   # Optional: set global.stats = FALSE to omit it (e.g. panels of forest plots).
+  # `broom::glance()$p.value.log` is the p-value of the *likelihood ratio test*
+  # (survival stores it in `logtest`); the score/log-rank test is `p.value.sc`
+  # (`sctest`). The caption previously mislabeled this value as "Log-Rank"; it now
+  # names the test correctly. The value shown is unchanged (#640).
   if (global.stats)
     p <- p +
     annotate(geom = "text", x = 0.5, y = exp(y_variable),
-      label = paste0("# Events: ", gmodel$nevent, "; Global p-value (Log-Rank): ",
+      label = paste0("# Events: ", gmodel$nevent, "; Global p-value (Likelihood ratio test): ",
         format.pval(gmodel$p.value.log, eps = ".001"), " \nAIC: ", round(gmodel$AIC,2),
         "; Concordance Index: ", round(gmodel$concordance,2)),
       size = annot_size_mm, hjust = 0, vjust = 1.2,  fontface = "italic") +
