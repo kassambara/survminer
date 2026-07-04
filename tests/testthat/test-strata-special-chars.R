@@ -131,3 +131,17 @@ test_that("no-regression: the data\\$variable fit form still adds the variable c
   expect_true("sex" %in% colnames(ss))
   expect_false(any(is.na(ss$sex)))
 })
+
+test_that("a factor level with a trailing/leading space is recovered, not NA (#616)", {
+  # survival right-pads level names in strata labels, so the parser must trim;
+  # matching against the trimmed factor levels (while keeping the original level
+  # as the value) lets a level with genuine surrounding whitespace still match.
+  for (labs in list(c("Obs, ", "Lev", "Lev+5FU"), c(" Obs", "Lev", "Lev+5FU"))) {
+    cc <- colon
+    cc$rx <- factor(cc$rx, levels = levels(cc$rx), labels = labs)
+    ss <- surv_summary(survfit(Surv(time, status) ~ rx, data = cc), data = cc)
+    expect_false(any(is.na(ss$rx)))
+    expect_identical(levels(ss$rx), labs)          # original (untrimmed) levels kept
+    expect_setequal(as.character(unique(ss$rx)), labs)
+  }
+})

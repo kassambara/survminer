@@ -333,7 +333,14 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
   }
   res <- as.vector(res)
   var_levels <- levels(.get_data(fit, data)[[variable]])
-  if(!is.null(var_levels)) res <- factor(res, levels = var_levels)
+  if(!is.null(var_levels)){
+    # survival right-pads level names in strata labels, so `res` was trimmed;
+    # match it against the (also trimmed) factor levels but keep the ORIGINAL
+    # levels as the values, so a level with genuine surrounding whitespace (e.g.
+    # "Obs, ") still matches instead of becoming NA (#616). For ordinary levels
+    # (no surrounding space) this is identical to factor(res, levels=var_levels).
+    res <- factor(var_levels[match(.trim(res), .trim(var_levels))], levels = var_levels)
+  }
   else res <- as.factor(res)
   res
 }
