@@ -23,6 +23,13 @@ NULL
 #'  the labels for the "sex" variable. For two grouping variables, you can use
 #'  for example panel.labs = list(sex = c("Male", "Female"), rx = c("Obs",
 #'  "Lev", "Lev2") ).
+#'@param labeller a labeller function/specification, as in
+#'  \code{\link[ggplot2]{facet_wrap}} (e.g. \code{ggplot2::label_both} or
+#'  \code{ggplot2::as_labeller(c(...))}), controlling how the panel strip labels
+#'  are formatted. Default \code{NULL} keeps the current labels. When supplied it
+#'  takes precedence over \code{short.panel.labs}; it composes with
+#'  \code{panel.labs} (which renames the underlying data levels, so the labeller
+#'  sees the renamed values).
 #'@param panel.labs.background a list to customize the background of panel
 #'  labels. Should contain the combination of the following elements: \itemize{
 #'  \item \code{color, linetype, size}: background line color, type and size
@@ -64,6 +71,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                              nrow = NULL, ncol = NULL,
                              scales = "fixed",
                              short.panel.labs = FALSE, panel.labs = NULL,
+                             labeller = NULL,
                              panel.labs.background = list(color = NULL, fill = NULL),
                              panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
                              panel.labs.font.x = panel.labs.font,
@@ -183,7 +191,8 @@ ggsurvplot_facet <- function(fit, data, facet.by,
               panel.labs.background = panel.labs.background,
               panel.labs.font = panel.labs.font,
               panel.labs.font.x =panel.labs.font.x,
-              panel.labs.font.y = panel.labs.font.y)
+              panel.labs.font.y = panel.labs.font.y,
+              labeller = labeller)
 
   # Pvalues
   #:::::::::::::::::::::::::::::::::::::::::
@@ -267,7 +276,8 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                    panel.labs.background = list(color = NULL, fill = NULL),
                    panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
                    panel.labs.font.x = panel.labs.font,
-                   panel.labs.font.y = panel.labs.font
+                   panel.labs.font.y = panel.labs.font,
+                   labeller = NULL
                    )
 {
 
@@ -277,6 +287,9 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
   .labeller <- "label_value"
   if(!short.panel.labs) .labeller <- label_both
+  # A user-supplied labeller takes precedence over the short.panel.labs choice
+  # (both control the strip-label formatting). Default NULL -> unchanged (#667).
+  if(!is.null(labeller)) .labeller <- labeller
 
   if(length(facet.by) == 1){
     facet.formula <- paste0("~", facet.by) %>% stats::as.formula()
