@@ -23,11 +23,17 @@ test_that("'>' in legend.labs with risk.table renders (was gridtext blockquote e
     legend.labs = c("≤ 1 Risk factor", "> 1 Risk factor"),
     risk.table = TRUE))
   expect_true(drew_ok(p))
-  # the built risk-table y labels carry the HTML-escaped form, which
-  # element_markdown/gridtext decodes back to a literal ">" at render time
   ylabs <- ggplot2::ggplot_build(p$table)$layout$panel_params[[1]]$y$get_labels()
-  expect_true(any(grepl("&gt;", ylabs, fixed = TRUE)))
-  expect_false(any(grepl(">", ylabs, fixed = TRUE)))  # no un-escaped ">" remains
+  if (survminer:::.ggplot2_ge_4()) {
+    # ggplot2 >= 4.0: labels use element_text() (coloured per strata via a colour
+    # vector), so the ">" is shown literally with no HTML escaping (#557).
+    expect_true(any(grepl("> 1 Risk factor", ylabs, fixed = TRUE)))
+  } else {
+    # ggplot2 < 4.0: labels use element_markdown(), so ">" is HTML-escaped and
+    # gridtext decodes "&gt;" back to a literal ">" at render time (#532).
+    expect_true(any(grepl("&gt;", ylabs, fixed = TRUE)))
+    expect_false(any(grepl(">", ylabs, fixed = TRUE)))
+  }
 })
 
 test_that("'>=' / '<' / '&' in labels with risk.table render (#532)", {
