@@ -386,8 +386,18 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 # Each dash corresponds to a strata
 # This is used for tables under the main survival plots
 #
-.set_large_dash_as_ytext <- function(ggp){
-  ggp + theme(axis.text.y = ggtext::element_markdown(size = 50, vjust = 0.5),
+.set_large_dash_as_ytext <- function(ggp, size = NULL){
+  # `size = 50` is passed when the table is first built (ggsurvtable), giving the
+  # large dash. When re-applied at print time (print.ggsurvplot) `size` is omitted,
+  # so the size already on the element is kept -- otherwise a user's
+  # `p$table <- p$table + theme(axis.text.y = element_markdown(size = ...))` would
+  # be overwritten back to 50 (#642). A non-customized table still carries the
+  # build-time 50, so the default is byte-identical.
+  if(is.null(size)){
+    size <- ggp$theme$axis.text.y$size
+    if(is.null(size)) size <- 50
+  }
+  ggp + theme(axis.text.y = ggtext::element_markdown(size = size, vjust = 0.5),
         axis.ticks.y = element_blank())
 }
 

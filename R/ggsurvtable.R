@@ -321,7 +321,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   p <- p + tables.theme
 
   if(!y.text) {
-    p <- .set_large_dash_as_ytext(p)
+    p <- .set_large_dash_as_ytext(p, size = 50)
   }
 
   # Color table tick labels by strata. On ggplot2 >= 4.0 use element_text() with a

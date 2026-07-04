@@ -22,6 +22,8 @@
 
 ## Bug fixes
 
+- Fix the "large dash" size not being changeable when `tables.y.text = FALSE`: `p$table <- p$table + theme(axis.text.y = ggtext::element_markdown(size = ...))` was silently reset to the default (50) because the dash styling is re-applied when the plot is printed. The re-application now keeps a user-set size; the default is unchanged (#642).
+
 - Fix `ggsurvplot(..., facet.by = , pval = TRUE)` erroring with "variable lengths differ" when the model was built from a `Surv` object created *outside* the data and used as the formula left-hand side (e.g. `Survival <- Surv(time, status); survfit(Survival ~ x, data = D)`, rather than `Surv(time, status) ~ x`). The per-panel p-value refit row-subset the data while the global response kept its full length; the response is now materialised once on the full data so it stays aligned under subsetting. In-formula fits are unchanged (#467).
 
 - Improve `ggforest()` handling of a non-converged Cox model (complete / quasi-complete separation), whose coefficient has a hazard ratio or confidence limit that overflows to `Inf` (or underflows to 0). Such a row can't be placed on the log axis; it previously produced a misleading full-width interval and a cryptic "log-10 transformation introduced infinite values" warning. `ggforest()` now emits a clear message naming the affected term(s), omits those rows from the drawn point/interval (they still appear in the table with their numeric labels), and sizes the axis from the finite rows. Converged models are unchanged (#406).
