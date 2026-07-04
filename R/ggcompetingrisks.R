@@ -111,7 +111,11 @@ ggcompetingrisks.survfitms <- function(fit) {
   if (is.null(fit$strata)) {
     psta$strata <- "all"
   } else {
-    psta$strata <- rep(names(fit$strata), fit$strata)
+    # Keep the model's strata order in the facets instead of letting facet_wrap()
+    # sort the strata names alphabetically (a factor preserves names(fit$strata)
+    # order). Byte-identical when the model order already is alphabetical (#470).
+    psta$strata <- factor(rep(names(fit$strata), fit$strata),
+                          levels = names(fit$strata))
   }
   psta$times <- times
   psta <- .rename_empty_colname(
