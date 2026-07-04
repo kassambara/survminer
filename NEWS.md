@@ -8,6 +8,8 @@
 
 ## Minor changes
 
+- `ggforest()` gains a `ref.display` argument. Set `ref.display = FALSE` to omit the rows that have no hazard ratio — factor baselines and any non-estimable/aliased or `strata()` terms (the rows labelled "reference") — from both the plot and the table, keeping only the estimated levels; useful for compact panels. Default is `TRUE` (every row shown, unchanged). Contributed by @trentleslie (#563).
+
 - `pairwise_survdiff()` now uses `anyNA()` for its internal missing-grouping-value check instead of a row-wise `NA %in% .row`, which is faster and clearer. Results are unchanged for the usual factor/character grouping variables; the only difference is a purely numeric grouping column containing `NaN`, whose row is now dropped as missing (previously it formed a spurious `"NaN"` group). Contributed by @MichaelChirico (#635).
 
 - `ggsurvplot_facet()` gains a `labeller` argument (forwarded to `ggplot2::facet_wrap()`/`facet_grid()`) to control how the panel strip labels are formatted — e.g. `labeller = ggplot2::label_both` or `labeller = ggplot2::as_labeller(c("1" = "Obs", "2" = "Lev", "3" = "Lev+5FU"))`. Default `NULL` keeps the current labels (unchanged); when supplied it takes precedence over `short.panel.labs` and composes with `panel.labs`. Idea contributed by @B0ydT (#667, #668).
