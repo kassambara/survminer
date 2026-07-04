@@ -8,6 +8,8 @@
 
 ## Minor changes
 
+- `surv_adjustedcurves()` gains a `fun` argument (matching `ggadjustedcurves()`) to transform the returned survival column — e.g. `fun = "event"` for cumulative events, `"cumhaz"`, or `"pct"`. Default `NULL` leaves the survival probabilities unchanged (#630).
+
 - `arrange_ggsurvplots()` gains a `layout_matrix` argument (forwarded to `gridExtra::marrangeGrob()`) to control the position/order of the plots — e.g. `layout_matrix = matrix(seq_along(splots), nrow = nrow, byrow = TRUE)` orders them by row. Default is unchanged (plots fill column-wise) (#300).
 
 - `ggforest()` gains a `global.stats` argument. Set `global.stats = FALSE` to omit the bottom caption reporting the global statistics (number of events, global log-rank p-value, AIC, concordance index) — useful when arranging several forest plots in a panel. Default is `TRUE` (unchanged) (#392).

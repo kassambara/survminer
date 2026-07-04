@@ -30,6 +30,13 @@ NULL
 #'@param method a character, describes how the expected survival curves shall be calculated. Possible options:
 #' 'single' (average for population), 'average' (averages for subpopulations), 'marginal', 'conditional' (averages for subpopulations after rebalancing). See the Details section  for further information.
 #'@param variable a character, name of the grouping variable to be plotted. If not supplied then it will be extracted from the model formula from the \code{strata()} component. If there is no \code{strata()} component then only a single curve will be plotted - average for the thole population.
+#'@param fun an arbitrary function defining a transformation of the survival
+#'  curve. Often used transformations can be specified with a character argument:
+#'  "event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the cumulative
+#'  hazard function (f(y) = -log(y)), and "pct" for survival probability in
+#'  percentage. For \code{surv_adjustedcurves()} the transformation is applied to
+#'  the returned survival column; the default \code{NULL} leaves the survival
+#'  probabilities unchanged.
 #'@param ylab a label for oy axis.
 #'@param size the curve size.
 #'@param ggtheme function, ggplot2 theme name. Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
@@ -136,6 +143,7 @@ surv_adjustedcurves <- function(fit,
                              data = NULL,
                              reference = NULL,
                              method = "conditional",
+                             fun = NULL,
                              size = 1,
                              ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
@@ -196,6 +204,12 @@ surv_adjustedcurves <- function(fit,
                   conditional = ggadjustedcurves.conditional(data, fit, variable, size = size),
                   marginal = ggadjustedcurves.marginal(data, fit, variable, reference, size = size))
 
+  # Apply the transformation requested via `fun` (e.g. "event", "cumhaz", "pct")
+  # to the returned survival column, so the data helper matches what
+  # ggadjustedcurves() plots. No-op when fun = NULL (the default), so existing
+  # results are unchanged (#630). ggadjustedcurves() keeps fun in its own scope
+  # and does not pass it here, so the transform is never applied twice.
+  curve <- .apply_surv_func(curve, fun = fun)
   curve
 }
 
