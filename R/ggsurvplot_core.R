@@ -442,7 +442,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     df <- data.frame(x1 = surv_median, x2 = surv_median,
                      y1 = rep(0, length(surv_median)),
                      y2 = rep(med_y, length(surv_median)),
-                     strata = .clean_strata(rownames(.table)))
+                     strata = .clean_strata(rownames(.table), fit))
     if(!is.null(fit$strata)){
       variables <- .get_variables(df$strata, fit, data)
       for(variable in variables) df[[variable]] <- .get_variable_value(variable, df$strata, fit, data)

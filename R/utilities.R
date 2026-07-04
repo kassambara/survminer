@@ -194,7 +194,7 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
       pct.denom <- rep(n0.risk, each = length(.strata)/nstrata)
   }
 
-  strata <- .clean_strata(.strata)
+  strata <- .clean_strata(.strata, fit)
   res <- data.frame(
     strata = strata,
     time = survsummary$time,
@@ -215,18 +215,87 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
   res
 }
 
+# Strata variable names, taken from the survfit FORMULA (not by splitting the
+# strata strings). survival builds each strata name as "var1=level1, var2=level2"
+# from these exact term labels, so knowing them lets us split a stratum only at
+# the "var=" positions -- levels may then safely contain "=", ",", "$", ">", etc.
+# (#291, #430, #599, #616, #680). Returns NULL when the names can't be recovered
+# (e.g. survfit.cox / survfit(coxph, newdata)), so callers fall back to the legacy
+# string-splitting behavior and stay byte-identical for those objects.
+# -----------------------------------------
+.strata_variable_names <- function(fit){
+  if(missing(fit) || is.null(fit)) return(NULL)
+  if(inherits(fit, c("survfit.cox", "survfitcox"))) return(NULL)
+  tl <- tryCatch(
+    attr(stats::terms(.get_fit_formula(fit)), "term.labels"),
+    error = function(e) NULL
+  )
+  if(length(tl) == 0) return(NULL)
+  tl
+}
+
+# Escape regex metacharacters so a (possibly non-syntactic) variable name can be
+# used literally inside a pattern.
+.escape_regex <- function(x){
+  gsub("([.\\\\|()\\[\\]{}^$*+?-])", "\\\\\\1", x, perl = TRUE)
+}
+
+# Split each survfit strata string "V1=L1, V2=L2, ..." into its level values,
+# scoping the split to the KNOWN variable names (in formula order) so a level may
+# contain "=", ",", "$", ">", etc. without being mis-split. Returns a data frame
+# with one column per varname (in `varnames`) and one row per stratum.
+# -----------------------------------------
+.split_strata <- function(strata, varnames){
+  strata <- as.character(strata)
+  k <- length(varnames)
+  prefixes <- paste0("^", .escape_regex(varnames), "=")
+  if(k == 1){
+    out <- data.frame(sub(prefixes[1], "", strata), stringsAsFactors = FALSE)
+    names(out) <- varnames
+    return(out)
+  }
+  # Split only at ", " that is immediately followed by a known "var=" token.
+  alt <- paste0("(?:", paste(.escape_regex(varnames), collapse = "|"), ")")
+  split_re <- paste0(",\\s+(?=", alt, "=)")
+  rows <- lapply(strsplit(strata, split_re, perl = TRUE), function(parts){
+    vals <- rep(NA_character_, k)
+    used <- rep(FALSE, k)
+    for(p in parts){
+      for(i in seq_len(k)){
+        if(!used[i] && grepl(prefixes[i], p)){
+          vals[i] <- sub(prefixes[i], "", p)
+          used[i] <- TRUE
+          break
+        }
+      }
+    }
+    vals
+  })
+  out <- as.data.frame(do.call(rbind, rows), stringsAsFactors = FALSE)
+  names(out) <- varnames
+  out
+}
+
 # Get variable names in strata
 # -----------------------------------------
 # strata: a vector
 # fit: survfit object
 # data: data used to fit survival curves
 .get_variables <- function(strata, fit, data = NULL){
-  variables <- sapply(as.vector(strata),
-                      function(x){
-                        x <- unlist(strsplit(x, "=|,\\s+", perl=TRUE))
-                        x[seq(1, length(x), 2)]
-                      })
-  variables <- unique(as.vector(variables))
+  variables <- .strata_variable_names(fit)
+  if(is.null(variables)){
+    # Legacy fallback (no recoverable formula): split the strata strings.
+    variables <- sapply(as.vector(strata),
+                        function(x){
+                          x <- unlist(strsplit(x, "=|,\\s+", perl=TRUE))
+                          x[seq(1, length(x), 2)]
+                        })
+    variables <- unique(as.vector(variables))
+  }
+  # For the data$variable fit form the term label is "data$var" while the actual
+  # column is "var"; strip any "prefix$" so it still matches a data column (the
+  # strata itself is dollar-cleaned by .clean_strata). No-op for ordinary names.
+  variables <- sub("^.*\\$", "", variables)
   variables <- intersect(variables, colnames(.get_data(fit, data) ))
   variables
 }
@@ -235,14 +304,23 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 # ----------------------------
 # variable: variable name
 .get_variable_value <- function(variable, strata, fit, data = NULL){
-  res <- sapply(as.vector(strata), function(x){
-    x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
-    # When a factor name is the same as one of its level, index is of length 2
-    index <- grep(paste0("^", variable, "$"), x)[1]
-    .trim(x[index+1])
-  })
+  varnames <- .strata_variable_names(fit)
+  if(!is.null(varnames) && variable %in% varnames){
+    # Robust path: read the level out of the "variable=" block only. survival
+    # right-pads level names to a common width in strata labels, so trim (as the
+    # legacy path did) before matching against the factor levels.
+    res <- .trim(.split_strata(strata, varnames)[[variable]])
+  } else {
+    # Legacy fallback (no recoverable formula, or a transformed term).
+    res <- sapply(as.vector(strata), function(x){
+      x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
+      # When a factor name is the same as one of its level, index is of length 2
+      index <- grep(paste0("^", variable, "$"), x)[1]
+      .trim(x[index+1])
+    })
+  }
   res <- as.vector(res)
-  var_levels <- levels(.get_data(fit, data)[, variable])
+  var_levels <- levels(.get_data(fit, data)[[variable]])
   if(!is.null(var_levels)) res <- factor(res, levels = var_levels)
   else res <- as.factor(res)
   res
@@ -252,16 +330,25 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 # remove dollar sign ($) in strata
 # ---------------------------------
 # remove dollar sign ($) in strata, in the situation, where
-# the user uses data$variable to fit survival curves
+# the user uses data$variable to fit survival curves.
+# Only the genuine data$variable form should have its "data$" prefix stripped:
+# that form puts a "$" in the formula term label. A "$" that merely appears inside
+# a factor LEVEL (e.g. a LaTeX-style label "Marker $<50\\%$") must NOT trigger
+# stripping, which previously mangled the strata and reordered other variables in
+# the legend (#680). When the formula isn't recoverable (fit missing/cox), fall
+# back to the legacy heuristic (a "$" anywhere in the first stratum).
 .clean_strata <- function(strata, fit){
-  is_dollar_sign <- grepl("$", as.character(strata)[1], fixed=TRUE)
-  if(is_dollar_sign) {
+  have_fit <- !missing(fit) && !is.null(fit)
+  varnames <- if(have_fit) .strata_variable_names(fit) else NULL
+  strip_dollar <- if(!is.null(varnames)) any(grepl("$", varnames, fixed = TRUE))
+                  else grepl("$", as.character(strata)[1], fixed = TRUE)
+  if(isTRUE(strip_dollar)) {
     strata <- as.character(strata)
     data_name <- unlist(strsplit(strata[1], "$", fixed =TRUE))[1]
     strata <- gsub(paste0(data_name, "$"), "", strata, fixed=TRUE)
     strata <- as.factor(strata)
   }
-  else if(!missing(fit)) strata <- factor(strata, levels = names(fit$strata))
+  else if(have_fit && !is.null(fit$strata)) strata <- factor(strata, levels = names(fit$strata))
   return(strata)
 }
 
