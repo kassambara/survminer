@@ -8,7 +8,7 @@
 
 ## Minor changes
 
-- `ggsurvplot_facet()` gains a `labeller` argument (forwarded to `ggplot2::facet_wrap()`/`facet_grid()`) to control how the panel strip labels are formatted — e.g. `labeller = ggplot2::label_both` or `labeller = ggplot2::as_labeller(c("1" = "Obs", "2" = "Lev", "3" = "Lev+5FU"))`. Default `NULL` keeps the current labels (unchanged); when supplied it takes precedence over `short.panel.labs` and composes with `panel.labs` (#667).
+- `ggsurvplot_facet()` gains a `labeller` argument (forwarded to `ggplot2::facet_wrap()`/`facet_grid()`) to control how the panel strip labels are formatted — e.g. `labeller = ggplot2::label_both` or `labeller = ggplot2::as_labeller(c("1" = "Obs", "2" = "Lev", "3" = "Lev+5FU"))`. Default `NULL` keeps the current labels (unchanged); when supplied it takes precedence over `short.panel.labs` and composes with `panel.labs`. Idea contributed by @B0ydT (#667, #668).
 
 - `surv_adjustedcurves()` gains a `fun` argument (matching `ggadjustedcurves()`) to transform the returned survival column — e.g. `fun = "event"` for cumulative events, `"cumhaz"`, or `"pct"`. Default `NULL` leaves the survival probabilities unchanged (#630).
 
