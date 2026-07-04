@@ -143,7 +143,24 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
   if(is.null(data)){
     if (complain)
       warning ("The `data` argument is not provided. Data will be extracted from model fit.")
-    data <- eval(fit$call$data)
+    # Re-derive the data from the stored call. When the fit was created in a
+    # non-global environment (e.g. inside a function or a {targets} pipeline),
+    # the referenced object is out of scope at plot time and eval() throws a
+    # cryptic "object '<name>' not found". A survfit object stores no reference
+    # to its creation environment, so the data cannot be recovered here; turn
+    # the cryptic failure into an actionable message (keeping the original
+    # error as context) telling the user to pass `data` explicitly (#521).
+    data <- tryCatch(
+      eval(fit$call$data),
+      error = function(e) stop(
+        "The `data` used to fit the model could not be extracted automatically. ",
+        "This happens when the model was fitted in a non-global environment ",
+        "(e.g. inside a function or a {targets} pipeline). ",
+        "Please provide it explicitly, e.g. `ggsurvplot(fit, data = mydata)`.\n",
+        "Original error: ", conditionMessage(e),
+        call. = FALSE
+      )
+    )
     if (is.null(data))
       stop("The `data` argument should be provided either to ggsurvfit or survfit.")
   }

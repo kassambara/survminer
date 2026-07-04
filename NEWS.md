@@ -24,6 +24,8 @@
 
 ## Bug fixes
 
+- Improve the error message when `ggsurvplot(fit)` is called without `data =` for a model fitted in a non-global environment (e.g. inside a function or a `{targets}` pipeline). survminer re-derives the data from the fit's stored call, but the referenced object is then out of scope and a survfit stores no reference to its creation environment, so the data cannot be recovered. Instead of a cryptic `object '<name>' not found`, survminer now raises an actionable message telling the user to pass `data =` explicitly (e.g. `ggsurvplot(fit, data = mydata)`), while preserving the original error as context. Working inputs (data supplied, or a fit created in the global scope) are unchanged (#521).
+
 - Fix the "large dash" size not being changeable when `tables.y.text = FALSE`: `p$table <- p$table + theme(axis.text.y = ggtext::element_markdown(size = ...))` was silently reset to the default (50) because the dash styling is re-applied when the plot is printed. The re-application now keeps a user-set size; the default is unchanged (#642).
 
 - Fix `ggsurvplot(..., facet.by = , pval = TRUE)` erroring with "variable lengths differ" when the model was built from a `Surv` object created *outside* the data and used as the formula left-hand side (e.g. `Survival <- Surv(time, status); survfit(Survival ~ x, data = D)`, rather than `Surv(time, status) ~ x`). The per-panel p-value refit row-subset the data while the global response kept its full length; the response is now materialised once on the full data so it stays aligned under subsetting. In-formula fits are unchanged (#467).
