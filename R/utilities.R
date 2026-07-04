@@ -240,6 +240,18 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
   gsub("([.\\\\|()\\[\\]{}^$*+?-])", "\\\\\\1", x, perl = TRUE)
 }
 
+# HTML-escape the ampersand and angle brackets so text rendered by ggtext's
+# element_markdown()/gridtext is shown literally instead of being parsed as an
+# HTML/markdown tag. A risk-table label beginning with ">" (e.g. "> 1 Risk
+# factor") was otherwise read as a <blockquote> and errored (#532). Order
+# matters: escape "&" first so we don't double-escape the "&lt;"/"&gt;" we add.
+.escape_markdown <- function(x){
+  x <- gsub("&", "&amp;", x, fixed = TRUE)
+  x <- gsub("<", "&lt;", x, fixed = TRUE)
+  x <- gsub(">", "&gt;", x, fixed = TRUE)
+  x
+}
+
 # Split each survfit strata string "V1=L1, V2=L2, ..." into its level values,
 # scoping the split to the KNOWN variable names (in formula order) so a level may
 # contain "=", ",", "$", ">", etc. without being mis-split. Returns a data frame
