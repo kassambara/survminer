@@ -13,6 +13,10 @@
 #'   caption reporting the global statistics (number of events, global
 #'   likelihood-ratio-test p-value, AIC and concordance index) is omitted. Useful
 #'   when arranging several forest plots in a panel.
+#' @param ref.display logical value. Default is TRUE. If FALSE, the reference
+#'   level rows of factor variables (the baselines, which have no hazard ratio)
+#'   are omitted from both the plot and the table, keeping only the compared
+#'   levels. Default TRUE shows every level (unchanged).
 #'
 #' @return returns a ggplot2 object (invisibly)
 #'
@@ -45,7 +49,7 @@
 ggforest <- function(model, data = NULL,
   main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
   fontsize = 0.7, refLabel = "reference", noDigits=2,
-  global.stats = TRUE) {
+  global.stats = TRUE, ref.display = TRUE) {
   conf.high <- conf.low <- estimate <- .row <- NULL
   stopifnot(inherits(model, "coxph"))
 
@@ -121,6 +125,14 @@ ggforest <- function(model, data = NULL,
   toShowExpClean <- data.frame(toShow,
     pvalue = signif(toShow[,4],noDigits+1),
     toShowExp)
+  # ref.display = FALSE drops the reference-level rows (factor baselines) from the
+  # forest -- both the drawn point and the table row -- keeping only the compared
+  # levels. A reference level is exactly a row with an NA estimate (a baseline has
+  # no hazard ratio); this is a precise marker, since a non-converged coefficient
+  # is Inf/huge rather than NA, so no genuine estimate is dropped. Default TRUE
+  # keeps every row, so existing plots are unchanged (#563).
+  if (!ref.display)
+    toShowExpClean <- toShowExpClean[!is.na(toShowExpClean$estimate), , drop = FALSE]
   toShowExpClean$stars <- paste0(round(toShowExpClean$p.value, noDigits+1), " ",
     ifelse(toShowExpClean$p.value < 0.05, "*",""),
     ifelse(toShowExpClean$p.value < 0.01, "*",""),

@@ -12,7 +12,8 @@ ggforest(
   fontsize = 0.7,
   refLabel = "reference",
   noDigits = 2,
-  global.stats = TRUE
+  global.stats = TRUE,
+  ref.display = TRUE
 )
 }
 \arguments{
@@ -35,6 +36,11 @@ will be extracted from 'fit' object.}
 reporting the global statistics (number of events, global likelihood-ratio-test
 p-value, AIC and concordance index) is omitted. Useful when arranging several
 forest plots in a panel.}
+
+\item{ref.display}{logical value. Default is TRUE. If FALSE, the reference level
+rows of factor variables (the baselines, which have no hazard ratio) are omitted
+from both the plot and the table, keeping only the compared levels. Default TRUE
+shows every level (unchanged).}
 }
 \value{
 returns a ggplot2 object (invisibly)
