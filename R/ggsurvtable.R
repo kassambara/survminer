@@ -188,7 +188,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                          legend.title = "Strata", legend.labs = NULL,
                          y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
                          font.family = "", hjust = 0.5,
-                         axes.offset = TRUE,
+                         axes.offset = TRUE, origin.align = TRUE,
                          ggtheme = theme_survminer(), tables.theme = ggtheme,
                           ...)
 {
@@ -290,17 +290,30 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   # Plotting survival table
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   .expand <- ggplot2::waiver()
-  # Tables labels Offset from origing
+  .hjust <- hjust
+  # Tables labels offset from origin. With axes.offset = FALSE the table panel
+  # starts exactly at x = 0 (like the curve), so the t = 0 numbers-at-risk should
+  # sit at x = 0 to line up with the curve's t = 0. Historically they were nudged
+  # right to max(xlim)/30, which misaligned them (#645, #302, #448). On a linear
+  # axis we now keep them at x = 0 and left-align only the t = 0 column (a centred
+  # number at x = 0 would be clipped by the panel edge); interior columns keep the
+  # user's hjust. On a log axis x = 0 cannot be shown, so the historical
+  # relocation is kept. The inset table (risk.table.pos = "in") passes
+  # origin.align = FALSE to keep its own positioning geometry unchanged.
   if(!axes.offset){
     .expand <- c(0,0)
-    offset <- max(xlim)/30
-    survsummary <- survsummary %>%
-      dplyr::mutate(time = ifelse(time == 0, offset, time))
+    if(origin.align && !xlog){
+      .hjust <- ifelse(survsummary$time == 0, 0, hjust)
+    } else {
+      offset <- max(xlim)/30
+      survsummary <- survsummary %>%
+        dplyr::mutate(time = ifelse(time == 0, offset, time))
+    }
   }
 
   p <- ggplot(survsummary, mapping) +
     scale_shape_manual(values = 1:length(levels(survsummary$strata)))+
-    ggpubr::geom_exec(geom_text, data = survsummary, size = fontsize, color = color, family = font.family, hjust = hjust) +
+    ggpubr::geom_exec(geom_text, data = survsummary, size = fontsize, color = color, family = font.family, hjust = .hjust) +
     ggtheme +
     scale_y_discrete(breaks = as.character(levels(survsummary$strata)),labels = yticklabs ) +
     coord_cartesian(xlim = xlim) +

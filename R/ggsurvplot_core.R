@@ -178,6 +178,10 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     pms$y.text.col <- risk.table.y.text.col
     pms$fontsize <- risk.table.fontsize
     pms$survtable <- "risk.table"
+    # Left-align the t=0 numbers-at-risk to the curve origin for the standard
+    # (out) table; keep the inset ("in") table's historical geometry, whose
+    # placement heuristic in .put_risktable_in_survplot depends on it (#645).
+    pms$origin.align <- (risk.table.pos != "in")
     # color risk.table ticks by strata
     if(risk.table.y.text.col) pms$y.text.col <- scurve_cols
     res$table <- risktable <- do.call(ggsurvtable, pms)
@@ -191,6 +195,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     if(cumevents.y.text.col) pms$y.text.col <- scurve_cols
     pms$fontsize <- fontsize
     pms$survtable <- "cumevents"
+    pms$origin.align <- TRUE   # always laid out "out"; align t=0 to the origin
     res$cumevents <- do.call(ggsurvtable, pms)
   }
 
@@ -237,6 +242,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     #pms$y.text.col <- cumcensor.y.text.col
     pms$fontsize <- fontsize
     pms$survtable <- "cumcensor"
+    pms$origin.align <- TRUE   # always laid out "out"; align t=0 to the origin
     ncensor_plot  <- do.call(ggsurvtable, pms)
   }
   if(ncensor.plot | cumcensor)
