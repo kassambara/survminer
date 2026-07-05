@@ -2,6 +2,11 @@
 
 ## New features
 
+- New `customize_labels()` to set the font (size, style and color) of the main title,
+  subtitle, caption, axis titles and axis tick labels across all components of a
+  `ggsurvplot` object (survival curve, risk table and censor plot), or of an individual
+  component. Labels are set with `ggtext::element_markdown()`, so the markdown-formatted
+  risk-table strata labels are preserved (#520).
 - `ggsave()` now works directly on a `ggsurvplot` object: a `grid.draw()` method for the `ggsurvplot` class is registered, so `ggsave(filename, plot = p)` saves the assembled plot (survival curve + risk table) without needing the `print(p, newpage = FALSE)` workaround, and no leading blank page is produced (#152). Same approach independently contributed by @mjakubczak (#522).
 
 ## Major changes
