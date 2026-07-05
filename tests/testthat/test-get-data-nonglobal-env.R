@@ -27,11 +27,11 @@ test_that("no-regression: global-scope fit still auto-extracts its data (#521)",
 test_that("non-global-env fit without data gives an actionable message (#521)", {
   envir <- new.env(parent = globalenv())
   evalq({
-    test <- lung
-    survival <- survfit(Surv(time, status) ~ 1, data = test)
+    dat521 <- lung
+    survival <- survfit(Surv(time, status) ~ 1, data = dat521)
   }, envir = envir)
   fit <- get("survival", envir = envir)
-  rm(envir)  # ensure the `test` object is truly out of scope
+  rm(envir)  # ensure the `dat521` object is truly out of scope
 
   msg <- tryCatch(suppressWarnings(survminer:::.get_data(fit)),
                   error = function(e) conditionMessage(e))
@@ -50,8 +50,8 @@ test_that("non-global-env fit without data gives an actionable message (#521)", 
 test_that("non-global-env fit works when data is supplied explicitly (#521)", {
   envir <- new.env(parent = globalenv())
   evalq({
-    test <- lung
-    survival <- survfit(Surv(time, status) ~ 1, data = test)
+    dat521 <- lung
+    survival <- survfit(Surv(time, status) ~ 1, data = dat521)
   }, envir = envir)
   fit <- get("survival", envir = envir)
   p <- ggsurvplot(fit, data = lung)
