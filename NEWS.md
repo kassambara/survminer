@@ -13,6 +13,8 @@
 
 ## Minor changes
 
+- `ggforest()` gains a `ggtheme` argument to customize the plot's theme (e.g. `ggtheme = theme(text = element_text(size = 14))`). Because `ggforest()` returns a rasterised gtable, a theme added to the returned object was silently ignored; passing it via `ggtheme` applies it to the plot before rasterisation. Default `NULL` is unchanged. Reported by @manuSrep (#530).
+
 - `ggforest()` gains a `var.labels` argument to relabel the variable names shown in the plot, e.g. `var.labels = c(age = "Age (years)", sex = "Sex")`. Only names matching a model term are relabelled; unmatched terms keep their original name. Default `NULL` is unchanged. Requested by @PeterStrom (#405).
 
 - `ggsurvplot()` gains a `pval.parse` argument. Set `pval.parse = TRUE` to render the p-value text as a plotmath expression, allowing italic/superscript formatting such as `pval = "italic(P)==1.4~x~10^-6"`. Default `FALSE` draws the text literally (unchanged). Requested by @KBalazs1987 (#605) and @arossevold (#679).
