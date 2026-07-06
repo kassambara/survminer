@@ -13,7 +13,8 @@ ggforest(
   refLabel = "reference",
   noDigits = 2,
   global.stats = TRUE,
-  ref.display = TRUE
+  ref.display = TRUE,
+  var.labels = NULL
 )
 }
 \arguments{
@@ -42,6 +43,12 @@ no hazard ratio -- factor baselines, and any non-estimable / aliased or
 \code{strata()} terms, i.e. the rows labelled \code{refLabel} ("reference") --
 are omitted from both the plot and the table, keeping only the estimated levels.
 Default TRUE shows every row (unchanged).}
+
+\item{var.labels}{a named character vector giving display labels for the
+variable names, e.g. \code{c(age = "Age (years)", sex = "Sex")}. The names
+must match the model term names (as shown in the plot by default); only
+matched terms are relabelled, unmatched terms keep their original name.
+Default \code{NULL} uses the term names unchanged.}
 }
 \value{
 returns a ggplot2 object (invisibly)
