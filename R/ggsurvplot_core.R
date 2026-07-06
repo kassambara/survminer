@@ -47,6 +47,17 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   stopifnot(log.rank.weights %in% c("survdiff", "1", "n", "sqrtN", "S1", "S2","FH_p=1_q=1"))
   log.rank.weights <- match.arg(log.rank.weights)
 
+  # cumevents / cumcensor accept the same values as risk.table: TRUE/FALSE, or a
+  # character ("absolute", "percentage", "abs_pct") selecting how the cumulative
+  # count is displayed (#499). Parse to a logical display flag + a type; logical
+  # inputs keep type "absolute" (the raw count), so existing calls are unchanged.
+  cumev.parsed <- .parse_risk_table_arg(cumevents)
+  cumevents <- cumev.parsed$display
+  cumevents.type <- cumev.parsed$type
+  cumcens.parsed <- .parse_risk_table_arg(cumcensor)
+  cumcensor <- cumcens.parsed$display
+  cumcensor.type <- cumcens.parsed$type
+
   # Make sure that user can do either ncensor.plot or cumcensor
   # But not both
   if(ncensor.plot & cumcensor){
@@ -57,10 +68,18 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   if(cumcensor) ncensor.plot.height <- cumcensor.height
   if(is.null(ncensor.plot.title))
     ncensor.plot.title <- "Number of censoring"
+  # Default table titles reflect the display type so a percentage table is not
+  # labelled "number of ..." (#499). A user-supplied title is kept as-is.
   if(is.null(cumcensor.title))
-    cumcensor.title <- "Cumulative number of censoring"
+    cumcensor.title <- switch(cumcensor.type,
+      percentage = "Cumulative censoring (%)",
+      abs_pct    = "Cumulative censoring: n (%)",
+      "Cumulative number of censoring")
   if(is.null(cumevents.title))
-    cumevents.title <- "Cumulative number of events"
+    cumevents.title <- switch(cumevents.type,
+      percentage = "Cumulative events (%)",
+      abs_pct    = "Cumulative events: n (%)",
+      "Cumulative number of events")
 
   # risk.table argument
   risk.table.pos <- match.arg(risk.table.pos)
@@ -200,6 +219,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     if(cumevents.y.text.col) pms$y.text.col <- scurve_cols
     pms$fontsize <- fontsize
     pms$survtable <- "cumevents"
+    pms$risk.table.type <- cumevents.type   # absolute (default) / percentage / abs_pct (#499)
     pms$origin.align <- TRUE   # always laid out "out"; align t=0 to the origin
     res$cumevents <- do.call(ggsurvtable, pms)
   }
@@ -247,6 +267,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     #pms$y.text.col <- cumcensor.y.text.col
     pms$fontsize <- fontsize
     pms$survtable <- "cumcensor"
+    pms$risk.table.type <- cumcensor.type   # absolute (default) / percentage / abs_pct (#499)
     pms$origin.align <- TRUE   # always laid out "out"; align t=0 to the origin
     ncensor_plot  <- do.call(ggsurvtable, pms)
   }

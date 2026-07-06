@@ -110,10 +110,10 @@ to show both absolute number and percentage. \item "nrisk_cumcensor" and
 censoring and events, respectively. }}
 
 \item{cumevents}{logical value specifying whether to show or not the table of
-the cumulative number of events. Default is FALSE.}
+the cumulative number of events. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct"); "percentage" shows the count as a percent of the stratum size.}
 
 \item{cumcensor}{logical value specifying whether to show or not the table of
-the cumulative number of censoring. Default is FALSE.}
+the cumulative number of censoring. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct").}
 
 \item{tables.height}{numeric value (in [0 - 1]) specifying the general height
 of all tables under the main survival plot.}

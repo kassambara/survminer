@@ -257,17 +257,31 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
     # literally, so no escaping is needed (and would show "&gt;").
     yticklabs <- .escape_markdown(yticklabs)
 
-  time <- strata <- label <- n.event <- cum.n.event  <- cum.n.censor<- NULL
+  time <- strata <- label <- n.event <- cum.n.event  <- cum.n.censor<- .cumlabel <- NULL
+
+  # cumevents / cumcensor tables honour risk.table.type: "absolute" (default,
+  # the raw cumulative count, unchanged), "percentage" (count as a percent of
+  # the stratum size), or "abs_pct" ("count (pct)") (#499). The other risk-table
+  # types (nrisk_*) have no cumulative meaning and fall back to the count.
+  .cum_pct <- function(count) round(count / survsummary$strata_size * 100)
 
   # Ploting the cumulative number of events table
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   if(survtable == "cumevents"){
+    survsummary$.cumlabel <- switch(risk.table.type,
+      percentage = .cum_pct(survsummary$cum.n.event),
+      abs_pct    = paste0(survsummary$cum.n.event, " (", .cum_pct(survsummary$cum.n.event), ")"),
+      survsummary$cum.n.event)
     mapping <- aes(x = time, y = rev(strata),
-                   label = cum.n.event, shape = rev(strata))
+                   label = .cumlabel, shape = rev(strata))
   }
   else if (survtable == "cumcensor"){
+    survsummary$.cumlabel <- switch(risk.table.type,
+      percentage = .cum_pct(survsummary$cum.n.censor),
+      abs_pct    = paste0(survsummary$cum.n.censor, " (", .cum_pct(survsummary$cum.n.censor), ")"),
+      survsummary$cum.n.censor)
     mapping <- aes(x = time, y = rev(strata),
-                   label = cum.n.censor, shape = rev(strata))
+                   label = .cumlabel, shape = rev(strata))
 
   }
   else if (survtable == "risk.table"){

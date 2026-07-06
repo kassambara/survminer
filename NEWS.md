@@ -13,6 +13,8 @@
 
 ## Minor changes
 
+- `cumevents` and `cumcensor` now accept a character value ("absolute", "percentage", "abs_pct"), like `risk.table`, to show the cumulative events/censoring table as a percentage of the stratum size (or "count (percent)"), not only the absolute count. `TRUE`/`FALSE` are unchanged (absolute). The default table title reflects the type. Requested by @anarpkpd (#499).
+
 - `break.time.by` (and its alias `break.x.by`) now accepts a numeric vector of custom break positions, e.g. `break.time.by = c(0, 100, 300, 600, 1000)`, in addition to a single step. Passing a vector previously errored (`'by' must be of length 1`). The same breaks drive the survival curve and the number-at-risk/censor tables, so they stay aligned. A single value is unchanged. Requested in #435 and by @AjayKumar-O (#695).
 
 - `ggforest()` gains a `ggtheme` argument to customize the plot's theme (e.g. `ggtheme = theme(text = element_text(size = 14))`). Because `ggforest()` returns a rasterised gtable, a theme added to the returned object was silently ignored; passing it via `ggtheme` applies it to the plot before rasterisation. Default `NULL` is unchanged. Reported by @manuSrep (#530).
