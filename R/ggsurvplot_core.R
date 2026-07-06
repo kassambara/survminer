@@ -218,7 +218,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
       ggpubr::geom_exec(geom_bar, d, color = ncensor.color, fill = ncensor.color,
                         stat = "identity", position = "dodge")+
       coord_cartesian(xlim = xlim)+
-      scale_y_continuous(breaks = sort(unique(d$n.censor))) +
+      scale_y_continuous(breaks = .ncensor_y_breaks(d$n.censor)) +
       ggtheme
 
     ncensor_plot <- ggpubr::ggpar(ncensor_plot, palette = pms$palette)
