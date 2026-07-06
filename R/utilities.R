@@ -551,6 +551,23 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 }
 
 
+# Y-axis breaks for the number-of-censoring panel (ncensor.plot) (#542)
+#.........................................................................
+# One break per distinct censoring count crowds the short panel: with many
+# distinct counts the integer labels overlap. Keep the original
+# one-break-per-count behaviour when there are few (<= 5) distinct counts
+# (byte-identical to before), otherwise fall back to ~5 evenly spaced integer
+# breaks so the labels don't collide.
+.ncensor_y_breaks <- function(n.censor){
+  breaks <- sort(unique(n.censor))
+  if (length(breaks) > 5) {
+    rng <- range(breaks)
+    step <- max(1, ceiling(diff(rng) / 4))
+    breaks <- seq(rng[1], rng[2], by = step)
+  }
+  breaks
+}
+
 # Get the names of formulas
 #.........................................................................
 # If formulas is a named lists, returns the list names if available.
