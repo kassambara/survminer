@@ -42,32 +42,35 @@ NULL
 #'
 #'@export
 surv_summary <- function (x, data = NULL){
+  # ggsurvplot()/surv_summary() draw single-event Kaplan-Meier curves and do not
+  # support multi-state / competing-risks fits. A factor (or >2-level) status makes
+  # survival::survfit() return a 'survfitms' object, whose n.risk/n.event/prev are
+  # matrix-shaped; assembling the summary data frame below then failed with a
+  # cryptic "arguments imply differing number of rows". Fail early with an
+  # actionable message instead (#373). (The former 'survfitms' branch here was
+  # unreachable -- the data-frame assembly above it crashed first -- and is removed.)
+  if (inherits(x, "survfitms"))
+    stop("survminer's Kaplan-Meier summary/plots do not support multi-state / ",
+         "competing-risks fits (survfit() returned a 'survfitms' object, which ",
+         "happens when the status passed to Surv() is a factor or has more than two ",
+         "levels). Use a numeric 0/1 or logical status for a Kaplan-Meier curve, or ",
+         "ggcompetingrisks() for competing risks / multi-state.", call. = FALSE)
   res <- as.data.frame(.compact(unclass(x)[c("time", "n.risk",
                                             "n.event", "n.censor")]))
-  if (inherits(x, "survfitms")) {
-    surv <- 1 - x$prev
-    upper <- 1 - x$upper
-    lower <- 1 - x$lower
-    res <- cbind(res, surv = c(surv), std.err = c(x$std.err),
-                 upper = c(upper), lower = c(lower))
-    res$state <- rep(x$states, each = nrow(surv))
+  # Case of survfit(res.cox, newdata)
+  if(is.matrix(x$surv)){
+    ncurve <- ncol(x$surv)
+    res <- data.frame(time = rep(x$time, ncurve), n.risk = rep(x$n.risk, ncurve),
+                      n.event = rep(x$n.event, ncurve), n.censor = rep(x$n.censor, ncurve))
+    res <- cbind(res, surv = .flat(x$surv),
+                 std.err = .flat(x$std.err),
+                 upper = .flat(x$upper),
+                 lower = .flat(x$lower))
+    res$strata <- as.factor(rep(colnames(x$surv), each = nrow(x$surv)))
   }
-  else {
-    # Case of survfit(res.cox, newdata)
-    if(is.matrix(x$surv)){
-      ncurve <- ncol(x$surv)
-      res <- data.frame(time = rep(x$time, ncurve), n.risk = rep(x$n.risk, ncurve),
-                        n.event = rep(x$n.event, ncurve), n.censor = rep(x$n.censor, ncurve))
-      res <- cbind(res, surv = .flat(x$surv),
-                   std.err = .flat(x$std.err),
-                   upper = .flat(x$upper),
-                   lower = .flat(x$lower))
-      res$strata <- as.factor(rep(colnames(x$surv), each = nrow(x$surv)))
-    }
-    # case of standard survfit() or survfit(res.cox)
-    else res <- cbind(res, surv = x$surv, std.err = x$std.err,
-                      upper = x$upper, lower = x$lower)
-  }
+  # case of standard survfit() or survfit(res.cox)
+  else res <- cbind(res, surv = x$surv, std.err = x$std.err,
+                    upper = x$upper, lower = x$lower)
   if (!is.null(x$strata)) {
     data <- .get_data(x, data = data) # data used to compute survfit
     res$strata <- rep(names(x$strata), x$strata)
