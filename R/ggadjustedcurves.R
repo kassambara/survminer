@@ -123,6 +123,21 @@ ggadjustedcurves <- function(fit,
   # This is a no-op when fun = NULL (the default), so ordinary calls are
   # unchanged.
   curve <- .apply_surv_func(curve, fun = fun)
+  # Relabel the y-axis to match `fun` when the user kept the default ylab
+  # (#555). ggsurvplot() already does this; ggadjustedcurves() did not, so a
+  # `fun = "cumhaz"` curve kept the "Survival rate" label. Only fires for the
+  # untouched default label AND a character `fun`, so fun = NULL (the default)
+  # and any user-supplied ylab are unchanged.
+  if (identical(ylab, "Survival rate") && is.character(fun)) {
+    ylab <- switch(fun,
+                   log     = "log(Survival rate)",
+                   event   = "Cumulative event",
+                   cumhaz  = "Cumulative hazard",
+                   cloglog = "log(-log(S(t)))",
+                   pct     = "Survival rate (%)",
+                   logpct  = "Survival rate (%)",
+                   "Survival rate")   # identity / unrecognized -> keep default
+  }
   time <- surv <- NULL
   pl <- ggplot(curve, aes(x = time, y = surv, color = variable)) +
     geom_step(linewidth = size) + ggtheme +
