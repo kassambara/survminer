@@ -123,6 +123,21 @@ ggforest <- function(model, data = NULL,
                  pos = seq_along(vars))
     }
   })
+  # attr(model$terms, "dataClasses") lists only main-effect variables, so
+  # interaction terms (e.g. sex:ph.ecog) were never visited by the loop above
+  # and their coefficients were silently dropped from the plot and table (#536).
+  # Add each interaction coefficient as its own row, mapped to the fitted
+  # coefficients via model$assign (the same reliable mechanism used for
+  # multi-coefficient terms above). Models with no interaction terms are
+  # unaffected: .inter.terms is empty, so allTerms is unchanged.
+  .inter.terms <- grep(":", names(model$assign), value = TRUE, fixed = TRUE)
+  if (length(.inter.terms) > 0) {
+    allTerms <- c(allTerms, lapply(.inter.terms, function(term){
+      idx <- model$assign[[term]]
+      vars <- coef$term[idx]
+      data.frame(var = vars, Var1 = "", Freq = nrow(data), pos = seq_along(vars))
+    }))
+  }
   allTermsDF <- do.call(rbind, allTerms)
   colnames(allTermsDF) <- c("var", "level", "N", "pos")
   inds <- apply(allTermsDF[,1:2], 1, paste0, collapse="")
