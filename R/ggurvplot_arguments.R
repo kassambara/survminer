@@ -59,6 +59,13 @@
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
+#'@param pval.parse logical. If TRUE, a custom p-value string supplied via
+#'  \code{pval} is treated as a plotmath expression and parsed, so you can show
+#'  italic/superscript p-values, e.g. \code{pval = "italic(P)==1.4~x~10^-6"}.
+#'  The string must be a valid plotmath expression; the auto-computed p-value
+#'  (e.g. \code{"p = 0.001"}) is plain text, not plotmath, so supply your own
+#'  expression when using this. The test-name label from \code{pval.method} is
+#'  never parsed. Default is FALSE (drawn literally).
 #'@param title main title
 #'@param xlab x axis label
 #'@param ylab y axis label

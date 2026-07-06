@@ -11,6 +11,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
                             conf.int.alpha = 0.3,
                             censor = TRUE, censor.shape = "+", censor.size = 4.5,
                             pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
+                            pval.parse = FALSE,
                             test.for.trend = FALSE,
                             pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                             log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
@@ -126,11 +127,15 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   if(pval$pval.txt != ""){
     p <- p + ggplot2::annotate("text", x = pval$pval.x, y = pval$pval.y,
                                label = pval$pval.txt, size = pval.size, hjust = 0,
-                               family = font.family)
+                               family = font.family, parse = pval.parse)
     if(pval.method)
+      # The method name is package-generated literal text (e.g. "Log-rank",
+      # or "Log-rank, tft" with test.for.trend); never plotmath-parse it, or
+      # pval.parse = TRUE would crash / mis-render the hyphen. pval.parse only
+      # affects the p-value text above.
       p <- p + ggplot2::annotate("text", x = pval$method.x, y = pval$method.y,
                                  label = pval$method, size = pval.method.size, hjust = 0,
-                                 family = font.family)
+                                 family = font.family, parse = FALSE)
   }
 
 
