@@ -35,6 +35,8 @@
 
 ## Bug fixes
 
+- `surv_fit()` now accepts data-column arguments passed by a bare name, matching `survfit()`. `surv_fit(f, data = d, weights = w)` and `surv_fit(f, data = d, id = subject)` previously errored with "object '<col>' not found", because `surv_fit()` evaluated `...` in the calling frame instead of inside `data`. When the standard call fails for this reason, `surv_fit()` now retries with the survfit data-column arguments (`weights`, `subset`, `id`, `istate`, `etype`) evaluated inside `data`. The standard path is unchanged, so every call that already worked is unaffected. Reported by @raffaelemancuso (#644) and @wiedenhoeft (#571).
+
 - `ggadjustedcurves()` now relabels the y-axis to match `fun` (e.g. "Cumulative hazard" for `fun = "cumhaz"`, "Cumulative event" for `fun = "event"`), like `ggsurvplot()` already does. Previously the axis kept the default "Survival rate" label even when the curve was transformed, so a cumulative-hazard curve was mislabelled. Only the default label is changed: `fun = NULL` (the default) and a user-supplied `ylab` other than the default are unchanged. Reported by @dangvantri (#555).
 
 - Fix overlapping y-axis numbers in the `ncensor.plot` ("Number of censoring") panel. The panel drew one y-axis break per distinct censoring count, so a dataset with many distinct counts crowded the short panel and the integer labels overlapped. It now keeps one break per count when there are few (<= 5) distinct counts (unchanged), and falls back to ~5 evenly spaced integer breaks when there are more. Reported by @ZihaoXingUP (#542).
