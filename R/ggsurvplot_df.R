@@ -235,7 +235,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
   times <- .get_default_breaks(df$time, .log = xlog)
 
   if(!is.null(break.time.by) & !xlog)
-    times <- seq(0, max(c(df$time, xlim)), by = break.time.by)
+    times <- .time_breaks(break.time.by, max(c(df$time, xlim)))
 
   xticklabels <- .format_xticklabels(labels = times, xscale = xscale)
 
