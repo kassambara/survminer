@@ -45,6 +45,8 @@
 
 ## Bug fixes
 
+- Fix the risk table's `strata_size` and `pct.risk` for id-based counting-process fits (`survfit(Surv(start, stop, event) ~ g, id = subject)`, with time-varying covariates / multiple rows per subject). `fit$n` counts intervals (rows), not subjects, so the stratum size was overstated and the at-risk percentage did not start at 100%. `strata_size` now uses `fit$n.id` (the per-stratum unique-subject count) when the fit provides it; ordinary right-censored, weighted and plain left-truncated fits (which have no `fit$n.id`) are unchanged. The number-at-risk counts themselves are computed by `survival` and were already correct on current versions. Reported by @wiedenhoeft (#592).
+
 - Fix `ggforest()` silently dropping interaction terms. Only main-effect variables were iterated (`attr(model$terms, "dataClasses")`), so a model with an interaction (e.g. `Surv(time, status) ~ sex * ph.ecog`) omitted the interaction coefficients (`sexfemale:ph.ecog1`, ...) from both the plot and the table. Each interaction coefficient is now drawn as its own row, mapped to the fitted coefficients via `model$assign`. Models without interactions are unchanged. Reported by @Generalized (#536).
 
 - `ggsurvplot()` now gives an actionable message instead of the cryptic "object of type 'symbol' is not subsettable" when a `survfit` was built from a formula stored in a variable in a non-global scope (e.g. `survfit(form, data)` inside a function, `lapply()`/`nest_by()`, or a `{targets}` pipeline), whose formula object is out of scope at plot time. The message points to `surv_fit()`, which retains the formula and data. Fits whose formula is recoverable are unchanged. Reported by @skent259 (#533).
