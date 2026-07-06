@@ -44,11 +44,11 @@ NULL
 surv_summary <- function (x, data = NULL){
   # ggsurvplot()/surv_summary() draw single-event Kaplan-Meier curves and do not
   # support multi-state / competing-risks fits. A factor (or >2-level) status makes
-  # survival::survfit() return a 'survfitms' object, whose n.risk/n.event/prev are
-  # matrix-shaped; assembling the summary data frame below then failed with a
-  # cryptic "arguments imply differing number of rows". Fail early with an
-  # actionable message instead (#373). (The former 'survfitms' branch here was
-  # unreachable -- the data-frame assembly above it crashed first -- and is removed.)
+  # survival::survfit() return a 'survfitms' object; building the summary data frame
+  # for such a fit then failed with a cryptic "arguments imply differing number of
+  # rows". Fail early with an actionable message instead (#373). (The former
+  # 'survfitms' branch here was dead code: it referenced x$prev, which modern
+  # survival renamed to x$pstate, so it always crashed in its own cbind -- removed.)
   if (inherits(x, "survfitms"))
     stop("survminer's Kaplan-Meier summary/plots do not support multi-state / ",
          "competing-risks fits (survfit() returned a 'survfitms' object, which ",
