@@ -508,9 +508,30 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
   # formula stored in a variable (e.g. survfit(frm, data)); as.formula() then
   # fails with "object of type 'symbol' is not subsettable". stats::formula()
   # resolves it via survival's method; fall back to the old path if unavailable.
+  # If BOTH fail -- the formula variable was in a non-global scope (a function,
+  # lapply()/nest_by(), a {targets} pipeline) that is gone by plot time, and a
+  # survfit stores no reference to its creation environment -- raise an
+  # actionable message pointing to surv_fit() instead of the cryptic error
+  # (#533; symbol-formula cluster #324/#436).
   tryCatch(
     stats::formula(fit),
-    error = function(e) stats::as.formula(fit$call$formula)
+    error = function(e1) tryCatch(
+      stats::as.formula(fit$call$formula),
+      # e1 (from stats::formula) names the missing formula object, e.g.
+      # "object 'form' not found" -- more informative than e2's generic
+      # "object of type 'symbol' is not subsettable", so surface e1 as context.
+      error = function(e2) stop(
+        "The model formula could not be extracted from the survfit object. ",
+        "This happens when the model was fitted from a formula stored in a ",
+        "variable in a non-global environment (e.g. `survfit(form, data)` inside ",
+        "a function, `lapply()`/`nest_by()`, or a {targets} pipeline), whose ",
+        "formula object is out of scope at plot time. Build the fit with ",
+        "survminer's `surv_fit()` instead of `survival::survfit()` -- it retains ",
+        "the formula and data -- e.g. `surv_fit(form, data = data)`.\n",
+        "Original error: ", conditionMessage(e1),
+        call. = FALSE
+      )
+    )
   )
 }
 
@@ -627,10 +648,7 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
   if(inherits(fit, c("survfit.cox", "survfitcox")))
     return(list())
 
-  .formula <- tryCatch(
-    stats::formula(fit),
-    error = function(e) stats::as.formula(fit$call$formula)
-  )
+  .formula <- .get_fit_formula(fit)
   surv.obj <- deparse(.formula[[2]])
   surv.vars <- attr(stats::terms(.formula), "term.labels")
   data.all <- data <- .get_data(fit, data = data, complain = FALSE)

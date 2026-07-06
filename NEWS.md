@@ -35,6 +35,8 @@
 
 ## Bug fixes
 
+- `ggsurvplot()` now gives an actionable message instead of the cryptic "object of type 'symbol' is not subsettable" when a `survfit` was built from a formula stored in a variable in a non-global scope (e.g. `survfit(form, data)` inside a function, `lapply()`/`nest_by()`, or a `{targets}` pipeline), whose formula object is out of scope at plot time. The message points to `surv_fit()`, which retains the formula and data. Fits whose formula is recoverable are unchanged. Reported by @skent259 (#533).
+
 - `surv_fit()` now accepts data-column arguments passed by a bare name, matching `survfit()`. `surv_fit(f, data = d, weights = w)` and `surv_fit(f, data = d, id = subject)` previously errored with "object '<col>' not found", because `surv_fit()` evaluated `...` in the calling frame instead of inside `data`. When the standard call fails for this reason, `surv_fit()` now retries with the survfit data-column arguments (`weights`, `subset`, `id`, `istate`, `etype`) evaluated inside `data`. The standard path is unchanged, so every call that already worked is unaffected. Reported by @raffaelemancuso (#644) and @wiedenhoeft (#571).
 
 - `ggadjustedcurves()` now relabels the y-axis to match `fun` (e.g. "Cumulative hazard" for `fun = "cumhaz"`, "Cumulative event" for `fun = "event"`), like `ggsurvplot()` already does. Previously the axis kept the default "Survival rate" label even when the curve was transformed, so a cumulative-hazard curve was mislabelled. Only the default label is changed: `fun = NULL` (the default) and a user-supplied `ylab` other than the default are unchanged. Reported by @dangvantri (#555).
