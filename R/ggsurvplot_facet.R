@@ -106,6 +106,30 @@ ggsurvplot_facet <- function(fit, data, facet.by,
   # frames" (#591; same tibble gotcha as #548/#670).
   data <- as.data.frame(fit.ext$data.all)
 
+  # Recover the fit's case weights. When some facet.by variables are not in the
+  # survfit formula (or panel.labs is set), the curves are refit below; that refit
+  # dropped the original weights, so faceted curves and the surv.median.line were
+  # computed UNWEIGHTED -- silently wrong (#556). fit$call$weights is an
+  # unevaluated symbol/call, so resolve it to a numeric vector against the fit's
+  # data and forward it to the refit. Gate on presence (unweighted fits are
+  # byte-identical) and require a full-length numeric vector, else fall back to the
+  # unweighted refit so behaviour is never worse than before.
+  .weights <- NULL
+  if(!is.null(fit$call$weights)){
+    .weights <- tryCatch({
+      w <- eval(fit$call$weights, envir = data, enclos = environment(.formula))
+      if(is.numeric(w) && length(w) == nrow(data)) w else NULL
+    }, error = function(e) NULL)
+    # If the weights can't be recovered (e.g. given as `df$w` / an object out of
+    # scope rather than a bare column of `data`), fall back to the unweighted
+    # refit but say so, so the drop is explicit rather than silent (#556).
+    if(is.null(.weights))
+      warning("ggsurvplot_facet() could not recover the fit's `weights` for the ",
+              "faceted refit, so the curves are drawn UNWEIGHTED. Pass the weights ",
+              "as a bare column of `data` (e.g. `weights = w`, not `weights = df$w`) ",
+              "for weighted faceting.", call. = FALSE)
+  }
+
   # Changing panel labs if specified
   #:::::::::::::::::::::::::::::::::::::::::
   if(!is.null(panel.labs)){
@@ -126,8 +150,9 @@ ggsurvplot_facet <- function(fit, data, facet.by,
   # to take into account new labels
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   if(!all(facet.by %in% surv.vars) | !is.null(panel.labs)) {
-    fit <- .build_formula(surv.obj, all.variables) %>%
-      surv_fit(., data = data)
+    .refit.formula <- .build_formula(surv.obj, all.variables)
+    fit <- if(is.null(.weights)) surv_fit(.refit.formula, data = data)
+           else surv_fit(.refit.formula, data = data, weights = .weights)
   }
 
   if(length(vars.notin.groupby) == 0){
@@ -166,7 +191,8 @@ ggsurvplot_facet <- function(fit, data, facet.by,
     # Refit survival curves
     new.surv.vars <- paste(c(".strata.", facet.by), collapse = " + ")
     .new.formula <- .build_formula(surv.obj, new.surv.vars)
-    fit <- surv_fit(formula = .new.formula, data = data)
+    fit <- if(is.null(.weights)) surv_fit(formula = .new.formula, data = data)
+           else surv_fit(formula = .new.formula, data = data, weights = .weights)
 
     if(is.null(color)) color <- ".strata."
     if(is.null(legend.labs)) legend.labs <- gsub(";", ",", strata.levels)
@@ -206,6 +232,15 @@ ggsurvplot_facet <- function(fit, data, facet.by,
     warning("ggsurvplot_facet() displays a p-value computed for each panel; a ",
             "numeric or character `pval` is not substituted. Use `pval = TRUE`.",
             call. = FALSE)
+  # The per-panel p-value uses survival::survdiff(), which has no case-weights
+  # argument, so it is computed UNWEIGHTED even when the fit was weighted. The
+  # curves/median above are now weighted (#556); warn so the weighted-curve vs
+  # unweighted-p-value distinction is explicit rather than silent.
+  if(draw.pval && !is.null(.weights))
+    warning("ggsurvplot_facet() per-panel p-values are computed unweighted: ",
+            "survival::survdiff() has no case-weights argument, so the weighted ",
+            "log-rank test is not available here. The curves and median lines are ",
+            "weighted; only the p-values are not.", call. = FALSE)
   if(draw.pval){
     # If the response is a Surv object built OUTSIDE `data` -- a bare-symbol
     # formula LHS such as `Survival <- Surv(...); survfit(Survival ~ x, data = D)`,
