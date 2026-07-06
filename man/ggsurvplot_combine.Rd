@@ -39,10 +39,10 @@ Allowed options are one of c("out", "in") indicating 'outside' or 'inside'
 the main plot, respectively. Default value is "out".}
 
 \item{cumevents}{logical value specifying whether to show or not the table of
-the cumulative number of events. Default is FALSE.}
+the cumulative number of events. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct"); "percentage" shows the count as a percent of the stratum size.}
 
 \item{cumcensor}{logical value specifying whether to show or not the table of
-the cumulative number of censoring. Default is FALSE.}
+the cumulative number of censoring. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct").}
 
 \item{tables.col}{color to be used for all tables under the main plot. Default
 value is "black". If you want to color by strata (i.e. groups), use

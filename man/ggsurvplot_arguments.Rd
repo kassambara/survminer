@@ -178,7 +178,7 @@ time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.}
 \code{ncensor.plot = TRUE}.}
 
 \item{cumevents}{logical value specifying whether to show or not the table of
-the cumulative number of events. Default is FALSE.}
+the cumulative number of events. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct"); "percentage" shows the count as a percent of the stratum size.}
 
 \item{cumevents.title}{The title to be used for the cumulative events table.}
 
@@ -195,7 +195,7 @@ tick labels of the cumulative events will be colored by strata.}
 Default is 0.25. Ignored when cumevents = FALSE.}
 
 \item{cumcensor}{logical value specifying whether to show or not the table of
-the cumulative number of censoring. Default is FALSE.}
+the cumulative number of censoring. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct").}
 
 \item{cumcensor.title}{The title to be used for the cumcensor table.}
 

@@ -127,7 +127,9 @@
 #'@param ncensor.plot.height The height of the censor plot. Used when
 #'  \code{ncensor.plot = TRUE}.
 #'@param cumevents logical value specifying whether to show or not the table of
-#'  the cumulative number of events. Default is FALSE.
+#'  the cumulative number of events. Default is FALSE. Can also be a character
+#'  string ("absolute", "percentage" or "abs_pct"); "percentage" shows the count
+#'  as a percent of the stratum size.
 #'@param cumevents.title The title to be used for the cumulative events table.
 #'@param cumevents.col same as tables.col but for the cumulative events table
 #'  only.
@@ -138,7 +140,8 @@
 #'@param cumevents.height the height of the cumulative events table on the grid.
 #'  Default is 0.25. Ignored when cumevents = FALSE.
 #'@param cumcensor logical value specifying whether to show or not the table of
-#'  the cumulative number of censoring. Default is FALSE.
+#'  the cumulative number of censoring. Default is FALSE. Can also be a character
+#'  string ("absolute", "percentage" or "abs_pct").
 #'@param cumcensor.title The title to be used for the cumcensor table.
 #'@param cumcensor.col same as tables.col but for cumcensor table only.
 #'@param cumcensor.y.text logical. Default is TRUE. If FALSE, the y axis tick
