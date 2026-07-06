@@ -103,6 +103,33 @@ test_that("unresolvable weights fall back (with a warning), no error (#556)", {
   expect_error(ggplot2::ggplot_build(p), NA)
 })
 
+test_that("no false 'unweighted' warning when no refit happens (df$w + facet in formula) (#556)", {
+  # facet.by = sex is already in the formula, so no refit occurs: the original
+  # weighted fit is kept and the curves ARE correctly weighted. Even though df$w
+  # can't be recovered, there is nothing to warn about here.
+  df <- d
+  fit <- survfit(Surv(time, status) ~ sex, data = df, weights = df$w)
+  ws <- character(0)
+  withCallingHandlers(
+    ggsurvplot(fit, data = df, facet.by = "sex"),
+    warning = function(w) { ws <<- c(ws, conditionMessage(w)); invokeRestart("muffleWarning") }
+  )
+  expect_false(any(grepl("drawn UNWEIGHTED", ws)))       # no false alarm
+  expect_false(any(grepl("could not safely recover", ws)))
+})
+
+test_that("pval warning fires even without a refit when the fit is weighted (#556)", {
+  # facet.by = sex (in formula) -> no refit, original weighted fit kept (curves
+  # weighted) but the per-panel p-value still refits unweighted -> warn.
+  fit <- survfit(Surv(time, status) ~ sex, data = d, weights = w)
+  ws <- character(0)
+  withCallingHandlers(
+    suppressMessages(ggsurvplot(fit, data = d, facet.by = "sex", pval = TRUE)),
+    warning = function(w) { ws <<- c(ws, conditionMessage(w)); invokeRestart("muffleWarning") }
+  )
+  expect_true(any(grepl("p-values are computed unweighted", ws)))
+})
+
 test_that("external-object weights (df$w) fall back to unweighted with a warning (#556)", {
   # Only a bare column of `data` is recovered; an external object can't be
   # guaranteed row-aligned to a possibly-reordered `data`, so it falls back to
