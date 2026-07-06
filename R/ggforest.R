@@ -18,6 +18,11 @@
 #'   \code{strata()} terms, i.e. the rows labelled \code{refLabel} ("reference")
 #'   -- are omitted from both the plot and the table, keeping only the estimated
 #'   levels. Default TRUE shows every row (unchanged).
+#' @param var.labels a named character vector giving display labels for the
+#'   variable names, e.g. \code{c(age = "Age (years)", sex = "Sex")}. The names
+#'   must match the model term names (as shown in the plot by default); only
+#'   matched terms are relabelled, unmatched terms keep their original name.
+#'   Default \code{NULL} uses the term names unchanged.
 #'
 #' @return returns a ggplot2 object (invisibly)
 #'
@@ -50,7 +55,7 @@
 ggforest <- function(model, data = NULL,
   main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
   fontsize = 0.7, refLabel = "reference", noDigits=2,
-  global.stats = TRUE, ref.display = TRUE) {
+  global.stats = TRUE, ref.display = TRUE, var.labels = NULL) {
   conf.high <- conf.low <- estimate <- .row <- NULL
   stopifnot(inherits(model, "coxph"))
 
@@ -161,6 +166,24 @@ ggforest <- function(model, data = NULL,
     .undrawable(toShowExpClean$conf.low) | .undrawable(toShowExpClean$conf.high)
   nonfinite_terms <- unique(as.character(toShowExpClean$var)[toShowExpClean$.nonfinite])
   toShowExpClean$var = as.character(toShowExpClean$var)
+  # Optional user-supplied display labels for the variable names (#405). A named
+  # character vector mapping model term name -> label (e.g.
+  # c(age = "Age (years)", sex = "Sex")). Only names that match a term are
+  # remapped; unmatched terms keep their original name, so the default
+  # (var.labels = NULL) is unchanged.
+  if (!is.null(var.labels)) {
+    if (is.null(names(var.labels)))
+      stop("`var.labels` must be a named character vector, e.g. ",
+           "c(age = \"Age (years)\").", call. = FALSE)
+    # Coerce to a plain named character vector (a named factor would otherwise
+    # inject its integer codes; note `x[] <- as.character(x)` keeps a factor a
+    # factor, so rebuild explicitly); ignore NA labels so a variable name is
+    # never silently dropped.
+    var.labels <- stats::setNames(as.character(var.labels), names(var.labels))
+    .map <- var.labels[!is.na(var.labels)]
+    .hit <- toShowExpClean$var %in% names(.map)
+    toShowExpClean$var[.hit] <- .map[toShowExpClean$var[.hit]]
+  }
   toShowExpClean$var[duplicated(toShowExpClean$var)] = ""
   # make label strings:
   toShowExpClean$N <- paste0("(N=",toShowExpClean$N,")")

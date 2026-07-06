@@ -13,6 +13,8 @@
 
 ## Minor changes
 
+- `ggforest()` gains a `var.labels` argument to relabel the variable names shown in the plot, e.g. `var.labels = c(age = "Age (years)", sex = "Sex")`. Only names matching a model term are relabelled; unmatched terms keep their original name. Default `NULL` is unchanged. Requested by @PeterStrom (#405).
+
 - `ggsurvplot()` gains a `pval.parse` argument. Set `pval.parse = TRUE` to render the p-value text as a plotmath expression, allowing italic/superscript formatting such as `pval = "italic(P)==1.4~x~10^-6"`. Default `FALSE` draws the text literally (unchanged). Requested by @KBalazs1987 (#605) and @arossevold (#679).
 
 - `ggcoxzph()` now accepts a `coxph` model directly (running `survival::cox.zph()` on it automatically), instead of only a pre-computed `cox.zph` object — `ggcoxzph(coxph_fit)` previously errored with "Can't handle an object of class coxph". Passing a `cox.zph` object is unchanged. Contributed by @DanChaltiel (#410).
