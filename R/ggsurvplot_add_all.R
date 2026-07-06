@@ -94,7 +94,8 @@ ggsurvplot_add_all <- function(fit, data, legend.title = "Strata", legend.labs =
                    else if(!is.null(.dots$pval.size)) .dots$pval.size else 5
     p$plot <- p$plot +
       ggplot2::annotate("text", x = pval$method.x[1], y = pval$method.y[1],
-                        label = pval$method[1], size = method.size, hjust = 0)
+                        label = pval$method[1], size = method.size, hjust = 0,
+                        parse = FALSE)  # method name is generated text, never plotmath
   }
 
   p

@@ -13,6 +13,8 @@
 
 ## Minor changes
 
+- `ggsurvplot()` gains a `pval.parse` argument. Set `pval.parse = TRUE` to render the p-value text as a plotmath expression, allowing italic/superscript formatting such as `pval = "italic(P)==1.4~x~10^-6"`. Default `FALSE` draws the text literally (unchanged). Requested by @KBalazs1987 (#605) and @arossevold (#679).
+
 - `ggcoxzph()` now accepts a `coxph` model directly (running `survival::cox.zph()` on it automatically), instead of only a pre-computed `cox.zph` object — `ggcoxzph(coxph_fit)` previously errored with "Can't handle an object of class coxph". Passing a `cox.zph` object is unchanged. Contributed by @DanChaltiel (#410).
 
 - `ggforest()` gains a `ref.display` argument. Set `ref.display = FALSE` to omit the rows that have no hazard ratio — factor baselines and any non-estimable/aliased or `strata()` terms (the rows labelled "reference") — from both the plot and the table, keeping only the estimated levels; useful for compact panels. Default is `TRUE` (every row shown, unchanged). Contributed by @trentleslie (#563).

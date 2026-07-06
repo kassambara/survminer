@@ -112,6 +112,10 @@ NULL
 #'  \item \strong{pval.coord}: numeric vector, of length 2,
 #'  specifying the x and y coordinates of the p-value.
 #'  Default values are NULL.
+#'  \item \strong{pval.parse}: logical. If TRUE, a custom p-value string given
+#'  via \code{pval} is parsed as a plotmath expression, allowing
+#'  italic/superscript p-values (e.g. \code{pval = "italic(P)==1.4~x~10^-6"}).
+#'  The auto-computed p-value is plain text, not plotmath. Default is FALSE.
 #'  \item \strong{pval.method.size}: the same as \code{pval.size} but for displaying
 #'  \code{log.rank.weights} name.
 #'  \item \strong{pval.method.coord}: the same as \code{pval.coord} but for displaying
