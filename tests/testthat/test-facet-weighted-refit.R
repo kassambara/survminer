@@ -99,6 +99,20 @@ test_that("unresolvable weights fall back (with a warning), no error (#556)", {
     ggsurvplot(fit, data = d, facet.by = "grp"),
     warning = function(w) { ws <<- c(ws, conditionMessage(w)); invokeRestart("muffleWarning") }
   )
-  expect_true(any(grepl("could not recover the fit's `weights`", ws)))
+  expect_true(any(grepl("could not safely recover the fit's `weights`", ws)))
   expect_error(ggplot2::ggplot_build(p), NA)
+})
+
+test_that("external-object weights (df$w) fall back to unweighted with a warning (#556)", {
+  # Only a bare column of `data` is recovered; an external object can't be
+  # guaranteed row-aligned to a possibly-reordered `data`, so it falls back to
+  # unweighted (with a warning) rather than risk a silent misweighting.
+  df <- d
+  fit <- survfit(Surv(time, status) ~ sex, data = df, weights = df$w)
+  ws <- character(0)
+  withCallingHandlers(
+    ggsurvplot(fit, data = df, facet.by = "grp"),
+    warning = function(w) { ws <<- c(ws, conditionMessage(w)); invokeRestart("muffleWarning") }
+  )
+  expect_true(any(grepl("could not safely recover", ws)))
 })

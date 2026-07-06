@@ -109,25 +109,25 @@ ggsurvplot_facet <- function(fit, data, facet.by,
   # Recover the fit's case weights. When some facet.by variables are not in the
   # survfit formula (or panel.labs is set), the curves are refit below; that refit
   # dropped the original weights, so faceted curves and the surv.median.line were
-  # computed UNWEIGHTED -- silently wrong (#556). fit$call$weights is an
-  # unevaluated symbol/call, so resolve it to a numeric vector against the fit's
-  # data and forward it to the refit. Gate on presence (unweighted fits are
-  # byte-identical) and require a full-length numeric vector, else fall back to the
-  # unweighted refit so behaviour is never worse than before.
+  # computed UNWEIGHTED -- silently wrong (#556). We only recover weights supplied
+  # as a BARE COLUMN of `data` (e.g. `weights = w`): such a column is, by
+  # construction, row-aligned with the data the refit uses, so it can be forwarded
+  # safely. Weights given as an expression or external object (e.g. `weights =
+  # df$w`) cannot be guaranteed aligned to a possibly-reordered `data`, so rather
+  # than risk a SILENT misweighting we fall back to the unweighted refit and warn.
+  # Gate on presence so unweighted fits are byte-identical.
   .weights <- NULL
   if(!is.null(fit$call$weights)){
-    .weights <- tryCatch({
-      w <- eval(fit$call$weights, envir = data, enclos = environment(.formula))
-      if(is.numeric(w) && length(w) == nrow(data)) w else NULL
-    }, error = function(e) NULL)
-    # If the weights can't be recovered (e.g. given as `df$w` / an object out of
-    # scope rather than a bare column of `data`), fall back to the unweighted
-    # refit but say so, so the drop is explicit rather than silent (#556).
+    w.sym <- fit$call$weights
+    if(is.name(w.sym) && as.character(w.sym) %in% names(data)){
+      w <- data[[as.character(w.sym)]]
+      if(is.numeric(w) && length(w) == nrow(data)) .weights <- w
+    }
     if(is.null(.weights))
-      warning("ggsurvplot_facet() could not recover the fit's `weights` for the ",
-              "faceted refit, so the curves are drawn UNWEIGHTED. Pass the weights ",
-              "as a bare column of `data` (e.g. `weights = w`, not `weights = df$w`) ",
-              "for weighted faceting.", call. = FALSE)
+      warning("ggsurvplot_facet() could not safely recover the fit's `weights` for ",
+              "the faceted refit, so the curves are drawn UNWEIGHTED. Pass the ",
+              "weights as a bare column of `data` (e.g. `weights = w`, not ",
+              "`weights = df$w`) for weighted faceting.", call. = FALSE)
   }
 
   # Changing panel labs if specified
