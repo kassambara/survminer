@@ -14,7 +14,8 @@ ggforest(
   noDigits = 2,
   global.stats = TRUE,
   ref.display = TRUE,
-  var.labels = NULL
+  var.labels = NULL,
+  ggtheme = NULL
 )
 }
 \arguments{
@@ -49,6 +50,15 @@ variable names, e.g. \code{c(age = "Age (years)", sex = "Sex")}. The names
 must match the model term names (as shown in the plot by default); only
 matched terms are relabelled, unmatched terms keep their original name.
 Default \code{NULL} uses the term names unchanged.}
+
+\item{ggtheme}{a ggplot2 theme (e.g. the result of \code{theme(...)} or a
+complete theme) applied to the forest plot. Because \code{ggforest()} returns
+a rasterised \code{gtable}, a theme added to the returned object has no effect;
+pass it here instead, e.g. \code{ggtheme = theme(text = element_text(size =
+14))}. It is added after the built-in theme: a partial \code{theme(...)}
+overrides only the matching elements, whereas a complete theme (e.g.
+\code{theme_void()}) replaces the built-in look entirely. Default \code{NULL}
+leaves the appearance unchanged.}
 }
 \value{
 returns a ggplot2 object (invisibly)

@@ -23,6 +23,14 @@
 #'   must match the model term names (as shown in the plot by default); only
 #'   matched terms are relabelled, unmatched terms keep their original name.
 #'   Default \code{NULL} uses the term names unchanged.
+#' @param ggtheme a ggplot2 theme (e.g. the result of \code{theme(...)} or a
+#'   complete theme) applied to the forest plot. Because \code{ggforest()}
+#'   returns a rasterised \code{gtable}, a theme added to the returned object
+#'   has no effect; pass it here instead, e.g.
+#'   \code{ggtheme = theme(text = element_text(size = 14))}. It is added after
+#'   the built-in theme: a partial \code{theme(...)} overrides only the matching
+#'   elements, whereas a complete theme (e.g. \code{theme_void()}) replaces the
+#'   built-in look entirely. Default \code{NULL} leaves the appearance unchanged.
 #'
 #' @return returns a ggplot2 object (invisibly)
 #'
@@ -55,7 +63,8 @@
 ggforest <- function(model, data = NULL,
   main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
   fontsize = 0.7, refLabel = "reference", noDigits=2,
-  global.stats = TRUE, ref.display = TRUE, var.labels = NULL) {
+  global.stats = TRUE, ref.display = TRUE, var.labels = NULL,
+  ggtheme = NULL) {
   conf.high <- conf.low <- estimate <- .row <- NULL
   stopifnot(inherits(model, "coxph"))
 
@@ -317,6 +326,12 @@ ggforest <- function(model, data = NULL,
     # unchanged.
     scale_x_continuous(expand = expansion(mult = c(0.05, 0.05), add = c(1, 0))) +
     theme(plot.margin = grid::unit(c(0.5, 0.5, 1, 0.5), "lines"))
+  # Apply a user-supplied theme to the internal plot before it is rasterised
+  # into a gtable. ggforest() returns ggpubr::as_ggplot(gtable), so a theme
+  # added to the returned object cannot reach the inner text; passing it here
+  # via `ggtheme` does (#530). Added last so it overrides the built-in theme.
+  # Default NULL leaves the appearance unchanged.
+  if (!is.null(ggtheme)) p <- p + ggtheme
   # switch off clipping for p-vals, bottom annotation:
   gt <- ggplot_gtable(ggplot_build(p))
   gt$layout$clip[gt$layout$name == "panel"] <- "off"
