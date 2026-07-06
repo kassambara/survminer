@@ -234,10 +234,12 @@ Customize survival plots and tables. See also \link{ggsurvplot_arguments}.
 \section{Axis limits, breaks and scales}{
 
 \itemize{
-\item \strong{break.time.by}: numeric value controlling time axis breaks. Default value
- is NULL.
- \item \strong{break.x.by}: alias of break.time.by. Numeric value controlling x axis
- breaks. Default value is NULL.
+\item \strong{break.time.by}: numeric value controlling time axis breaks. A
+ single value gives regularly spaced breaks; a numeric vector is used as the
+ exact break positions (e.g. \code{c(0, 100, 300, 600)}), keeping the curve
+ and the risk/censor tables aligned. Default value is NULL.
+ \item \strong{break.x.by}: alias of break.time.by. Numeric value (or vector)
+ controlling x axis breaks. Default value is NULL.
  \item \strong{break.y.by}: same as break.x.by but for y axis.
  \item \strong{surv.scale}: scale transformation of survival curves. Allowed values are
  "default" or "percent".

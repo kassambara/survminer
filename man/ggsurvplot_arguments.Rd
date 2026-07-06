@@ -48,11 +48,14 @@ function \link[grDevices]{palette}.}
 linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
 character vector c("solid", "dashed").}
 
-\item{break.time.by}{numeric value controlling time axis breaks. Default value
+\item{break.time.by}{numeric value controlling time axis breaks. A single
+value gives regularly spaced breaks (from 0 by that step); a numeric vector
+is used as the exact break positions (e.g. \code{c(0, 100, 300, 600)}), which
+also keeps the survival curve and the risk/censor tables aligned. Default value
 is NULL.}
 
-\item{break.x.by}{alias of break.time.by. Numeric value controlling x axis
-breaks. Default value is NULL.}
+\item{break.x.by}{alias of break.time.by. Numeric value (or vector) controlling
+x axis breaks. Default value is NULL.}
 
 \item{break.y.by}{same as break.x.by but for y axis.}
 

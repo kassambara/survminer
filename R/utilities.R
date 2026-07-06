@@ -572,6 +572,17 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 }
 
 
+# Time-axis breaks for the survival plot and the risk/censor tables (#695, #435)
+#.........................................................................
+# `break.time.by` may be a single numeric step (regular breaks from 0, the
+# historical behaviour) OR a numeric vector of explicit break positions, used
+# as-is. Using the same value for the curve and the tables keeps their x-axes
+# aligned. A length-1 value reproduces the old seq() output exactly.
+.time_breaks <- function(break.time.by, max.time){
+  if (length(break.time.by) > 1) sort(unique(break.time.by))
+  else seq(0, max.time, by = break.time.by)
+}
+
 # Y-axis breaks for the number-of-censoring panel (ncensor.plot) (#542)
 #.........................................................................
 # One break per distinct censoring count crowds the short panel: with many
