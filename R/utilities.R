@@ -193,16 +193,24 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 {
   survsummary <- summary(fit, times = times, extend = TRUE)
 
+  # For an id-based counting-process / multi-state fit, fit$n counts ROWS
+  # (intervals), not subjects, so strata_size (and pct.risk) would overcount and
+  # the percentage would not start at 100% (#592). fit$n.id is the per-stratum
+  # unique-subject count and is present ONLY for such fits (NULL for standard,
+  # single-group, weighted, and plain left-truncated fits), so this is
+  # byte-identical for every ordinary fit and needs no survival-version guard.
+  strata_totals <- if (!is.null(fit$n.id)) fit$n.id else fit$n
+
   if (is.null(fit$strata)) {
     .strata <- factor(rep("All", length(survsummary$time)))
     strata_names <- "All"
-    strata_size <- rep(fit$n, length(.strata))
+    strata_size <- rep(strata_totals, length(.strata))
   }
   else {
     .strata <- factor(survsummary$strata)
     strata_names <- names(fit$strata)
     nstrata <- length(strata_names)
-    strata_size <- rep(fit$n, each = length(.strata)/nstrata)
+    strata_size <- rep(strata_totals, each = length(.strata)/nstrata)
   }
 
   # Percentage at risk. The denominator is normally the (unweighted) stratum size
