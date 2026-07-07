@@ -38,6 +38,33 @@ test_that("a formula with only strata() terms errors clearly (#648)", {
   )
 })
 
+test_that("a survival::strata() adjustment term is handled like strata() (#672)", {
+  # #672 (flagged by T. Therneau): a survival::strata() term in the formula was
+  # not matched by the strata detector, so it was mistaken for a grouping
+  # variable -> "undefined columns selected". The survival:: prefix is now
+  # recognised and stripped; the result must equal the bare strata() form.
+  expect_error(
+    res_q <- pairwise_survdiff(Surv(time, status) ~ rx + survival::strata(sex),
+                               data = colon, p.adjust.method = "none"),
+    NA
+  )
+  expect_s3_class(res_q, "pairwise.htest")
+  # comparison is still over the grouping variable rx (not the strata term)
+  expect_equal(rownames(res_q$p.value), c("Lev", "Lev+5FU"))
+  expect_equal(colnames(res_q$p.value), c("Obs", "Lev"))
+  # identical to the bare strata() form
+  res_b <- pairwise_survdiff(Surv(time, status) ~ rx + strata(sex),
+                             data = colon, p.adjust.method = "none")
+  expect_equal(res_q$p.value, res_b$p.value)
+})
+
+test_that("no-regression: a grouping variable is never misread as strata (#672)", {
+  # the widened detector must still only match strata()/survival::strata(), not
+  # ordinary grouping variables.
+  res <- pairwise_survdiff(Surv(time, status) ~ rx, data = colon)
+  expect_equal(rownames(res$p.value), c("Lev", "Lev+5FU"))
+})
+
 test_that("rows with a missing grouping value are dropped (#635)", {
   # pairwise_survdiff() removes rows with NA in any grouping column before the
   # pairwise tests. This locks that behavior after switching the row-wise check

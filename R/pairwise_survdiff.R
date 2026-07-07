@@ -48,9 +48,13 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
   # Separate strata() terms (an adjustment, not a grouping variable): they are
   # not data columns, so using them to subset/group crashed with "undefined
   # columns selected". They are kept in the survdiff formula so the pairwise
-  # test is stratified (#648).
-  is_strata <- grepl("^strata\\(", all_terms)
-  strata_terms <- all_terms[is_strata]
+  # test is stratified (#648). A survival::strata() term is also recognised: the
+  # survival:: prefix is stripped so bare strata() is passed to survdiff() (a
+  # stratification special on all survival versions). Otherwise the qualified
+  # term was mistaken for a grouping variable -> "undefined columns selected"
+  # (#672, flagged by T. Therneau).
+  is_strata <- grepl("^(survival::)?strata\\(", all_terms)
+  strata_terms <- sub("^survival::", "", all_terms[is_strata])
   group_var <- all_terms[!is_strata]
   if(length(group_var) == 0)
     stop("The formula must contain at least one grouping variable ",
