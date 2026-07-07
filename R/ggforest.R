@@ -91,9 +91,24 @@ ggforest <- function(model, data = NULL,
   coef <- as.data.frame(tidy(model, conf.int = TRUE))
   gmodel <- glance(model)
 
+  # A variable that appears ONLY inside an interaction term (e.g. sex, rx in
+  # `~ sex:rx` with no sex/rx main effect) is listed in dataClasses but has no
+  # main-effect coefficient. Drawing its factor levels as "reference" rows is
+  # misleading -- it implies a main effect that was never fit. Such variables are
+  # skipped here; their coefficients are still drawn by the interaction block
+  # below (mapped via model$assign). A variable that has its own model term
+  # (main effect, incl. splines/transformations, whether or not it is also in an
+  # interaction) is kept unchanged, so ordinary models are byte-identical (#594).
+  .assign.names <- names(model$assign)
+  .inter.vars <- unique(unlist(strsplit(
+    grep(":", .assign.names, value = TRUE, fixed = TRUE), ":", fixed = TRUE)))
+  .interaction_only <- function(v)
+    !is.null(.assign.names) && !(v %in% .assign.names) && (v %in% .inter.vars)
+
   # extract statistics for every variable
   allTerms <- lapply(seq_along(terms), function(i){
     var <- names(terms)[i]
+    if (.interaction_only(var)) return(NULL)
     if (terms[i] %in% c("factor", "character")) {
       # A plain column name is extracted directly with data[[var]] (this also
       # handles non-syntactic names such as "risk group"/"a-b", which parse()
@@ -138,6 +153,7 @@ ggforest <- function(model, data = NULL,
       data.frame(var = vars, Var1 = "", Freq = nrow(data), pos = seq_along(vars))
     }))
   }
+  allTerms <- Filter(Negate(is.null), allTerms)   # drop interaction-only vars (#594)
   allTermsDF <- do.call(rbind, allTerms)
   colnames(allTermsDF) <- c("var", "level", "N", "pos")
   inds <- apply(allTermsDF[,1:2], 1, paste0, collapse="")
