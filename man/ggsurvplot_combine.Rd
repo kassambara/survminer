@@ -6,7 +6,7 @@
 \usage{
 ggsurvplot_combine(
   fit,
-  data,
+  data = NULL,
   risk.table = FALSE,
   risk.table.pos = c("out", "in"),
   cumevents = FALSE,
@@ -22,9 +22,14 @@ ggsurvplot_combine(
 )
 }
 \arguments{
-\item{fit}{a named list of survfit objects.}
+\item{fit}{a named list whose elements are either survfit objects or
+\code{\link{surv_summary}()} data frames (the latter are drawn directly, as
+in \code{\link{ggsurvplot_df}()}). Note that the number-at-risk /
+cumulative tables and median lines are only available for survfit elements
+(they cannot be recomputed from a summary data frame).}
 
-\item{data}{the data frame used to compute survival curves.}
+\item{data}{the data frame used to compute survival curves. Optional; not
+needed when \code{fit} contains only \code{surv_summary()} data frames.}
 
 \item{risk.table}{Allowed values include: \itemize{ \item TRUE or FALSE
 specifying whether to show or not the risk table. Default is FALSE. \item
