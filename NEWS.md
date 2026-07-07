@@ -49,6 +49,8 @@
 
 ## Bug fixes
 
+- `ggflexsurvplot()` now honors a user-supplied `summary.flexsurv` and the `fun` argument for a single-stratum fit. The single-stratum branch of the internal summary helper recomputed `summary(fit)` with the default time grid and type, so a `summary.flexsurv` meant to extend the fitted curve to a wider `xlim` was ignored (the curve stopped at the last observed time), and `fun = "cumhaz"` fell back to the survival curve. It now uses the already-selected summary. Multi-stratum fits and the default single-stratum survival curve are unchanged (#400).
+
 - `ggsurvplot()` now accepts a per-strata `linetype` vector that contains a hex dash pattern, e.g. `linetype = c("solid", "F1")`. Only all-base-name or all-numeric vectors were mapped to a manual per-strata scale; a vector with a hex pattern fell through and crashed with "the condition has length > 1". Any length-1 value (including a single hex pattern or `"strata"`) is unchanged (#344).
 
 - `ggforest()` no longer draws spurious "reference" rows for an interaction-only model. With a term such as `Surv(time, status) ~ sex:ph.ecog` (an interaction without the corresponding `sex`/`ph.ecog` main effects), the main-effect factor levels were still listed as reference rows, implying main effects that were never fit. A variable that appears only inside an interaction (absent from `names(model$assign)`) is now skipped; its coefficients are still drawn as interaction rows. Models with genuine main effects (including splines/transformations) are unchanged. Reported by @anaveda (#594).
