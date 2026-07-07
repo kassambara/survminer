@@ -13,6 +13,8 @@
 
 ## Minor changes
 
+- New exported `build_ggsurvplot()` returns the assembled `gtable` grob of a `ggsurvplot` object (survival curve + risk table + cumulative events/censor tables) -- the same object `print.ggsurvplot()` draws -- for use with `grid::grid.draw()`, `gridExtra`, or `ggplot2::ggsave()` without going through the print method. It wraps the internal `.build_ggsurvplot()`, giving a documented, stable public entry point (#569).
+
 - `pairwise_survdiff()` gains a `method` argument matching `surv_pvalue()`, so pairwise comparisons can use a weighted log-rank test (`"n"`/Gehan-Breslow, `"sqrtN"`/Tarone-Ware, `"S1"`/Peto-Peto, `"S2"`/modified Peto-Peto, `"FH_p=1_q=1"`/Fleming-Harrington), not only `survival::survdiff()` + `rho`. The method name/alias resolution is now shared between the two functions. Default `method = "survdiff"` reproduces the previous result exactly (`rho` still applies). Weighted methods do not support `strata()` terms and error clearly if combined. Addresses the inconsistency reported in #433.
 
 - `cumevents` and `cumcensor` now accept a character value ("absolute", "percentage", "abs_pct"), like `risk.table`, to show the cumulative events/censoring table as a percentage of the stratum size (or "count (percent)"), not only the absolute count. `TRUE`/`FALSE` are unchanged (absolute). The default table title reflects the type. Requested by @anarpkpd (#499).
