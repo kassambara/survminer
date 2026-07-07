@@ -189,6 +189,54 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 #   - n.event: the cumulative number of events that have occurred since the last time listed until time t+0
 #   - n.censor: number of censored subjects
 #   - strata_size: number of subject in the strata
+# Build the number-at-risk / cumulative time-point table directly from a
+# surv_summary() DATA FRAME (no survfit available), for the data-frame input path
+# of ggsurvplot() (#409). Mirrors the columns produced by
+# .get_timepoints_survsummary(): at each requested time, n.risk is the number
+# still at risk (the value at the first summary row with time >= t; 0 past the
+# last), and cum.n.event / cum.n.censor are the running totals up to t, per
+# stratum. strata_size is the number at risk at the origin. Verified to match
+# .get_timepoints_survsummary() exactly for a df produced by surv_summary(fit).
+.get_timepoints_from_df <- function(df, times, decimal.place = 0){
+  df <- as.data.frame(df)
+  if(is.null(df$strata)) df$strata <- factor(rep("All", nrow(df)))
+  df$strata <- factor(df$strata)
+  parts <- lapply(levels(df$strata), function(s){
+    o <- df[df$strata == s, , drop = FALSE]
+    o <- o[order(o$time), , drop = FALSE]
+    ssize  <- max(o$n.risk)
+    n.risk <- vapply(times, function(tt){
+      idx <- which(o$time >= tt); if(length(idx)) o$n.risk[idx[1]] else 0
+    }, numeric(1))
+    cum.ev  <- vapply(times, function(tt) sum(o$n.event[o$time  <= tt]),  numeric(1))
+    cum.cen <- vapply(times, function(tt) sum(o$n.censor[o$time <= tt]), numeric(1))
+    n.ev    <- c(cum.ev[1],  diff(cum.ev))
+    n.cen   <- c(cum.cen[1], diff(cum.cen))
+    data.frame(strata = s, time = times,
+               n.risk = round(n.risk, decimal.place),
+               pct.risk = round(n.risk * 100 / ssize),
+               n.event = round(n.ev, decimal.place),
+               cum.n.event = round(cum.ev, decimal.place),
+               n.censor = round(n.cen, decimal.place),
+               cum.n.censor = round(cum.cen, decimal.place),
+               strata_size = ssize, stringsAsFactors = FALSE)
+  })
+  res <- do.call(rbind, parts)
+  res$strata <- factor(res$strata, levels = levels(df$strata))
+  # Carry any strata-variable columns (e.g. "sex"), constant within a stratum,
+  # so the table matches .get_timepoints_survsummary() and can be faceted.
+  standard <- c("time","n.risk","n.event","n.censor","surv","std.err",
+                "upper","lower","strata")
+  extra <- setdiff(colnames(df), standard)
+  for(v in extra){
+    # Index the original column by the first row of each stratum, preserving the
+    # column's class (e.g. a factor stays a factor, matching the survfit path).
+    res[[v]] <- df[[v]][match(as.character(res$strata), as.character(df$strata))]
+  }
+  rownames(res) <- seq_len(nrow(res))
+  res
+}
+
 .get_timepoints_survsummary <- function(fit, data, times, decimal.place = 0)
 {
   survsummary <- summary(fit, times = times, extend = TRUE)
