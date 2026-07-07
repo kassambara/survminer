@@ -179,7 +179,23 @@ ggsurvplot_facet <- function(fit, data, facet.by,
     .survformula <- .build_formula(surv.obj, "1")
   }
   else if(length(vars.notin.groupby) == 1){
-    if(is.null(color)) color <- vars.notin.groupby
+    # Colour by the grouping variable. This must be a plain data column: when the
+    # fit was built from a transformed or mis-specified term (e.g. `~ I(sex)`,
+    # `~ strata(sex)`, `~ cut(age, 3)`, or a formula assembled with
+    # `eval(as.name(...))` inside a loop), the term is not a column name and
+    # surv_summary() does not split it back out into its own column, so it cannot
+    # be used to colour the panels. Previously the term was forwarded as `color`
+    # and failed at draw time with a cryptic "Unknown colour name" / col2rgb()
+    # error. Fail early with an actionable message instead (#380).
+    if(is.null(color)){
+      if(vars.notin.groupby %in% colnames(data)) color <- vars.notin.groupby
+      else stop("ggsurvplot_facet() cannot colour the panels by the grouping term '",
+                vars.notin.groupby, "': it is not a column in `data` (it looks like a ",
+                "transformed or programmatically built formula term). Use a plain ",
+                "variable in the survival formula -- add the grouping column to `data` ",
+                "first, or build the formula with reformulate() when constructing it in ",
+                "a loop/function -- so the panels can be coloured by it.", call. = FALSE)
+    }
     .survformula <- .build_formula(surv.obj, vars.notin.groupby)
   }
   else{
