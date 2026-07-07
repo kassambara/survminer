@@ -16,6 +16,7 @@ ggsurvplot_facet(
   pval.size = 5,
   pval.coord = NULL,
   pval.method.coord = NULL,
+  p.adjust.method = "none",
   nrow = NULL,
   ncol = NULL,
   scales = "fixed",
@@ -76,6 +77,12 @@ coordinates of the p-value. Default values are NULL.}
 
 \item{pval.method.coord}{the same as \code{pval.coord} but for displaying
 \code{log.rank.weights} name}
+
+\item{p.adjust.method}{method for adjusting the per-panel p-values for multiple
+comparisons across panels, passed to \code{\link[stats]{p.adjust}()} (e.g.
+\code{"BH"}, \code{"bonferroni"}, \code{"holm"}). The default \code{"none"}
+shows the raw per-panel p-values. When an adjustment method is used the
+displayed text is prefixed with \code{"adj.p ="}.}
 
 \item{nrow, ncol}{Number of rows and columns in the pannel. Used only when the
 data is faceted by one grouping variable.}

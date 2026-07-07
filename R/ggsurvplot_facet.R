@@ -9,6 +9,11 @@ NULL
 #'  displayed for each panel. Note that, unlike \code{\link{ggsurvplot}()},
 #'  a numeric or character \code{pval} is not substituted here (there is one
 #'  p-value per panel); such a value is ignored with a warning.
+#'@param p.adjust.method method for adjusting the per-panel p-values for multiple
+#'  comparisons across panels, passed to \code{\link[stats]{p.adjust}()} (e.g.
+#'  \code{"BH"}, \code{"bonferroni"}, \code{"holm"}). The default \code{"none"}
+#'  shows the raw per-panel p-values. When an adjustment method is used the
+#'  displayed text is prefixed with \code{"adj.p ="}.
 #'@param facet.by character vector, of length 1 or 2, specifying grouping
 #'  variables for faceting the plot. Should be in the data.
 #'@param nrow,ncol Number of rows and columns in the pannel. Used only when the
@@ -68,6 +73,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                              legend.labs = NULL,
                              pval = FALSE, pval.method = FALSE, pval.size = 5,
                              pval.coord = NULL, pval.method.coord = NULL,
+                             p.adjust.method = "none",
                              nrow = NULL, ncol = NULL,
                              scales = "fixed",
                              short.panel.labs = FALSE, panel.labs = NULL,
@@ -81,6 +87,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
 
   if(length(facet.by) > 2)
     stop("facet.by should be of length 1 or 2.")
+  p.adjust.method <- match.arg(p.adjust.method, stats::p.adjust.methods)
 
   if(!is.null(panel.labs) & !.is_list(panel.labs))
       stop("Argument panel.labs should be a list. Read the documentation.")
@@ -309,6 +316,22 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                           pval.method.coord = pval.method.coord,...) %>%
       dplyr::bind_rows() %>%
       tibble::as_tibble()
+    # Optionally adjust the per-panel p-values for multiple comparisons across the
+    # panels (mirrors pairwise_survdiff()'s p.adjust.method). The default "none"
+    # leaves the raw per-panel p-values and their text untouched -- byte-identical
+    # to before. When a method is set, adjust the numeric `pval` across panels and
+    # regenerate the displayed text (prefixed "adj.p =") using the same formatting
+    # as surv_pvalue(); NA panels (e.g. a single group in a panel) stay NA (#407).
+    if(p.adjust.method != "none"){
+      pval.digits <- if("pval.digits" %in% names(list(...))) list(...)$pval.digits else 2
+      adj <- stats::p.adjust(pvalue$pval, method = p.adjust.method)
+      pvalue$pval <- adj
+      pvalue$pval.txt <- ifelse(
+        is.na(adj), pvalue$pval.txt,
+        ifelse(adj < 1e-04, "adj.p < 0.0001",
+               paste("adj.p =", signif(adj, pval.digits)))
+      )
+    }
     # Select the grouping variable columns and cbind the corresponding pvalue
     pvals.df <- grouped.d %>%
       dplyr::select(!!!syms(facet.by)) %>%
