@@ -13,6 +13,8 @@
 
 ## Minor changes
 
+- `pairwise_survdiff()` gains a `method` argument matching `surv_pvalue()`, so pairwise comparisons can use a weighted log-rank test (`"n"`/Gehan-Breslow, `"sqrtN"`/Tarone-Ware, `"S1"`/Peto-Peto, `"S2"`/modified Peto-Peto, `"FH_p=1_q=1"`/Fleming-Harrington), not only `survival::survdiff()` + `rho`. The method name/alias resolution is now shared between the two functions. Default `method = "survdiff"` reproduces the previous result exactly (`rho` still applies). Weighted methods do not support `strata()` terms and error clearly if combined. Addresses the inconsistency reported in #433.
+
 - `cumevents` and `cumcensor` now accept a character value ("absolute", "percentage", "abs_pct"), like `risk.table`, to show the cumulative events/censoring table as a percentage of the stratum size (or "count (percent)"), not only the absolute count. `TRUE`/`FALSE` are unchanged (absolute). The default table title reflects the type. Requested by @anarpkpd (#499).
 
 - `break.time.by` (and its alias `break.x.by`) now accepts a numeric vector of custom break positions, e.g. `break.time.by = c(0, 100, 300, 600, 1000)`, in addition to a single step. Passing a vector previously errored (`'by' must be of length 1`). The same breaks drive the survival curve and the number-at-risk/censor tables, so they stay aligned. A single value is unchanged. Requested in #435 and by @AjayKumar-O (#695).

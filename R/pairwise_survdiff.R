@@ -13,8 +13,16 @@ NULL
 #'  adjust the p value (not recommended), use p.adjust.method = "none".
 #'@param na.action a missing-data filter function. Default is
 #'  options()$na.action.
-#'@param rho a scalar parameter that controls the type of test. Allowed values
-#'  include 0 (for Log-Rank test) and 1 (for peto & peto test).
+#'@param rho a scalar parameter that controls the type of test (used when
+#'  \code{method = "survdiff"}). Allowed values include 0 (for Log-Rank test) and
+#'  1 (for peto & peto test).
+#'@param method the log-rank test to use, matching the \code{method} argument of
+#'  \code{\link{surv_pvalue}}. Default \code{"survdiff"} uses
+#'  \code{survival::survdiff()} (controlled by \code{rho}). A weighted log-rank
+#'  test can be requested by its weight code, full name or abbreviation:
+#'  \code{"n"}/Gehan-Breslow, \code{"sqrtN"}/Tarone-Ware, \code{"S1"}/Peto-Peto,
+#'  \code{"S2"}/modified Peto-Peto, or \code{"FH_p=1_q=1"}/Fleming-Harrington.
+#'  Weighted methods do not support \code{strata()} terms.
 #'@seealso survival::survdiff
 #'@return Returns an object of class "pairwise.htest", which is a list
 #'  containing the p values.
@@ -40,10 +48,17 @@ NULL
 #'
 #'@rdname pairwise_survdiff
 #'@export
-pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, rho = 0)
+pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, rho = 0,
+                              method = "survdiff")
 
 {
   if(missing(na.action)) na.action <- options()$na.action
+  # Resolve the log-rank method/alias (shared with surv_pvalue()). "survdiff"
+  # (default) keeps the exact survival::survdiff() + rho path; a weighted-test
+  # name ("n"/Gehan-Breslow, "sqrtN"/Tarone-Ware, "S1"/Peto-Peto,
+  # "S2"/modified Peto-Peto, "FH_p=1_q=1"/Fleming-Harrington) uses the internal
+  # weighted log-rank test, matching surv_pvalue()'s method argument (#433).
+  method <- .resolve_logrank_method(method)
   all_terms <- attr(stats::terms(formula), "term.labels")
   # Separate strata() terms (an adjustment, not a grouping variable): they are
   # not data columns, so using them to subset/group crashed with "undefined
@@ -63,8 +78,21 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
 
   DNAME <- paste(deparse(substitute(data)), "and", .collapse(group_var, sep = " + " ))
   METHOD <- "Log-Rank"
-  METHOD <- if (rho == 0) "Log-Rank test"
-  else if(rho==1) "Peto & Peto test"
+  if (method == "survdiff") {
+    METHOD <- if (rho == 0) "Log-Rank test"
+    else if(rho==1) "Peto & Peto test"
+  } else {
+    METHOD <- switch(method,
+                     n = "Gehan-Breslow test", sqrtN = "Tarone-Ware test",
+                     S1 = "Peto-Peto test", S2 = "modified Peto-Peto test",
+                     `FH_p=1_q=1` = "Fleming-Harrington (p=1, q=1) test")
+  }
+  # Weighted log-rank tests operate on the two-group subset directly and do not
+  # support a stratified comparison; keep those to the survdiff path.
+  if (method != "survdiff" && length(strata_terms) > 0)
+    stop("Weighted log-rank methods (method = \"", method, "\") do not support ",
+         "strata() terms; use method = \"survdiff\" for a stratified test.",
+         call. = FALSE)
 
 
   # Removing missing value
@@ -94,9 +122,14 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
 
   compare.levels <- function(i, j) {
     .subset = group %in% (levels(group))[c(i,j)]
-    sdif <- survival::survdiff(formula, data = data[.subset, , drop = FALSE],
-                               rho = rho, na.action = na.action)
-    stats::pchisq(sdif$chisq, length(sdif$n) - 1, lower.tail = FALSE)
+    sub_data <- data[.subset, , drop = FALSE]
+    if (method == "survdiff") {
+      sdif <- survival::survdiff(formula, data = sub_data,
+                                 rho = rho, na.action = na.action)
+      stats::pchisq(sdif$chisq, length(sdif$n) - 1, lower.tail = FALSE)
+    } else {
+      .weighted_logrank_test(formula, data = sub_data, method = method)$pvalue
+    }
   }
 
   PVAL <- stats::pairwise.table(compare.levels, levels(group), p.adjust.method)
