@@ -148,3 +148,47 @@ test_that("rows with a missing value in ANY of several grouping vars are dropped
   expect_false(any(grepl("NA", rownames(res_na$p.value))))
   expect_false(any(grepl("NA", colnames(res_na$p.value))))
 })
+
+test_that("ref.group compares every group against one control only (#364)", {
+  data(myeloma)
+  lv <- levels(droplevels(as.factor(myeloma$molecular_group)))
+  ctrl <- lv[1]
+  res <- pairwise_survdiff(Surv(time, event) ~ molecular_group, data = myeloma,
+                           ref.group = ctrl)
+  # one column (the control), one row per other group
+  expect_equal(ncol(res$p.value), 1L)
+  expect_identical(colnames(res$p.value), ctrl)
+  expect_setequal(rownames(res$p.value), setdiff(lv, ctrl))
+  # p-values are adjusted over only these k-1 comparisons, matching an
+  # independent p.adjust of the raw control-vs-other tests
+  others <- setdiff(lv, ctrl)
+  raw <- vapply(others, function(o) {
+    sd <- survival::survdiff(
+      Surv(time, event) ~ molecular_group,
+      data = myeloma[myeloma$molecular_group %in% c(ctrl, o), ])
+    stats::pchisq(sd$chisq, length(sd$n) - 1, lower.tail = FALSE)
+  }, numeric(1))
+  expect_equal(as.numeric(res$p.value[others, 1]),
+               as.numeric(stats::p.adjust(raw, "BH")))
+})
+
+test_that("no-regression: ref.group = NULL is the full pairwise table (#364)", {
+  data(myeloma)
+  a <- pairwise_survdiff(Surv(time, event) ~ molecular_group, data = myeloma)
+  b <- pairwise_survdiff(Surv(time, event) ~ molecular_group, data = myeloma,
+                         ref.group = NULL)
+  expect_equal(a$p.value, b$p.value)
+})
+
+test_that("an invalid ref.group errors clearly (#364)", {
+  data(myeloma)
+  expect_error(
+    pairwise_survdiff(Surv(time, event) ~ molecular_group, data = myeloma,
+                      ref.group = "not-a-level"),
+    "not one of the grouping levels")
+  # more than one level is a clear error, not R's generic condition-length one
+  expect_error(
+    pairwise_survdiff(Surv(time, event) ~ molecular_group, data = myeloma,
+                      ref.group = c("MAF", "MMSET")),
+    "single grouping level")
+})

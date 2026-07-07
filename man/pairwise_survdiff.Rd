@@ -10,7 +10,8 @@ pairwise_survdiff(
   p.adjust.method = "BH",
   na.action,
   rho = 0,
-  method = "survdiff"
+  method = "survdiff",
+  ref.group = NULL
 )
 }
 \arguments{
@@ -39,6 +40,13 @@ test can be requested by its weight code, full name or abbreviation:
 \code{"n"}/Gehan-Breslow, \code{"sqrtN"}/Tarone-Ware, \code{"S1"}/Peto-Peto,
 \code{"S2"}/modified Peto-Peto, or \code{"FH_p=1_q=1"}/Fleming-Harrington.
 Weighted methods do not support \code{strata()} terms.}
+
+\item{ref.group}{optional character string naming a single grouping level to
+use as the common reference/control. When supplied, every other group is
+compared against this one group only (rather than all pairwise comparisons),
+and the p-values are adjusted over just those comparisons -- useful for a
+many-treatments-vs-one-control design, which needs a smaller multiple-testing
+correction. The default \code{NULL} performs all pairwise comparisons.}
 }
 \value{
 Returns an object of class "pairwise.htest", which is a list

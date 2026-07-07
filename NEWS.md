@@ -13,6 +13,8 @@
 
 ## Minor changes
 
+- `pairwise_survdiff()` gains a `ref.group` argument to compare every group against a single control/reference group only, instead of all pairwise comparisons. The p-values are then adjusted over just those k-1 comparisons (a smaller multiple-testing correction), which suits a many-treatments-vs-one-control design. The default `NULL` keeps the full pairwise comparison table unchanged. Requested by @th3minstr3l (#364).
+
 - `ggsurvplot_facet()` gains a `p.adjust.label` argument to customise the prefix shown before an adjusted p-value (used with `p.adjust.method`). The default `"adj.p ="` is unchanged; set e.g. `p.adjust.label = "q ="` or `"p.adj ="` for publication styling (a trailing `"="` becomes `"<"` for very small p-values). Follow-up to #407.
 - `ggsurvplot_facet()` gains a `p.adjust.method` argument to adjust the per-panel log-rank p-values for multiple comparisons across panels (passed to `stats::p.adjust()`, e.g. `"BH"`, `"bonferroni"`, `"holm"`), mirroring `pairwise_survdiff()`. The default `"none"` shows the raw per-panel p-values (unchanged); when a method is set the displayed text is prefixed with `"adj.p ="`. Panels with an undefined p-value (e.g. a single group) are left out of the adjustment. Requested by @choc2000 (#407).
 
