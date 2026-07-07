@@ -375,20 +375,16 @@ ggsurvplot_df <- function(fit, fun = NULL,
 .get_lty <- function(linetype){
   linetype.manual = NULL
   nlty <- length(linetype)
-  if(is.numeric(linetype)){
-    if(nlty > 1) {
-      linetype.manual <-linetype
-      linetype <- "strata"
-    }
-  }
-  else (is.character(linetype))
-  {
-    base_lty <- c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash")
-    is_base_lty <- all(linetype %in% base_lty)
-    if(is_base_lty & nlty > 1){
-      linetype.manual <-linetype
-      linetype <- "strata"
-    }
+  # A length > 1 linetype is a per-strata vector: numeric codes, base line-type
+  # names ("solid"/"dashed"/...), hex dash patterns ("F1", "4C1C"), or a mix.
+  # Apply it manually across strata (scale_linetype_manual). Previously only an
+  # all-base-name or all-numeric vector was recognised, so a vector containing a
+  # hex pattern fell through and later crashed with "the condition has length > 1"
+  # (#344). A single value (including "strata" or a lone hex pattern) is
+  # unchanged: it is passed through as-is.
+  if(nlty > 1){
+    linetype.manual <- linetype
+    linetype <- "strata"
   }
   list(lty = linetype, lty.manual = linetype.manual)
 }
