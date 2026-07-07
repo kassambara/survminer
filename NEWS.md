@@ -13,6 +13,8 @@
 
 ## Minor changes
 
+- `ggsurvplot_combine()` now accepts `surv_summary()` data frames as list elements, not only survfit objects -- the data-frame analogue of `ggsurvplot_df()`. A data-frame element is drawn directly (and `data` is optional in that case). Survfit elements are unchanged. The number-at-risk/cumulative tables and median lines require a survfit and are refused with a clear message for a summary data frame. Requested by @HeidiSeibold (#323).
+
 - `pairwise_survdiff()` gains a `ref.group` argument to compare every group against a single control/reference group only, instead of all pairwise comparisons. The p-values are then adjusted over just those k-1 comparisons (a smaller multiple-testing correction), which suits a many-treatments-vs-one-control design. The default `NULL` keeps the full pairwise comparison table unchanged. Requested by @th3minstr3l (#364).
 
 - `ggsurvplot_facet()` gains a `p.adjust.label` argument to customise the prefix shown before an adjusted p-value (used with `p.adjust.method`). The default `"adj.p ="` is unchanged; set e.g. `p.adjust.label = "q ="` or `"p.adj ="` for publication styling (a trailing `"="` becomes `"<"` for very small p-values). Follow-up to #407.
