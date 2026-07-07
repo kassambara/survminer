@@ -13,6 +13,7 @@
 
 ## Minor changes
 
+- `ggsurvplot_facet()` gains a `p.adjust.label` argument to customise the prefix shown before an adjusted p-value (used with `p.adjust.method`). The default `"adj.p ="` is unchanged; set e.g. `p.adjust.label = "q ="` or `"p.adj ="` for publication styling (a trailing `"="` becomes `"<"` for very small p-values). Follow-up to #407.
 - `ggsurvplot_facet()` gains a `p.adjust.method` argument to adjust the per-panel log-rank p-values for multiple comparisons across panels (passed to `stats::p.adjust()`, e.g. `"BH"`, `"bonferroni"`, `"holm"`), mirroring `pairwise_survdiff()`. The default `"none"` shows the raw per-panel p-values (unchanged); when a method is set the displayed text is prefixed with `"adj.p ="`. Panels with an undefined p-value (e.g. a single group) are left out of the adjustment. Requested by @choc2000 (#407).
 
 - `ggsurvplot_facet()` now fails with a clear, actionable message instead of a cryptic `grDevices::col2rgb()` / "Unknown colour name" error at draw time when the fit's grouping term is not a plain data column -- e.g. a fit built from `Surv(...) ~ I(sex)`, `~ strata(sex)`, `~ cut(age, 3)`, or a formula assembled with `eval(as.name(...))` inside a loop. Such a term is not a column and cannot be used to colour the panels; the message points to using a plain variable / `reformulate()`. Fits whose grouping variable is a real column are unchanged. Reported by @Yatros (#380).

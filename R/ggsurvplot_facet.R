@@ -13,7 +13,12 @@ NULL
 #'  comparisons across panels, passed to \code{\link[stats]{p.adjust}()} (e.g.
 #'  \code{"BH"}, \code{"bonferroni"}, \code{"holm"}). The default \code{"none"}
 #'  shows the raw per-panel p-values. When an adjustment method is used the
-#'  displayed text is prefixed with \code{"adj.p ="}.
+#'  displayed text is prefixed with \code{p.adjust.label}.
+#'@param p.adjust.label the label placed before the adjusted p-value when
+#'  \code{p.adjust.method} is not \code{"none"}. The default is \code{"adj.p ="}
+#'  (e.g. \code{"adj.p = 0.03"}); set it to customise the wording, e.g.
+#'  \code{"p.adj ="} or \code{"q ="}. For a very small p-value the label's
+#'  trailing \code{"="} is replaced by \code{"<"} (\code{"adj.p < 0.0001"}).
 #'@param facet.by character vector, of length 1 or 2, specifying grouping
 #'  variables for faceting the plot. Should be in the data.
 #'@param nrow,ncol Number of rows and columns in the pannel. Used only when the
@@ -73,7 +78,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                              legend.labs = NULL,
                              pval = FALSE, pval.method = FALSE, pval.size = 5,
                              pval.coord = NULL, pval.method.coord = NULL,
-                             p.adjust.method = "none",
+                             p.adjust.method = "none", p.adjust.label = "adj.p =",
                              nrow = NULL, ncol = NULL,
                              scales = "fixed",
                              short.panel.labs = FALSE, panel.labs = NULL,
@@ -326,10 +331,16 @@ ggsurvplot_facet <- function(fit, data, facet.by,
       pval.digits <- if("pval.digits" %in% names(list(...))) list(...)$pval.digits else 2
       adj <- stats::p.adjust(pvalue$pval, method = p.adjust.method)
       pvalue$pval <- adj
+      # `p.adjust.label` is the full displayed prefix (default "adj.p ="); for the
+      # very-small-p case its trailing "=" is dropped and a "<" is used instead,
+      # so it reads "adj.p < 0.0001". This also adds the "<" for a label given
+      # without a trailing "=" (e.g. "q" -> "q < 0.0001"), rather than dropping
+      # the operator.
+      lt.label <- paste(sub("\\s*=\\s*$", "", p.adjust.label), "<")
       pvalue$pval.txt <- ifelse(
         is.na(adj), pvalue$pval.txt,
-        ifelse(adj < 1e-04, "adj.p < 0.0001",
-               paste("adj.p =", signif(adj, pval.digits)))
+        ifelse(adj < 1e-04, paste(lt.label, "0.0001"),
+               paste(p.adjust.label, signif(adj, pval.digits)))
       )
     }
     # Select the grouping variable columns and cbind the corresponding pvalue
