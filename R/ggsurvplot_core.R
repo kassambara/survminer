@@ -578,43 +578,58 @@ build_ggsurvplot <- function(x, surv.plot.height = NULL,
 
   if(is.null(ggsurv$table)) return(ggsurv)
 
-  if(is.null(ggsurv$table))
-    stop("You can't put risk table inside the main plot because risk.table = FALSE. Use risk.table = TRUE")
+  survplot  <- ggsurv$plot
+  risk.data <- ggsurv$table$data
+  strata_lv <- levels(survplot$data$strata)
+  nstrata   <- length(strata_lv)
 
-  # Create a transparent theme object
-  theme_transparent<- function() {
-    theme(
-      title = element_blank(),
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      axis.text.x = element_blank(),
-      axis.text.y = element_blank(),
-      axis.ticks = element_blank(),
-      panel.grid = element_blank(),
-      axis.line = element_blank(),
-      panel.background = element_rect(fill = "transparent",colour = NA),
-      plot.background = element_rect(fill = "transparent",colour = NA),
-      plot.margin=unit(c(0,0,0,0),"mm"),
-      panel.border = element_blank(),
-      legend.position = "none")
+  # Draw each number-at-risk value as its own text annotation placed at its real
+  # (time, y) position, rather than stretching the whole risk-table grob across
+  # the panel with a single annotation_custom(). The old approach hard-coded an x
+  # offset from max(time) and let the grob fill xmin..Inf, so the numbers drifted
+  # out of alignment with the x-axis whenever the visible range changed -- xlim,
+  # axes.offset = FALSE, or any added coord (#302). Positioning each number at its
+  # own `time` lets ggplot's coordinate system place it, so it stays locked to the
+  # axis tick under every one of those cases, and numbers outside xlim are clipped
+  # exactly like the "out" table. annotation_custom() draws in data coordinates
+  # without training or clipping through the y-scale, so the survival curve, its
+  # y-range, ticks and out-of-bounds handling are left byte-identical to the
+  # risk.table.pos = "out" plot (a geom_text() layer would instead retrain the
+  # y-scale and change how the curve is clipped under fun=/ylim).
+  ord  <- match(as.character(risk.data$strata), strata_lv)   # 1 = first level (top row)
+  ymax <- nstrata * 0.05
+  ymin <- if(axes.offset) -0.05 else -0.02
+  step <- (ymax - ymin) / nstrata
+  risk.data$.risk.y <- ymax - step * (ord - 0.5)            # first strata level highest
+
+  strata.cols <- .extract_ggplot_colors(survplot, grp.levels = strata_lv)
+  risk.data$.risk.col <- strata.cols[as.character(risk.data$strata)]
+
+  number.grobs <- lapply(seq_len(nrow(risk.data)), function(i){
+    annotation_custom(
+      grob = grid::textGrob(risk.data$llabels[i],
+                            gp = grid::gpar(col = risk.data$.risk.col[i], fontsize = 10)),
+      xmin = risk.data$time[i], xmax = risk.data$time[i],
+      ymin = risk.data$.risk.y[i], ymax = risk.data$.risk.y[i]
+    )
+  })
+  survplot <- survplot + number.grobs
+
+  # Keep the risk-table title (default "Number at risk" or a user risk.table.title),
+  # which the old inset drew from the embedded table grob; left-aligned at the axis
+  # origin, just above the top row.
+  risk.title <- ggsurv$table$labels$title
+  if(!is.null(risk.title) && nzchar(risk.title)){
+    survplot <- survplot +
+      annotation_custom(
+        grob = grid::textGrob(risk.title, x = grid::unit(0, "npc"), hjust = 0,
+                              gp = grid::gpar(fontsize = 11)),
+        xmin = min(risk.data$time), xmax = Inf,
+        ymin = ymax + step * 0.6, ymax = ymax + step * 0.6
+      )
   }
 
-  survplot <- ggsurv$plot
-  risktable <- ggsurv$table + theme_transparent()
-  nstrata <- length(levels(survplot$data$strata))
-  .time <- survplot$data$time
-  ymax <- nstrata*0.05
-  ymin <- -0.05
-  xmin <- -max(.time)/20
-
-  if(!axes.offset){
-    ymin <- -0.02
-    xmin <- -max(.time)/50
-  }
-  risktable_grob = ggplotGrob(risktable)
-  survplot <- survplot + annotation_custom(grob = risktable_grob, xmin = xmin,
-                                           ymin = ymin, ymax = ymax)
-  ggsurv$plot <- survplot
+  ggsurv$plot  <- survplot
   ggsurv$table <- NULL
   ggsurv
 }
