@@ -383,7 +383,14 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   }
 
   else if(is.data.frame(fit))
-    ggsurv <- do.call(ggsurvplot_df, opts_df)
+    # Data-frame (surv_summary) input. Route through a wrapper that also builds
+    # the number-at-risk / cumulative tables from the data frame when requested
+    # (#409); with no table requested it returns the bare ggplot exactly as
+    # ggsurvplot_df() did.
+    ggsurv <- do.call(.ggsurvplot_df_tables,
+                      c(opts_df, list(risk.table = risk.table, cumevents = cumevents,
+                                      cumcensor = cumcensor, tables.height = tables.height,
+                                      tables.theme = tables.theme)))
 
   else if(.is_survfit(fit)){
 

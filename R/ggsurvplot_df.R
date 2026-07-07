@@ -314,6 +314,140 @@ ggsurvplot_df <- function(fit, fun = NULL,
 # Helper functions
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+# Data-frame input path WITH number-at-risk / cumulative tables (#409).
+# ggsurvplot_df() itself only draws the curves (it is also the shared plot
+# builder for the survfit paths, so it must keep returning a bare ggplot). When
+# the user passes a surv_summary() data frame to ggsurvplot() and requests
+# risk.table / cumevents / cumcensor, this builds the curve plot with
+# ggsurvplot_df() and the tables from the data frame (which carries n.risk /
+# n.event / n.censor), assembling the same compound "ggsurvplot" object the
+# survfit path returns. Modeled on ggsurvplot_combine(); the tables are computed
+# by .get_timepoints_from_df(), which matches the survfit risk table exactly.
+.ggsurvplot_df_tables <- function(fit, risk.table = FALSE, cumevents = FALSE,
+                                  cumcensor = FALSE, risk.table.pos = c("out", "in"),
+                                  axes.offset = TRUE,
+                                  fontsize = 4.5,
+                                  tables.height = 0.25, tables.col = "black",
+                                  tables.y.text = TRUE, tables.y.text.col = TRUE,
+                                  risk.table.title = NULL, risk.table.col = tables.col,
+                                  risk.table.fontsize = fontsize,
+                                  risk.table.y.text = tables.y.text,
+                                  risk.table.y.text.col = tables.y.text.col,
+                                  risk.table.height = tables.height,
+                                  surv.plot.height = 0.75,
+                                  ncensor.plot.height = tables.height,
+                                  cumevents.height = tables.height,
+                                  cumcensor.height = tables.height,
+                                  cumevents.col = tables.col, cumevents.title = NULL,
+                                  cumevents.y.text = tables.y.text,
+                                  cumevents.y.text.col = tables.y.text.col,
+                                  cumcensor.col = tables.col, cumcensor.title = NULL,
+                                  cumcensor.y.text = tables.y.text,
+                                  cumcensor.y.text.col = tables.y.text.col,
+                                  ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
+{
+  risk.table.pos <- match.arg(risk.table.pos)
+  risktable  <- .parse_risk_table_arg(risk.table);  risk.table <- risktable$display
+  cumev      <- .parse_risk_table_arg(cumevents);   cumevents  <- cumev$display
+  cumcens    <- .parse_risk_table_arg(cumcensor);   cumcensor  <- cumcens$display
+
+  # Curve plot (bare ggplot). axes.offset is forwarded (as the old direct
+  # ggsurvplot_df() call did via ...) so it is not silently dropped.
+  p <- ggsurvplot_df(fit, ggtheme = ggtheme, axes.offset = axes.offset, ...)
+
+  # No table requested -> behave exactly like ggsurvplot_df() (byte-identical).
+  if(!(risk.table | cumevents | cumcensor))
+    return(p)
+
+  # A risk table can only be built from a surv_summary()-style data frame.
+  fit <- as.data.frame(fit)
+  needed <- c("time", "n.risk", "n.event", "n.censor")
+  miss <- setdiff(needed, colnames(fit))
+  if(length(miss) > 0)
+    stop("Can't build a risk/events/censor table from this data frame: missing ",
+         "the column(s) ", .collapse(miss, sep = ", "),
+         ". Pass a surv_summary() data frame (or a survfit object).", call. = FALSE)
+
+  res <- list(plot = p)
+  scurve_cols <- .extract_ggplot_colors(p, grp.levels = attr(p, "parameters")$legend.labs)
+
+  # Shared table params, taken from the plot then extended (mirrors ggsurvplot_core).
+  pms <- attr(p, "parameters")
+  surv.color <- pms$color   # the plot's colour aesthetic (usually "strata")
+  pms$ggtheme <- ggtheme
+  pms$tables.theme <- tables.theme
+  pms$ylab <- pms$legend.title
+  pms$axes.offset <- axes.offset
+  # Time-point table from the data frame, wrapped in the (table, time) shape
+  # ggsurvtable() accepts; matches the survfit path exactly.
+  survtable <- .get_timepoints_from_df(fit, times = pms$time.breaks)
+  pms$fit <- list(table = survtable, time = fit$time)
+
+  # Each table is built with its OWN display type / colour / y-text, exactly as
+  # ggsurvplot_core does (a single shared call would apply one type to all).
+  if(risk.table){
+    pms$survtable <- "risk.table"
+    pms$risk.table.type <- risktable$type
+    pms$title <- risk.table.title
+    pms$fontsize <- risk.table.fontsize
+    pms$y.text <- risk.table.y.text
+    # In-plot table: colour the numbers by strata (the curve colours), as the
+    # survfit path does -- surv.color is the plot's colour aesthetic ("strata").
+    pms$color <- if(risk.table.pos == "in") surv.color else risk.table.col
+    if(risk.table.y.text.col) pms$y.text.col <- scurve_cols
+    pms$origin.align <- (risk.table.pos != "in")
+    res$table <- do.call(ggsurvtable, pms)
+  }
+  if(cumevents){
+    pms$survtable <- "cumevents"
+    pms$risk.table.type <- cumev$type
+    pms$title <- cumevents.title
+    pms$fontsize <- fontsize
+    pms$color <- cumevents.col
+    pms$y.text <- cumevents.y.text
+    if(cumevents.y.text.col) pms$y.text.col <- scurve_cols
+    pms$origin.align <- TRUE
+    res$cumevents <- do.call(ggsurvtable, pms)
+  }
+  if(cumcensor){
+    pms$survtable <- "cumcensor"
+    pms$risk.table.type <- cumcens$type
+    pms$title <- cumcensor.title
+    pms$fontsize <- fontsize
+    pms$color <- cumcensor.col
+    pms$y.text <- cumcensor.y.text
+    if(cumcensor.y.text.col) pms$y.text.col <- scurve_cols
+    pms$origin.align <- TRUE
+    res$ncensor.plot <- do.call(ggsurvtable, pms)
+  }
+
+  # Component heights / y-text attributes (per table, as ggsurvplot_core).
+  heights <- list(
+    plot         = surv.plot.height,
+    table        = ifelse(risk.table, risk.table.height, 0),
+    ncensor.plot = ifelse(cumcensor, cumcensor.height, 0),
+    cumevents    = ifelse(cumevents, cumevents.height, 0)
+  )
+  y.text     <- list(table = risk.table.y.text, cumevents = cumevents.y.text,
+                     cumcensor = cumcensor.y.text)
+  y.text.col <- list(table = risk.table.y.text.col, cumevents = cumevents.y.text.col,
+                     cumcensor = cumcensor.y.text.col)
+
+  res$data.survplot  <- fit
+  res$data.survtable <- survtable
+
+  class(res) <- c("ggsurvplot", "ggsurv", "list")
+  attr(res, "heights") <- heights
+  attr(res, "y.text") <- y.text
+  attr(res, "y.text.col") <- y.text.col
+  attr(res, "legend.position") <- pms$legend
+  attr(res, "legend.labs") <- pms$legend.labs
+  attr(res, "cumcensor") <- cumcensor
+  attr(res, "risk.table.pos") <- risk.table.pos
+  attr(res, "axes.offset") <- axes.offset
+  res
+}
+
 # Adapt ylab according to the value of the argument fun
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 .check_ylab <- function(ylab, fun){
