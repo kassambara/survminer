@@ -50,3 +50,46 @@ test_that("no-regression: a model without interactions is unchanged (#536)", {
   expect_true(grepl("ph.ecog", labs, fixed = TRUE))
   expect_error(ggplot2::ggplotGrob(ggforest(fit_main, data = d)), NA)
 })
+
+# #594: for an interaction-only model (a term like sex:ph.ecog with no sex/ph.ecog
+# main effect), ggforest() listed the main-effect factor levels as "reference"
+# rows even though those main effects were never fit -- misleading. A variable
+# that appears only inside an interaction (absent from names(model$assign)) is
+# now skipped; its coefficients are still drawn by the interaction block. The
+# number of drawn rows is read from the N-column text grob ("(N=...)" per row):
+# pre-fix it exceeded the coefficient count by the spurious reference rows.
+n_forest_rows <- function(g) {
+  gt <- ggplot2::ggplotGrob(g)
+  best <- 0L
+  walk <- function(x) {
+    lab <- x$label
+    if (!is.null(lab) && length(lab) > 1L && all(grepl("^\\(N=", lab)))
+      best <<- max(best, length(lab))
+    if (!is.null(x$children)) for (nm in names(x$children)) walk(x$children[[nm]])
+    if (!is.null(x$grobs))    for (k in seq_along(x$grobs)) walk(x$grobs[[k]])
+  }
+  walk(gt)
+  best
+}
+
+test_that("interaction-only model drops spurious main-effect reference rows (#594)", {
+  fit  <- coxph(Surv(time, status) ~ sex:ph.ecog, data = d)
+  labs <- grob_labels(ggforest(fit, data = d))
+  # the interaction coefficients are still drawn
+  expect_true(grepl("sexfemale:ph.ecog1", labs, fixed = TRUE))
+  # exactly one row per fitted coefficient -- no spurious sex/ph.ecog reference
+  # rows (pre-#594 this drew length(coef)+5 rows for the sex & ph.ecog levels)
+  expect_equal(n_forest_rows(ggforest(fit, data = d)), length(coef(fit)))
+  expect_error(ggplot2::ggplotGrob(ggforest(fit, data = d)), NA)
+})
+
+test_that("mixed model keeps genuine main effects, drops interaction-only vars (#594)", {
+  fit  <- coxph(Surv(time, status) ~ age + sex:ph.ecog, data = d)
+  labs <- grob_labels(ggforest(fit, data = d))
+  expect_true(grepl("age", labs, fixed = TRUE))                    # main effect kept
+  expect_true(grepl("sexfemale:ph.ecog1", labs, fixed = TRUE))     # interaction drawn
+  # age (1 numeric row = 1 coef) + interaction coefficients, one row each; no
+  # spurious sex/ph.ecog reference rows -> total rows == number of coefficients
+  expect_equal(n_forest_rows(ggforest(fit, data = d)), length(coef(fit)))
+  expect_error(ggplot2::ggplotGrob(ggforest(fit, data = d)), NA)
+})
