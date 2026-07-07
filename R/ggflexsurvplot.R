@@ -117,7 +117,12 @@ ggflexsurvplot <- function(fit, data = NULL,
     summ <- summary(fit, type = type)
 
   if(length(summ) == 1){
-    summ <- summary(fit)[[1]] %>%
+    # Use the summary already selected above (the user-supplied summary.flexsurv,
+    # or summary(fit, type = type)); previously this branch recomputed
+    # summary(fit)[[1]] with the DEFAULT t and type, discarding a user summary
+    # meant to extend the curve (e.g. to a wider xlim) and ignoring `fun`/type
+    # for single-stratum fits (#400).
+    summ <- summ[[1]] %>%
       dplyr::mutate(strata = "All")
   }
 
