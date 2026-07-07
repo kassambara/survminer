@@ -17,6 +17,7 @@ ggsurvplot_facet(
   pval.coord = NULL,
   pval.method.coord = NULL,
   p.adjust.method = "none",
+  p.adjust.label = "adj.p =",
   nrow = NULL,
   ncol = NULL,
   scales = "fixed",
@@ -82,7 +83,13 @@ coordinates of the p-value. Default values are NULL.}
 comparisons across panels, passed to \code{\link[stats]{p.adjust}()} (e.g.
 \code{"BH"}, \code{"bonferroni"}, \code{"holm"}). The default \code{"none"}
 shows the raw per-panel p-values. When an adjustment method is used the
-displayed text is prefixed with \code{"adj.p ="}.}
+displayed text is prefixed with \code{p.adjust.label}.}
+
+\item{p.adjust.label}{the label placed before the adjusted p-value when
+\code{p.adjust.method} is not \code{"none"}. The default is \code{"adj.p ="}
+(e.g. \code{"adj.p = 0.03"}); set it to customise the wording, e.g.
+\code{"p.adj ="} or \code{"q ="}. For a very small p-value the label's
+trailing \code{"="} is replaced by \code{"<"} (\code{"adj.p < 0.0001"}).}
 
 \item{nrow, ncol}{Number of rows and columns in the pannel. Used only when the
 data is faceted by one grouping variable.}

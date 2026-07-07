@@ -46,6 +46,35 @@ test_that("an invalid p.adjust.method errors clearly (#407)", {
                                       pval = TRUE, p.adjust.method = "nope")))
 })
 
+test_that("p.adjust.label customises the adjusted-p-value prefix (#407)", {
+  d <- subset(colon, etype == 2); d$sex <- factor(d$sex, labels = c("F", "M"))
+  fit <- survfit(Surv(time, status) ~ rx, data = d)
+  # default prefix
+  def <- panel_pvals(suppressWarnings(
+    ggsurvplot_facet(fit, data = d, facet.by = "sex", pval = TRUE,
+                     p.adjust.method = "BH")))
+  expect_true(all(grepl("^adj\\.p =", def)))
+  # custom prefix
+  q <- panel_pvals(suppressWarnings(
+    ggsurvplot_facet(fit, data = d, facet.by = "sex", pval = TRUE,
+                     p.adjust.method = "BH", p.adjust.label = "q =")))
+  expect_true(all(grepl("^q =", q)))
+  expect_false(any(grepl("adj\\.p", q)))
+  # the adjusted numeric value is the same regardless of the label
+  expect_equal(sort(as.numeric(sub("adj\\.p = ", "", def))),
+               sort(as.numeric(sub("q = ", "", q))))
+})
+
+test_that("p.adjust.label is ignored when p.adjust.method = 'none' (#407)", {
+  d <- subset(colon, etype == 2); d$sex <- factor(d$sex, labels = c("F", "M"))
+  fit <- survfit(Surv(time, status) ~ rx, data = d)
+  txt <- panel_pvals(suppressWarnings(
+    ggsurvplot_facet(fit, data = d, facet.by = "sex", pval = TRUE,
+                     p.adjust.label = "q =")))   # method defaults to "none"
+  expect_true(all(grepl("^p =", txt)))          # raw, label not applied
+  expect_false(any(grepl("q =", txt)))
+})
+
 test_that("panels with an undefined p-value are excluded from the adjustment (#407)", {
   # lung ph.ecog == 3 has a single observation -> undefined per-panel p (NA),
   # which must stay blank and not count toward the multiple-comparison n.
