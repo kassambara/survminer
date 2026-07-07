@@ -47,6 +47,17 @@ ggsurvplot_list <- function(fit, data, title = NULL, legend.labs = NULL,
   if(.is_list(fit) & is.null(title))
     title <- names(fit)
 
+  # A grouped fit (from surv_fit(..., group.by=) or a grouped data set) is a list
+  # of survfit objects each fitted on its own subset, carried in the
+  # "surv_fit_group_data" attribute. Use those subsets as the per-fit data so each
+  # panel is drawn -- and its p-value computed -- on its own subgroup, instead of
+  # forcing the pooled `data` (which gave the same overall p-value on every panel)
+  # (#799). Only applies when the caller passed a single (pooled) data frame; an
+  # explicit list of data is left as given.
+  .group.data <- attr(fit, "surv_fit_group_data")
+  if(!is.null(.group.data) & !.is_list(data))
+    data <- .group.data
+
   if(.is_list (fit) & .is_list (data)){
     if(length(fit) != length(data))
       stop("fit and data are lists with different length. ",

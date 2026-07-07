@@ -156,6 +156,11 @@ surv_fit <- function(formula, data, group.by = NULL, match.fd = FALSE, ...){
 
   # Grouped data sets by one or two grouping variables
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  # Remember whether this is a grouped call: the result is then a list of
+  # survfit objects each fitted on its OWN subset. Downstream (ggsurvplot_list)
+  # needs to know that, so the per-panel p-value is computed on each subset
+  # rather than on the pooled data passed as `data=` (#799).
+  .grouped.call <- .is_grouped_data(data) || !is.null(group.by)
   if(.is_grouped_data(data) )
     data <- input_data <- data$data
   else if(!is.null(group.by))
@@ -260,6 +265,13 @@ surv_fit <- function(formula, data, group.by = NULL, match.fd = FALSE, ...){
 
   if(.is_list(data) | .is_list(formula))
     names(res) <- .collapse(DNAME, FNAME, sep = "::")
+
+  # For a grouped call, attach the per-group data subsets so that plotting the
+  # resulting list (ggsurvplot_list) can use each subset for its panel -- in
+  # particular for a correct per-subgroup p-value instead of the pooled one
+  # (#799). Only added for grouped calls; other list results are unchanged.
+  if(.grouped.call && .is_list(res))
+    attr(res, "surv_fit_group_data") <- data
 
   res
 }

@@ -13,6 +13,8 @@
 
 ## Minor changes
 
+- `ggsurvplot()` on a grouped fit from `surv_fit(..., group.by=)` now shows the correct per-subgroup log-rank p-value on each panel with `pval = TRUE`. Previously every panel displayed the same pooled p-value, because `ggsurvplot_list()` recomputed the test on the pooled `data=` instead of each subgroup. `surv_fit()` now carries the per-group data subsets, which `ggsurvplot_list()` uses; the curves/tables and same-data multi-fit lists are unchanged (#799).
+
 - `ggsurvplot_combine()` now accepts `surv_summary()` data frames as list elements, not only survfit objects -- the data-frame analogue of `ggsurvplot_df()`. A data-frame element is drawn directly (and `data` is optional in that case). Survfit elements are unchanged. The number-at-risk/cumulative tables and median lines require a survfit and are refused with a clear message for a summary data frame. Requested by @HeidiSeibold (#323).
 
 - `pairwise_survdiff()` gains a `ref.group` argument to compare every group against a single control/reference group only, instead of all pairwise comparisons. The p-values are then adjusted over just those k-1 comparisons (a smaller multiple-testing correction), which suits a many-treatments-vs-one-control design. The default `NULL` keeps the full pairwise comparison table unchanged. Requested by @th3minstr3l (#364).
