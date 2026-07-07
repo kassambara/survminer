@@ -4,7 +4,14 @@
 \alias{pairwise_survdiff}
 \title{Multiple Comparisons of Survival Curves}
 \usage{
-pairwise_survdiff(formula, data, p.adjust.method = "BH", na.action, rho = 0)
+pairwise_survdiff(
+  formula,
+  data,
+  p.adjust.method = "BH",
+  na.action,
+  rho = 0,
+  method = "survdiff"
+)
 }
 \arguments{
 \item{formula}{a formula expression as for other survival models, of the form
@@ -21,8 +28,17 @@ adjust the p value (not recommended), use p.adjust.method = "none".}
 \item{na.action}{a missing-data filter function. Default is
 options()$na.action.}
 
-\item{rho}{a scalar parameter that controls the type of test. Allowed values
-include 0 (for Log-Rank test) and 1 (for peto & peto test).}
+\item{rho}{a scalar parameter that controls the type of test (used when
+\code{method = "survdiff"}). Allowed values include 0 (for Log-Rank test) and
+1 (for peto & peto test).}
+
+\item{method}{the log-rank test to use, matching the \code{method} argument of
+\code{\link{surv_pvalue}}. Default \code{"survdiff"} uses
+\code{survival::survdiff()} (controlled by \code{rho}). A weighted log-rank
+test can be requested by its weight code, full name or abbreviation:
+\code{"n"}/Gehan-Breslow, \code{"sqrtN"}/Tarone-Ware, \code{"S1"}/Peto-Peto,
+\code{"S2"}/modified Peto-Peto, or \code{"FH_p=1_q=1"}/Fleming-Harrington.
+Weighted methods do not support \code{strata()} terms.}
 }
 \value{
 Returns an object of class "pairwise.htest", which is a list

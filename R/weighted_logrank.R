@@ -21,7 +21,11 @@
   status <- surv_obj[, "status"]
   # Ensure status is 0/1
   if (max(status) == 2) status <- status - 1
-  group <- as.factor(mf[[2]])
+  # drop unused factor levels so a two-group subset (e.g. from pairwise
+  # comparisons) is treated as 2 groups, not the parent's full level set --
+  # otherwise empty groups make the covariance matrix singular. For a full-data
+  # fit there are no empty levels, so this is a no-op.
+  group <- droplevels(as.factor(mf[[2]]))
   groups <- levels(group)
   ngroups <- length(groups)
 
@@ -166,4 +170,30 @@
   }
 
   list(pvalue = pvalue, method_name = test_name)
+}
+
+
+# Resolve a user-supplied log-rank method name/alias to its canonical form.
+# Returns "survdiff" (ordinary log-rank via survival::survdiff) or one of the
+# weighted-test names accepted by .weighted_logrank_test() ("n", "sqrtN", "S1",
+# "S2", "FH_p=1_q=1"). Case-insensitive; accepts the weight code, the full test
+# name, or the abbreviation. Shared by surv_pvalue() and pairwise_survdiff() so
+# the accepted names stay in sync.
+.resolve_logrank_method <- function(method) {
+  if (is.null(method)) method <- "survdiff"
+  . <- NULL
+  allowed.methods <- c("survdiff", "log-rank", "LR", "1",
+                       "n", "Gehan-Breslow", "GB",
+                       "sqrtN", "Tarone-Ware", "TW",
+                       "S1", "Peto-Peto", "PP",
+                       "S2", "modified Peto-Peto", "mPP",
+                       "FH_p=1_q=1", "Fleming-Harrington(p=1, q=1)", "FH")
+  method.names <- c(rep("survdiff", 4),
+                    rep(c("n", "sqrtN", "S1", "S2", "FH_p=1_q=1"), each = 3))
+  # don't use grep which will detect many positions for "n" or "FH"
+  choosed.method <- which(tolower(allowed.methods) %in% tolower(method))
+  if (.is_empty(choosed.method))
+    stop("Don't support the choosed method: ", method, ". ",
+         "Allowed methods include: ", .collapse(allowed.methods, sep = ", "))
+  method.names[choosed.method] %>% .[1]
 }

@@ -65,6 +65,56 @@ test_that("no-regression: a grouping variable is never misread as strata (#672)"
   expect_equal(rownames(res$p.value), c("Lev", "Lev+5FU"))
 })
 
+test_that("method= runs a weighted log-rank test, matching surv_pvalue (#433)", {
+  # #433: pairwise_survdiff() only exposed rho (survdiff); surv_pvalue() accepted
+  # weighted tests via method=. pairwise_survdiff() now takes the same method=,
+  # dispatching to the shared .weighted_logrank_test() for a pairwise comparison.
+  res <- pairwise_survdiff(Surv(time, status) ~ rx, data = colon,
+                           method = "sqrtN", p.adjust.method = "none")
+  expect_s3_class(res, "pairwise.htest")
+  # each cell equals the 2-group weighted test on that pair
+  sub <- droplevels(colon[colon$rx %in% c("Obs", "Lev+5FU"), ])
+  expect_equal(res$p.value["Lev+5FU", "Obs"],
+               .weighted_logrank_test(Surv(time, status) ~ rx, data = sub,
+                                      method = "sqrtN")$pvalue)
+})
+
+test_that("method aliases resolve like surv_pvalue (#433)", {
+  a <- pairwise_survdiff(Surv(time, status) ~ rx, data = colon,
+                         method = "Tarone-Ware", p.adjust.method = "none")$p.value
+  b <- pairwise_survdiff(Surv(time, status) ~ rx, data = colon,
+                         method = "TW", p.adjust.method = "none")$p.value
+  d <- pairwise_survdiff(Surv(time, status) ~ rx, data = colon,
+                         method = "sqrtN", p.adjust.method = "none")$p.value
+  expect_equal(a, d)
+  expect_equal(b, d)
+})
+
+test_that("no-regression: default method='survdiff' equals the rho path (#433)", {
+  a <- pairwise_survdiff(Surv(time, status) ~ rx, data = colon,
+                         p.adjust.method = "none")$p.value
+  b <- pairwise_survdiff(Surv(time, status) ~ rx, data = colon,
+                         method = "survdiff", p.adjust.method = "none")$p.value
+  expect_equal(a, b)
+  # rho still works under the default survdiff path
+  expect_error(pairwise_survdiff(Surv(time, status) ~ rx, data = colon, rho = 1), NA)
+})
+
+test_that("a weighted method with a strata() term errors clearly (#433)", {
+  expect_error(
+    pairwise_survdiff(Surv(time, status) ~ rx + strata(sex), data = colon,
+                      method = "sqrtN"),
+    "do not support"
+  )
+})
+
+test_that("an unknown method errors with the allowed list (#433)", {
+  expect_error(
+    pairwise_survdiff(Surv(time, status) ~ rx, data = colon, method = "bogus"),
+    "Allowed methods"
+  )
+})
+
 test_that("rows with a missing grouping value are dropped (#635)", {
   # pairwise_survdiff() removes rows with NA in any grouping column before the
   # pairwise tests. This locks that behavior after switching the row-wise check
