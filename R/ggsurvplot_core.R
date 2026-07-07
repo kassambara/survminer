@@ -311,6 +311,46 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 }
 
 # Build ggsurvplot for printing
+#' Build the Assembled Grob of a ggsurvplot Object
+#'
+#' @description Assemble a \code{\link{ggsurvplot}} object (the survival curve
+#'   plus any risk table, cumulative events/censor tables and censor plot) into a
+#'   single \code{gtable} grob -- the same object that \code{print.ggsurvplot()}
+#'   draws. This is useful when you want the combined plot as a grob to draw with
+#'   \code{\link[grid]{grid.draw}}, arrange with other grobs, or save with
+#'   \code{\link[ggplot2]{ggsave}} without going through the print method.
+#'
+#' @param x an object of class \code{ggsurvplot}.
+#' @param surv.plot.height,risk.table.height,ncensor.plot.height,cumevents.height
+#'   optional numeric values (in [0, 1]) overriding the relative heights of the
+#'   survival plot and the tables on the grid. Default \code{NULL} keeps the
+#'   heights stored in the object.
+#' @param ... not used.
+#' @return A \code{gtable}/\code{grob} object (as returned by
+#'   \code{\link[ggplot2]{ggplotGrob}} / \code{\link[gridExtra]{arrangeGrob}}).
+#' @examples
+#' library(survival)
+#' fit <- survfit(Surv(time, status) ~ sex, data = lung)
+#' p <- ggsurvplot(fit, data = lung, risk.table = TRUE)
+#'
+#' # Assemble to a grob and draw it
+#' g <- build_ggsurvplot(p)
+#' grid::grid.newpage()
+#' grid::grid.draw(g)
+#'
+#' # or save directly
+#' # ggplot2::ggsave("survival.png", g, width = 7, height = 6)
+#' @export
+build_ggsurvplot <- function(x, surv.plot.height = NULL,
+                             risk.table.height = NULL, ncensor.plot.height = NULL,
+                             cumevents.height = NULL, ...)
+{
+  .build_ggsurvplot(x, surv.plot.height = surv.plot.height,
+                    risk.table.height = risk.table.height,
+                    ncensor.plot.height = ncensor.plot.height,
+                    cumevents.height = cumevents.height, ...)
+}
+
 .build_ggsurvplot <- function(x, surv.plot.height = NULL,
                               risk.table.height = NULL, ncensor.plot.height = NULL,
                               cumevents.height = NULL, ...)
