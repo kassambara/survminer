@@ -23,6 +23,12 @@ NULL
 #'  \code{"n"}/Gehan-Breslow, \code{"sqrtN"}/Tarone-Ware, \code{"S1"}/Peto-Peto,
 #'  \code{"S2"}/modified Peto-Peto, or \code{"FH_p=1_q=1"}/Fleming-Harrington.
 #'  Weighted methods do not support \code{strata()} terms.
+#'@param ref.group optional character string naming a single grouping level to
+#'  use as the common reference/control. When supplied, every other group is
+#'  compared against this one group only (rather than all pairwise comparisons),
+#'  and the p-values are adjusted over just those comparisons -- useful for a
+#'  many-treatments-vs-one-control design, which needs a smaller multiple-testing
+#'  correction. The default \code{NULL} performs all pairwise comparisons.
 #'@seealso survival::survdiff
 #'@return Returns an object of class "pairwise.htest", which is a list
 #'  containing the p values.
@@ -49,7 +55,7 @@ NULL
 #'@rdname pairwise_survdiff
 #'@export
 pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, rho = 0,
-                              method = "survdiff")
+                              method = "survdiff", ref.group = NULL)
 
 {
   if(missing(na.action)) na.action <- options()$na.action
@@ -132,7 +138,29 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
     }
   }
 
-  PVAL <- stats::pairwise.table(compare.levels, levels(group), p.adjust.method)
+  if(is.null(ref.group)){
+    # All pairwise comparisons (default, unchanged).
+    PVAL <- stats::pairwise.table(compare.levels, levels(group), p.adjust.method)
+  }
+  else {
+    # Compare every other group against a single control/reference group only.
+    # Fewer comparisons -> a smaller multiple-testing correction. The p-values
+    # are adjusted over just these k-1 comparisons (#364).
+    ref.group <- as.character(ref.group)
+    if(length(ref.group) != 1)
+      stop("`ref.group` must be a single grouping level.", call. = FALSE)
+    if(!(ref.group %in% levels(group)))
+      stop("`ref.group` (\"", ref.group, "\") is not one of the grouping levels: ",
+           .collapse(levels(group), sep = ", "), ".", call. = FALSE)
+    others <- setdiff(levels(group), ref.group)
+    i <- match(ref.group, levels(group))
+    raw <- vapply(others, function(g) compare.levels(i, match(g, levels(group))),
+                  numeric(1))
+    adj <- stats::p.adjust(raw, method = p.adjust.method)
+    # One column (the reference), one row per other group -- same
+    # "pairwise.htest" matrix shape that print.pairwise.htest expects.
+    PVAL <- matrix(adj, ncol = 1L, dimnames = list(others, ref.group))
+  }
 
   res <- list(method = METHOD, data.name = DNAME, p.value = PVAL,
               p.adjust.method = p.adjust.method)
