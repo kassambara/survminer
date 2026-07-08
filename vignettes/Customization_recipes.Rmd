@@ -1,0 +1,103 @@
+---
+title: "Customization recipes"
+author: "survminer"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Customization recipes}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+`ggsurvplot()` returns a compound object -- a list holding the survival
+curve (`$plot`), the risk table (`$table`), the data actually plotted
+(`$data.survplot`), and more -- and `surv_summary()` returns a plain data
+frame with one row per event/censoring time (`time`, `surv`, `n.risk`,
+`n.event`, `n.censor`, `strata`, ...). Because both are ordinary ggplot2 /
+data-frame objects, a lot of "can survminer do X?" questions are answered by
+*composing* on what these already give you rather than by a dedicated argument.
+
+This page collects such recipes. Each is self-contained and uses the `lung`
+data set from the survival package.
+
+```{r setup}
+library(survminer)
+library(survival)
+library(dplyr)
+library(ggplot2)
+```
+
+# Dashed curves once few patients remain at risk
+
+Some reporting guidelines ask that a survival curve be drawn with a **dashed
+line beyond the point where few patients remain at risk** -- for example the
+[guidelines for reporting mortality and morbidity after cardiac valve
+interventions](https://pubmed.ncbi.nlm.nih.gov/18355567/) recommend a dashed
+line once the number at risk falls below 10% of the initial cohort (survminer
+issue [#559](https://github.com/kassambara/survminer/issues/559)).
+
+`surv_summary()` carries `n.risk` per stratum, so you can find, for each curve,
+the first time it drops below the threshold, split the curve into a solid
+"dense" part and a dashed "sparse" tail, and draw the two with different
+`linetype`s. Repeating the boundary point in the solid part makes the two step
+segments meet with no gap.
+
+```{r dashed-helper}
+# KM curves that switch solid -> dashed once the number at risk drops below
+# `frac` of each group's initial cohort (default 10%).
+ggsurv_dashed_below <- function(fit, data, frac = 0.10, ...) {
+  ss <- surv_summary(fit, data = data) %>%
+    group_by(strata) %>%
+    mutate(onset = { s <- n.risk < frac * max(n.risk)
+                     if (any(s)) min(time[s]) else Inf },
+           phase = ifelse(time >= onset, "sparse", "dense")) %>%
+    ungroup()
+  # repeat the first sparse point in the solid phase so the two steps join
+  bridge <- ss %>% filter(phase == "sparse") %>%
+    group_by(strata) %>% slice_min(time, n = 1) %>% ungroup() %>%
+    mutate(phase = "dense")
+
+  ggplot(bind_rows(ss, bridge), aes(time, surv, colour = strata)) +
+    geom_step(aes(linetype = phase), linewidth = 0.9) +
+    geom_point(data = filter(ss, n.censor > 0), shape = 3, size = 2,
+               show.legend = FALSE) +
+    scale_linetype_manual(values = c(dense = "solid", sparse = "dashed"),
+                          breaks = "sparse",
+                          labels = sprintf("< %g%% at risk", 100 * frac),
+                          name = NULL) +
+    coord_cartesian(ylim = c(0, 1)) +
+    labs(x = "Time", y = "Survival probability", ...) +
+    theme_survminer()
+}
+```
+
+```{r dashed-plot}
+fit <- survfit(Surv(time, status) ~ sex, data = lung)
+ggsurv_dashed_below(fit, lung, frac = 0.10) +
+  scale_colour_discrete(name = "Sex", labels = c("Male", "Female"))
+```
+
+Each curve turns dashed at its own crossing point. A few adjustments:
+
+- The threshold is each group's own initial cohort (`max(n.risk)` per stratum).
+  To key it to the pooled study size instead, replace `max(n.risk)` with the
+  overall starting `n` and every curve dashes at the same count.
+- `frac` is an argument, so the same helper produces the guideline's 10% cutoff
+  or any other fraction.
+- This rebuilds the line layer to control `linetype`, so it does not go through
+  `ggsurvplot()` directly. If you also want the number-at-risk table underneath,
+  build it separately with `ggrisktable()` on the same fit and stack the two
+  (for example with `ggpubr::ggarrange(..., ncol = 1, heights = c(3, 1))`).
