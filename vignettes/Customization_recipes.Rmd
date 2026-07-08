@@ -266,3 +266,42 @@ the grouping variable**, not an at-risk count for the model-based adjusted curve
 number at risk). It is honest only when each `newdata` row is a real subgroup of
 the data (e.g. `sex = 1` / `sex = 2`); for arbitrary covariate combinations there
 is no per-profile risk table and this overlay would mislead.
+
+# Risk table under `ggadjustedcurves()`
+
+`ggadjustedcurves()` draws Cox-adjusted curves by a grouping variable and returns
+a plain `ggplot`, so `risk.table = TRUE` has no effect there (survminer issue
+[#286](https://github.com/kassambara/survminer/issues/286)). The same idea as the
+previous recipe applies, the other way round: build a normal Kaplan-Meier
+`ggsurvplot()` (which comes with a correctly aligned number-at-risk table for the
+grouping variable) and swap its `$plot` for the adjusted-curves plot, matching
+palette, `xlim` and x-breaks so the panels line up.
+
+```{r ggadjustedcurves-risktable, fig.height = 6}
+lung2 <- transform(lung, sex = factor(sex, labels = c("Male", "Female")))
+pal   <- c("#E7302A", "#2E43F3")
+xmax  <- max(lung2$time, na.rm = TRUE)
+
+# a KM ggsurvplot -> aligned curve + number-at-risk table by group
+km.surv <- ggsurvplot(survfit(Surv(time, status) ~ sex, data = lung2), data = lung2,
+                      risk.table = TRUE, palette = pal,
+                      legend.labs = c("Male", "Female"), legend.title = "Sex",
+                      break.time.by = 250, xlim = c(0, xmax))
+
+# Cox-adjusted curves (a plain ggplot); match palette / xlim / breaks
+res.cox <- coxph(Surv(time, status) ~ sex + age + ph.ecog, data = lung2)
+adj <- ggadjustedcurves(res.cox, variable = "sex", data = lung2, palette = pal) +
+  coord_cartesian(xlim = c(0, xmax)) +
+  scale_x_continuous(breaks = seq(0, xmax, 250)) +
+  labs(x = "Time", y = "Adjusted survival probability") +
+  guides(colour = guide_legend("Sex"), fill = guide_legend("Sex")) +
+  theme_survminer()
+
+# swap the KM curve for the adjusted curve; keep the aligned KM risk table
+km.surv$plot <- adj
+print(km.surv, risk.table.height = 0.26)
+```
+
+The same honesty caveat applies: the table is the KM number at risk **for the
+grouping variable**, not for the adjusted curves, and is meaningful only when the
+adjustment variable is a real group.
