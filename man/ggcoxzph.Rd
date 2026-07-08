@@ -17,6 +17,11 @@ ggcoxzph(
   point.shape = 19,
   point.alpha = 1,
   caption = NULL,
+  var_pval = NULL,
+  add.beta.line = FALSE,
+  beta.line.col = "blue",
+  beta.line.type = "dashed",
+  beta.line.size = 0.5,
   ggtheme = theme_survminer(),
   ...
 )
@@ -45,6 +50,23 @@ are produced in turn for each variable of a model.}
 \item{point.col, point.size, point.shape, point.alpha}{color, size, shape and visibility to be used for points.}
 
 \item{caption}{the caption of the final \link[grid]{grob} (\code{bottom} in \link[gridExtra]{arrangeGrob})}
+
+\item{var_pval}{optional numeric threshold; an alternative to \code{var} that
+selects only the terms whose Grambsch-Therneau proportional-hazards test
+p-value is below this value (e.g. \code{var_pval = 0.05} to plot only terms
+flagged for non-proportionality). Cannot be used together with \code{var}.
+Default \code{NULL} (all terms).}
+
+\item{add.beta.line}{logical; if TRUE, overlay a horizontal reference line at
+the model's estimated coefficient for each term (under proportional hazards
+the scaled Schoenfeld residuals scatter around \eqn{\beta}). Requires a
+\code{coxph} model as input (a \code{cox.zph} object does not carry the
+coefficients). The line is drawn only for single-coefficient terms; a
+multi-level factor term has one panel but several coefficients, so no single
+reference line applies and it is left without one. Default FALSE.}
+
+\item{beta.line.col, beta.line.type, beta.line.size}{color, line type and line
+width of the beta reference line (used when \code{add.beta.line = TRUE}).}
 
 \item{ggtheme}{function, ggplot2 theme name.
 Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
