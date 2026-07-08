@@ -13,7 +13,7 @@
 
 ## Documentation
 
-- New "Customization recipes" vignette collecting reusable recipes that solve common requests by composing on the objects survminer already returns (`ggsurvplot()`'s compound object and the `surv_summary()` data frame). The first recipe draws curves that switch from solid to dashed once the number at risk drops below a fraction of the initial cohort, as some reporting guidelines require (#559).
+- New "Customization recipes" vignette collecting reusable recipes that solve common requests by composing on the objects survminer already returns (`ggsurvplot()`'s compound object and the `surv_summary()` data frame). Recipes so far: curves that switch from solid to dashed once the number at risk drops below a fraction of the initial cohort, as some reporting guidelines require (#559); and step-shaped legend keys that echo the Kaplan-Meier curve instead of the default straight line (#537).
 
 ## Minor changes
 
