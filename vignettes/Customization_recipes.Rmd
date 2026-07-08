@@ -143,3 +143,90 @@ step_legend_key(p)
 
 Adjust the `x`/`y` coordinates inside `draw_key_step()` to change the step
 shape (for example a taller riser, or a two-step stair).
+
+# Mark the median survival and its confidence interval
+
+`surv.median.line = "hv"` already drops a line at each group's median survival.
+To also show the *confidence interval* of the median (survminer issue
+[#345](https://github.com/kassambara/survminer/issues/345)), use
+`surv_median()`, which returns `median`, `lower` and `upper` per group, and add
+a horizontal band at survival = 0.5.
+
+```{r median-ci}
+# Match each group's curve colour, falling back to a palette.
+.pull_strata_colours <- function(p, strata) {
+  cols <- tryCatch(survminer:::.extract_ggplot_colors(p$plot, grp.levels = strata),
+                   error = function(e) NULL)
+  if (is.null(cols) || length(cols) != length(strata))
+    cols <- scales::hue_pal()(length(strata))
+  unname(cols)
+}
+
+add_median_ci <- function(p, fit, y = 0.5) {
+  med  <- surv_median(fit)
+  cols <- .pull_strata_colours(p, med$strata)
+  p$plot +
+    geom_segment(data = med, aes(x = lower, xend = upper, y = y, yend = y),
+                 colour = cols, linewidth = 0.9, inherit.aes = FALSE) +
+    geom_point(data = med, aes(x = median, y = y),
+               colour = cols, size = 2.4, inherit.aes = FALSE)
+}
+```
+
+```{r median-ci-plot}
+fit3 <- survfit(Surv(time, status) ~ sex, data = lung)
+p <- ggsurvplot(fit3, data = lung, palette = c("#E7302A", "#2E43F3"),
+                surv.median.line = "hv",
+                legend.labs = c("Male", "Female"), legend.title = "Sex")
+p$plot <- add_median_ci(p, fit3)
+p
+```
+
+The horizontal bar spans the 95% CI of the median survival time
+(`surv_median()`'s `lower`/`upper`); the point marks the median itself.
+
+# Plot math (expressions) in the legend
+
+`legend.labs = c(expression(...))` alone does not render as math, and `+` does
+not apply to the compound `ggsurvplot` object. Add the scale to `$plot` (a plain
+ggplot) instead, supplying the same palette so the colours are unchanged
+(survminer issue [#350](https://github.com/kassambara/survminer/issues/350)).
+
+```{r plotmath-legend}
+pal <- c("#E7302A", "#2E43F3")
+p <- ggsurvplot(fit3, data = lung, palette = pal, legend.title = "Group")
+p$plot <- p$plot +
+  scale_colour_manual(values = pal,
+                      labels = c(expression(x^2 ~ y^2), expression(alpha[i] >= beta)),
+                      name = "Group")
+p
+```
+
+(The "Scale for colour is already present" message is expected -- we are
+replacing survminer's default colour scale with one that carries the math
+labels.)
+
+# One shared legend across a grid of plots
+
+Several separate survival analyses that use the same grouping are often shown in
+a grid with a single common legend (survminer issue
+[#340](https://github.com/kassambara/survminer/issues/340)). Pull each
+`ggsurvplot`'s `$plot` and arrange them with `ggpubr::ggarrange()`, which draws
+one shared legend and keeps every panel the same size.
+
+```{r shared-legend, fig.height = 6}
+colon2  <- colon[!is.na(colon$sex), ]
+subsets <- split(colon2, colon2$extent)
+subsets <- subsets[sapply(subsets, nrow) > 30]
+subsets <- subsets[seq_len(min(4, length(subsets)))]
+
+plots <- lapply(names(subsets), function(nm) {
+  d   <- subsets[[nm]]
+  fit <- survfit(Surv(time, status) ~ sex, data = d)
+  ggsurvplot(fit, data = d, legend.title = "Sex",
+             legend.labs = c("Male", "Female"), title = paste("extent", nm))$plot
+})
+
+ggpubr::ggarrange(plotlist = plots, ncol = 2, nrow = 2,
+                  common.legend = TRUE, legend = "bottom")
+```
