@@ -11,6 +11,10 @@
 
 ## Major changes
 
+## Documentation
+
+- New "Customization recipes" vignette collecting reusable recipes that solve common requests by composing on the objects survminer already returns (`ggsurvplot()`'s compound object and the `surv_summary()` data frame). The first recipe draws curves that switch from solid to dashed once the number at risk drops below a fraction of the initial cohort, as some reporting guidelines require (#559).
+
 ## Minor changes
 
 - `ggcompetingrisks()` now fails with a clear, actionable message instead of the opaque `Names repair functions can't return 'NA' values` error when given predicted curves from a multistate Cox model evaluated at several covariate profiles -- `survfit(coxph_multistate, newdata = <2+ rows>)`, whose `pstate` is a 3-D array with one column per profile-by-state combination, more than the number of states. The message points to supplying a single profile, using `cmprsk::cuminc()` / `survfit(Surv(., type = "mstate") ~ ...)`, or base `plot()` for the per-profile curves. The 2-D competing-risks path and a single-profile prediction (which already rendered) are unchanged. Reported by @adamssv (#625).
