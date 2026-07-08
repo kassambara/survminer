@@ -153,18 +153,15 @@ To also show the *confidence interval* of the median (survminer issue
 a horizontal band at survival = 0.5.
 
 ```{r median-ci}
-# Match each group's curve colour, falling back to a palette.
-.pull_strata_colours <- function(p, strata) {
-  cols <- tryCatch(survminer:::.extract_ggplot_colors(p$plot, grp.levels = strata),
-                   error = function(e) NULL)
-  if (is.null(cols) || length(cols) != length(strata))
-    cols <- scales::hue_pal()(length(strata))
-  unname(cols)
-}
-
 add_median_ci <- function(p, fit, y = 0.5) {
   med  <- surv_median(fit)
-  cols <- .pull_strata_colours(p, med$strata)
+  # one colour per group, read from the drawn curve layer (no internal helpers)
+  b     <- ggplot2::ggplot_build(p$plot)$data[[1]]
+  cols  <- b$colour[match(sort(unique(b$group)), b$group)]
+  # drop groups whose median is not reached (surv_median() returns NA there)
+  keep  <- !is.na(med$median)
+  med   <- med[keep, ]
+  cols  <- cols[keep]
   p$plot +
     geom_segment(data = med, aes(x = lower, xend = upper, y = y, yend = y),
                  colour = cols, linewidth = 0.9, inherit.aes = FALSE) +
@@ -183,7 +180,9 @@ p
 ```
 
 The horizontal bar spans the 95% CI of the median survival time
-(`surv_median()`'s `lower`/`upper`); the point marks the median itself.
+(`surv_median()`'s `lower`/`upper`); the point marks the median itself. A group
+whose survival never drops to 0.5 has no median (`surv_median()` returns `NA`),
+so it is simply left without a bar.
 
 # Plot math (expressions) in the legend
 
