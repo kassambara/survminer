@@ -13,7 +13,7 @@
 
 ## Documentation
 
-- New "Customization recipes" vignette collecting reusable recipes that solve common requests by composing on the objects survminer already returns (`ggsurvplot()`'s compound object and the `surv_summary()` data frame). Recipes so far: solid-to-dashed curves once the number at risk drops below a fraction of the initial cohort (#559); step-shaped legend keys that echo the Kaplan-Meier curve (#537); marking the median survival and its confidence interval (#345); plot math (expressions) in the legend (#350); one shared legend across a grid of survival plots (#340); and a per-group risk table under Cox-adjusted survival curves (#231).
+- New "Customization recipes" vignette collecting reusable recipes that solve common requests by composing on the objects survminer already returns (`ggsurvplot()`'s compound object and the `surv_summary()` data frame). Recipes so far: solid-to-dashed curves once the number at risk drops below a fraction of the initial cohort (#559); step-shaped legend keys that echo the Kaplan-Meier curve (#537); marking the median survival and its confidence interval (#345); plot math (expressions) in the legend (#350); one shared legend across a grid of survival plots (#340); a per-group risk table under Cox-adjusted survival curves (#231); and a number-at-risk table under `ggadjustedcurves()` (#286).
 
 ## Minor changes
 
