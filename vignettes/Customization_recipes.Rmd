@@ -229,3 +229,40 @@ plots <- lapply(names(subsets), function(nm) {
 ggpubr::ggarrange(plotlist = plots, ncol = 2, nrow = 2,
                   common.legend = TRUE, legend = "bottom")
 ```
+
+# Risk table under Cox-adjusted survival curves
+
+Cox-model *adjusted* curves are drawn with `survfit(coxph_fit, newdata = ...)`,
+one curve per covariate profile. Asking for `risk.table = TRUE` there gives a
+single pooled row, because those predicted curves have no per-group number at
+risk -- the profiles are hypothetical covariate combinations, not subject groups
+(survminer issue [#231](https://github.com/kassambara/survminer/issues/231)).
+
+When the profiles correspond to a **real grouping variable** (here `sex`), the
+meaningful at-risk counts are the Kaplan-Meier ones for that variable. Build them
+with `ggrisktable()` from a KM fit and drop them into the compound object's
+`$table` slot, matching `legend.labs` and sharing an `xlim` so the two panels
+line up:
+
+```{r cox-risktable, fig.height = 6}
+km.fit  <- survfit(Surv(time, status) ~ sex, data = lung)
+res.cox <- coxph(Surv(time, status) ~ age + sex + ph.ecog, data = lung)
+sex_df  <- with(lung, data.frame(sex = c(1, 2),
+                                 age = mean(age, na.rm = TRUE), ph.ecog = c(1, 1)))
+fit <- survfit(res.cox, newdata = sex_df)
+
+# note: a survfit() from a coxph fit carries no data, so pass `data =` explicitly
+cox.surv <- ggsurvplot(fit, data = sex_df, conf.int = TRUE,
+                       legend.labs = c("sex=1", "sex=2"))
+cox.surv$table <- ggrisktable(km.fit, data = lung, color = "strata",
+                              legend.labs = c("sex=1", "sex=2"),
+                              xlim = c(0, max(fit$time)))
+print(cox.surv, risk.table.height = 0.28)
+```
+
+Be careful with the meaning: the table is the **Kaplan-Meier number at risk for
+the grouping variable**, not an at-risk count for the model-based adjusted curves
+(adjusted curves are expectations for hypothetical profiles and have no literal
+number at risk). It is honest only when each `newdata` row is a real subgroup of
+the data (e.g. `sex = 1` / `sex = 2`); for arbitrary covariate combinations there
+is no per-profile risk table and this overlay would mislead.
