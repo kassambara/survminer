@@ -305,3 +305,58 @@ print(km.surv, risk.table.height = 0.26)
 The same honesty caveat applies: the table is the KM number at risk **for the
 grouping variable**, not for the adjusted curves, and is meaningful only when the
 adjustment variable is a real group.
+
+# Single event and a number-at-risk table for competing risks
+
+For a `cmprsk::cuminc()` competing-risks fit, two common requests are to plot only
+the **event of interest** (dropping the competing events) and to add a
+**number-at-risk table** underneath (survminer issue
+[#223](https://github.com/kassambara/survminer/issues/223)). Both compose from the
+`cuminc` object and a companion `survfit()`: the cumulative-incidence estimates
+(and their variance) for the event of interest come straight out of `cuminc`, and
+the number at risk -- subjects still event-free and under observation, the usual
+convention for a competing-risks figure -- is the `n.risk` of a `survfit()` that
+treats **any** event as the endpoint.
+
+```{r cuminc-risktable, fig.height = 6, eval = requireNamespace("cmprsk", quietly = TRUE)}
+library(cmprsk)
+
+# competing-risks data: event 1 = PCM (of interest), 2 = death (competing)
+mg <- transform(mgus2,
+                etime = ifelse(pstat == 1, ptime, futime),
+                event = ifelse(pstat == 1, 1, 2 * death))
+pal <- c("#E7302A", "#2E43F3"); xmax <- max(mg$etime); eoi <- "1"
+
+ci <- cuminc(mg$etime, mg$event, group = mg$sex)
+
+# cumulative incidence of the event of interest, per group, with 95% CI bands
+comps <- names(ci)[grepl(paste0(" ", eoi, "$"), names(ci))]
+cif <- do.call(rbind, lapply(comps, function(nm) {
+  d <- as.data.frame(ci[[nm]][c("time", "est", "var")])
+  d$group <- sub(paste0(" ", eoi, "$"), "", nm); d
+}))
+cif$lower <- pmax(0, cif$est - 1.96 * sqrt(cif$var))
+cif$upper <- pmin(1, cif$est + 1.96 * sqrt(cif$var))
+
+p_cif <- ggplot(cif, aes(time, est, colour = group, fill = group)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.15, colour = NA) +
+  geom_step(linewidth = 0.9) +
+  scale_colour_manual(values = pal) + scale_fill_manual(values = pal) +
+  scale_x_continuous(breaks = seq(0, xmax, 60)) +
+  coord_cartesian(xlim = c(0, xmax), ylim = c(0, 1)) +
+  labs(x = "Time (months)", y = "Cumulative incidence of PCM") +
+  guides(colour = guide_legend("Sex"), fill = guide_legend("Sex")) +
+  theme_survminer()
+
+# number-at-risk table: survfit on "any event" gives the event-free at-risk count
+km.surv <- ggsurvplot(survfit(Surv(etime, event > 0) ~ sex, data = mg), data = mg,
+                      risk.table = TRUE, palette = pal, legend.labs = c("F", "M"),
+                      legend.title = "Sex", break.time.by = 60, xlim = c(0, xmax))
+km.surv$plot <- p_cif                       # keep the aligned number-at-risk table
+print(km.surv, risk.table.height = 0.26)
+```
+
+To pick a different event of interest, change `eoi` (the numeric `fstatus` code as
+a string). The confidence bands use `cuminc`'s `var`; note the at-risk counts are
+the standard event-free-under-observation convention, not a competing-risks
+weighted count.
