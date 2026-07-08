@@ -360,3 +360,49 @@ To pick a different event of interest, change `eoi` (the numeric `fstatus` code 
 a string). The confidence bands use `cuminc`'s `var`; note the at-risk counts are
 the standard event-free-under-observation convention, not a competing-risks
 weighted count.
+
+# Forest plot of several univariate Cox models
+
+`ggforest()` draws one fitted model. For the common screening step of showing the
+hazard ratio from a *separate univariate* Cox model for each candidate covariate
+on one forest plot (survminer issues
+[#459](https://github.com/kassambara/survminer/issues/459),
+[#310](https://github.com/kassambara/survminer/issues/310)), fit one model per
+covariate, collect the HR / 95% CI / p from each, and draw the forest with
+`geom_pointrange()` on a log scale.
+
+```{r univariate-forest, fig.height = 4.5}
+d <- lung
+d$sex     <- factor(d$sex, labels = c("Male", "Female"))
+d$ph.ecog <- factor(d$ph.ecog)
+vars <- c("sex", "age", "ph.ecog", "wt.loss")   # candidate covariates
+
+# one univariate Cox model per covariate -> HR, 95% CI, p (one row per coefficient)
+uni <- do.call(rbind, lapply(vars, function(v) {
+  s <- summary(coxph(reformulate(v, response = "Surv(time, status)"), data = d))
+  data.frame(variable = v, term = rownames(s$conf.int),
+             HR    = s$conf.int[, "exp(coef)"],
+             lower = s$conf.int[, "lower .95"],
+             upper = s$conf.int[, "upper .95"],
+             p     = s$coefficients[, "Pr(>|z|)"], row.names = NULL)
+}))
+# row label: variable name, plus the factor level for multi-level terms
+level <- mapply(function(v, t) sub(paste0("^", v), "", t), uni$variable, uni$term)
+uni$label <- ifelse(level == "", uni$variable, paste0(uni$variable, ": ", level))
+uni$label <- factor(uni$label, levels = rev(uni$label))
+
+ggplot(uni, aes(HR, label)) +
+  geom_vline(xintercept = 1, linetype = "dashed", colour = "grey50") +
+  geom_pointrange(aes(xmin = lower, xmax = upper)) +
+  geom_text(aes(label = sprintf("%.2f (%.2f-%.2f)", HR, lower, upper)),
+            vjust = -0.8, size = 3) +
+  scale_x_log10() +
+  labs(x = "Hazard ratio (95% CI, log scale)", y = NULL,
+       title = "Univariate Cox regression") +
+  theme_survminer()
+```
+
+Each row is its own univariate model (not a single multivariable fit); a
+multi-level factor contributes one row per level. Swap in a multivariable
+`ggforest(coxph(Surv(time, status) ~ ., data = ...))` when you want one adjusted
+model instead.
