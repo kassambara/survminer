@@ -117,6 +117,7 @@ library(grid)
 # Draw the legend key of a ggsurvplot's curves as a small step (stair) that
 # echoes the Kaplan-Meier shape, instead of the default straight line.
 step_legend_key <- function(p) {
+  `%||%` <- function(x, y) if (is.null(x)) y else x   # base R has this since 4.4
   draw_key_step <- function(data, params, size) {
     grid::linesGrob(
       x = c(0, 0.45, 0.45, 1), y = c(0.25, 0.25, 0.7, 0.7),
