@@ -101,3 +101,44 @@ Each curve turns dashed at its own crossing point. A few adjustments:
   `ggsurvplot()` directly. If you also want the number-at-risk table underneath,
   build it separately with `ggrisktable()` on the same fit and stack the two
   (for example with `ggpubr::ggarrange(..., ncol = 1, heights = c(3, 1))`).
+
+# Step-shaped legend keys
+
+By default the legend key is a straight horizontal line. Some publications draw
+the key as a small step that echoes the Kaplan-Meier shape (survminer issue
+[#537](https://github.com/kassambara/survminer/issues/537)). `ggsurvplot()`
+returns the curve as `$plot`, whose first layer draws the survival lines, so you
+can swap that layer's legend key for a custom step glyph -- overriding only the
+key, leaving the curve drawing untouched.
+
+```{r step-key-helper}
+library(grid)
+
+# Draw the legend key of a ggsurvplot's curves as a small step (stair) that
+# echoes the Kaplan-Meier shape, instead of the default straight line.
+step_legend_key <- function(p) {
+  draw_key_step <- function(data, params, size) {
+    grid::linesGrob(
+      x = c(0, 0.45, 0.45, 1), y = c(0.25, 0.25, 0.7, 0.7),
+      gp = grid::gpar(col = data$colour %||% "black",
+                      lwd = (data$linewidth %||% data$size %||% 0.75) * .pt,
+                      lty = data$linetype %||% 1, lineend = "butt"))
+  }
+  # the survival curves are the first layer; subclass its geom to override ONLY
+  # the legend key, so the curve drawing itself is unchanged
+  g <- p$plot$layers[[1]]$geom
+  p$plot$layers[[1]]$geom <-
+    ggplot2::ggproto(paste0(class(g)[1], "Key"), g, draw_key = draw_key_step)
+  p
+}
+```
+
+```{r step-key-plot}
+fit2 <- survfit(Surv(time, status) ~ sex, data = lung)
+p <- ggsurvplot(fit2, data = lung, palette = c("#E7302A", "#2E43F3"),
+                legend.title = "Group", legend.labs = c("High", "Low"))
+step_legend_key(p)
+```
+
+Adjust the `x`/`y` coordinates inside `draw_key_step()` to change the step
+shape (for example a taller riser, or a two-step stair).
