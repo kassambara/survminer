@@ -472,3 +472,89 @@ estimate, so it has no confidence band (`upper`/`lower` are `NA` and
 `conf.int = FALSE` is required). For a Weibull fit over the Kaplan-Meier with
 built-in confidence bands, `ggflexsurvplot()` (on a `flexsurv::flexsurvreg()`
 model) is an alternative.
+
+# Subgroup-analysis forest (treatment effect within subgroups)
+
+`ggforest()` draws the coefficients of a *single* fitted model, so it cannot
+produce a subgroup-analysis forest -- the effect of a treatment estimated
+*within* each subgroup, with an interaction test (survminer issues
+[#271](https://github.com/kassambara/survminer/issues/271),
+[#366](https://github.com/kassambara/survminer/issues/366)). Build it by fitting
+the model within each subgroup, collecting the hazard ratios, and adding the
+treatment-by-subgroup interaction p-value:
+
+```{r subgroup-forest, fig.height = 5}
+# a 2-arm treatment and a few subgroup variables, all coded as factors
+d <- subset(colon, etype == 2 & rx %in% c("Obs", "Lev+5FU"))
+d$rx     <- factor(d$rx, levels = c("Obs", "Lev+5FU"))
+d$Sex    <- factor(d$sex, labels = c("Female", "Male"))
+d$Age    <- factor(ifelse(d$age >= 60, ">=60", "<60"), levels = c("<60", ">=60"))
+d$Differ <- factor(d$differ, labels = c("well", "moderate", "poor"))
+subgroups <- c("Sex", "Age", "Differ")
+resp <- "Surv(time, status)"
+
+# treatment HR within one subset; NA if a treatment arm is missing (unstratifiable)
+hr_in <- function(sub) {
+  if (nlevels(droplevels(sub$rx)) < 2) return(c(NA, NA, NA))
+  tryCatch(withCallingHandlers(
+    summary(coxph(Surv(time, status) ~ rx, data = sub))$conf.int[1, c(1, 3, 4)],
+    warning = function(w) invokeRestart("muffleWarning")),
+    error = function(e) c(NA, NA, NA))
+}
+
+# overall effect, then each subgroup's levels + its interaction p-value
+overall <- summary(coxph(Surv(time, status) ~ rx, data = d))$conf.int[1, c(1, 3, 4)]
+tab <- data.frame(subgroup = "Overall", level = "", HR = overall[1],
+                  lower = overall[2], upper = overall[3], p.int = NA_real_)
+for (sg in subgroups) {
+  a <- anova(coxph(reformulate(c("rx", sg), response = resp), data = d),
+             coxph(reformulate(paste0("rx*", sg), response = resp), data = d))
+  pint <- a[2, grep("^P", colnames(a))]          # treatment x subgroup LRT p-value
+  for (lv in levels(d[[sg]])) {
+    est <- hr_in(droplevels(d[d[[sg]] == lv, ]))
+    tab <- rbind(tab, data.frame(subgroup = sg, level = lv, HR = est[1],
+                 lower = est[2], upper = est[3], p.int = pint))
+  }
+}
+
+# lay out rows: Overall, then a bold header per subgroup with its levels below
+rows <- list(data.frame(label = "Overall", tab[1, c("HR","lower","upper","p.int")],
+                        header = FALSE))
+for (sg in subgroups) {
+  rows <- c(rows, list(data.frame(label = sg, HR = NA, lower = NA, upper = NA,
+                       p.int = tab$p.int[tab$subgroup == sg][1], header = TRUE)))
+  lv <- tab[tab$subgroup == sg, ]
+  rows <- c(rows, list(data.frame(label = paste0("   ", lv$level), HR = lv$HR,
+                       lower = lv$lower, upper = lv$upper, p.int = NA, header = FALSE)))
+}
+pl <- do.call(rbind, rows)
+pl$y <- factor(rev(seq_len(nrow(pl))))             # first row on top
+f2 <- function(v, k = 2) ifelse(is.na(v), "", formatC(v, format = "f", digits = k))
+pl$hr.txt <- ifelse(is.na(pl$HR), "",
+                    sprintf("%s (%s-%s)", f2(pl$HR), f2(pl$lower), f2(pl$upper)))
+pl$p.txt  <- ifelse(is.na(pl$p.int), "", paste0("p-int ", f2(pl$p.int, 3)))
+xmin <- min(pl$lower, na.rm = TRUE); xmax <- max(pl$upper, na.rm = TRUE)
+
+ggplot(pl, aes(HR, y)) +
+  geom_vline(xintercept = 1, linetype = "dashed", colour = "grey60") +
+  geom_pointrange(aes(xmin = lower, xmax = upper), na.rm = TRUE, size = 0.4) +
+  geom_text(aes(x = xmin / 5, label = label), hjust = 0, size = 3,
+            fontface = ifelse(pl$header, "bold", "plain")) +
+  geom_text(aes(x = xmax * 1.6, label = hr.txt), hjust = 0, size = 3, na.rm = TRUE) +
+  geom_text(aes(x = xmax * 4.2, label = p.txt), hjust = 0, size = 3,
+            fontface = "italic", na.rm = TRUE) +
+  scale_x_log10(breaks = c(0.25, 0.5, 1, 2), limits = c(xmin / 5, xmax * 14)) +
+  labs(x = "Hazard ratio (Lev+5FU vs Obs, 95% CI, log scale)", y = NULL,
+       title = "Treatment effect by subgroup") +
+  theme_classic() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        axis.line.y = element_blank(), plot.title = element_text(hjust = 0.5))
+```
+
+The honest inference is the interaction p-value -- does the treatment effect
+differ across a subgroup's levels? -- not whether an individual subgroup's HR is
+"significant"; subgroup analyses are exploratory and multiplicity-prone. Code the
+subgroup variables as factors, and watch small subgroups: a level with few events
+(here `well`, a wide interval) is unstable, and a level missing a treatment arm is
+dropped rather than plotted. This is a different question from one HR per level of
+a predictor -- for that, just make the predictor a factor and use `ggforest()`.
