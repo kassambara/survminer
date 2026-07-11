@@ -107,6 +107,20 @@ ggadjustedcurves <- function(fit,
                                 ylab = "Survival rate", size = 1,
                                 ggtheme = theme_survminer(), ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
+
+  # `ggadjustedcurves()` returns a plain ggplot and has no risk table of its own:
+  # the adjusted curves are model-based expectations for covariate profiles, with
+  # no literal number at risk. A `risk.table = TRUE` passed here was historically
+  # swallowed by `...` and silently did nothing (#286). Point the user to the
+  # documented recipe instead of ignoring the request. Fires only when the
+  # argument is explicitly TRUE, so ordinary calls are byte-identical.
+  if (isTRUE(list(...)[["risk.table"]]))
+    message("`ggadjustedcurves()` returns a plain ggplot and does not draw a risk ",
+            "table -- the adjusted curves have no number at risk of their own. For ",
+            "a Kaplan-Meier number-at-risk table by the grouping variable, see the ",
+            "\"Risk table under ggadjustedcurves()\" recipe in the survminer ",
+            "Customization recipes vignette (issue #286).")
+
   ylim <- NULL
   if (is.null(fun)) ylim <- c(0, 1)
 
