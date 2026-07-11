@@ -105,6 +105,53 @@ ggforest <- function(model, data = NULL,
   .interaction_only <- function(v)
     !is.null(.assign.names) && !(v %in% .assign.names) && (v %in% .inter.vars)
 
+  # Map each level of a factor/character term to the coefficient that represents
+  # it under the contrasts the model ACTUALLY used, instead of assuming the
+  # coefficient is named paste0(var, level). That assumption holds only for the
+  # default contr.treatment (reference = first level). With a non-default base
+  # (contr.treatment(base = k)) or other SAS-style contrasts, coxph names the
+  # coefficients var + the contrast-matrix COLUMN names (level indices, e.g.
+  # ph.ecog1/ph.ecog3/ph.ecog4 for base = 2 on levels 0/1/2/3), so the naive
+  # paste0(var, level) match tags the wrong level as reference, puts each hazard
+  # ratio on the wrong row, and silently drops the last coefficient (#404).
+  # Returns a coefficient-match key per level (NA for the reference level), using
+  # the stored contrast matrix (rows = levels, cols = coefficients) to route each
+  # fitted coefficient to the level it belongs to. Falls back to the old
+  # paste0(var, level) keys -- so the default contrasts stay byte-identical --
+  # whenever the term is NOT a single-reference treatment-type contrast (e.g.
+  # contr.helmert/contr.sum/contr.poly, for which a per-level reference row is not
+  # well defined) or the contrast matrix cannot be reconciled with the fitted
+  # coefficients.
+  .factor_level_keys <- function(var, levs) {
+    fallback <- paste0(var, levs)
+    idx <- model$assign[[var]]
+    if (is.null(idx)) {
+      # A non-syntactic factor name (e.g. "risk grp") is stored backtick-quoted in
+      # names(model$assign) but bare in dataClasses / model$contrasts, so the direct
+      # [[var]] lookup misses it. Match on the backtick-stripped names so such a
+      # factor is routed too, instead of dropping to the (mislabelling) fallback.
+      pos <- which(gsub("`", "", names(model$assign)) == var)
+      if (length(pos) == 1L) idx <- model$assign[[pos]]
+    }
+    if (is.null(idx)) return(fallback)
+    # coef$term rownames are backtick-stripped below; strip here too so keys match
+    cn <- gsub("`", "", coef$term[idx])         # coef names, in contrast-col order
+    ctr <- model$contrasts[[var]]
+    if (is.null(ctr)) return(fallback)
+    f <- factor(levs, levels = levs)
+    Cmat <- tryCatch({ stats::contrasts(f) <- ctr; stats::contrasts(f) },
+                     error = function(e) NULL)
+    if (is.null(Cmat) || nrow(Cmat) != length(levs) || ncol(Cmat) != length(cn))
+      return(fallback)
+    # treatment-type only: exactly one all-zero (reference) row AND every
+    # coefficient column maps to exactly one level.
+    if (sum(rowSums(Cmat != 0) == 0) != 1L || !all(colSums(Cmat != 0) == 1))
+      return(fallback)
+    keys <- rep(NA_character_, length(levs))
+    for (j in seq_len(ncol(Cmat))) keys[which(Cmat[, j] != 0)] <- cn[j]
+    keys
+  }
+
   # extract statistics for every variable
   allTerms <- lapply(seq_along(terms), function(i){
     var <- names(terms)[i]
@@ -119,11 +166,16 @@ ggforest <- function(model, data = NULL,
       adf <- as.data.frame(table(
         if (var %in% colnames(data)) data[[var]]
         else eval(parse(text = var), envir = data)))
-      cbind(var = var, adf, pos = 1:nrow(adf))
+      # key = correct coefficient name per level (NA for the reference), resolved
+      # from the model's actual contrasts so a non-default base is not mislabelled
+      # (#404). For the default contr.treatment this equals paste0(var, level) for
+      # the non-reference levels and NA for the reference, so output is unchanged.
+      cbind(var = var, adf, pos = 1:nrow(adf),
+            key = .factor_level_keys(var, as.character(adf$Var1)))
     }
     else if (terms[i] == "numeric") {
       data.frame(var = var, Var1 = "", Freq = nrow(data),
-                 pos = 1)
+                 pos = 1, key = var)
     }
     else {
       # Map coefficients to this term via model$assign, which is reliable,
@@ -134,8 +186,10 @@ ggforest <- function(model, data = NULL,
       idx <- model$assign[[var]]
       if (is.null(idx)) idx <- which(startsWith(coef$term, var)) # literal fallback
       vars = coef$term[idx]
+      # key = the coefficient name itself (level is ""), matching the old
+      # paste0(var, level) = vars key exactly, so these terms are byte-identical.
       data.frame(var = vars, Var1 = "", Freq = nrow(data),
-                 pos = seq_along(vars))
+                 pos = seq_along(vars), key = vars)
     }
   })
   # attr(model$terms, "dataClasses") lists only main-effect variables, so
@@ -150,13 +204,19 @@ ggforest <- function(model, data = NULL,
     allTerms <- c(allTerms, lapply(.inter.terms, function(term){
       idx <- model$assign[[term]]
       vars <- coef$term[idx]
-      data.frame(var = vars, Var1 = "", Freq = nrow(data), pos = seq_along(vars))
+      data.frame(var = vars, Var1 = "", Freq = nrow(data), pos = seq_along(vars),
+                 key = vars)
     }))
   }
   allTerms <- Filter(Negate(is.null), allTerms)   # drop interaction-only vars (#594)
   allTermsDF <- do.call(rbind, allTerms)
-  colnames(allTermsDF) <- c("var", "level", "N", "pos")
-  inds <- apply(allTermsDF[,1:2], 1, paste0, collapse="")
+  colnames(allTermsDF) <- c("var", "level", "N", "pos", "key")
+  # Match each row to its coefficient by the resolved key (contrast-aware for
+  # factor levels, the coefficient name itself for numeric/spline/interaction
+  # terms). A reference level has key = NA, which match() below leaves as NA (no
+  # coefficient), i.e. the reference row -- identical to the old behaviour where a
+  # reference level's paste0(var, level) simply found no matching coefficient (#404).
+  inds <- as.character(allTermsDF$key)
 
   # use broom again to get remaining required statistics
   rownames(coef) <- gsub(coef$term, pattern = "`", replacement = "")
