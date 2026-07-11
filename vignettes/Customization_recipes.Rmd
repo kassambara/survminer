@@ -205,6 +205,23 @@ p
 replacing survminer's default colour scale with one that carries the math
 labels.)
 
+With a risk table (`risk.table = TRUE`), the table's strata labels are a
+separate discrete y-axis, so they keep the raw `sex=1` / `sex=2` names unless you
+relabel them too. Carry the same expressions to `$table` with
+`scale_y_discrete()`. The table lists the strata top-to-bottom but the discrete
+y-axis orders its breaks bottom-to-top, so pass the labels reversed to keep each
+label on its own row:
+
+```{r plotmath-legend-risktable}
+math.labs <- c(expression(x^2 ~ y^2), expression(alpha[i] >= beta))
+p <- ggsurvplot(fit3, data = lung, palette = pal, risk.table = TRUE,
+                legend.title = "Group")
+p$plot  <- p$plot  +
+  scale_colour_manual(values = pal, labels = math.labs, name = "Group")
+p$table <- p$table + scale_y_discrete(labels = rev(math.labs))
+p
+```
+
 # One shared legend across a grid of plots
 
 Several separate survival analyses that use the same grouping are often shown in
