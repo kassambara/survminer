@@ -35,6 +35,19 @@ NULL
 #'@param font.family character vector specifying text element font family, e.g.: font.family = "Courier New".
 #'@param hjust horizontal justification of the table text (passed to
 #'  \code{geom_text}). Default is 0.5 (centered); use e.g. 0 for left-aligned.
+#'@param obscure.less.than optional integer for small-cell suppression
+#'  (disclosure control). When set, any table count below this value is replaced
+#'  by the label \code{"<n"} (e.g. \code{obscure.less.than = 5} shows \code{"<5"}
+#'  for at-risk / event / censor counts of 1--4), so small, potentially
+#'  patient-identifying counts are hidden. For the combined risk-table types
+#'  (\code{"nrisk_cumevents"}, \code{"nrisk_cumcensor"}) each count in the cell is
+#'  masked independently. Applies to the risk table and the cumulative
+#'  event/censor tables; it does not affect the \code{ncensor.plot} bar chart.
+#'  Default \code{NULL} applies no masking (output unchanged). Requested in
+#'  survminer issue #637.
+#'@param obscure.zero logical. When \code{obscure.less.than} is set, should a
+#'  count of 0 also be masked? Default \code{FALSE} keeps zeros visible (only
+#'  positive counts below the threshold are hidden).
 #'@param ... other arguments passed to the function \code{\link{ggsurvtable}} and \code{\link[ggpubr]{ggpar}}.
 #'@return a ggplot.
 #'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
@@ -94,7 +107,8 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                          fontsize = 4.5, font.family = "", hjust = 0.5,
                          axes.offset = TRUE,
                          ggtheme = theme_survminer(),
-                         tables.theme = ggtheme, ...)
+                         tables.theme = ggtheme,
+                         obscure.less.than = NULL, obscure.zero = FALSE, ...)
 {
 
   if(is.data.frame(fit)){}
@@ -136,7 +150,8 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
     y.text = y.text, y.text.col = y.text.col,
     fontsize = fontsize, font.family = font.family, hjust = hjust,
     axes.offset = axes.offset,
-    ggtheme = ggtheme, tables.theme = tables.theme,...)
+    ggtheme = ggtheme, tables.theme = tables.theme,
+    obscure.less.than = obscure.less.than, obscure.zero = obscure.zero, ...)
 
   res <- list()
   time <- strata <- label <- n.event <- cum.n.event <- NULL
@@ -178,6 +193,24 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
 
 
 
+# Small-cell suppression for disclosure control (#637, requested by @jwallib):
+# when `less.than` is a number, cell counts below it are replaced with the label
+# "<less.than" so small, potentially patient-identifying counts are not shown. A
+# count of 0 is kept unless `zero = TRUE`. `less.than = NULL` (the default of the
+# `obscure.less.than` argument) disables masking entirely, so the tables are
+# byte-identical to before. `.obscure_mask()` returns the rows to hide (compared
+# NUMERICALLY, so combined string labels like "10 (2)" are masked per component,
+# never lexically); `.obscure_label()` overwrites those rows in a label vector.
+.obscure_mask <- function(x, less.than, zero) {
+  num <- suppressWarnings(as.numeric(as.character(x)))
+  !is.na(num) & num < less.than & (num > 0 | zero)
+}
+.obscure_label <- function(label, mask, less.than) {
+  label <- as.character(label)
+  label[mask] <- paste0("<", less.than)
+  label
+}
+
 # Helper function to plot a specific survival table
 .plot_survtable <- function (survsummary, times, survtable = c("cumevents", "risk.table", "cumcensor"),
                              risk.table.type = c("absolute", "percentage", "abs_pct", "nrisk_cumcensor", "nrisk_cumevents"),
@@ -190,11 +223,26 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                          font.family = "", hjust = 0.5,
                          axes.offset = TRUE, origin.align = TRUE,
                          ggtheme = theme_survminer(), tables.theme = ggtheme,
+                         obscure.less.than = NULL, obscure.zero = FALSE,
                           ...)
 {
 
   survtable <- match.arg(survtable)
   risk.table.type <- match.arg(risk.table.type)
+
+  # Normalise the disclosure-control threshold once (#637): require a single
+  # value and coerce it to a number so masking is always a NUMERIC comparison
+  # (a numeric string like "5" works; a factor is read by its label via
+  # as.character(), NOT its integer level code -- the same coercion .obscure_mask
+  # uses, so a factor("5") threshold does not silently under-mask). A length != 1
+  # or non-numeric value errors rather than mis-masking. NULL leaves masking off.
+  if(!is.null(obscure.less.than)){
+    if(length(obscure.less.than) != 1L)
+      stop("`obscure.less.than` must be a single number, or NULL.", call. = FALSE)
+    obscure.less.than <- suppressWarnings(as.numeric(as.character(obscure.less.than)))
+    if(is.na(obscure.less.than))
+      stop("`obscure.less.than` must be a single number, or NULL.", call. = FALSE)
+  }
 
   # Defining plot title
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -272,6 +320,12 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
       percentage = .cum_pct(survsummary$cum.n.event),
       abs_pct    = paste0(survsummary$cum.n.event, " (", .cum_pct(survsummary$cum.n.event), ")"),
       survsummary$cum.n.event)
+    # Mask small cumulative-event counts (whole cell, since every variant here is
+    # derived from cum.n.event) when disclosure control is requested (#637).
+    if(!is.null(obscure.less.than))
+      survsummary$.cumlabel <- .obscure_label(survsummary$.cumlabel,
+        .obscure_mask(survsummary$cum.n.event, obscure.less.than, obscure.zero),
+        obscure.less.than)
     mapping <- aes(x = time, y = rev(strata),
                    label = .cumlabel, shape = rev(strata))
   }
@@ -280,6 +334,11 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
       percentage = .cum_pct(survsummary$cum.n.censor),
       abs_pct    = paste0(survsummary$cum.n.censor, " (", .cum_pct(survsummary$cum.n.censor), ")"),
       survsummary$cum.n.censor)
+    # Mask small cumulative-censor counts, keyed on cum.n.censor (#637).
+    if(!is.null(obscure.less.than))
+      survsummary$.cumlabel <- .obscure_label(survsummary$.cumlabel,
+        .obscure_mask(survsummary$cum.n.censor, obscure.less.than, obscure.zero),
+        obscure.less.than)
     mapping <- aes(x = time, y = rev(strata),
                    label = .cumlabel, shape = rev(strata))
 
@@ -294,6 +353,24 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                       nrisk_cumevents = paste0(survsummary$n.risk, " (", survsummary$cum.n.event, ")"),
                       survsummary$n.risk
     )
+    # Small-cell suppression (#637). For the combined "n.risk (count)" types each
+    # count is masked independently (so a large n.risk beside a small event count
+    # is not over-hidden); for the single-value types (absolute / percentage /
+    # abs_pct) the displayed cell derives from n.risk, so the whole cell is masked
+    # when the at-risk count is small. Guarded by obscure.less.than != NULL, so the
+    # default output is unchanged.
+    if(!is.null(obscure.less.than)){
+      .mask_n <- function(v) .obscure_label(v, .obscure_mask(v, obscure.less.than, obscure.zero),
+                                            obscure.less.than)
+      llabels <- switch(risk.table.type,
+        nrisk_cumcensor = paste0(.mask_n(survsummary$n.risk), " (",
+                                 .mask_n(survsummary$cum.n.censor), ")"),
+        nrisk_cumevents = paste0(.mask_n(survsummary$n.risk), " (",
+                                 .mask_n(survsummary$cum.n.event), ")"),
+        .obscure_label(llabels,
+          .obscure_mask(survsummary$n.risk, obscure.less.than, obscure.zero),
+          obscure.less.than))
+    }
     survsummary$llabels <- llabels
     mapping <- aes(x = time, y = rev(strata),
                    label = llabels, shape = rev(strata))

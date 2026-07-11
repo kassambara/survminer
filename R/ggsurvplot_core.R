@@ -38,6 +38,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
                             surv.median.line = c("none", "hv", "h", "v"),
                             ggtheme = theme_survminer(),
                             tables.theme = ggtheme,
+                            obscure.less.than = NULL, obscure.zero = FALSE,
                             ...
 ){
 
@@ -191,6 +192,11 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   pms$color <- tables.col
   pms$font.family <- font.family
   pms$axes.offset <- axes.offset
+  # Small-cell suppression forwarded to every table builder below (#637). Only
+  # these two named entries are added to pms (not a blob of ...), so an existing
+  # call with obscure.less.than = NULL is byte-identical.
+  pms$obscure.less.than <- obscure.less.than
+  pms$obscure.zero <- obscure.zero
 
 
   # Add risk table
