@@ -558,3 +558,46 @@ subgroup variables as factors, and watch small subgroups: a level with few event
 (here `well`, a wide interval) is unstable, and a level missing a treatment arm is
 dropped rather than plotted. This is a different question from one HR per level of
 a predictor -- for that, just make the predictor a factor and use `ggforest()`.
+
+# Compare parametric distributions against the Kaplan-Meier
+
+`ggflexsurvplot()` overlays one fitted parametric model on the Kaplan-Meier. To
+compare several distributions and pick the best-fitting family (survminer issue
+[#183](https://github.com/kassambara/survminer/issues/183)), fit each with
+`flexsurv::flexsurvreg()`, extract its survival curve, and overlay them on the
+empirical KM:
+
+```{r flex-compare, fig.height = 4, eval = requireNamespace("flexsurv", quietly = TRUE)}
+library(flexsurv)
+
+# empirical KM (marginal) as the reference: a fixed neutral colour, so only the
+# distribution names appear in the legend
+km <- ggsurvplot(survfit(Surv(time, status) ~ 1, data = lung), data = lung,
+                 conf.int = TRUE, color = "grey50")
+
+# fit several parametric families and extract each fitted survival curve
+dists <- c("weibull", "lognormal", "gengamma")
+curves <- do.call(rbind, lapply(dists, function(dd) {
+  fit <- flexsurvreg(Surv(time, status) ~ 1, data = lung, dist = dd)
+  s <- summary(fit, type = "survival", tidy = TRUE)     # time, est, lcl, ucl
+  data.frame(time = s$time, surv = s$est, Distribution = dd)
+}))
+
+km$plot +
+  geom_line(data = curves, aes(time, surv, colour = Distribution), linewidth = 1) +
+  scale_colour_brewer(palette = "Set1") +
+  labs(x = "Time", y = "Survival probability", colour = "Distribution")
+
+# formal model selection: lower AIC = better fit
+sapply(dists, function(dd)
+  AIC(flexsurvreg(Surv(time, status) ~ 1, data = lung, dist = dd)))
+```
+
+Judge the fit with `AIC()` (lower is better -- here weibull beats gengamma beats
+lognormal), not by eye alone. The parametric curves extend the model's
+assumptions beyond the observed follow-up (the lognormal's heavier tail past the
+last event is model-driven, not data-supported), and the overlay drops each fit's
+confidence band for legibility (`summary()` returns `lcl`/`ucl` if you want them).
+Shown for a marginal `~ 1` fit; a covariate model's curve is defined only at a
+fixed covariate profile (`newdata`), as in the survreg recipe above. For a single
+distribution *with* its confidence band, `ggflexsurvplot()` is the built-in.
