@@ -15,13 +15,17 @@ If TRUE, combine the results for multiple fits.}
 \value{
 Returns for each fit, a data frame with the following column:
  \itemize{ \item strata: strata/group names \item median: median survival of
- each group \item lower: 95\% lower confidence limit \item upper: 95\% upper
- confidence limit }Returns a list of data frames when the input is a
+ each group \item lower: lower confidence limit of the median \item upper:
+ upper confidence limit of the median }The confidence limits use the fit's own
+ confidence level (95\% by default), and are \code{NA} for a fit built without
+ confidence limits. Returns a list of data frames when the input is a
  list of survfit objects. If combine = TRUE, results are combined into one single data frame.
 }
 \description{
 Returns the median survival with upper and lower confidence
- limits for the median at 95\% confidence levels.
+ limits for the median. The confidence limits are taken at the confidence
+ level the survfit was built with (95\% by default); a fit stored without
+ confidence limits (e.g. \code{conf.type = "none"}) returns \code{NA} limits.
 }
 \examples{
 
