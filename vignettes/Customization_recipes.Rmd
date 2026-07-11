@@ -423,3 +423,52 @@ Each row is its own univariate model (not a single multivariable fit); a
 multi-level factor contributes one row per level. Swap in a multivariable
 `ggforest(coxph(Surv(time, status) ~ ., data = ...))` when you want one adjusted
 model instead.
+
+# Smooth parametric (survreg / Weibull) survival curves
+
+A `survreg()` accelerated-failure-time fit predicts a *smooth* survival curve;
+feeding its predictions to `ggsurvplot()` as a data frame draws them as a step
+function by default. Use `surv.geom = geom_line` to draw the curve as a smooth
+line instead (survminer issue
+[#276](https://github.com/kassambara/survminer/issues/276)). A `survreg` curve is
+only defined once the covariates are fixed, so choose the profile(s) to draw:
+
+```{r survreg-smooth, fig.height = 4}
+# a parametric (Weibull) AFT model with a covariate
+wb <- survreg(Surv(time, status) ~ sex, data = lung)
+
+# predict(type = "quantile", p = s) returns the time at which survival = 1 - s,
+# i.e. the inverse of the fitted survival function; pick the profiles to show.
+s    <- seq(0.01, 0.99, by = 0.01)
+prof <- data.frame(sex = c(1, 2))
+pred <- predict(wb, newdata = prof, type = "quantile", p = s)   # rows = profiles
+wbdf <- data.frame(
+  time   = as.vector(t(pred)),
+  surv   = rep(1 - s, times = nrow(prof)),
+  strata = factor(rep(c("sex=1", "sex=2"), each = length(s))),
+  upper  = NA, lower = NA, std.err = NA          # a model curve carries no CI band
+)
+
+pal <- c("#E7302A", "#2E43F3")
+# surv.geom = geom_line -> smooth line, not a step; conf.int = FALSE is required.
+ggsurvplot(wbdf, conf.int = FALSE, surv.geom = geom_line, palette = pal,
+           legend.title = "Weibull", legend.labs = c("sex=1", "sex=2"))
+```
+
+To judge how well the parametric model fits, overlay the curves (dashed) on the
+empirical Kaplan-Meier:
+
+```{r survreg-overlay, fig.height = 4}
+km <- ggsurvplot(survfit(Surv(time, status) ~ sex, data = lung), data = lung,
+                 palette = pal, legend.labs = c("sex=1", "sex=2"))
+km$plot + geom_line(data = wbdf, aes(time, surv, colour = strata),
+                    linetype = "dashed", linewidth = 1)
+```
+
+The curve is the model's prediction at the covariate profile you choose -- for a
+multi-covariate model, fix the other covariates in `newdata` and decide which one
+indexes the curves. It is a deterministic parametric fit, not an empirical
+estimate, so it has no confidence band (`upper`/`lower` are `NA` and
+`conf.int = FALSE` is required). For a Weibull fit over the Kaplan-Meier with
+built-in confidence bands, `ggflexsurvplot()` (on a `flexsurv::flexsurvreg()`
+model) is an alternative.
