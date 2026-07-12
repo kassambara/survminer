@@ -2,6 +2,12 @@
 
 ## New features
 
+- New `surv_median_followup()` returns the median follow-up time computed with the
+  reverse Kaplan-Meier method (Schemper & Smith, 1996) -- the roles of the event and
+  censoring indicators are swapped and the median of the resulting curve is reported,
+  per group. This is the follow-up counterpart of `surv_median()` (median survival),
+  a number routinely reported in clinical publications. Computed from base `survival`
+  (no new run-time dependency).
 - New `ggrmst()` and `ggrmst_difference()` for restricted mean survival time (RMST) --
   the area under the Kaplan-Meier curve up to a truncation time `tau`, an absolute
   measure (in time units) that stays interpretable under non-proportional hazards.
