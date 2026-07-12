@@ -2,6 +2,20 @@
 
 ## New features
 
+- `ggadjustedcurves()` gains a `risk.table` argument (#286). When set, a
+  number-at-risk table is drawn below the adjusted curves and the function returns a
+  `ggsurvplot` object (printed with `print()`) instead of a plain `ggplot`. Because
+  the adjusted curves are model-based expectations for covariate profiles with no
+  literal number at risk, the table is the **Kaplan-Meier** number at risk *by the
+  grouping* `variable` (the title says so), and it is computed on the rows the Cox
+  model used -- its complete cases -- so the baseline count matches `fit$n` rather
+  than over-counting rows dropped for missing covariates. A shared `xlim`/
+  `break.time.by` keeps the curve and table time axes aligned. It is meaningful only
+  when `variable` is a real subgroup; for `method = "marginal"`/`"conditional"` the
+  curves are balanced while this count is the raw Kaplan-Meier number at risk. The
+  default (`risk.table = FALSE`) is unchanged. The "Risk table under
+  `ggadjustedcurves()`" vignette recipe is kept as the manual equivalent. Requested
+  by @BenCorden and others.
 - `ggsurvplot_facet()` gains two arguments contributed by @MikeWLloyd (#705):
   `risk.table` draws a number-at-risk table under the faceted curves, faceted with the
   same structure so each panel's table sits below its own curves, and `pval.in.label`
@@ -40,8 +54,6 @@
 - `surv_median()` no longer errors on a `survfit` stored without confidence limits (`conf.type = "none"`) or fitted at a non-default confidence level (e.g. `conf.int = 0.9`). It hard-coded the `0.95LCL`/`0.95UCL` columns of `summary()$table`; these are now detected by suffix, so a `0.9` fit returns its real limits and a no-CI fit returns the median with `NA` limits instead of failing. Default (0.95) output is unchanged. Found alongside #639 (#818).
 
 - `ggsurvplot()` no longer errors with a cryptic `arguments imply differing number of rows` message on a `survfit` stored without confidence limits (e.g. fit with `conf.type = "none"`, or any fit that kept no CI). `surv_summary()` treated the absent `upper`/`lower` as length-0 columns; because it runs for every `ggsurvplot()`, such a fit could not be plotted at all -- even with `conf.int = FALSE`. The missing limits are now filled with `NA`, so the curve draws with no confidence band. Fits with confidence limits are unchanged. Reported by @pmpradhan (#639).
-
-- `ggadjustedcurves()` now emits an informative message when it is called with `risk.table = TRUE`, pointing to the "Risk table under `ggadjustedcurves()`" recipe, instead of silently ignoring the argument. `ggadjustedcurves()` returns a plain ggplot and the model-adjusted curves have no literal number at risk of their own, so a risk table has to be built from the Kaplan-Meier fit for the grouping variable (the recipe). Ordinary calls (no `risk.table`, or `risk.table = FALSE`) are unchanged. Reported by @BenCorden (#286).
 
 - `ggsurvtable()` (and `ggsurvplot()`'s risk table / cumulative event / cumulative censor tables) gains `obscure.less.than` for small-cell suppression, so small at-risk / event / censor counts can be hidden to avoid patient re-identification in sensitive data. When set to an integer, any count below it is shown as `"<n"` (e.g. `obscure.less.than = 5` renders `"<5"` for counts of 1--4); the combined `"nrisk_cumevents"` / `"nrisk_cumcensor"` cells mask each count independently, and comparison is numeric (so `138` is never masked at a threshold of 5). `obscure.zero` (default `FALSE`) controls whether a count of 0 is also hidden. Both default off, so existing tables are unchanged. Requested by @jwallib (#637).
 
@@ -235,7 +247,6 @@
 - Fix `GeomConfint` incompatibility with ggplot2 4.0.x: normalize `linewidth` and `linetype` after stairstep transformation to prevent "Aesthetics can not vary along a ribbon" error (#694)
 - Fix `surv_fit()` error when using list of formulas with list of data sets (`match.fd = FALSE`): replace defunct `dplyr::combine()` with `unlist(recursive = FALSE)` (#697, #699)
 
-
 # survminer 0.5.1
 
 ## Bug fixes
@@ -249,8 +260,6 @@
 - Fix "Ignoring unknown labels" warnings by conditionally setting legend titles only for aesthetics that are actually used in plots
 - Update documentation to recommend `%++%` operator instead of `+` for adding themes to ggsurv objects with ggplot2 v >= 3.5.2
 - Fix documentation examples to consistently use `%++%` operator in `theme_survminer()` help
-
-
 
 # Survminer 0.5.0
 
@@ -277,7 +286,6 @@
 - Fixing issue in the scaling factor for sd in `ggcoxzph()` (#534 and #535)
    
 # Survminer 0.4.9
-
 
 ## Minor changes
 
@@ -310,7 +318,6 @@ Fixes to adapt to dplyr 1.0.0 ([@romainfrancois, #460](https://github.com/kassam
 ## Bug fxes
    
 - When the group size is small (i.e. n = 1), NAs are introduced during the computation of the confidence interval leading to a failure when specifying the option `conf.int` in the `ggsurvplot()` function. To fix this issue, Now, NAs are removed by default when drawing the confidence interval (#443 and #315). 
-
 
 # Survminer 0.4.6
     
@@ -354,9 +361,7 @@ Fixes to adapt to dplyr 1.0.0 ([@romainfrancois, #460](https://github.com/kassam
 
 - `ggadjustedcurves()` has now flipped labels for `conditional`/`marginal` to mach names from ’Adjusted Survival Curves’ by Terry Therneau, Cynthia Crowson, Elizabeth Atkinson (2015) ([@pbiecek, #335](https://github.com/kassambara/survminer/pull/358).
 
-
 # Survminer 0.4.3
-
 
 ## New features
    
@@ -368,16 +373,11 @@ Fixes to adapt to dplyr 1.0.0 ([@romainfrancois, #460](https://github.com/kassam
 
 - Now, `ggforest()` simply returns a ggplot instead of drawing automatically the plot ([@grvsinghal, #267](https://github.com/kassambara/survminer/issues/321)).
 
-
 ## Bug fixes
-
 
 - Now, hiding strata names in risk table work when combining survfits ([@krassowski, #317](https://github.com/kassambara/survminer/issues/317)).
 - Now, `axes.offset` argument is also applied to risk table ([@dmartinffm, #243](https://github.com/kassambara/survminer/issues/243)).
 - It is now possible to add `ggsurvplot` to powerpoint document using ReporteRs even if there is no risk table ([@DrRZ, #314](https://github.com/kassambara/survminer/issues/314)).
-
-
-
 
 # Survminer 0.4.2
   
@@ -386,12 +386,10 @@ Fixes to adapt to dplyr 1.0.0 ([@romainfrancois, #460](https://github.com/kassam
 
 - New argument `size` added in `ggadjustedcurves()` to change the curve size ([@MaximilianTscharre, #267](https://github.com/kassambara/survminer/issues/267)).
 
-
 ## Bug fixes
 
 - Now, confidence interval ribbon works properly ([@wp07, #275](https://github.com/kassambara/survminer/issues/275)). 
 - Now, the argument `ggtheme` is supported when combining a list of survfit objects in `ggsurvplot()` ([@PhonePong, #278](https://github.com/kassambara/survminer/issues/278)). 
-
 
 # survminer 0.4.1
    
@@ -527,7 +525,6 @@ ggsurv$plot + facet_grid(rx ~ adhere)
    
 - Now, `ggsurvplot()` fully supports different methods, in the *survMisc* package, for comparing survival curves ([#191](https://github.com/kassambara/survminer/issues/191)).
 
-
 # survminer 0.3.1
 
 ## Minor changes
@@ -535,7 +532,6 @@ ggsurv$plot + facet_grid(rx ~ adhere)
 - The example section of the `ggcoxdiagnostics()` function and the vignette file `Informative_Survival_Plots.Rmd` have been updated so that `survminer` can pass CRAN check under R-oldrelease.
 - New example dataset `BMT` added for competing risk analysis.
 - New data set `BRCAOV.survInfo` added, used in vignette files
-
 
 ## Bug fixes
    
@@ -681,7 +677,6 @@ survplot <- ggsurvplot(fit, pval = TRUE,
                        risk.table.height = 0.5, # Useful when you have multiple groups
                        palette = "Dark2")
 
-
 require(ReporteRs)
 doc = pptx(title = "Survival plots")
 doc = addSlide(doc, slide.layout = "Title and Content")
@@ -805,7 +800,6 @@ ggsurv$plot +theme_bw() + facet_grid(rx ~ adhere)
 
 # survminer 0.2.0
 
-
 ## New features
    
 - New arguments in ggsurvplot for changing font style, size and color of main title, axis labels, axis tick labels and legend labels: *font.main, font.x, font.y, font.tickslab, font.legend*.
@@ -854,7 +848,6 @@ print(res)
 
 - Plot width is no longer too small when legend position = "left" ([@MarcinKosinski, #7](https://github.com/kassambara/survminer/issues/7)).
     
-
 
 # survminer 0.1.1
 

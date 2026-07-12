@@ -40,9 +40,37 @@ NULL
 #'@param ylab a label for oy axis.
 #'@param size the curve size.
 #'@param ggtheme function, ggplot2 theme name. Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
+#'@param risk.table logical value (or a valid \code{\link{ggsurvplot}()} risk-table
+#'  string). Default is FALSE. If not FALSE, a number-at-risk table is drawn below
+#'  the adjusted curves and the function returns a \code{\link{ggsurvplot}} object
+#'  (printed with \code{print()}), instead of the plain \code{ggplot} returned by
+#'  default. The table is the \strong{Kaplan-Meier} number at risk \emph{by the
+#'  grouping} \code{variable}: the adjusted curves are model-based expectations for
+#'  covariate profiles and have no literal number at risk of their own, so this
+#'  table is meaningful only when \code{variable} is a real subgroup. It is computed
+#'  on the rows the Cox model used (its complete cases), so its baseline count
+#'  matches \code{fit$n}. For \code{method = "marginal"}/\code{"conditional"} the
+#'  curves are balanced/reweighted while this count is the raw Kaplan-Meier number
+#'  at risk. Note that when a table is drawn the return value is a \code{ggsurvplot}
+#'  object, so post-hoc \code{+ theme()}/\code{+ scale_*} no longer apply -- use the
+#'  arguments below (\code{xlim}, \code{break.time.by}, \code{ylab}, \code{palette},
+#'  \code{ggtheme}) instead.
+#'@param risk.table.height the height of the risk table relative to the plot when
+#'  \code{risk.table} is drawn. Default is 0.25.
+#'@param risk.table.title the risk-table title. Default \code{NULL} uses
+#'  "Number at risk (Kaplan-Meier, by <variable>)".
+#'@param break.time.by,xlim numeric time-axis break interval and axis limits,
+#'  applied to \emph{both} the curves and the risk table so the two panels line up.
+#'  Defaults \code{NULL} use the automatic breaks and the data's time range.
+#'@param tables.y.text logical. Default TRUE. If FALSE, the risk-table strata tick
+#'  labels are hidden.
+#'@param tables.theme,fontsize the theme and font size of the risk table, as in
+#'  \code{\link{ggsurvplot}()}.
 #'@inheritParams ggpubr::ggpar
 #'@param ... further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.
-#'@return Returns an object of class \code{gg}.
+#'@return Returns an object of class \code{gg} (a \code{ggplot}); when
+#'  \code{risk.table} is not FALSE, returns a \code{\link{ggsurvplot}} object
+#'  (curves + aligned number-at-risk table) instead.
 #'
 #'@author Przemyslaw Biecek, \email{przemyslaw.biecek@@gmail.com}
 #'
@@ -70,6 +98,11 @@ NULL
 #' # conditional balancing in groups
 #' ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
 #' curve <- surv_adjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
+#'
+#' # With a Kaplan-Meier number-at-risk table by the grouping variable
+#' #:::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#' ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx",
+#'                  risk.table = TRUE)
 #'
 #'\dontrun{
 #' # this will take some time
@@ -105,21 +138,17 @@ ggadjustedcurves <- function(fit,
                                 fun = NULL,
                                 palette = "hue",
                                 ylab = "Survival rate", size = 1,
-                                ggtheme = theme_survminer(), ...) {
+                                ggtheme = theme_survminer(),
+                                risk.table = FALSE,
+                                risk.table.height = 0.25,
+                                risk.table.title = NULL,
+                                break.time.by = NULL,
+                                xlim = NULL,
+                                tables.y.text = TRUE,
+                                tables.theme = theme_survminer(),
+                                fontsize = 4.5, ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
-
-  # `ggadjustedcurves()` returns a plain ggplot and has no risk table of its own:
-  # the adjusted curves are model-based expectations for covariate profiles, with
-  # no literal number at risk. A `risk.table = TRUE` passed here was historically
-  # swallowed by `...` and silently did nothing (#286). Point the user to the
-  # documented recipe instead of ignoring the request. Fires only when the
-  # argument is explicitly TRUE, so ordinary calls are byte-identical.
-  if (isTRUE(list(...)[["risk.table"]]))
-    message("`ggadjustedcurves()` returns a plain ggplot and does not draw a risk ",
-            "table -- the adjusted curves have no number at risk of their own. For ",
-            "a Kaplan-Meier number-at-risk table by the grouping variable, see the ",
-            "\"Risk table under ggadjustedcurves()\" recipe in the survminer ",
-            "Customization recipes vignette (issue #286).")
+  draw.table <- !is.null(risk.table) && !isFALSE(risk.table) && !identical(risk.table, "")
 
   ylim <- NULL
   if (is.null(fun)) ylim <- c(0, 1)
@@ -161,8 +190,92 @@ ggadjustedcurves <- function(fit,
   if (method == "single")
     pl <- pl + theme(legend.position = "none")
 
-  ggpubr::ggpar(pl,  palette = palette, ...)
+  # Default (no risk table): return the plain adjusted-curves ggplot, unchanged.
+  # `xlim` is only forwarded to ggpar() when the user supplied it, so an ordinary
+  # call (xlim = NULL) is byte-identical to before.
+  if (!draw.table) {
+    if (is.null(xlim)) return(ggpubr::ggpar(pl, palette = palette, ...))
+    return(ggpubr::ggpar(pl, palette = palette, xlim = xlim, ...))
+  }
 
+  # ---- Kaplan-Meier number-at-risk table under the adjusted curves (#286) ----
+  # The adjusted curves are model-based expectations for covariate profiles, so
+  # they have no literal number at risk of their own. The honest object is the
+  # Kaplan-Meier number at risk BY THE GROUPING VARIABLE, which is only meaningful
+  # when that variable is a real subgroup (the same caveat as the vignette recipe).
+  # We therefore:
+  #  * build the KM table on the SAME rows the Cox model used (its complete cases),
+  #    so the table's baseline n equals fit$n rather than over-counting rows the
+  #    model dropped for missing covariates;
+  #  * force a shared x scale (xlim / breaks) on the curves and the table so the
+  #    two panels register on time;
+  #  * reuse ggsurvplot()/print.ggsurvplot() for the aligned stacking, height and
+  #    save methods, swapping the KM curve for the adjusted-curves plot.
+  # For method = "marginal"/"conditional" the curves are balanced/reweighted while
+  # this count is the raw Kaplan-Meier number at risk (documented).
+  adj.plot <- ggpubr::ggpar(pl, palette = palette, ...)
+
+  # Resolve the grouping variable exactly as surv_adjustedcurves() does: the
+  # argument, else a strata() term; a model with neither gives a single curve and
+  # an overall (~ 1) table.
+  .var <- variable
+  if (is.null(.var)) {
+    .tl <- attr(stats::terms(fit$formula), "term.labels")
+    .st <- grep("strata(", .tl, fixed = TRUE, value = TRUE)
+    if (length(.st) > 0)
+      .var <- gsub("[\\) ]", "",
+                   gsub("strata(", "", .st[1], fixed = TRUE))
+  }
+
+  # Restrict the KM fit to the model's rows (complete cases on the model variables)
+  # so the number at risk describes the population the adjusted curves are built on.
+  .data <- as.data.frame(.get_data(fit, data))
+  .mvars <- intersect(all.vars(stats::formula(fit)), names(.data))
+  .cc <- .data[stats::complete.cases(.data[, .mvars, drop = FALSE]), , drop = FALSE]
+
+  # (A grouping `variable` that is not a usable column has already errored in
+  # surv_adjustedcurves() above, so the curves never build -- no guard needed here.)
+
+  # Kaplan-Meier fit for the number-at-risk table, using the model's response.
+  .resp <- stats::formula(fit)[[2]]
+  .kmformula <- stats::as.formula(paste(deparse(.resp, width.cutoff = 500L), "~",
+                                        if (is.null(.var)) "1" else .var))
+  # Use survminer's surv_fit() (not survival::survfit()) so the fit retains its
+  # formula/data for ggsurvplot()'s downstream extraction.
+  .kmfit <- surv_fit(.kmformula, data = .cc)
+
+  # Labels matching the adjusted-curve groups (strip the "var=" strata prefix), in
+  # the same order as the curve colours (sorted levels).
+  .labs <- if (is.null(.var)) NULL else as.character(sort(unique(.cc[[.var]])))
+  # Shared x scale: the union time range, or the user-supplied xlim.
+  .xmax <- if (!is.null(xlim)) max(xlim) else max(.kmfit$time, na.rm = TRUE)
+  .xlim <- if (!is.null(xlim)) xlim else c(0, .xmax)
+  # Make the honesty explicit on the figure itself.
+  .rt.title <- risk.table.title
+  if (is.null(.rt.title))
+    .rt.title <- if (is.null(.var)) "Number at risk (Kaplan-Meier)"
+                 else paste0("Number at risk (Kaplan-Meier, by ", .var, ")")
+
+  # Build a KM ggsurvplot (aligned curve + number-at-risk table), then swap in the
+  # adjusted-curves plot. Messages from the KM build are silenced (the visible
+  # output is the adjusted plot, and any diagnostic there was already surfaced when
+  # the curves were computed above).
+  km.args <- list(fit = .kmfit, data = .cc, risk.table = risk.table,
+                  palette = palette, xlim = .xlim,
+                  risk.table.title = .rt.title, risk.table.height = risk.table.height,
+                  tables.y.text = tables.y.text, tables.theme = tables.theme,
+                  fontsize = fontsize)
+  if (!is.null(.labs)) km.args$legend.labs <- .labs
+  if (!is.null(break.time.by)) km.args$break.time.by <- break.time.by
+  res <- suppressMessages(do.call(ggsurvplot, km.args))
+
+  # Align the adjusted plot to the same x scale as the table and swap it in.
+  adj.plot <- adj.plot + ggplot2::coord_cartesian(xlim = .xlim)
+  if (!is.null(break.time.by))
+    adj.plot <- adj.plot +
+      ggplot2::scale_x_continuous(breaks = seq(0, .xmax, by = break.time.by))
+  res$plot <- adj.plot
+  res
 }
 
 #' @rdname ggadjustedcurves
