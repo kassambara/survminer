@@ -42,32 +42,50 @@ NULL
 #'
 #'@export
 surv_summary <- function (x, data = NULL){
+  # ggsurvplot()/surv_summary() draw single-event Kaplan-Meier curves and do not
+  # support multi-state / competing-risks fits. A factor (or >2-level) status makes
+  # survival::survfit() return a 'survfitms' object; building the summary data frame
+  # for such a fit then failed with a cryptic "arguments imply differing number of
+  # rows". Fail early with an actionable message instead (#373). (The former
+  # 'survfitms' branch here was dead code: it referenced x$prev, which modern
+  # survival renamed to x$pstate, so it always crashed in its own cbind -- removed.)
+  if (inherits(x, "survfitms"))
+    stop("survminer's Kaplan-Meier summary/plots do not support multi-state / ",
+         "competing-risks fits (survfit() returned a 'survfitms' object, which ",
+         "happens when the status passed to Surv() is a factor or has more than two ",
+         "levels). Use a numeric 0/1 or logical status for a Kaplan-Meier curve, or ",
+         "ggcompetingrisks() for competing risks / multi-state.", call. = FALSE)
   res <- as.data.frame(.compact(unclass(x)[c("time", "n.risk",
                                             "n.event", "n.censor")]))
-  if (inherits(x, "survfitms")) {
-    surv <- 1 - x$prev
-    upper <- 1 - x$upper
-    lower <- 1 - x$lower
-    res <- cbind(res, surv = c(surv), std.err = c(x$std.err),
-                 upper = c(upper), lower = c(lower))
-    res$state <- rep(x$states, each = nrow(surv))
+  # A survfit stored without confidence limits -- e.g. conf.type = "none", or any
+  # fit that kept no CI -- has NULL (length-0) $upper/$lower (and sometimes
+  # $std.err). cbind()-ing a length-0 column into the summary threw a cryptic
+  # "arguments imply differing number of rows: N, 0", and because surv_summary()
+  # runs for EVERY ggsurvplot() (not only conf.int = TRUE), such a fit could not be
+  # plotted at all (#639). Coalesce an absent column to an NA vector of the right
+  # length so the summary is always well-formed; the curve then draws with no
+  # confidence band. A fit WITH CI keeps its real columns (length == n, not empty),
+  # so its summary is byte-identical.
+  .col_or_na <- function(v, n, flat = FALSE) {
+    if (is.null(v) || length(v) == 0L) return(rep(NA_real_, n))
+    if (flat) .flat(v) else v
   }
-  else {
-    # Case of survfit(res.cox, newdata)
-    if(is.matrix(x$surv)){
-      ncurve <- ncol(x$surv)
-      res <- data.frame(time = rep(x$time, ncurve), n.risk = rep(x$n.risk, ncurve),
-                        n.event = rep(x$n.event, ncurve), n.censor = rep(x$n.censor, ncurve))
-      res <- cbind(res, surv = .flat(x$surv),
-                   std.err = .flat(x$std.err),
-                   upper = .flat(x$upper),
-                   lower = .flat(x$lower))
-      res$strata <- as.factor(rep(colnames(x$surv), each = nrow(x$surv)))
-    }
-    # case of standard survfit() or survfit(res.cox)
-    else res <- cbind(res, surv = x$surv, std.err = x$std.err,
-                      upper = x$upper, lower = x$lower)
+  # Case of survfit(res.cox, newdata)
+  if(is.matrix(x$surv)){
+    ncurve <- ncol(x$surv)
+    res <- data.frame(time = rep(x$time, ncurve), n.risk = rep(x$n.risk, ncurve),
+                      n.event = rep(x$n.event, ncurve), n.censor = rep(x$n.censor, ncurve))
+    res <- cbind(res, surv = .flat(x$surv),
+                 std.err = .col_or_na(x$std.err, nrow(res), flat = TRUE),
+                 upper = .col_or_na(x$upper, nrow(res), flat = TRUE),
+                 lower = .col_or_na(x$lower, nrow(res), flat = TRUE))
+    res$strata <- as.factor(rep(colnames(x$surv), each = nrow(x$surv)))
   }
+  # case of standard survfit() or survfit(res.cox)
+  else res <- cbind(res, surv = x$surv,
+                    std.err = .col_or_na(x$std.err, nrow(res)),
+                    upper = .col_or_na(x$upper, nrow(res)),
+                    lower = .col_or_na(x$lower, nrow(res)))
   if (!is.null(x$strata)) {
     data <- .get_data(x, data = data) # data used to compute survfit
     res$strata <- rep(names(x$strata), x$strata)

@@ -61,7 +61,30 @@ ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6,
 
   attr(stats::terms(formula), "term.labels") -> explanatory.variables.names
   stats::model.matrix(formula, data = data) -> explanatory.variables.values
+  # Restrict data to the model-matrix rows (i.e. the complete cases for the
+  # formula). model.matrix() drops rows with a missing value in any term, so
+  # without this the null-model martingale residuals (computed from data below)
+  # would be longer than the covariate values and error with "'x' and 'y'
+  # lengths differ" (#248). For data without missing values this is a no-op.
+  data <- data[rownames(explanatory.variables.values), , drop = FALSE]
   SurvFormula <- deparse(formula[[2]])
+
+  # Keep only continuous terms. A functional-form (linearity) check plots
+  # martingale residuals against the covariate, which is only meaningful for
+  # continuous covariates. Factor/character terms (and terms such as strata())
+  # are expanded/renamed in the model matrix (e.g. 'sex' -> 'sex2'), so they do
+  # not match their term label and previously triggered a cryptic
+  # "'x' and 'y' lengths differ" error (#357). Drop them with a warning.
+  is_continuous <- explanatory.variables.names %in% colnames(explanatory.variables.values)
+  if(any(!is_continuous)){
+    warning("Skipping non-continuous term(s) in ggcoxfunctional(): ",
+            paste(explanatory.variables.names[!is_continuous], collapse = ", "),
+            ". Functional-form checks apply to continuous covariates only.",
+            call. = FALSE)
+    explanatory.variables.names <- explanatory.variables.names[is_continuous]
+  }
+  if(length(explanatory.variables.names) == 0)
+    stop("No continuous covariate to plot in ggcoxfunctional().", call. = FALSE)
   martingale_resid <- lowess_x <- lowess_y <- NULL
   lapply(explanatory.variables.names, function(i){
     which_col <- which(colnames(explanatory.variables.values) == i)
@@ -81,7 +104,11 @@ ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6,
                                              f = f)$y)
 
     if(is.null(xlim)) xlim <- c(min(data2viz$explanatory), max(data2viz$explanatory))
-    if(is.null(ylim)) ylim <- c(min(data2viz$lowess_y), max(data2viz$lowess_y))
+    # ylim is left as supplied (NULL by default) so coord_cartesian() auto-scales
+    # the y-axis to include ALL martingale-residual points. Previously ylim
+    # defaulted to the range of the lowess smoother (lowess_y), which is much
+    # narrower than the residuals and clipped most of the plotted points from
+    # view (#465). A user-supplied ylim is still honoured unchanged.
 
     ggplot(data2viz, aes(x = explanatory,
                          y = martingale_resid)) +

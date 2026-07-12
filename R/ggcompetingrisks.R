@@ -92,7 +92,13 @@ ggcompetingrisks.cuminc <- function(fit, gnames = NULL, gsep=" ",
     pl <- ggplot(df, aes(time, est, color=event, linetype=group))
   }
   if (conf.int) {
-    pl <- pl + geom_ribbon(aes(ymin = est - coef*std, ymax=est + coef*std, fill = event), alpha = 0.2, linetype=0)
+    # Group the ribbon by event AND group. Mapping only fill=event makes the
+    # ribbon's implicit grouping ignore `group`, so in a single panel the bands
+    # jump between groups of the same event (#490). interaction(event, group) is
+    # a no-op for the faceted case (one group per panel).
+    pl <- pl + geom_ribbon(aes(ymin = est - coef*std, ymax = est + coef*std,
+                               fill = event, group = interaction(event, group)),
+                           alpha = 0.2, linetype = 0)
   }
   pl +
     geom_line()
@@ -101,11 +107,34 @@ ggcompetingrisks.cuminc <- function(fit, gnames = NULL, gsep=" ",
 ggcompetingrisks.survfitms <- function(fit) {
   times <- fit$time
   psta <- as.data.frame(fit$pstate)
+  # A multistate Cox model predicted over SEVERAL covariate profiles
+  # (survfit(coxph_multistate, newdata = <2+ rows>)) returns a 3-D pstate array
+  # (time x profile x state), so as.data.frame() has one column per
+  # profile-x-state combination -- more columns than there are states. The
+  # colnames() assignment just below would then recycle fit$states into NA
+  # names, which surfaces to the user as the opaque "Names repair functions
+  # can't return `NA` values" error (#625). Fail early with an actionable
+  # message. Inputs where the column count already matches the states -- the
+  # ordinary 2-D path AND a single-profile prediction (time x 1 x state, which
+  # collapses to one column per state and renders correctly) -- are untouched.
+  if (ncol(psta) != length(fit$states))
+    stop("ggcompetingrisks() does not support predicted cumulative incidence ",
+         "curves from a multistate Cox model evaluated at several covariate ",
+         "profiles -- survfit() with a multi-row `newdata` returns one set of ",
+         "curves per profile (a 3-D probability array) that this stacked-area ",
+         "plot can't lay out. Supply a single covariate profile, use a ",
+         "cmprsk::cuminc() object or a survfit(Surv(time, status, ",
+         "type = \"mstate\") ~ ...) fit, or draw the several profiles with the ",
+         "base plot() method on the survfit object.", call. = FALSE)
   colnames(psta) <- fit$states
   if (is.null(fit$strata)) {
     psta$strata <- "all"
   } else {
-    psta$strata <- rep(names(fit$strata), fit$strata)
+    # Keep the model's strata order in the facets instead of letting facet_wrap()
+    # sort the strata names alphabetically (a factor preserves names(fit$strata)
+    # order). Byte-identical when the model order already is alphabetical (#470).
+    psta$strata <- factor(rep(names(fit$strata), fit$strata),
+                          levels = names(fit$strata))
   }
   psta$times <- times
   psta <- .rename_empty_colname(

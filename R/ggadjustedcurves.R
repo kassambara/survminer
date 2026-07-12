@@ -30,6 +30,13 @@ NULL
 #'@param method a character, describes how the expected survival curves shall be calculated. Possible options:
 #' 'single' (average for population), 'average' (averages for subpopulations), 'marginal', 'conditional' (averages for subpopulations after rebalancing). See the Details section  for further information.
 #'@param variable a character, name of the grouping variable to be plotted. If not supplied then it will be extracted from the model formula from the \code{strata()} component. If there is no \code{strata()} component then only a single curve will be plotted - average for the thole population.
+#'@param fun an arbitrary function defining a transformation of the survival
+#'  curve. Often used transformations can be specified with a character argument:
+#'  "event" plots cumulative events (f(y) = 1-y), "cumhaz" plots the cumulative
+#'  hazard function (f(y) = -log(y)), and "pct" for survival probability in
+#'  percentage. For \code{surv_adjustedcurves()} the transformation is applied to
+#'  the returned survival column; the default \code{NULL} leaves the survival
+#'  probabilities unchanged.
 #'@param ylab a label for oy axis.
 #'@param size the curve size.
 #'@param ggtheme function, ggplot2 theme name. Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
@@ -100,6 +107,20 @@ ggadjustedcurves <- function(fit,
                                 ylab = "Survival rate", size = 1,
                                 ggtheme = theme_survminer(), ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
+
+  # `ggadjustedcurves()` returns a plain ggplot and has no risk table of its own:
+  # the adjusted curves are model-based expectations for covariate profiles, with
+  # no literal number at risk. A `risk.table = TRUE` passed here was historically
+  # swallowed by `...` and silently did nothing (#286). Point the user to the
+  # documented recipe instead of ignoring the request. Fires only when the
+  # argument is explicitly TRUE, so ordinary calls are byte-identical.
+  if (isTRUE(list(...)[["risk.table"]]))
+    message("`ggadjustedcurves()` returns a plain ggplot and does not draw a risk ",
+            "table -- the adjusted curves have no number at risk of their own. For ",
+            "a Kaplan-Meier number-at-risk table by the grouping variable, see the ",
+            "\"Risk table under ggadjustedcurves()\" recipe in the survminer ",
+            "Customization recipes vignette (issue #286).")
+
   ylim <- NULL
   if (is.null(fun)) ylim <- c(0, 1)
 
@@ -110,6 +131,27 @@ ggadjustedcurves <- function(fit,
                                method = method,
                                size = size,
                                ...)
+  # Apply the transformation requested via `fun` (e.g. "event", "cumhaz",
+  # "pct"). Previously `fun` only affected the y-axis limits and the plotted
+  # curve was always the raw survival probability (#287, #498, #630, #660).
+  # This is a no-op when fun = NULL (the default), so ordinary calls are
+  # unchanged.
+  curve <- .apply_surv_func(curve, fun = fun)
+  # Relabel the y-axis to match `fun` when the user kept the default ylab
+  # (#555). ggsurvplot() already does this; ggadjustedcurves() did not, so a
+  # `fun = "cumhaz"` curve kept the "Survival rate" label. Only fires for the
+  # untouched default label AND a character `fun`, so fun = NULL (the default)
+  # and any user-supplied ylab are unchanged.
+  if (identical(ylab, "Survival rate") && is.character(fun)) {
+    ylab <- switch(fun,
+                   log     = "log(Survival rate)",
+                   event   = "Cumulative event",
+                   cumhaz  = "Cumulative hazard",
+                   cloglog = "log(-log(S(t)))",
+                   pct     = "Survival rate (%)",
+                   logpct  = "Survival rate (%)",
+                   "Survival rate")   # identity / unrecognized -> keep default
+  }
   time <- surv <- NULL
   pl <- ggplot(curve, aes(x = time, y = surv, color = variable)) +
     geom_step(linewidth = size) + ggtheme +
@@ -130,14 +172,24 @@ surv_adjustedcurves <- function(fit,
                              data = NULL,
                              reference = NULL,
                              method = "conditional",
+                             fun = NULL,
                              size = 1,
                              ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
   data <- .get_data(fit, data)
+  # Coerce to a plain data.frame: the curve helpers index columns with
+  # data[, variable], which returns a one-column tibble (not a vector) for a
+  # tibble input and then fails in sort()/unique() with "cannot xtfrm data
+  # frame". A no-op for a data.frame, so existing results are unchanged.
+  data <- as.data.frame(data)
   # deal with default arguments
   # reference = NULL
   if (is.null(reference))
     reference <- data
+  # coerce a user-supplied reference too: the marginal method indexes
+  # reference[, variable] and rbind()s it with data, so a tibble reference
+  # would re-introduce the "cannot xtfrm data frame" error.
+  reference <- as.data.frame(reference)
 
   # variable = NULL
   if (is.null(variable)) {
@@ -157,12 +209,36 @@ surv_adjustedcurves <- function(fit,
     }
   }
 
+  # With the default method = "conditional", the curves are built from the
+  # fitted model's predictions. If the grouping `variable` is NOT in the Cox
+  # model it never enters the linear predictor, so every group gets an identical
+  # curve (a single visible line) with no error -- a common source of confusion
+  # (#623). Warn and point to method = "average"/"marginal", which are the
+  # methods meant for a grouping variable absent from the model. Message-only:
+  # the returned curves are unchanged. Not triggered for "average"/"marginal"/
+  # "single", nor when the variable is in the model (incl. via a transform such
+  # as strata()/ns(), which all.vars() still resolves to the underlying name).
+  if (method == "conditional" && !is.null(variable) &&
+      !(variable %in% all.vars(stats::formula(fit))))
+    warning("method = \"conditional\" (the default) builds each group's curve ",
+            "from the Cox model, but the grouping variable '", variable,
+            "' is not in the model, so the curves for all groups are identical. ",
+            "Use method = \"average\" or \"marginal\" to draw distinct curves for ",
+            "a variable that is not in the model, or add '", variable,
+            "' to the Cox model.", call. = FALSE)
+
   curve <- switch(method,
                   single = ggadjustedcurves.single(data, fit, size = size),
                   average =  ggadjustedcurves.average(data, fit, variable, size = size),
                   conditional = ggadjustedcurves.conditional(data, fit, variable, size = size),
                   marginal = ggadjustedcurves.marginal(data, fit, variable, reference, size = size))
 
+  # Apply the transformation requested via `fun` (e.g. "event", "cumhaz", "pct")
+  # to the returned survival column, so the data helper matches what
+  # ggadjustedcurves() plots. No-op when fun = NULL (the default), so existing
+  # results are unchanged (#630). ggadjustedcurves() keeps fun in its own scope
+  # and does not pass it here, so the transform is never applied twice.
+  curve <- .apply_surv_func(curve, fun = fun)
   curve
 }
 

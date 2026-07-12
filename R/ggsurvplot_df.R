@@ -21,6 +21,10 @@ NULL
 #'  end of confidence interval }
 #' @param surv.geom survival curve style. Is the survival curve entered a step
 #'  function (\link[ggplot2]{geom_step}) or a smooth function (\link[ggplot2]{geom_line}).
+#' @param linejoin line join style for the survival curve, passed to the survival
+#'  geom. Default is \code{"round"} (unchanged). Use \code{"mitre"} for sharp,
+#'  precisely-marked corners at event times (requires a \pkg{ggplot2} version that
+#'  passes \code{linejoin} through \code{\link[ggplot2]{geom_step}}).
 #'
 #' @examples
 #' library(survival)
@@ -68,6 +72,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
                           color = NULL, palette = NULL, linetype = 1,
                           break.x.by = NULL, break.time.by = NULL, break.y.by = NULL,
                           surv.scale = c("default", "percent"), surv.geom = geom_step,
+                          linejoin = "round",
                           xscale = 1,
                           conf.int = FALSE, conf.int.fill = "gray", conf.int.style = "ribbon",
                           conf.int.alpha = 0.3,
@@ -85,6 +90,18 @@ ggsurvplot_df <- function(fit, fun = NULL,
   if(!inherits(fit, "data.frame"))
     stop("fit should be a data frame.")
   df <- fit
+
+  # Negative survival times are not meaningful for a Kaplan-Meier estimate and
+  # make the curve appear to increase. survfit()/survminer plot them as-is, so
+  # warn the user rather than silently drawing a misleading (up-ticking) curve
+  # (#523). This is the common draw point for all entry points (ggsurvplot(),
+  # ggsurvplot_combine(), ggsurvplot_facet(), ...), so the warning fires once
+  # per plot regardless of route. The plot itself is unchanged.
+  if(any(df$time < 0, na.rm = TRUE))
+    warning("Negative survival times are present in the data. ",
+            "The survival curve can appear to increase, which is not meaningful ",
+            "for a Kaplan-Meier estimate. Consider removing observations with ",
+            "negative times.", call. = FALSE)
 
   # if(!is.null(.dots$risk.table))
   #   warning("Can't extract risk.table from a data frame.", call. = FALSE)
@@ -162,9 +179,23 @@ ggsurvplot_df <- function(fit, fun = NULL,
   xlog <- .is_cloglog(fun)
 
   y.breaks <- ggplot2::waiver()
-  if(!is.null(break.y.by)) y.breaks <- seq(0, 1, by = break.y.by)
+  if(!is.null(break.y.by)){
+    # Derive the break range from the displayed y-range instead of the hardcoded
+    # 0..1: for transformed curves (fun = "cloglog"/"event"/"cumhaz", or a custom
+    # ylim) the y-values fall outside [0, 1], so seq(0, 1, ...) produced too few
+    # (or no) breaks (#378, #442). The default survival plot (fun = NULL, no
+    # ylim) still uses 0..1, so its breaks are unchanged.
+    y.range <- ylim
+    if(is.null(y.range) && is.null(fun)) y.range <- c(0, 1)
+    if(is.null(y.range)) y.range <- range(df$surv, na.rm = TRUE)
+    # round the endpoints out to multiples of break.y.by so the breaks are on a
+    # clean grid; breaks that fall outside the axis limits are dropped by ggplot2
+    y.breaks <- seq(floor(min(y.range) / break.y.by) * break.y.by,
+                    ceiling(max(y.range) / break.y.by) * break.y.by,
+                    by = break.y.by)
+  }
   # Axis limits
-  xmin <- ifelse(.is_cloglog(fun), min(c(1, df$time)), 0)
+  xmin <- ifelse(.is_cloglog(fun), min(c(1, df$time)), min(c(0, df$time), na.rm = TRUE))
   if(is.null(xlim)) xlim <- c(xmin, max(df$time))
   if(is.null(ylim) & is.null(fun)) ylim <- c(0, 1)
 
@@ -176,8 +207,21 @@ ggsurvplot_df <- function(fit, fun = NULL,
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   df[, .strata.var] <- factor( df[, .strata.var], levels = .levels(.strata), labels = legend.labs)
 
+  surv.layer <- ggpubr::geom_exec(surv.geom, data = df, linewidth = size, color = color, linetype = linetype, ...)
+  # ggpubr::geom_exec() does not forward `linejoin` to the step geom, so set it
+  # directly on the built layer. The default "round" reproduces geom_step()'s own
+  # default, so the curve is byte-identical unless the user opts into another join
+  # such as "mitre", which marks event-time corners precisely (#653). Guarded so
+  # the default path never touches the layer, and so a custom surv.geom without a
+  # linejoin parameter is left untouched.
+  if (!identical(linejoin, "round") &&
+      !is.null(surv.layer$geom_params) &&
+      "linejoin" %in% names(surv.layer$geom_params)) {
+    surv.layer$geom_params$linejoin <- linejoin
+  }
+
   p <- ggplot2::ggplot(df, ggplot2::aes(x = !!sym("time"), y = !!sym("surv"))) +
-    ggpubr::geom_exec(surv.geom, data = df, linewidth = size, color = color, linetype = linetype, ...) +
+    surv.layer +
     ggplot2::scale_y_continuous(breaks = y.breaks, labels = scale_labels, limits = ylim, expand = .expand) +
     ggplot2::coord_cartesian(xlim = xlim)+
     ggtheme
@@ -191,7 +235,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
   times <- .get_default_breaks(df$time, .log = xlog)
 
   if(!is.null(break.time.by) & !xlog)
-    times <- seq(0, max(c(df$time, xlim)), by = break.time.by)
+    times <- .time_breaks(break.time.by, max(c(df$time, xlim)))
 
   xticklabels <- .format_xticklabels(labels = times, xscale = xscale)
 
@@ -270,6 +314,140 @@ ggsurvplot_df <- function(fit, fun = NULL,
 # Helper functions
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+# Data-frame input path WITH number-at-risk / cumulative tables (#409).
+# ggsurvplot_df() itself only draws the curves (it is also the shared plot
+# builder for the survfit paths, so it must keep returning a bare ggplot). When
+# the user passes a surv_summary() data frame to ggsurvplot() and requests
+# risk.table / cumevents / cumcensor, this builds the curve plot with
+# ggsurvplot_df() and the tables from the data frame (which carries n.risk /
+# n.event / n.censor), assembling the same compound "ggsurvplot" object the
+# survfit path returns. Modeled on ggsurvplot_combine(); the tables are computed
+# by .get_timepoints_from_df(), which matches the survfit risk table exactly.
+.ggsurvplot_df_tables <- function(fit, risk.table = FALSE, cumevents = FALSE,
+                                  cumcensor = FALSE, risk.table.pos = c("out", "in"),
+                                  axes.offset = TRUE,
+                                  fontsize = 4.5,
+                                  tables.height = 0.25, tables.col = "black",
+                                  tables.y.text = TRUE, tables.y.text.col = TRUE,
+                                  risk.table.title = NULL, risk.table.col = tables.col,
+                                  risk.table.fontsize = fontsize,
+                                  risk.table.y.text = tables.y.text,
+                                  risk.table.y.text.col = tables.y.text.col,
+                                  risk.table.height = tables.height,
+                                  surv.plot.height = 0.75,
+                                  ncensor.plot.height = tables.height,
+                                  cumevents.height = tables.height,
+                                  cumcensor.height = tables.height,
+                                  cumevents.col = tables.col, cumevents.title = NULL,
+                                  cumevents.y.text = tables.y.text,
+                                  cumevents.y.text.col = tables.y.text.col,
+                                  cumcensor.col = tables.col, cumcensor.title = NULL,
+                                  cumcensor.y.text = tables.y.text,
+                                  cumcensor.y.text.col = tables.y.text.col,
+                                  ggtheme = theme_survminer(), tables.theme = ggtheme, ...)
+{
+  risk.table.pos <- match.arg(risk.table.pos)
+  risktable  <- .parse_risk_table_arg(risk.table);  risk.table <- risktable$display
+  cumev      <- .parse_risk_table_arg(cumevents);   cumevents  <- cumev$display
+  cumcens    <- .parse_risk_table_arg(cumcensor);   cumcensor  <- cumcens$display
+
+  # Curve plot (bare ggplot). axes.offset is forwarded (as the old direct
+  # ggsurvplot_df() call did via ...) so it is not silently dropped.
+  p <- ggsurvplot_df(fit, ggtheme = ggtheme, axes.offset = axes.offset, ...)
+
+  # No table requested -> behave exactly like ggsurvplot_df() (byte-identical).
+  if(!(risk.table | cumevents | cumcensor))
+    return(p)
+
+  # A risk table can only be built from a surv_summary()-style data frame.
+  fit <- as.data.frame(fit)
+  needed <- c("time", "n.risk", "n.event", "n.censor")
+  miss <- setdiff(needed, colnames(fit))
+  if(length(miss) > 0)
+    stop("Can't build a risk/events/censor table from this data frame: missing ",
+         "the column(s) ", .collapse(miss, sep = ", "),
+         ". Pass a surv_summary() data frame (or a survfit object).", call. = FALSE)
+
+  res <- list(plot = p)
+  scurve_cols <- .extract_ggplot_colors(p, grp.levels = attr(p, "parameters")$legend.labs)
+
+  # Shared table params, taken from the plot then extended (mirrors ggsurvplot_core).
+  pms <- attr(p, "parameters")
+  surv.color <- pms$color   # the plot's colour aesthetic (usually "strata")
+  pms$ggtheme <- ggtheme
+  pms$tables.theme <- tables.theme
+  pms$ylab <- pms$legend.title
+  pms$axes.offset <- axes.offset
+  # Time-point table from the data frame, wrapped in the (table, time) shape
+  # ggsurvtable() accepts; matches the survfit path exactly.
+  survtable <- .get_timepoints_from_df(fit, times = pms$time.breaks)
+  pms$fit <- list(table = survtable, time = fit$time)
+
+  # Each table is built with its OWN display type / colour / y-text, exactly as
+  # ggsurvplot_core does (a single shared call would apply one type to all).
+  if(risk.table){
+    pms$survtable <- "risk.table"
+    pms$risk.table.type <- risktable$type
+    pms$title <- risk.table.title
+    pms$fontsize <- risk.table.fontsize
+    pms$y.text <- risk.table.y.text
+    # In-plot table: colour the numbers by strata (the curve colours), as the
+    # survfit path does -- surv.color is the plot's colour aesthetic ("strata").
+    pms$color <- if(risk.table.pos == "in") surv.color else risk.table.col
+    if(risk.table.y.text.col) pms$y.text.col <- scurve_cols
+    pms$origin.align <- (risk.table.pos != "in")
+    res$table <- do.call(ggsurvtable, pms)
+  }
+  if(cumevents){
+    pms$survtable <- "cumevents"
+    pms$risk.table.type <- cumev$type
+    pms$title <- cumevents.title
+    pms$fontsize <- fontsize
+    pms$color <- cumevents.col
+    pms$y.text <- cumevents.y.text
+    if(cumevents.y.text.col) pms$y.text.col <- scurve_cols
+    pms$origin.align <- TRUE
+    res$cumevents <- do.call(ggsurvtable, pms)
+  }
+  if(cumcensor){
+    pms$survtable <- "cumcensor"
+    pms$risk.table.type <- cumcens$type
+    pms$title <- cumcensor.title
+    pms$fontsize <- fontsize
+    pms$color <- cumcensor.col
+    pms$y.text <- cumcensor.y.text
+    if(cumcensor.y.text.col) pms$y.text.col <- scurve_cols
+    pms$origin.align <- TRUE
+    res$ncensor.plot <- do.call(ggsurvtable, pms)
+  }
+
+  # Component heights / y-text attributes (per table, as ggsurvplot_core).
+  heights <- list(
+    plot         = surv.plot.height,
+    table        = ifelse(risk.table, risk.table.height, 0),
+    ncensor.plot = ifelse(cumcensor, cumcensor.height, 0),
+    cumevents    = ifelse(cumevents, cumevents.height, 0)
+  )
+  y.text     <- list(table = risk.table.y.text, cumevents = cumevents.y.text,
+                     cumcensor = cumcensor.y.text)
+  y.text.col <- list(table = risk.table.y.text.col, cumevents = cumevents.y.text.col,
+                     cumcensor = cumcensor.y.text.col)
+
+  res$data.survplot  <- fit
+  res$data.survtable <- survtable
+
+  class(res) <- c("ggsurvplot", "ggsurv", "list")
+  attr(res, "heights") <- heights
+  attr(res, "y.text") <- y.text
+  attr(res, "y.text.col") <- y.text.col
+  attr(res, "legend.position") <- pms$legend
+  attr(res, "legend.labs") <- pms$legend.labs
+  attr(res, "cumcensor") <- cumcensor
+  attr(res, "risk.table.pos") <- risk.table.pos
+  attr(res, "axes.offset") <- axes.offset
+  res
+}
+
 # Adapt ylab according to the value of the argument fun
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 .check_ylab <- function(ylab, fun){
@@ -314,8 +492,13 @@ ggsurvplot_df <- function(fit, fun = NULL,
   n.risk <- strata <- NULL
   # if("n.risk" %in% colnames(d)){d <- dplyr::arrange(d, dplyr::desc(n.risk))}
   origin <- d %>% dplyr::distinct(strata, .keep_all = TRUE)
-  origin[intersect(c('time', 'n.censor', 'std.err', "n.event"), colnames(origin))] <- 0
+  origin[intersect(c('n.censor', 'std.err', "n.event"), colnames(origin))] <- 0
   origin[c('surv', 'upper', 'lower')] <- 1.0
+  # Origin x-position: 0 for ordinary data (byte-identical), or the smallest
+  # observed time when negative, so each curve starts at the first time like
+  # base plot.survfit() instead of injecting a spurious (0, 1) point that would
+  # sort into the middle of negative-time data (#389).
+  origin['time'] <- min(c(0, d$time), na.rm = TRUE)
   dplyr::bind_rows(origin, d)
 }
 
@@ -326,20 +509,16 @@ ggsurvplot_df <- function(fit, fun = NULL,
 .get_lty <- function(linetype){
   linetype.manual = NULL
   nlty <- length(linetype)
-  if(is.numeric(linetype)){
-    if(nlty > 1) {
-      linetype.manual <-linetype
-      linetype <- "strata"
-    }
-  }
-  else (is.character(linetype))
-  {
-    base_lty <- c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash")
-    is_base_lty <- all(linetype %in% base_lty)
-    if(is_base_lty & nlty > 1){
-      linetype.manual <-linetype
-      linetype <- "strata"
-    }
+  # A length > 1 linetype is a per-strata vector: numeric codes, base line-type
+  # names ("solid"/"dashed"/...), hex dash patterns ("F1", "4C1C"), or a mix.
+  # Apply it manually across strata (scale_linetype_manual). Previously only an
+  # all-base-name or all-numeric vector was recognised, so a vector containing a
+  # hex pattern fell through and later crashed with "the condition has length > 1"
+  # (#344). A single value (including "strata" or a lone hex pattern) is
+  # unchanged: it is passed through as-is.
+  if(nlty > 1){
+    linetype.manual <- linetype
+    linetype <- "strata"
   }
   list(lty = linetype, lty.manual = linetype.manual)
 }

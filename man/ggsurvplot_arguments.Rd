@@ -48,11 +48,14 @@ function \link[grDevices]{palette}.}
 linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
 character vector c("solid", "dashed").}
 
-\item{break.time.by}{numeric value controlling time axis breaks. Default value
+\item{break.time.by}{numeric value controlling time axis breaks. A single
+value gives regularly spaced breaks (from 0 by that step); a numeric vector
+is used as the exact break positions (e.g. \code{c(0, 100, 300, 600)}), which
+also keeps the survival curve and the risk/censor tables aligned. Default value
 is NULL.}
 
-\item{break.x.by}{alias of break.time.by. Numeric value controlling x axis
-breaks. Default value is NULL.}
+\item{break.x.by}{alias of break.time.by. Numeric value (or vector) controlling
+x axis breaks. Default value is NULL.}
 
 \item{break.y.by}{same as break.x.by but for y axis.}
 
@@ -83,6 +86,14 @@ customized string appears on the plot. See examples - Example 3.}
 
 \item{pval.coord}{numeric vector, of length 2, specifying the x and y
 coordinates of the p-value. Default values are NULL.}
+
+\item{pval.parse}{logical. If TRUE, a custom p-value string supplied via
+\code{pval} is treated as a plotmath expression and parsed, so you can show
+italic/superscript p-values, e.g. \code{pval = "italic(P)==1.4~x~10^-6"}.
+The string must be a valid plotmath expression; the auto-computed p-value
+(e.g. \code{"p = 0.001"}) is plain text, not plotmath, so supply your own
+expression when using this. The test-name label from \code{pval.method} is
+never parsed. Default is FALSE (drawn literally).}
 
 \item{title}{main title}
 
@@ -167,7 +178,7 @@ time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.}
 \code{ncensor.plot = TRUE}.}
 
 \item{cumevents}{logical value specifying whether to show or not the table of
-the cumulative number of events. Default is FALSE.}
+the cumulative number of events. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct"); "percentage" shows the count as a percent of the stratum size.}
 
 \item{cumevents.title}{The title to be used for the cumulative events table.}
 
@@ -184,7 +195,7 @@ tick labels of the cumulative events will be colored by strata.}
 Default is 0.25. Ignored when cumevents = FALSE.}
 
 \item{cumcensor}{logical value specifying whether to show or not the table of
-the cumulative number of censoring. Default is FALSE.}
+the cumulative number of censoring. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct").}
 
 \item{cumcensor.title}{The title to be used for the cumcensor table.}
 

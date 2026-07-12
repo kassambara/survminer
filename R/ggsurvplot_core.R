@@ -11,6 +11,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
                             conf.int.alpha = 0.3,
                             censor = TRUE, censor.shape = "+", censor.size = 4.5,
                             pval = FALSE, pval.size = 5, pval.coord = c(NULL, NULL),
+                            pval.parse = FALSE,
                             test.for.trend = FALSE,
                             pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
                             log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
@@ -37,6 +38,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
                             surv.median.line = c("none", "hv", "h", "v"),
                             ggtheme = theme_survminer(),
                             tables.theme = ggtheme,
+                            obscure.less.than = NULL, obscure.zero = FALSE,
                             ...
 ){
 
@@ -45,6 +47,17 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   surv.median.line <- match.arg(surv.median.line)
   stopifnot(log.rank.weights %in% c("survdiff", "1", "n", "sqrtN", "S1", "S2","FH_p=1_q=1"))
   log.rank.weights <- match.arg(log.rank.weights)
+
+  # cumevents / cumcensor accept the same values as risk.table: TRUE/FALSE, or a
+  # character ("absolute", "percentage", "abs_pct") selecting how the cumulative
+  # count is displayed (#499). Parse to a logical display flag + a type; logical
+  # inputs keep type "absolute" (the raw count), so existing calls are unchanged.
+  cumev.parsed <- .parse_risk_table_arg(cumevents)
+  cumevents <- cumev.parsed$display
+  cumevents.type <- cumev.parsed$type
+  cumcens.parsed <- .parse_risk_table_arg(cumcensor)
+  cumcensor <- cumcens.parsed$display
+  cumcensor.type <- cumcens.parsed$type
 
   # Make sure that user can do either ncensor.plot or cumcensor
   # But not both
@@ -56,10 +69,18 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   if(cumcensor) ncensor.plot.height <- cumcensor.height
   if(is.null(ncensor.plot.title))
     ncensor.plot.title <- "Number of censoring"
+  # Default table titles reflect the display type so a percentage table is not
+  # labelled "number of ..." (#499). A user-supplied title is kept as-is.
   if(is.null(cumcensor.title))
-    cumcensor.title <- "Cumulative number of censoring"
+    cumcensor.title <- switch(cumcensor.type,
+      percentage = "Cumulative censoring (%)",
+      abs_pct    = "Cumulative censoring: n (%)",
+      "Cumulative number of censoring")
   if(is.null(cumevents.title))
-    cumevents.title <- "Cumulative number of events"
+    cumevents.title <- switch(cumevents.type,
+      percentage = "Cumulative events (%)",
+      abs_pct    = "Cumulative events: n (%)",
+      "Cumulative number of events")
 
   # risk.table argument
   risk.table.pos <- match.arg(risk.table.pos)
@@ -83,9 +104,17 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   if(!is.null(fit$start.time)) d <- subset(d, d$time >= fit$start.time )
 
   # Axis limits
-   xmin <- ifelse(.is_cloglog(fun), min(c(1, d$time)), 0)
+   xmin <- ifelse(.is_cloglog(fun), min(c(1, d$time)), min(c(0, d$time), na.rm = TRUE))
    if(!is.null(fit$start.time)) xmin <- fit$start.time
-   xmax <- .get_default_breaks(d$time, .log = .is_cloglog(fun)) %>% max()
+   # Extend the upper x-limit to cover the largest event/censoring time, not
+   # just the largest "nice" axis break. scales::extended_breaks() can return a
+   # last break below max(d$time), which previously clipped events beyond it
+   # from the default plot (#655). This is a no-op when the data already fit
+   # within the breaks; the axis tick breaks are unchanged (computed separately
+   # in ggsurvplot_df()), and a user-supplied xlim is unaffected (gated below).
+   xmax <- max(c(max(d$time, na.rm = TRUE),
+                 .get_default_breaks(d$time, .log = .is_cloglog(fun)) %>% max()),
+               na.rm = TRUE)
    if(is.null(xlim)) xlim <- c(xmin, xmax)
 
   # Main survival curves
@@ -118,11 +147,15 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   if(pval$pval.txt != ""){
     p <- p + ggplot2::annotate("text", x = pval$pval.x, y = pval$pval.y,
                                label = pval$pval.txt, size = pval.size, hjust = 0,
-                               family = font.family)
+                               family = font.family, parse = pval.parse)
     if(pval.method)
+      # The method name is package-generated literal text (e.g. "Log-rank",
+      # or "Log-rank, tft" with test.for.trend); never plotmath-parse it, or
+      # pval.parse = TRUE would crash / mis-render the hyphen. pval.parse only
+      # affects the p-value text above.
       p <- p + ggplot2::annotate("text", x = pval$method.x, y = pval$method.y,
                                  label = pval$method, size = pval.method.size, hjust = 0,
-                                 family = font.family)
+                                 family = font.family, parse = FALSE)
   }
 
 
@@ -159,6 +192,11 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   pms$color <- tables.col
   pms$font.family <- font.family
   pms$axes.offset <- axes.offset
+  # Small-cell suppression forwarded to every table builder below (#637). Only
+  # these two named entries are added to pms (not a blob of ...), so an existing
+  # call with obscure.less.than = NULL is byte-identical.
+  pms$obscure.less.than <- obscure.less.than
+  pms$obscure.zero <- obscure.zero
 
 
   # Add risk table
@@ -170,6 +208,10 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     pms$y.text.col <- risk.table.y.text.col
     pms$fontsize <- risk.table.fontsize
     pms$survtable <- "risk.table"
+    # Left-align the t=0 numbers-at-risk to the curve origin for the standard
+    # (out) table; keep the inset ("in") table's historical geometry, whose
+    # placement heuristic in .put_risktable_in_survplot depends on it (#645).
+    pms$origin.align <- (risk.table.pos != "in")
     # color risk.table ticks by strata
     if(risk.table.y.text.col) pms$y.text.col <- scurve_cols
     res$table <- risktable <- do.call(ggsurvtable, pms)
@@ -183,17 +225,31 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     if(cumevents.y.text.col) pms$y.text.col <- scurve_cols
     pms$fontsize <- fontsize
     pms$survtable <- "cumevents"
+    pms$risk.table.type <- cumevents.type   # absolute (default) / percentage / abs_pct (#499)
+    pms$origin.align <- TRUE   # always laid out "out"; align t=0 to the origin
     res$cumevents <- do.call(ggsurvtable, pms)
   }
 
   # Add ncensor.plot or cumcensor plot
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if(ncensor.plot){
+    # A single-group fit (e.g. ~ 1) has no 'strata' column, so the default
+    # color = "strata" would be passed to geom_bar as a literal colour and
+    # error ("Unknown colour name: strata"). For that sentinel only, use the
+    # survival curve's own colour (so the bars match the curve, as grouped
+    # bars do), falling back to black if it can't be resolved. A real strata
+    # column (grouped) or a user-supplied colour is left untouched.
+    ncensor.color <- surv.color
+    if(identical(surv.color, "strata") && !("strata" %in% colnames(d))){
+      ncensor.color <- unname(scurve_cols)[1]
+      if(length(ncensor.color) == 0 || is.na(ncensor.color))
+        ncensor.color <- "black"
+    }
     ncensor_plot <- ggplot(d, ggplot2::aes(x = !!sym("time"), y = !!sym("n.censor"))) +
-      ggpubr::geom_exec(geom_bar, d, color = surv.color, fill = surv.color,
+      ggpubr::geom_exec(geom_bar, d, color = ncensor.color, fill = ncensor.color,
                         stat = "identity", position = "dodge")+
       coord_cartesian(xlim = xlim)+
-      scale_y_continuous(breaks = sort(unique(d$n.censor))) +
+      scale_y_continuous(breaks = .ncensor_y_breaks(d$n.censor)) +
       ggtheme
 
     ncensor_plot <- ggpubr::ggpar(ncensor_plot, palette = pms$palette)
@@ -217,6 +273,8 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     #pms$y.text.col <- cumcensor.y.text.col
     pms$fontsize <- fontsize
     pms$survtable <- "cumcensor"
+    pms$risk.table.type <- cumcensor.type   # absolute (default) / percentage / abs_pct (#499)
+    pms$origin.align <- TRUE   # always laid out "out"; align t=0 to the origin
     ncensor_plot  <- do.call(ggsurvtable, pms)
   }
   if(ncensor.plot | cumcensor)
@@ -259,6 +317,46 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 }
 
 # Build ggsurvplot for printing
+#' Build the Assembled Grob of a ggsurvplot Object
+#'
+#' @description Assemble a \code{\link{ggsurvplot}} object (the survival curve
+#'   plus any risk table, cumulative events/censor tables and censor plot) into a
+#'   single \code{gtable} grob -- the same object that \code{print.ggsurvplot()}
+#'   draws. This is useful when you want the combined plot as a grob to draw with
+#'   \code{\link[grid]{grid.draw}}, arrange with other grobs, or save with
+#'   \code{\link[ggplot2]{ggsave}} without going through the print method.
+#'
+#' @param x an object of class \code{ggsurvplot}.
+#' @param surv.plot.height,risk.table.height,ncensor.plot.height,cumevents.height
+#'   optional numeric values (in [0, 1]) overriding the relative heights of the
+#'   survival plot and the tables on the grid. Default \code{NULL} keeps the
+#'   heights stored in the object.
+#' @param ... not used.
+#' @return A \code{gtable}/\code{grob} object (as returned by
+#'   \code{\link[ggplot2]{ggplotGrob}} / \code{\link[gridExtra]{arrangeGrob}}).
+#' @examples
+#' library(survival)
+#' fit <- survfit(Surv(time, status) ~ sex, data = lung)
+#' p <- ggsurvplot(fit, data = lung, risk.table = TRUE)
+#'
+#' # Assemble to a grob and draw it
+#' g <- build_ggsurvplot(p)
+#' grid::grid.newpage()
+#' grid::grid.draw(g)
+#'
+#' # or save directly
+#' # ggplot2::ggsave("survival.png", g, width = 7, height = 6)
+#' @export
+build_ggsurvplot <- function(x, surv.plot.height = NULL,
+                             risk.table.height = NULL, ncensor.plot.height = NULL,
+                             cumevents.height = NULL, ...)
+{
+  .build_ggsurvplot(x, surv.plot.height = surv.plot.height,
+                    risk.table.height = risk.table.height,
+                    ncensor.plot.height = ncensor.plot.height,
+                    cumevents.height = cumevents.height, ...)
+}
+
 .build_ggsurvplot <- function(x, surv.plot.height = NULL,
                               risk.table.height = NULL, ncensor.plot.height = NULL,
                               cumevents.height = NULL, ...)
@@ -422,7 +520,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     df <- data.frame(x1 = surv_median, x2 = surv_median,
                      y1 = rep(0, length(surv_median)),
                      y2 = rep(med_y, length(surv_median)),
-                     strata = .clean_strata(rownames(.table)))
+                     strata = .clean_strata(rownames(.table), fit))
     if(!is.null(fit$strata)){
       variables <- .get_variables(df$strata, fit, data)
       for(variable in variables) df[[variable]] <- .get_variable_value(variable, df$strata, fit, data)
@@ -449,6 +547,36 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 }
 
 
+# Draw median survival lines from a precomputed vector of median survival
+# times. Used by ggsurvplot_combine(), which works from a list of fits (combined
+# into one data frame) rather than a single survfit object, so it cannot use
+# .add_surv_median() above. NA medians (median not reached) are dropped.
+.add_median_lines <- function(p, medians, type = "hv", med_y = 0.5,
+                              color = "black", linetype = "dashed", size = 0.5){
+  x <- y <- xend <- yend <- x1 <- x2 <- y1 <- y2 <- NULL
+  medians <- medians[!is.na(medians)]
+  if(length(medians) == 0){
+    warning("Median survival not reached.")
+    return(p)
+  }
+  if(type %in% c("hv", "h")){
+    h_line_data <- data.frame(x = 0, y = med_y, xend = max(medians), yend = med_y)
+    p <- p +
+      geom_segment(aes(x = .data$x, y = .data$y, xend = .data$xend, yend = .data$yend),
+                   data = h_line_data, linetype = linetype, linewidth = size, color = color)
+  }
+  if(type %in% c("hv", "v")){
+    v_line_data <- data.frame(x1 = medians, x2 = medians,
+                              y1 = rep(0, length(medians)),
+                              y2 = rep(med_y, length(medians)))
+    p <- p +
+      geom_segment(aes(x = .data$x1, y = .data$y1, xend = .data$x2, yend = .data$y2),
+                   data = v_line_data, linetype = linetype, linewidth = size, color = color)
+  }
+  p
+}
+
+
 
 # Put risk table inside main plot
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -456,43 +584,58 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 
   if(is.null(ggsurv$table)) return(ggsurv)
 
-  if(is.null(ggsurv$table))
-    stop("You can't put risk table inside the main plot because risk.table = FALSE. Use risk.table = TRUE")
+  survplot  <- ggsurv$plot
+  risk.data <- ggsurv$table$data
+  strata_lv <- levels(survplot$data$strata)
+  nstrata   <- length(strata_lv)
 
-  # Create a transparent theme object
-  theme_transparent<- function() {
-    theme(
-      title = element_blank(),
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      axis.text.x = element_blank(),
-      axis.text.y = element_blank(),
-      axis.ticks = element_blank(),
-      panel.grid = element_blank(),
-      axis.line = element_blank(),
-      panel.background = element_rect(fill = "transparent",colour = NA),
-      plot.background = element_rect(fill = "transparent",colour = NA),
-      plot.margin=unit(c(0,0,0,0),"mm"),
-      panel.border = element_blank(),
-      legend.position = "none")
+  # Draw each number-at-risk value as its own text annotation placed at its real
+  # (time, y) position, rather than stretching the whole risk-table grob across
+  # the panel with a single annotation_custom(). The old approach hard-coded an x
+  # offset from max(time) and let the grob fill xmin..Inf, so the numbers drifted
+  # out of alignment with the x-axis whenever the visible range changed -- xlim,
+  # axes.offset = FALSE, or any added coord (#302). Positioning each number at its
+  # own `time` lets ggplot's coordinate system place it, so it stays locked to the
+  # axis tick under every one of those cases, and numbers outside xlim are clipped
+  # exactly like the "out" table. annotation_custom() draws in data coordinates
+  # without training or clipping through the y-scale, so the survival curve, its
+  # y-range, ticks and out-of-bounds handling are left byte-identical to the
+  # risk.table.pos = "out" plot (a geom_text() layer would instead retrain the
+  # y-scale and change how the curve is clipped under fun=/ylim).
+  ord  <- match(as.character(risk.data$strata), strata_lv)   # 1 = first level (top row)
+  ymax <- nstrata * 0.05
+  ymin <- if(axes.offset) -0.05 else -0.02
+  step <- (ymax - ymin) / nstrata
+  risk.data$.risk.y <- ymax - step * (ord - 0.5)            # first strata level highest
+
+  strata.cols <- .extract_ggplot_colors(survplot, grp.levels = strata_lv)
+  risk.data$.risk.col <- strata.cols[as.character(risk.data$strata)]
+
+  number.grobs <- lapply(seq_len(nrow(risk.data)), function(i){
+    annotation_custom(
+      grob = grid::textGrob(risk.data$llabels[i],
+                            gp = grid::gpar(col = risk.data$.risk.col[i], fontsize = 10)),
+      xmin = risk.data$time[i], xmax = risk.data$time[i],
+      ymin = risk.data$.risk.y[i], ymax = risk.data$.risk.y[i]
+    )
+  })
+  survplot <- survplot + number.grobs
+
+  # Keep the risk-table title (default "Number at risk" or a user risk.table.title),
+  # which the old inset drew from the embedded table grob; left-aligned at the axis
+  # origin, just above the top row.
+  risk.title <- ggsurv$table$labels$title
+  if(!is.null(risk.title) && nzchar(risk.title)){
+    survplot <- survplot +
+      annotation_custom(
+        grob = grid::textGrob(risk.title, x = grid::unit(0, "npc"), hjust = 0,
+                              gp = grid::gpar(fontsize = 11)),
+        xmin = min(risk.data$time), xmax = Inf,
+        ymin = ymax + step * 0.6, ymax = ymax + step * 0.6
+      )
   }
 
-  survplot <- ggsurv$plot
-  risktable <- ggsurv$table + theme_transparent()
-  nstrata <- length(levels(survplot$data$strata))
-  .time <- survplot$data$time
-  ymax <- nstrata*0.05
-  ymin <- -0.05
-  xmin <- -max(.time)/20
-
-  if(!axes.offset){
-    ymin <- -0.02
-    xmin <- -max(.time)/50
-  }
-  risktable_grob = ggplotGrob(risktable)
-  survplot <- survplot + annotation_custom(grob = risktable_grob, xmin = xmin,
-                                           ymin = ymin, ymax = ymax)
-  ggsurv$plot <- survplot
+  ggsurv$plot  <- survplot
   ggsurv$table <- NULL
   ggsurv
 }

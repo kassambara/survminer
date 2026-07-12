@@ -11,7 +11,11 @@ ggforest(
   cpositions = c(0.02, 0.22, 0.4),
   fontsize = 0.7,
   refLabel = "reference",
-  noDigits = 2
+  noDigits = 2,
+  global.stats = TRUE,
+  ref.display = TRUE,
+  var.labels = NULL,
+  ggtheme = NULL
 )
 }
 \arguments{
@@ -29,6 +33,32 @@ will be extracted from 'fit' object.}
 \item{refLabel}{label for reference levels of factor variables.}
 
 \item{noDigits}{number of digits for estimates and p-values in the plot.}
+
+\item{global.stats}{logical value. Default is TRUE. If FALSE, the bottom caption
+reporting the global statistics (number of events, global likelihood-ratio-test
+p-value, AIC and concordance index) is omitted. Useful when arranging several
+forest plots in a panel.}
+
+\item{ref.display}{logical value. Default is TRUE. If FALSE, the rows that have
+no hazard ratio -- factor baselines, and any non-estimable / aliased or
+\code{strata()} terms, i.e. the rows labelled \code{refLabel} ("reference") --
+are omitted from both the plot and the table, keeping only the estimated levels.
+Default TRUE shows every row (unchanged).}
+
+\item{var.labels}{a named character vector giving display labels for the
+variable names, e.g. \code{c(age = "Age (years)", sex = "Sex")}. The names
+must match the model term names (as shown in the plot by default); only
+matched terms are relabelled, unmatched terms keep their original name.
+Default \code{NULL} uses the term names unchanged.}
+
+\item{ggtheme}{a ggplot2 theme (e.g. the result of \code{theme(...)} or a
+complete theme) applied to the forest plot. Because \code{ggforest()} returns
+a rasterised \code{gtable}, a theme added to the returned object has no effect;
+pass it here instead, e.g. \code{ggtheme = theme(text = element_text(size =
+14))}. It is added after the built-in theme: a partial \code{theme(...)}
+overrides only the matching elements, whereas a complete theme (e.g.
+\code{theme_void()}) replaces the built-in look entirely. Default \code{NULL}
+leaves the appearance unchanged.}
 }
 \value{
 returns a ggplot2 object (invisibly)

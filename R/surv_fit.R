@@ -156,6 +156,11 @@ surv_fit <- function(formula, data, group.by = NULL, match.fd = FALSE, ...){
 
   # Grouped data sets by one or two grouping variables
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  # Remember whether this is a grouped call: the result is then a list of
+  # survfit objects each fitted on its OWN subset. Downstream (ggsurvplot_list)
+  # needs to know that, so the per-panel p-value is computed on each subset
+  # rather than on the pooled data passed as `data=` (#799).
+  .grouped.call <- .is_grouped_data(data) || !is.null(group.by)
   if(.is_grouped_data(data) )
     data <- input_data <- data$data
   else if(!is.null(group.by))
@@ -205,8 +210,24 @@ surv_fit <- function(formula, data, group.by = NULL, match.fd = FALSE, ...){
 
   # Standard survfit
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  else
-    res <- .survfit1(formula, data, ...)
+  else {
+    # Primary path is the standard behaviour (unchanged). If it fails because a
+    # data-column argument was passed by a bare name (e.g. weights = weights,
+    # id = subject), which survfit() resolves inside `data` but surv_fit() did
+    # not, retry with those arguments evaluated inside `data` (#644, #571). The
+    # retry only runs when the standard path already errored, so every call that
+    # worked before is unchanged.
+    .dot_exprs <- match.call(expand.dots = FALSE)[["..."]]
+    .caller <- parent.frame()
+    res <- tryCatch(
+      .survfit1(formula, data, ...),
+      error = function(e){
+        resolved <- .resolve_survfit_dots_in_data(.dot_exprs, data, .caller)
+        if(is.null(resolved)) stop(e)
+        do.call(.survfit1, c(list(formula = formula, data = data), resolved))
+      }
+    )
+  }
 
 
   # Name of survfit objects list
@@ -245,6 +266,13 @@ surv_fit <- function(formula, data, group.by = NULL, match.fd = FALSE, ...){
   if(.is_list(data) | .is_list(formula))
     names(res) <- .collapse(DNAME, FNAME, sep = "::")
 
+  # For a grouped call, attach the per-group data subsets so that plotting the
+  # resulting list (ggsurvplot_list) can use each subset for its panel -- in
+  # particular for a correct per-subgroup p-value instead of the pooled one
+  # (#799). Only added for grouped calls; other list results are unchanged.
+  if(.grouped.call && .is_list(res))
+    attr(res, "surv_fit_group_data") <- data
+
   res
 }
 
@@ -253,6 +281,34 @@ surv_fit <- function(formula, data, group.by = NULL, match.fd = FALSE, ...){
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Helper functions
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Re-evaluate captured `...` expressions inside a single data set (#644, #571)
+#.........................................................................
+# Used ONLY as a fallback when the standard surv_fit() path errors because a
+# data-column argument was passed by a bare name (e.g. weights = weights,
+# id = subject). `dots` is the (pair)list of unevaluated expressions from
+# match.call(expand.dots = FALSE)[["..."]]; `eval_env` is surv_fit()'s caller.
+# The survfit data-column arguments (weights/subset/id/istate/etype) are
+# evaluated with `data` as the environment (so a bare column resolves there),
+# falling back to `eval_env`; every other argument is evaluated in `eval_env`
+# only, i.e. exactly as the standard list(...) path would. Returns NULL when
+# there is nothing to resolve (so the caller re-raises the original error).
+.resolve_survfit_dots_in_data <- function(dots, data, eval_env){
+  if(is.null(dots) || length(dots) == 0) return(NULL)
+  if(!is.data.frame(data)) return(NULL)
+  nse.args <- c("weights", "subset", "id", "istate", "etype")
+  nms <- names(dots)
+  if(is.null(nms)) nms <- rep("", length(dots))
+  out <- stats::setNames(vector("list", length(dots)), nms)
+  for(i in seq_along(dots)){
+    nm <- nms[i]
+    out[[i]] <- if(!is.na(nm) && nzchar(nm) && nm %in% nse.args)
+      eval(dots[[i]], envir = data, enclos = eval_env)
+    else
+      eval(dots[[i]], envir = eval_env)
+  }
+  out
+}
 
 # Returns a list of valid survfit options
 #.........................................................................

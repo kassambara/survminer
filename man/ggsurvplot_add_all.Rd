@@ -10,6 +10,7 @@ ggsurvplot_add_all(
   legend.title = "Strata",
   legend.labs = NULL,
   pval = FALSE,
+  legend = "top",
   ...
 )
 }
@@ -29,6 +30,11 @@ those strata.}
 p-value is added on the plot. If numeric, than the computet p-value is
 substituted with the one passed with this parameter. If character, then the
 customized string appears on the plot. See examples - Example 3.}
+
+\item{legend}{character specifying legend position. Allowed values are one of
+c("top", "bottom", "left", "right", "none"). Default is "top" side position.
+to remove the legend use legend = "none". Legend position can be also
+specified using a numeric vector c(x, y); see details section.}
 
 \item{...}{other arguments passed to the \code{\link{ggsurvplot}()} function.}
 }

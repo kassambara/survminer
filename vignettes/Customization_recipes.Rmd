@@ -1,0 +1,603 @@
+---
+title: "Customization recipes"
+author: "survminer"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Customization recipes}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+`ggsurvplot()` returns a compound object -- a list holding the survival
+curve (`$plot`), the risk table (`$table`), the data actually plotted
+(`$data.survplot`), and more -- and `surv_summary()` returns a plain data
+frame with one row per event/censoring time (`time`, `surv`, `n.risk`,
+`n.event`, `n.censor`, `strata`, ...). Because both are ordinary ggplot2 /
+data-frame objects, a lot of "can survminer do X?" questions are answered by
+*composing* on what these already give you rather than by a dedicated argument.
+
+This page collects such recipes. Each is self-contained and uses the `lung`
+data set from the survival package.
+
+```{r setup}
+library(survminer)
+library(survival)
+library(dplyr)
+library(ggplot2)
+```
+
+# Dashed curves once few patients remain at risk
+
+Some reporting guidelines ask that a survival curve be drawn with a **dashed
+line beyond the point where few patients remain at risk** -- for example the
+[guidelines for reporting mortality and morbidity after cardiac valve
+interventions](https://pubmed.ncbi.nlm.nih.gov/18355567/) recommend a dashed
+line once the number at risk falls below 10% of the initial cohort (survminer
+issue [#559](https://github.com/kassambara/survminer/issues/559)).
+
+`surv_summary()` carries `n.risk` per stratum, so you can find, for each curve,
+the first time it drops below the threshold, split the curve into a solid
+"dense" part and a dashed "sparse" tail, and draw the two with different
+`linetype`s. Repeating the boundary point in the solid part makes the two step
+segments meet with no gap.
+
+```{r dashed-helper}
+# KM curves that switch solid -> dashed once the number at risk drops below
+# `frac` of each group's initial cohort (default 10%).
+ggsurv_dashed_below <- function(fit, data, frac = 0.10, ...) {
+  ss <- surv_summary(fit, data = data) %>%
+    group_by(strata) %>%
+    mutate(onset = { s <- n.risk < frac * max(n.risk)
+                     if (any(s)) min(time[s]) else Inf },
+           phase = ifelse(time >= onset, "sparse", "dense")) %>%
+    ungroup()
+  # repeat the first sparse point in the solid phase so the two steps join
+  bridge <- ss %>% filter(phase == "sparse") %>%
+    group_by(strata) %>% slice_min(time, n = 1) %>% ungroup() %>%
+    mutate(phase = "dense")
+
+  ggplot(bind_rows(ss, bridge), aes(time, surv, colour = strata)) +
+    geom_step(aes(linetype = phase), linewidth = 0.9) +
+    geom_point(data = filter(ss, n.censor > 0), shape = 3, size = 2,
+               show.legend = FALSE) +
+    scale_linetype_manual(values = c(dense = "solid", sparse = "dashed"),
+                          breaks = "sparse",
+                          labels = sprintf("< %g%% at risk", 100 * frac),
+                          name = NULL) +
+    coord_cartesian(ylim = c(0, 1)) +
+    labs(x = "Time", y = "Survival probability", ...) +
+    theme_survminer()
+}
+```
+
+```{r dashed-plot}
+fit <- survfit(Surv(time, status) ~ sex, data = lung)
+ggsurv_dashed_below(fit, lung, frac = 0.10) +
+  scale_colour_discrete(name = "Sex", labels = c("Male", "Female"))
+```
+
+Each curve turns dashed at its own crossing point. A few adjustments:
+
+- The threshold is each group's own initial cohort (`max(n.risk)` per stratum).
+  To key it to the pooled study size instead, replace `max(n.risk)` with the
+  overall starting `n` and every curve dashes at the same count.
+- `frac` is an argument, so the same helper produces the guideline's 10% cutoff
+  or any other fraction.
+- This rebuilds the line layer to control `linetype`, so it does not go through
+  `ggsurvplot()` directly. If you also want the number-at-risk table underneath,
+  build it separately with `ggrisktable()` on the same fit and stack the two
+  (for example with `ggpubr::ggarrange(..., ncol = 1, heights = c(3, 1))`).
+
+# Step-shaped legend keys
+
+By default the legend key is a straight horizontal line. Some publications draw
+the key as a small step that echoes the Kaplan-Meier shape (survminer issue
+[#537](https://github.com/kassambara/survminer/issues/537)). `ggsurvplot()`
+returns the curve as `$plot`, whose first layer draws the survival lines, so you
+can swap that layer's legend key for a custom step glyph -- overriding only the
+key, leaving the curve drawing untouched.
+
+```{r step-key-helper}
+library(grid)
+
+# Draw the legend key of a ggsurvplot's curves as a small step (stair) that
+# echoes the Kaplan-Meier shape, instead of the default straight line.
+step_legend_key <- function(p) {
+  `%||%` <- function(x, y) if (is.null(x)) y else x   # base R has this since 4.4
+  draw_key_step <- function(data, params, size) {
+    grid::linesGrob(
+      x = c(0, 0.45, 0.45, 1), y = c(0.25, 0.25, 0.7, 0.7),
+      gp = grid::gpar(col = data$colour %||% "black",
+                      lwd = (data$linewidth %||% data$size %||% 0.75) * .pt,
+                      lty = data$linetype %||% 1, lineend = "butt"))
+  }
+  # the survival curves are the first layer; subclass its geom to override ONLY
+  # the legend key, so the curve drawing itself is unchanged
+  g <- p$plot$layers[[1]]$geom
+  p$plot$layers[[1]]$geom <-
+    ggplot2::ggproto(paste0(class(g)[1], "Key"), g, draw_key = draw_key_step)
+  p
+}
+```
+
+```{r step-key-plot}
+fit2 <- survfit(Surv(time, status) ~ sex, data = lung)
+p <- ggsurvplot(fit2, data = lung, palette = c("#E7302A", "#2E43F3"),
+                legend.title = "Group", legend.labs = c("High", "Low"))
+step_legend_key(p)
+```
+
+Adjust the `x`/`y` coordinates inside `draw_key_step()` to change the step
+shape (for example a taller riser, or a two-step stair).
+
+# Mark the median survival and its confidence interval
+
+`surv.median.line = "hv"` already drops a line at each group's median survival.
+To also show the *confidence interval* of the median (survminer issue
+[#345](https://github.com/kassambara/survminer/issues/345)), use
+`surv_median()`, which returns `median`, `lower` and `upper` per group, and add
+a horizontal band at survival = 0.5.
+
+```{r median-ci}
+add_median_ci <- function(p, fit, y = 0.5) {
+  med  <- surv_median(fit)
+  # one colour per group, read from the drawn curve layer (no internal helpers)
+  b     <- ggplot2::ggplot_build(p$plot)$data[[1]]
+  cols  <- b$colour[match(sort(unique(b$group)), b$group)]
+  # drop groups whose median is not reached (surv_median() returns NA there)
+  keep  <- !is.na(med$median)
+  med   <- med[keep, ]
+  cols  <- cols[keep]
+  p$plot +
+    geom_segment(data = med, aes(x = lower, xend = upper, y = y, yend = y),
+                 colour = cols, linewidth = 0.9, inherit.aes = FALSE) +
+    geom_point(data = med, aes(x = median, y = y),
+               colour = cols, size = 2.4, inherit.aes = FALSE)
+}
+```
+
+```{r median-ci-plot}
+fit3 <- survfit(Surv(time, status) ~ sex, data = lung)
+p <- ggsurvplot(fit3, data = lung, palette = c("#E7302A", "#2E43F3"),
+                surv.median.line = "hv",
+                legend.labs = c("Male", "Female"), legend.title = "Sex")
+p$plot <- add_median_ci(p, fit3)
+p
+```
+
+The horizontal bar spans the 95% CI of the median survival time
+(`surv_median()`'s `lower`/`upper`); the point marks the median itself. A group
+whose survival never drops to 0.5 has no median (`surv_median()` returns `NA`),
+so it is simply left without a bar.
+
+# Plot math (expressions) in the legend
+
+`legend.labs = c(expression(...))` alone does not render as math, and `+` does
+not apply to the compound `ggsurvplot` object. Add the scale to `$plot` (a plain
+ggplot) instead, supplying the same palette so the colours are unchanged
+(survminer issue [#350](https://github.com/kassambara/survminer/issues/350)).
+
+```{r plotmath-legend}
+pal <- c("#E7302A", "#2E43F3")
+p <- ggsurvplot(fit3, data = lung, palette = pal, legend.title = "Group")
+p$plot <- p$plot +
+  scale_colour_manual(values = pal,
+                      labels = c(expression(x^2 ~ y^2), expression(alpha[i] >= beta)),
+                      name = "Group")
+p
+```
+
+(The "Scale for colour is already present" message is expected -- we are
+replacing survminer's default colour scale with one that carries the math
+labels.)
+
+With a risk table (`risk.table = TRUE`), the table's strata labels are a
+separate discrete y-axis, so they keep the raw `sex=1` / `sex=2` names unless you
+relabel them too. Carry the same expressions to `$table` with
+`scale_y_discrete()`. The table lists the strata top-to-bottom but the discrete
+y-axis orders its breaks bottom-to-top, so pass the labels reversed to keep each
+label on its own row:
+
+```{r plotmath-legend-risktable}
+math.labs <- c(expression(x^2 ~ y^2), expression(alpha[i] >= beta))
+p <- ggsurvplot(fit3, data = lung, palette = pal, risk.table = TRUE,
+                legend.title = "Group")
+p$plot  <- p$plot  +
+  scale_colour_manual(values = pal, labels = math.labs, name = "Group")
+p$table <- p$table + scale_y_discrete(labels = rev(math.labs))
+p
+```
+
+# One shared legend across a grid of plots
+
+Several separate survival analyses that use the same grouping are often shown in
+a grid with a single common legend (survminer issue
+[#340](https://github.com/kassambara/survminer/issues/340)). Pull each
+`ggsurvplot`'s `$plot` and arrange them with `ggpubr::ggarrange()`, which draws
+one shared legend and keeps every panel the same size.
+
+```{r shared-legend, fig.height = 6}
+colon2  <- colon[!is.na(colon$sex), ]
+subsets <- split(colon2, colon2$extent)
+subsets <- subsets[sapply(subsets, nrow) > 30]
+subsets <- subsets[seq_len(min(4, length(subsets)))]
+
+plots <- lapply(names(subsets), function(nm) {
+  d   <- subsets[[nm]]
+  fit <- survfit(Surv(time, status) ~ sex, data = d)
+  ggsurvplot(fit, data = d, legend.title = "Sex",
+             legend.labs = c("Male", "Female"), title = paste("extent", nm))$plot
+})
+
+ggpubr::ggarrange(plotlist = plots, ncol = 2, nrow = 2,
+                  common.legend = TRUE, legend = "bottom")
+```
+
+# Risk table under Cox-adjusted survival curves
+
+Cox-model *adjusted* curves are drawn with `survfit(coxph_fit, newdata = ...)`,
+one curve per covariate profile. Asking for `risk.table = TRUE` there gives a
+single pooled row, because those predicted curves have no per-group number at
+risk -- the profiles are hypothetical covariate combinations, not subject groups
+(survminer issue [#231](https://github.com/kassambara/survminer/issues/231)).
+
+When the profiles correspond to a **real grouping variable** (here `sex`), the
+meaningful at-risk counts are the Kaplan-Meier ones for that variable. Build them
+with `ggrisktable()` from a KM fit and drop them into the compound object's
+`$table` slot, matching `legend.labs` and sharing an `xlim` so the two panels
+line up:
+
+```{r cox-risktable, fig.height = 6}
+km.fit  <- survfit(Surv(time, status) ~ sex, data = lung)
+res.cox <- coxph(Surv(time, status) ~ age + sex + ph.ecog, data = lung)
+sex_df  <- with(lung, data.frame(sex = c(1, 2),
+                                 age = mean(age, na.rm = TRUE), ph.ecog = c(1, 1)))
+fit <- survfit(res.cox, newdata = sex_df)
+
+# note: a survfit() from a coxph fit carries no data, so pass `data =` explicitly
+cox.surv <- ggsurvplot(fit, data = sex_df, conf.int = TRUE,
+                       legend.labs = c("sex=1", "sex=2"))
+cox.surv$table <- ggrisktable(km.fit, data = lung, color = "strata",
+                              legend.labs = c("sex=1", "sex=2"),
+                              xlim = c(0, max(fit$time)))
+print(cox.surv, risk.table.height = 0.28)
+```
+
+Be careful with the meaning: the table is the **Kaplan-Meier number at risk for
+the grouping variable**, not an at-risk count for the model-based adjusted curves
+(adjusted curves are expectations for hypothetical profiles and have no literal
+number at risk). It is honest only when each `newdata` row is a real subgroup of
+the data (e.g. `sex = 1` / `sex = 2`); for arbitrary covariate combinations there
+is no per-profile risk table and this overlay would mislead.
+
+# Risk table under `ggadjustedcurves()`
+
+`ggadjustedcurves()` draws Cox-adjusted curves by a grouping variable and returns
+a plain `ggplot`, so `risk.table = TRUE` has no effect there (survminer issue
+[#286](https://github.com/kassambara/survminer/issues/286)). The same idea as the
+previous recipe applies, the other way round: build a normal Kaplan-Meier
+`ggsurvplot()` (which comes with a correctly aligned number-at-risk table for the
+grouping variable) and swap its `$plot` for the adjusted-curves plot, matching
+palette, `xlim` and x-breaks so the panels line up.
+
+```{r ggadjustedcurves-risktable, fig.height = 6}
+lung2 <- transform(lung, sex = factor(sex, labels = c("Male", "Female")))
+pal   <- c("#E7302A", "#2E43F3")
+xmax  <- max(lung2$time, na.rm = TRUE)
+
+# a KM ggsurvplot -> aligned curve + number-at-risk table by group
+km.surv <- ggsurvplot(survfit(Surv(time, status) ~ sex, data = lung2), data = lung2,
+                      risk.table = TRUE, palette = pal,
+                      legend.labs = c("Male", "Female"), legend.title = "Sex",
+                      break.time.by = 250, xlim = c(0, xmax))
+
+# Cox-adjusted curves (a plain ggplot); match palette / xlim / breaks
+res.cox <- coxph(Surv(time, status) ~ sex + age + ph.ecog, data = lung2)
+adj <- ggadjustedcurves(res.cox, variable = "sex", data = lung2, palette = pal) +
+  coord_cartesian(xlim = c(0, xmax)) +
+  scale_x_continuous(breaks = seq(0, xmax, 250)) +
+  labs(x = "Time", y = "Adjusted survival probability") +
+  guides(colour = guide_legend("Sex"), fill = guide_legend("Sex")) +
+  theme_survminer()
+
+# swap the KM curve for the adjusted curve; keep the aligned KM risk table
+km.surv$plot <- adj
+print(km.surv, risk.table.height = 0.26)
+```
+
+The same honesty caveat applies: the table is the KM number at risk **for the
+grouping variable**, not for the adjusted curves, and is meaningful only when the
+adjustment variable is a real group.
+
+# Single event and a number-at-risk table for competing risks
+
+For a `cmprsk::cuminc()` competing-risks fit, two common requests are to plot only
+the **event of interest** (dropping the competing events) and to add a
+**number-at-risk table** underneath (survminer issue
+[#223](https://github.com/kassambara/survminer/issues/223)). Both compose from the
+`cuminc` object and a companion `survfit()`: the cumulative-incidence estimates
+(and their variance) for the event of interest come straight out of `cuminc`, and
+the number at risk -- subjects still event-free and under observation, the usual
+convention for a competing-risks figure -- is the `n.risk` of a `survfit()` that
+treats **any** event as the endpoint.
+
+```{r cuminc-risktable, fig.height = 6, eval = requireNamespace("cmprsk", quietly = TRUE)}
+library(cmprsk)
+
+# competing-risks data: event 1 = PCM (of interest), 2 = death (competing)
+mg <- transform(mgus2,
+                etime = ifelse(pstat == 1, ptime, futime),
+                event = ifelse(pstat == 1, 1, 2 * death))
+pal <- c("#E7302A", "#2E43F3"); xmax <- max(mg$etime); eoi <- "1"
+
+ci <- cuminc(mg$etime, mg$event, group = mg$sex)
+
+# cumulative incidence of the event of interest, per group, with 95% CI bands
+comps <- names(ci)[grepl(paste0(" ", eoi, "$"), names(ci))]
+cif <- do.call(rbind, lapply(comps, function(nm) {
+  d <- as.data.frame(ci[[nm]][c("time", "est", "var")])
+  d$group <- sub(paste0(" ", eoi, "$"), "", nm); d
+}))
+cif$lower <- pmax(0, cif$est - 1.96 * sqrt(cif$var))
+cif$upper <- pmin(1, cif$est + 1.96 * sqrt(cif$var))
+
+p_cif <- ggplot(cif, aes(time, est, colour = group, fill = group)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.15, colour = NA) +
+  geom_step(linewidth = 0.9) +
+  scale_colour_manual(values = pal) + scale_fill_manual(values = pal) +
+  scale_x_continuous(breaks = seq(0, xmax, 60)) +
+  coord_cartesian(xlim = c(0, xmax), ylim = c(0, 1)) +
+  labs(x = "Time (months)", y = "Cumulative incidence of PCM") +
+  guides(colour = guide_legend("Sex"), fill = guide_legend("Sex")) +
+  theme_survminer()
+
+# number-at-risk table: survfit on "any event" gives the event-free at-risk count
+km.surv <- ggsurvplot(survfit(Surv(etime, event > 0) ~ sex, data = mg), data = mg,
+                      risk.table = TRUE, palette = pal, legend.labs = c("F", "M"),
+                      legend.title = "Sex", break.time.by = 60, xlim = c(0, xmax))
+km.surv$plot <- p_cif                       # keep the aligned number-at-risk table
+print(km.surv, risk.table.height = 0.26)
+```
+
+To pick a different event of interest, change `eoi` (the numeric `fstatus` code as
+a string). The confidence bands use `cuminc`'s `var`; note the at-risk counts are
+the standard event-free-under-observation convention, not a competing-risks
+weighted count.
+
+# Forest plot of several univariate Cox models
+
+`ggforest()` draws one fitted model. For the common screening step of showing the
+hazard ratio from a *separate univariate* Cox model for each candidate covariate
+on one forest plot (survminer issues
+[#459](https://github.com/kassambara/survminer/issues/459),
+[#310](https://github.com/kassambara/survminer/issues/310)), fit one model per
+covariate, collect the HR / 95% CI / p from each, and draw the forest with
+`geom_pointrange()` on a log scale.
+
+```{r univariate-forest, fig.height = 4.5}
+d <- lung
+d$sex     <- factor(d$sex, labels = c("Male", "Female"))
+d$ph.ecog <- factor(d$ph.ecog)
+vars <- c("sex", "age", "ph.ecog", "wt.loss")   # candidate covariates
+
+# one univariate Cox model per covariate -> HR, 95% CI, p (one row per coefficient)
+uni <- do.call(rbind, lapply(vars, function(v) {
+  s <- summary(coxph(reformulate(v, response = "Surv(time, status)"), data = d))
+  data.frame(variable = v, term = rownames(s$conf.int),
+             HR    = s$conf.int[, "exp(coef)"],
+             lower = s$conf.int[, "lower .95"],
+             upper = s$conf.int[, "upper .95"],
+             p     = s$coefficients[, "Pr(>|z|)"], row.names = NULL)
+}))
+# row label: variable name, plus the factor level for multi-level terms
+level <- mapply(function(v, t) sub(paste0("^", v), "", t), uni$variable, uni$term)
+uni$label <- ifelse(level == "", uni$variable, paste0(uni$variable, ": ", level))
+uni$label <- factor(uni$label, levels = rev(uni$label))
+
+ggplot(uni, aes(HR, label)) +
+  geom_vline(xintercept = 1, linetype = "dashed", colour = "grey50") +
+  geom_pointrange(aes(xmin = lower, xmax = upper)) +
+  geom_text(aes(label = sprintf("%.2f (%.2f-%.2f)", HR, lower, upper)),
+            vjust = -0.8, size = 3) +
+  scale_x_log10() +
+  labs(x = "Hazard ratio (95% CI, log scale)", y = NULL,
+       title = "Univariate Cox regression") +
+  theme_survminer()
+```
+
+Each row is its own univariate model (not a single multivariable fit); a
+multi-level factor contributes one row per level. Swap in a multivariable
+`ggforest(coxph(Surv(time, status) ~ ., data = ...))` when you want one adjusted
+model instead.
+
+# Smooth parametric (survreg / Weibull) survival curves
+
+A `survreg()` accelerated-failure-time fit predicts a *smooth* survival curve;
+feeding its predictions to `ggsurvplot()` as a data frame draws them as a step
+function by default. Use `surv.geom = geom_line` to draw the curve as a smooth
+line instead (survminer issue
+[#276](https://github.com/kassambara/survminer/issues/276)). A `survreg` curve is
+only defined once the covariates are fixed, so choose the profile(s) to draw:
+
+```{r survreg-smooth, fig.height = 4}
+# a parametric (Weibull) AFT model with a covariate
+wb <- survreg(Surv(time, status) ~ sex, data = lung)
+
+# predict(type = "quantile", p = s) returns the time at which survival = 1 - s,
+# i.e. the inverse of the fitted survival function; pick the profiles to show.
+s    <- seq(0.01, 0.99, by = 0.01)
+prof <- data.frame(sex = c(1, 2))
+pred <- predict(wb, newdata = prof, type = "quantile", p = s)   # rows = profiles
+wbdf <- data.frame(
+  time   = as.vector(t(pred)),
+  surv   = rep(1 - s, times = nrow(prof)),
+  strata = factor(rep(c("sex=1", "sex=2"), each = length(s))),
+  upper  = NA, lower = NA, std.err = NA          # a model curve carries no CI band
+)
+
+pal <- c("#E7302A", "#2E43F3")
+# surv.geom = geom_line -> smooth line, not a step; conf.int = FALSE is required.
+ggsurvplot(wbdf, conf.int = FALSE, surv.geom = geom_line, palette = pal,
+           legend.title = "Weibull", legend.labs = c("sex=1", "sex=2"))
+```
+
+To judge how well the parametric model fits, overlay the curves (dashed) on the
+empirical Kaplan-Meier:
+
+```{r survreg-overlay, fig.height = 4}
+km <- ggsurvplot(survfit(Surv(time, status) ~ sex, data = lung), data = lung,
+                 palette = pal, legend.labs = c("sex=1", "sex=2"))
+km$plot + geom_line(data = wbdf, aes(time, surv, colour = strata),
+                    linetype = "dashed", linewidth = 1)
+```
+
+The curve is the model's prediction at the covariate profile you choose -- for a
+multi-covariate model, fix the other covariates in `newdata` and decide which one
+indexes the curves. It is a deterministic parametric fit, not an empirical
+estimate, so it has no confidence band (`upper`/`lower` are `NA` and
+`conf.int = FALSE` is required). For a Weibull fit over the Kaplan-Meier with
+built-in confidence bands, `ggflexsurvplot()` (on a `flexsurv::flexsurvreg()`
+model) is an alternative.
+
+# Subgroup-analysis forest (treatment effect within subgroups)
+
+`ggforest()` draws the coefficients of a *single* fitted model, so it cannot
+produce a subgroup-analysis forest -- the effect of a treatment estimated
+*within* each subgroup, with an interaction test (survminer issues
+[#271](https://github.com/kassambara/survminer/issues/271),
+[#366](https://github.com/kassambara/survminer/issues/366)). Build it by fitting
+the model within each subgroup, collecting the hazard ratios, and adding the
+treatment-by-subgroup interaction p-value:
+
+```{r subgroup-forest, fig.height = 5}
+# a 2-arm treatment and a few subgroup variables, all coded as factors
+d <- subset(colon, etype == 2 & rx %in% c("Obs", "Lev+5FU"))
+d$rx     <- factor(d$rx, levels = c("Obs", "Lev+5FU"))
+d$Sex    <- factor(d$sex, labels = c("Female", "Male"))
+d$Age    <- factor(ifelse(d$age >= 60, ">=60", "<60"), levels = c("<60", ">=60"))
+d$Differ <- factor(d$differ, labels = c("well", "moderate", "poor"))
+subgroups <- c("Sex", "Age", "Differ")
+resp <- "Surv(time, status)"
+
+# treatment HR within one subset; NA if a treatment arm is missing (unstratifiable)
+hr_in <- function(sub) {
+  if (nlevels(droplevels(sub$rx)) < 2) return(c(NA, NA, NA))
+  tryCatch(withCallingHandlers(
+    summary(coxph(Surv(time, status) ~ rx, data = sub))$conf.int[1, c(1, 3, 4)],
+    warning = function(w) invokeRestart("muffleWarning")),
+    error = function(e) c(NA, NA, NA))
+}
+
+# overall effect, then each subgroup's levels + its interaction p-value
+overall <- summary(coxph(Surv(time, status) ~ rx, data = d))$conf.int[1, c(1, 3, 4)]
+tab <- data.frame(subgroup = "Overall", level = "", HR = overall[1],
+                  lower = overall[2], upper = overall[3], p.int = NA_real_)
+for (sg in subgroups) {
+  a <- anova(coxph(reformulate(c("rx", sg), response = resp), data = d),
+             coxph(reformulate(paste0("rx*", sg), response = resp), data = d))
+  pint <- a[2, grep("^P", colnames(a))]          # treatment x subgroup LRT p-value
+  for (lv in levels(d[[sg]])) {
+    est <- hr_in(droplevels(d[d[[sg]] == lv, ]))
+    tab <- rbind(tab, data.frame(subgroup = sg, level = lv, HR = est[1],
+                 lower = est[2], upper = est[3], p.int = pint))
+  }
+}
+
+# lay out rows: Overall, then a bold header per subgroup with its levels below
+rows <- list(data.frame(label = "Overall", tab[1, c("HR","lower","upper","p.int")],
+                        header = FALSE))
+for (sg in subgroups) {
+  rows <- c(rows, list(data.frame(label = sg, HR = NA, lower = NA, upper = NA,
+                       p.int = tab$p.int[tab$subgroup == sg][1], header = TRUE)))
+  lv <- tab[tab$subgroup == sg, ]
+  rows <- c(rows, list(data.frame(label = paste0("   ", lv$level), HR = lv$HR,
+                       lower = lv$lower, upper = lv$upper, p.int = NA, header = FALSE)))
+}
+pl <- do.call(rbind, rows)
+pl$y <- factor(rev(seq_len(nrow(pl))))             # first row on top
+f2 <- function(v, k = 2) ifelse(is.na(v), "", formatC(v, format = "f", digits = k))
+pl$hr.txt <- ifelse(is.na(pl$HR), "",
+                    sprintf("%s (%s-%s)", f2(pl$HR), f2(pl$lower), f2(pl$upper)))
+pl$p.txt  <- ifelse(is.na(pl$p.int), "", paste0("p-int ", f2(pl$p.int, 3)))
+xmin <- min(pl$lower, na.rm = TRUE); xmax <- max(pl$upper, na.rm = TRUE)
+
+ggplot(pl, aes(HR, y)) +
+  geom_vline(xintercept = 1, linetype = "dashed", colour = "grey60") +
+  geom_pointrange(aes(xmin = lower, xmax = upper), na.rm = TRUE, size = 0.4) +
+  geom_text(aes(x = xmin / 5, label = label), hjust = 0, size = 3,
+            fontface = ifelse(pl$header, "bold", "plain")) +
+  geom_text(aes(x = xmax * 1.6, label = hr.txt), hjust = 0, size = 3, na.rm = TRUE) +
+  geom_text(aes(x = xmax * 4.2, label = p.txt), hjust = 0, size = 3,
+            fontface = "italic", na.rm = TRUE) +
+  scale_x_log10(breaks = c(0.25, 0.5, 1, 2), limits = c(xmin / 5, xmax * 14)) +
+  labs(x = "Hazard ratio (Lev+5FU vs Obs, 95% CI, log scale)", y = NULL,
+       title = "Treatment effect by subgroup") +
+  theme_classic() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        axis.line.y = element_blank(), plot.title = element_text(hjust = 0.5))
+```
+
+The honest inference is the interaction p-value -- does the treatment effect
+differ across a subgroup's levels? -- not whether an individual subgroup's HR is
+"significant"; subgroup analyses are exploratory and multiplicity-prone. Code the
+subgroup variables as factors, and watch small subgroups: a level with few events
+(here `well`, a wide interval) is unstable, and a level missing a treatment arm is
+dropped rather than plotted. This is a different question from one HR per level of
+a predictor -- for that, just make the predictor a factor and use `ggforest()`.
+
+# Compare parametric distributions against the Kaplan-Meier
+
+`ggflexsurvplot()` overlays one fitted parametric model on the Kaplan-Meier. To
+compare several distributions and pick the best-fitting family (survminer issue
+[#183](https://github.com/kassambara/survminer/issues/183)), fit each with
+`flexsurv::flexsurvreg()`, extract its survival curve, and overlay them on the
+empirical KM:
+
+```{r flex-compare, fig.height = 4, eval = requireNamespace("flexsurv", quietly = TRUE)}
+library(flexsurv)
+
+# empirical KM (marginal) as the reference: a fixed neutral colour, so only the
+# distribution names appear in the legend
+km <- ggsurvplot(survfit(Surv(time, status) ~ 1, data = lung), data = lung,
+                 conf.int = TRUE, color = "grey50")
+
+# fit several parametric families and extract each fitted survival curve
+dists <- c("weibull", "lognormal", "gengamma")
+curves <- do.call(rbind, lapply(dists, function(dd) {
+  fit <- flexsurvreg(Surv(time, status) ~ 1, data = lung, dist = dd)
+  s <- summary(fit, type = "survival", tidy = TRUE)     # time, est, lcl, ucl
+  data.frame(time = s$time, surv = s$est, Distribution = dd)
+}))
+
+km$plot +
+  geom_line(data = curves, aes(time, surv, colour = Distribution), linewidth = 1) +
+  scale_colour_brewer(palette = "Set1") +
+  labs(x = "Time", y = "Survival probability", colour = "Distribution")
+
+# formal model selection: lower AIC = better fit
+sapply(dists, function(dd)
+  AIC(flexsurvreg(Surv(time, status) ~ 1, data = lung, dist = dd)))
+```
+
+Judge the fit with `AIC()` (lower is better -- here weibull beats gengamma beats
+lognormal), not by eye alone. The parametric curves extend the model's
+assumptions beyond the observed follow-up (the lognormal's heavier tail past the
+last event is model-driven, not data-supported), and the overlay drops each fit's
+confidence band for legibility (`summary()` returns `lcl`/`ucl` if you want them).
+Shown for a marginal `~ 1` fit; a covariate model's curve is defined only at a
+fixed covariate profile (`newdata`), as in the survreg recipe above. For a single
+distribution *with* its confidence band, `ggflexsurvplot()` is the built-in.

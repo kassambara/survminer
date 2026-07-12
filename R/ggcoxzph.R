@@ -1,7 +1,9 @@
 #'Graphical Test of Proportional Hazards with ggplot2
 #'@description Displays a graph of the scaled Schoenfeld residuals, along with a
 #'  smooth curve using \pkg{ggplot2}. Wrapper around \link[survival]{plot.cox.zph}.
-#'@param fit an object of class \link[survival]{cox.zph}.
+#'@param fit an object of class \link[survival]{cox.zph}, or a
+#'  \link[survival]{coxph} model, in which case \code{\link[survival]{cox.zph}()}
+#'  is run on it automatically.
 #'@param resid	a logical value, if TRUE the residuals are included on the plot,
 #'  as well as the smooth fit.
 #'@param se a logical value, if TRUE, confidence bands at two standard errors
@@ -13,6 +15,20 @@
 #'  are produced in turn for each variable of a model.
 #'@param point.col,point.size,point.shape,point.alpha color, size, shape and visibility to be used for points.
 #'@param caption the caption of the final \link[grid]{grob} (\code{bottom} in \link[gridExtra]{arrangeGrob})
+#'@param var_pval optional numeric threshold; an alternative to \code{var} that
+#'  selects only the terms whose Grambsch-Therneau proportional-hazards test
+#'  p-value is below this value (e.g. \code{var_pval = 0.05} to plot only terms
+#'  flagged for non-proportionality). Cannot be used together with \code{var}.
+#'  Default \code{NULL} (all terms).
+#'@param add.beta.line logical; if TRUE, overlay a horizontal reference line at
+#'  the model's estimated coefficient for each term (under proportional hazards
+#'  the scaled Schoenfeld residuals scatter around \eqn{\beta}). Requires a
+#'  \code{coxph} model as input (a \code{cox.zph} object does not carry the
+#'  coefficients). The line is drawn only for single-coefficient terms; a
+#'  multi-level factor term has one panel but several coefficients, so no single
+#'  reference line applies and it is left without one. Default FALSE.
+#'@param beta.line.col,beta.line.type,beta.line.size color, line type and line
+#'  width of the beta reference line (used when \code{add.beta.line = TRUE}).
 #'@param ggtheme function, ggplot2 theme name.
 #'  Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.
 #'@param ... further arguments passed to either the print() function or to the \code{\link[ggpubr]{ggpar}} function for customizing the plot (see Details section).
@@ -46,10 +62,22 @@
 #'@export
 ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
                       point.col = "red", point.size = 1, point.shape = 19, point.alpha = 1,
-                      caption = NULL,
+                      caption = NULL, var_pval = NULL,
+                      add.beta.line = FALSE, beta.line.col = "blue",
+                      beta.line.type = "dashed", beta.line.size = 0.5,
                       ggtheme = theme_survminer(), ...){
 
   x <- fit
+  # Capture the fitted coefficients for the optional beta reference line, BEFORE a
+  # coxph model is turned into a cox.zph object -- a cox.zph object alone does not
+  # carry the coefficients, so the line can only be drawn when a coxph model is
+  # supplied (#767).
+  betas <- if(methods::is(x, "coxph")) stats::coef(x) else NULL
+  # Accept a coxph model directly and run the proportional-hazards test on it, so
+  # users don't have to call survival::cox.zph() first. A cox.zph object (the
+  # previous input) is not a coxph, so it takes the unchanged path (#410).
+  if(methods::is(x, "coxph"))
+    x <- survival::cox.zph(x)
   if(!methods::is(x, "cox.zph"))
     stop("Can't handle an object of class ", class(x))
 
@@ -72,7 +100,20 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
     seval <- d * ((pmat %*% xtx) * pmat) %*% rep(1, df)
   }
   ylab <- paste("Beta(t) for", dimnames(yy)[[2]])
-  if (missing(var))
+  # Variable selection. `var_pval` is an alternative to `var`: keep only the terms
+  # whose Grambsch-Therneau test p-value (x$table[, 3], per-variable rows, GLOBAL
+  # excluded) is below the threshold -- useful for showing just the terms flagged
+  # for non-proportionality. `var` (missing -> all) is unchanged (#767).
+  if (!is.null(var_pval)) {
+    if (!missing(var))
+      stop("Provide either `var` or `var_pval`, not both.")
+    pvals <- x$table[seq_len(nvar), 3]
+    var <- which(pvals < var_pval)
+    if (length(var) == 0)
+      stop("No variable has a proportional-hazards test p-value < ", var_pval,
+           " (min is ", signif(min(pvals), 3), ").")
+  }
+  else if (missing(var))
     var <- 1:nvar
   else {
     if (is.character(var))
@@ -80,6 +121,14 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
     if (any(is.na(var)) || max(var) > nvar || min(var) <
         1)
       stop("Invalid variable requested")
+  }
+  # The beta reference line needs the model coefficients, which a cox.zph object
+  # (as opposed to a coxph model) does not carry. Skip with a clear note (#767).
+  if (add.beta.line && is.null(betas)) {
+    warning("`add.beta.line = TRUE` needs a coxph model as input; a cox.zph ",
+            "object doesn't carry the coefficients, so the beta line is skipped. ",
+            "Pass the coxph model to ggcoxzph() instead.", call. = FALSE)
+    add.beta.line <- FALSE
   }
   if (x$transform == "log") {
     xx <- exp(xx)
@@ -114,16 +163,30 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
       ylow <- yhat - temp
       yr <- range(yr, yup, ylow)
     }
+    # coefficient for this panel, matched by term name. A multi-column term
+    # (multi-level factor, spline) is collapsed by cox.zph into one panel whose
+    # name is NOT a coef() name, so betas[name] is NA and the line is skipped --
+    # there is no single coefficient to draw for such a term. For a term that has
+    # a line, extend the y-range so it stays visible (#767).
+    beta_i <- if (add.beta.line) unname(betas[dimnames(yy)[[2]][i]]) else NA_real_
+    if (!is.na(beta_i)) yr <- range(yr, beta_i)
     if (x$transform == "identity") {
       gplot + geom_line(aes(x=pred.x, y=yhat)) +
         xlab("Time") +
         ylab(ylab[i]) +
         ylim(yr) -> gplot
     } else if (x$transform == "log") {
-      gplot + geom_line(aes(x=log(pred.x), y=yhat)) +
+      # pred.x is already on the original time scale (exp()-ed above), like the
+      # residual points (xx) and the SE bands. Draw the fit line on that same
+      # scale and put the axis on a log scale, instead of drawing the line at
+      # log(pred.x) (which put the fit line on a different x-scale than the
+      # points, squeezing it to the left); reproduces plot.cox.zph(log = "x")
+      # (#454, #588).
+      gplot + geom_line(aes(x=pred.x, y=yhat)) +
         xlab("Time") +
         ylab(ylab[i]) +
-        ylim(yr)  -> gplot
+        ylim(yr) +
+        scale_x_log10() -> gplot
     } else {
       gplot + geom_line(aes(x=pred.x, y=yhat)) +
         xlab("Time") +
@@ -141,6 +204,12 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
       gplot <- gplot + geom_line(aes(x=pred.x, y=yup), lty = "dashed") +
         geom_line(aes( x = pred.x, y = ylow), lty = "dashed")
     }
+
+    # optional horizontal reference line at the fitted coefficient: under
+    # proportional hazards the scaled Schoenfeld residuals scatter around beta (#767)
+    if (!is.na(beta_i))
+      gplot <- gplot + geom_hline(yintercept = beta_i, colour = beta.line.col,
+                                  linetype = beta.line.type, linewidth = beta.line.size)
 
     ggpubr::ggpar(gplot, ...)
 

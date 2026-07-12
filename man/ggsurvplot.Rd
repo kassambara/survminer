@@ -3,6 +3,7 @@
 \name{ggsurvplot}
 \alias{ggsurvplot}
 \alias{print.ggsurvplot}
+\alias{grid.draw.ggsurvplot}
 \title{Drawing Survival Curves Using ggplot2}
 \usage{
 ggsurvplot(
@@ -38,6 +39,8 @@ ggsurvplot(
   newpage = TRUE,
   ...
 )
+
+\method{grid.draw}{ggsurvplot}(x, recording = TRUE)
 }
 \arguments{
 \item{fit}{allowed values include:
@@ -107,10 +110,10 @@ to show both absolute number and percentage. \item "nrisk_cumcensor" and
 censoring and events, respectively. }}
 
 \item{cumevents}{logical value specifying whether to show or not the table of
-the cumulative number of events. Default is FALSE.}
+the cumulative number of events. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct"); "percentage" shows the count as a percent of the stratum size.}
 
 \item{cumcensor}{logical value specifying whether to show or not the table of
-the cumulative number of censoring. Default is FALSE.}
+the cumulative number of censoring. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct").}
 
 \item{tables.height}{numeric value (in [0 - 1]) specifying the general height
 of all tables under the main survival plot.}
@@ -154,6 +157,9 @@ risk.table = FALSE.}
 \code{ncensor.plot = TRUE}.}
 
 \item{newpage}{open a new page. See \code{\link[gridExtra]{grid.arrange}}}
+
+\item{recording}{kept for consistency with the \code{\link[grid]{grid.draw}}
+generic; not used.}
 }
 \value{
 return an object of class ggsurvplot which is list containing the
@@ -228,10 +234,12 @@ Customize survival plots and tables. See also \link{ggsurvplot_arguments}.
 \section{Axis limits, breaks and scales}{
 
 \itemize{
-\item \strong{break.time.by}: numeric value controlling time axis breaks. Default value
- is NULL.
- \item \strong{break.x.by}: alias of break.time.by. Numeric value controlling x axis
- breaks. Default value is NULL.
+\item \strong{break.time.by}: numeric value controlling time axis breaks. A
+ single value gives regularly spaced breaks; a numeric vector is used as the
+ exact break positions (e.g. \code{c(0, 100, 300, 600)}), keeping the curve
+ and the risk/censor tables aligned. Default value is NULL.
+ \item \strong{break.x.by}: alias of break.time.by. Numeric value (or vector)
+ controlling x axis breaks. Default value is NULL.
  \item \strong{break.y.by}: same as break.x.by but for y axis.
  \item \strong{surv.scale}: scale transformation of survival curves. Allowed values are
  "default" or "percent".
@@ -264,6 +272,10 @@ Customize survival plots and tables. See also \link{ggsurvplot_arguments}.
  \item \strong{pval.coord}: numeric vector, of length 2,
  specifying the x and y coordinates of the p-value.
  Default values are NULL.
+ \item \strong{pval.parse}: logical. If TRUE, a custom p-value string given
+ via \code{pval} is parsed as a plotmath expression, allowing
+ italic/superscript p-values (e.g. \code{pval = "italic(P)==1.4~x~10^-6"}).
+ The auto-computed p-value is plain text, not plotmath. Default is FALSE.
  \item \strong{pval.method.size}: the same as \code{pval.size} but for displaying
  \code{log.rank.weights} name.
  \item \strong{pval.method.coord}: the same as \code{pval.coord} but for displaying

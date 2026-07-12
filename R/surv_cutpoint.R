@@ -93,8 +93,7 @@ surv_cutpoint <- function(data, time = "time", event = "event", variables,
     surv_data$var <- data[, var_i]
     max_stat_i <- maxstat::maxstat.test(survival::Surv(time, event) ~ var, data = surv_data,
                                       smethod = "LogRank", pmethod="none",
-                                      minprop = minprop, maxprop = 1-minprop,
-                                      alpha = alpha)
+                                      minprop = minprop, maxprop = 1-minprop)
     res[[var_i]] <- max_stat_i
     if(progressbar) utils::setTxtProgressBar(pb, i)
   }
@@ -165,8 +164,11 @@ summary.surv_cutpoint <- function(object, ...){
                  names(rr) <- c("cutpoint", "statistic")
                  return(rr)
                })
-  res <- t(as.data.frame(res))
-  as.data.frame(res)
+  # check.names = FALSE preserves variable names containing characters that
+  # make.names() would mangle (e.g. hyphens in gene names like "A1BG-AS1"),
+  # so surv_categorize() can still match them and dichotomize (#609).
+  res <- t(as.data.frame(res, check.names = FALSE))
+  as.data.frame(res, check.names = FALSE)
 }
 
 #' @method print surv_cutpoint

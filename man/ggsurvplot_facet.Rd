@@ -2,6 +2,7 @@
 % Please edit documentation in R/ggsurvplot_facet.R
 \name{ggsurvplot_facet}
 \alias{ggsurvplot_facet}
+\alias{print.ggsurvplot_facet}
 \title{Facet Survival Curves into Multiple Panels}
 \usage{
 ggsurvplot_facet(
@@ -13,14 +14,18 @@ ggsurvplot_facet(
   legend.labs = NULL,
   pval = FALSE,
   pval.method = FALSE,
+  pval.size = 5,
   pval.coord = NULL,
   pval.method.coord = NULL,
   pval.in.label = FALSE,
+  p.adjust.method = "none",
+  p.adjust.label = "adj.p =",
   nrow = NULL,
   ncol = NULL,
   scales = "fixed",
   short.panel.labs = FALSE,
   panel.labs = NULL,
+  labeller = NULL,
   panel.labs.background = list(color = NULL, fill = NULL),
   panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
   panel.labs.font.x = panel.labs.font,
@@ -34,6 +39,8 @@ ggsurvplot_facet(
   fontsize = 4.5,
   ...
 )
+
+\method{print}{ggsurvplot_facet}(x, newpage = TRUE, ...)
 }
 \arguments{
 \item{fit}{an object of class survfit.}
@@ -66,14 +73,16 @@ function \link[grDevices]{palette}.}
 the names of the strata from the fit. Should be given in the same order as
 those strata.}
 
-\item{pval}{logical value, a numeric or a string. If logical and TRUE, the
-p-value is added on the plot. If numeric, than the computet p-value is
-substituted with the one passed with this parameter. If character, then the
-customized string appears on the plot. See examples - Example 3.}
+\item{pval}{logical value. If TRUE, a log-rank p-value is computed and
+displayed for each panel. Note that, unlike \code{\link{ggsurvplot}()},
+a numeric or character \code{pval} is not substituted here (there is one
+p-value per panel); such a value is ignored with a warning.}
 
 \item{pval.method}{whether to add a text with the test name used for
 calculating the pvalue, that corresponds to survival curves' comparison -
 used only when \code{pval=TRUE}}
+
+\item{pval.size}{numeric value specifying the p-value text size. Default is 5.}
 
 \item{pval.coord}{numeric vector, of length 2, specifying the x and y
 coordinates of the p-value. Default values are NULL.}
@@ -81,9 +90,24 @@ coordinates of the p-value. Default values are NULL.}
 \item{pval.method.coord}{the same as \code{pval.coord} but for displaying
 \code{log.rank.weights} name}
 
-\item{pval.in.label}{logical. If TRUE, p-values are added to facet labels.
-Each facet displays only its corresponding p-value. Default is FALSE. 
-Requires pval = TRUE.}
+\item{pval.in.label}{logical value. Default is FALSE. If TRUE, the per-panel
+p-value is appended to the panel strip label instead of being drawn inside the
+panel. Requires \code{pval = TRUE} and a single \code{facet.by} variable (with
+two faceting variables the p-value is drawn on the panels instead, with a
+warning). If a \code{labeller} is also supplied it takes precedence and the
+p-value is not added to the label.}
+
+\item{p.adjust.method}{method for adjusting the per-panel p-values for multiple
+comparisons across panels, passed to \code{\link[stats]{p.adjust}()} (e.g.
+\code{"BH"}, \code{"bonferroni"}, \code{"holm"}). The default \code{"none"}
+shows the raw per-panel p-values. When an adjustment method is used the
+displayed text is prefixed with \code{p.adjust.label}.}
+
+\item{p.adjust.label}{the label placed before the adjusted p-value when
+\code{p.adjust.method} is not \code{"none"}. The default is \code{"adj.p ="}
+(e.g. \code{"adj.p = 0.03"}); set it to customise the wording, e.g.
+\code{"p.adj ="} or \code{"q ="}. For a very small p-value the label's
+trailing \code{"="} is replaced by \code{"<"} (\code{"adj.p < 0.0001"}).}
 
 \item{nrow, ncol}{Number of rows and columns in the pannel. Used only when the
 data is faceted by one grouping variable.}
@@ -101,6 +125,14 @@ the labels for the "sex" variable. For two grouping variables, you can use
 for example panel.labs = list(sex = c("Male", "Female"), rx = c("Obs",
 "Lev", "Lev2") ).}
 
+\item{labeller}{a labeller function/specification, as in
+\code{\link[ggplot2]{facet_wrap}} (e.g. \code{ggplot2::label_both} or
+\code{ggplot2::as_labeller(c(...))}), controlling how the panel strip labels
+are formatted. Default \code{NULL} keeps the current labels. When supplied it
+takes precedence over \code{short.panel.labs}; it composes with
+\code{panel.labs} (which renames the underlying data levels, so the labeller
+sees the renamed values).}
+
 \item{panel.labs.background}{a list to customize the background of panel
 labels. Should contain the combination of the following elements: \itemize{
 \item \code{color, linetype, size}: background line color, type and size
@@ -114,28 +146,28 @@ face/style (e.g.: "plain", "bold", "italic", "bold.italic") and the color
 \item{panel.labs.font.x, panel.labs.font.y}{same as panel.labs.font but for x
 and y direction, respectively.}
 
-\item{risk.table}{logical. If TRUE, risk tables are displayed below faceted plots.
-Default is FALSE. Risk tables will match the faceting structure of the main plot.
-For a 2x2 grid of survival plots, you'll get a 2x2 grid of risk tables directly below.
-See \code{\link{ggsurvplot}} for more details.}
+\item{risk.table}{logical value. Default is FALSE. If TRUE, a number-at-risk
+table is drawn below the faceted curves, faceted with the same structure so
+each panel's table aligns under its curves. When \code{risk.table} is not
+FALSE the function returns an aligned \code{gtable} (printed with
+\code{print()}); the default (FALSE) returns the faceted ggplot unchanged.}
 
-\item{risk.table.height}{the height of the risk table on the grid. Increase
-the value when you have many strata. Default is 0.25.}
+\item{risk.table.height, surv.plot.height}{the relative heights of the risk table
+and the survival plot when \code{risk.table} is drawn. Defaults are 0.25 and
+0.75.}
 
-\item{surv.plot.height}{the height of the survival plot on the grid. Default
-is 0.75.}
+\item{tables.y.text}{logical value. Default is TRUE. If FALSE, the risk-table
+y-axis tick labels (the strata) are hidden.}
 
-\item{tables.y.text}{logical. Default is TRUE. If FALSE, risk table y axis
-tick labels will be hidden.}
-
-\item{tables.col}{color to be used for risk table. Default value is "black".}
-
-\item{tables.theme}{function, ggplot2 theme name. Default value is
-\link{theme_survminer}.}
-
-\item{fontsize}{font size to be used for the risk table.}
+\item{tables.col, tables.theme, fontsize}{colour, theme and font size of the risk
+table, as in \code{\link{ggsurvplot}}.}
 
 \item{...}{other arguments to pass to the function \code{\link{ggsurvplot}}.}
+
+\item{x}{an object of class ggsurvplot_facet (the gtable returned by
+\code{ggsurvplot_facet()} when \code{risk.table} is drawn).}
+
+\item{newpage}{logical. If TRUE (default), a new page is drawn before the plot.}
 }
 \description{
 Draw multi-panel survival curves of a data set grouped by one or
@@ -150,52 +182,26 @@ fit <- survfit( Surv(time, status) ~ sex, data = colon )
 ggsurvplot_facet(fit, colon, facet.by = "rx",
                 palette = "jco", pval = TRUE)
 
-# Facet with p-values in labels
-#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-ggsurvplot_facet(fit, colon, facet.by = "rx",
-                palette = "jco", pval = TRUE,
-                pval.in.label = TRUE)
-
-# Facet with risk table
-#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-ggsurvplot_facet(fit, colon, facet.by = "rx",
-                palette = "jco",
-                risk.table = TRUE,
-                risk.table.height = 0.3)
-
-# Note: Risk tables are aligned below each facet panel
-# For 1 faceting variable (e.g., rx with 3 levels), you get:
-#  - Row 1: 3 survival plot panels side-by-side
-#  - Row 2: 3 risk table panels side-by-side (aligned with plots above)
-
-# Facet with both risk table and p-values in labels
-#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-ggsurvplot_facet(fit, colon, facet.by = "rx",
-                palette = "jco", 
-                pval = TRUE,
-                pval.in.label = TRUE,
-                risk.table = TRUE)
-
 # Facet by two grouping variables: rx and adhere
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ggsurvplot_facet(fit, colon, facet.by = c("rx", "adhere"),
                 palette = "jco", pval = TRUE)
 
-# With risk table
-ggsurvplot_facet(fit, colon, facet.by = c("rx", "adhere"),
-                palette = "jco", risk.table = TRUE)
 
-# Note: For 2 faceting variables, you get a grid layout:
-#  - Top: Grid of survival plots (e.g., 3x2 for rx × adhere)
-#  - Bottom: Grid of risk tables matching the same layout
-#  Each risk table aligns perfectly with its corresponding survival plot above
+# P-value in the panel labels (single faceting variable)
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ggsurvplot_facet(fit, colon, facet.by = "rx",
+                palette = "jco", pval = TRUE, pval.in.label = TRUE)
+
+# Faceted number-at-risk table
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ggsurvplot_facet(fit, colon, facet.by = "rx",
+                palette = "jco", risk.table = TRUE)
 
 # Another fit
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 fit2 <- survfit( Surv(time, status) ~ sex + rx, data = colon )
 ggsurvplot_facet(fit2, colon, facet.by = "adhere",
-                palette = "jco", pval = TRUE,
-                pval.in.label = TRUE,
-                risk.table = TRUE)
+                palette = "jco", pval = TRUE)
 
 }

@@ -36,10 +36,13 @@
 #'@param linetype line types. Allowed values includes i) "strata" for changing
 #'  linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a
 #'  character vector c("solid", "dashed").
-#'@param break.time.by numeric value controlling time axis breaks. Default value
-#'  is NULL.
-#'@param break.x.by alias of break.time.by. Numeric value controlling x axis
-#'  breaks. Default value is NULL.
+#'@param break.time.by numeric value controlling time axis breaks. A single
+#'  value gives regularly spaced breaks (from 0 by that step); a numeric vector
+#'  is used as the exact break positions (e.g. \code{c(0, 100, 300, 600)}),
+#'  which also keeps the survival curve and the risk/censor tables aligned.
+#'  Default value is NULL.
+#'@param break.x.by alias of break.time.by. Numeric value (or vector) controlling
+#'  x axis breaks. Default value is NULL.
 #'@param break.y.by same as break.x.by but for y axis.
 #'@param conf.int logical value. If TRUE, plots confidence interval.
 #'@param conf.int.fill fill color to be used for confidence interval.
@@ -59,6 +62,13 @@
 #'@param pval.size numeric value specifying the p-value text size. Default is 5.
 #'@param pval.coord numeric vector, of length 2, specifying the x and y
 #'  coordinates of the p-value. Default values are NULL.
+#'@param pval.parse logical. If TRUE, a custom p-value string supplied via
+#'  \code{pval} is treated as a plotmath expression and parsed, so you can show
+#'  italic/superscript p-values, e.g. \code{pval = "italic(P)==1.4~x~10^-6"}.
+#'  The string must be a valid plotmath expression; the auto-computed p-value
+#'  (e.g. \code{"p = 0.001"}) is plain text, not plotmath, so supply your own
+#'  expression when using this. The test-name label from \code{pval.method} is
+#'  never parsed. Default is FALSE (drawn literally).
 #'@param title main title
 #'@param xlab x axis label
 #'@param ylab y axis label
@@ -117,7 +127,9 @@
 #'@param ncensor.plot.height The height of the censor plot. Used when
 #'  \code{ncensor.plot = TRUE}.
 #'@param cumevents logical value specifying whether to show or not the table of
-#'  the cumulative number of events. Default is FALSE.
+#'  the cumulative number of events. Default is FALSE. Can also be a character
+#'  string ("absolute", "percentage" or "abs_pct"); "percentage" shows the count
+#'  as a percent of the stratum size.
 #'@param cumevents.title The title to be used for the cumulative events table.
 #'@param cumevents.col same as tables.col but for the cumulative events table
 #'  only.
@@ -128,7 +140,8 @@
 #'@param cumevents.height the height of the cumulative events table on the grid.
 #'  Default is 0.25. Ignored when cumevents = FALSE.
 #'@param cumcensor logical value specifying whether to show or not the table of
-#'  the cumulative number of censoring. Default is FALSE.
+#'  the cumulative number of censoring. Default is FALSE. Can also be a character
+#'  string ("absolute", "percentage" or "abs_pct").
 #'@param cumcensor.title The title to be used for the cumcensor table.
 #'@param cumcensor.col same as tables.col but for cumcensor table only.
 #'@param cumcensor.y.text logical. Default is TRUE. If FALSE, the y axis tick

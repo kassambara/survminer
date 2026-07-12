@@ -79,10 +79,12 @@ NULL
 #'
 #'@section Axis limits, breaks and scales:
 #'\itemize{
-#' \item \strong{break.time.by}: numeric value controlling time axis breaks. Default value
-#'  is NULL.
-#'  \item \strong{break.x.by}: alias of break.time.by. Numeric value controlling x axis
-#'  breaks. Default value is NULL.
+#' \item \strong{break.time.by}: numeric value controlling time axis breaks. A
+#'  single value gives regularly spaced breaks; a numeric vector is used as the
+#'  exact break positions (e.g. \code{c(0, 100, 300, 600)}), keeping the curve
+#'  and the risk/censor tables aligned. Default value is NULL.
+#'  \item \strong{break.x.by}: alias of break.time.by. Numeric value (or vector)
+#'  controlling x axis breaks. Default value is NULL.
 #'  \item \strong{break.y.by}: same as break.x.by but for y axis.
 #'  \item \strong{surv.scale}: scale transformation of survival curves. Allowed values are
 #'  "default" or "percent".
@@ -112,6 +114,10 @@ NULL
 #'  \item \strong{pval.coord}: numeric vector, of length 2,
 #'  specifying the x and y coordinates of the p-value.
 #'  Default values are NULL.
+#'  \item \strong{pval.parse}: logical. If TRUE, a custom p-value string given
+#'  via \code{pval} is parsed as a plotmath expression, allowing
+#'  italic/superscript p-values (e.g. \code{pval = "italic(P)==1.4~x~10^-6"}).
+#'  The auto-computed p-value is plain text, not plotmath. Default is FALSE.
 #'  \item \strong{pval.method.size}: the same as \code{pval.size} but for displaying
 #'  \code{log.rank.weights} name.
 #'  \item \strong{pval.method.coord}: the same as \code{pval.coord} but for displaying
@@ -348,6 +354,29 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   if(length(group.by) > 2)
     stop("group.by should be of length 1 or 2.")
 
+  # `risk.table.y.text = TRUE` cannot show strata labels for an in-plot risk table
+  # (`risk.table.pos = "in"`): the table is drawn over the survival panel's own
+  # y-axis, so its rows are coloured by strata (matching the curves) rather than
+  # labelled. Tell the user instead of silently ignoring an explicit request. This
+  # fires only when BOTH `risk.table.pos = "in"` and `risk.table.y.text = TRUE` are
+  # explicitly passed (both live in `...`, absent otherwise), so a default in-plot
+  # table -- which carries `risk.table.y.text = TRUE` by default -- is not spammed (#211).
+  .dots <- list(...)
+  # `risk.table` is TRUE/FALSE or a table-type string; both draw an in-plot table.
+  # Test the type strings against the allowed set (kept in sync with
+  # .parse_risk_table_arg() in ggsurvplot_core.R) so an INVALID string -- which
+  # errors there anyway -- does not get this message before its own error.
+  .rt.draws.table <- isTRUE(risk.table) ||
+    (is.character(risk.table) && length(risk.table) == 1L && risk.table %in%
+       c("absolute", "percentage", "abs_pct", "nrisk_cumcensor", "nrisk_cumevents"))
+  if (.rt.draws.table &&
+      identical(.dots[["risk.table.pos"]], "in") &&
+      isTRUE(.dots[["risk.table.y.text"]]))
+    message("`risk.table.y.text = TRUE` has no effect with `risk.table.pos = \"in\"`: ",
+            "the in-plot risk table is coloured by strata (matching the curves) instead ",
+            "of labelled, to avoid overlapping the survival plot's y-axis. Use ",
+            "`risk.table.pos = \"out\"` if you need text strata labels.")
+
 
   # Options for ggsurvplot_df
   # Don't accept arguments for pval and survival tables
@@ -377,7 +406,14 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   }
 
   else if(is.data.frame(fit))
-    ggsurv <- do.call(ggsurvplot_df, opts_df)
+    # Data-frame (surv_summary) input. Route through a wrapper that also builds
+    # the number-at-risk / cumulative tables from the data frame when requested
+    # (#409); with no table requested it returns the bare ggplot exactly as
+    # ggsurvplot_df() did.
+    ggsurv <- do.call(.ggsurvplot_df_tables,
+                      c(opts_df, list(risk.table = risk.table, cumevents = cumevents,
+                                      cumcensor = cumcensor, tables.height = tables.height,
+                                      tables.theme = tables.theme)))
 
   else if(.is_survfit(fit)){
 
@@ -427,4 +463,18 @@ print.ggsurvplot <- function(x, surv.plot.height = NULL, risk.table.height = NUL
   if(newpage) grid::grid.newpage()
   grid::grid.draw(res)
 
+}
+
+#' @param recording kept for consistency with the \code{\link[grid]{grid.draw}}
+#'   generic; not used.
+#' @method grid.draw ggsurvplot
+#' @rdname ggsurvplot
+#' @export
+grid.draw.ggsurvplot <- function(x, recording = TRUE){
+  # A ggsurvplot object is a list of ggplots, so ggsave() (which calls
+  # grid::grid.draw() on the plot) has no applicable method and errors. This
+  # method draws the assembled plot onto the current device without opening a
+  # new page, so `ggsave(filename, plot = p)` works directly for a ggsurvplot
+  # (curve + risk table) and no leading blank page is produced (#152).
+  print(x, newpage = FALSE)
 }

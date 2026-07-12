@@ -44,9 +44,12 @@ ggsurvtable(
   y.text.col = TRUE,
   fontsize = 4.5,
   font.family = "",
+  hjust = 0.5,
   axes.offset = TRUE,
   ggtheme = theme_survminer(),
   tables.theme = ggtheme,
+  obscure.less.than = NULL,
+  obscure.zero = FALSE,
   ...
 )
 }
@@ -134,6 +137,9 @@ labels will be colored by strata.}
 
 \item{font.family}{character vector specifying text element font family, e.g.: font.family = "Courier New".}
 
+\item{hjust}{horizontal justification of the table text (passed to
+\code{geom_text}). Default is 0.5 (centered); use e.g. 0 for left-aligned.}
+
 \item{axes.offset}{logical value. Default is TRUE. If FALSE, set the plot axes
 to start at the origin.}
 
@@ -144,6 +150,21 @@ to start at the origin.}
 \item{tables.theme}{function, ggplot2 theme name. Default value is
 \link{theme_survminer}. Allowed values include ggplot2 official themes: see
 \code{\link[ggplot2]{theme}}. Note that, \code{tables.theme} is incremental to \code{ggtheme}.}
+
+\item{obscure.less.than}{optional integer for small-cell suppression
+(disclosure control). When set, any table count below this value is replaced
+by the label \code{"<n"} (e.g. \code{obscure.less.than = 5} shows \code{"<5"}
+for at-risk / event / censor counts of 1--4), so small, potentially
+patient-identifying counts are hidden. For the combined risk-table types
+(\code{"nrisk_cumevents"}, \code{"nrisk_cumcensor"}) each count in the cell is
+masked independently. Applies to the risk table and the cumulative
+event/censor tables; it does not affect the \code{ncensor.plot} bar chart.
+Default \code{NULL} applies no masking (output unchanged). Requested in
+survminer issue #637.}
+
+\item{obscure.zero}{logical. When \code{obscure.less.than} is set, should a
+count of 0 also be masked? Default \code{FALSE} keeps zeros visible (only
+positive counts below the threshold are hidden).}
 }
 \value{
 a ggplot.

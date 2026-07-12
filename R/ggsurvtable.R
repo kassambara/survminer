@@ -33,6 +33,21 @@ NULL
 #'  labels will be colored by strata.
 #'@param fontsize text font size.
 #'@param font.family character vector specifying text element font family, e.g.: font.family = "Courier New".
+#'@param hjust horizontal justification of the table text (passed to
+#'  \code{geom_text}). Default is 0.5 (centered); use e.g. 0 for left-aligned.
+#'@param obscure.less.than optional integer for small-cell suppression
+#'  (disclosure control). When set, any table count below this value is replaced
+#'  by the label \code{"<n"} (e.g. \code{obscure.less.than = 5} shows \code{"<5"}
+#'  for at-risk / event / censor counts of 1--4), so small, potentially
+#'  patient-identifying counts are hidden. For the combined risk-table types
+#'  (\code{"nrisk_cumevents"}, \code{"nrisk_cumcensor"}) each count in the cell is
+#'  masked independently. Applies to the risk table and the cumulative
+#'  event/censor tables; it does not affect the \code{ncensor.plot} bar chart.
+#'  Default \code{NULL} applies no masking (output unchanged). Requested in
+#'  survminer issue #637.
+#'@param obscure.zero logical. When \code{obscure.less.than} is set, should a
+#'  count of 0 also be masked? Default \code{FALSE} keeps zeros visible (only
+#'  positive counts below the threshold are hidden).
 #'@param ... other arguments passed to the function \code{\link{ggsurvtable}} and \code{\link[ggpubr]{ggpar}}.
 #'@return a ggplot.
 #'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
@@ -89,10 +104,11 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                          xlog = FALSE, legend = "top",
                          legend.title = "Strata", legend.labs = NULL,
                          y.text = TRUE, y.text.col = TRUE,
-                         fontsize = 4.5, font.family = "",
+                         fontsize = 4.5, font.family = "", hjust = 0.5,
                          axes.offset = TRUE,
                          ggtheme = theme_survminer(),
-                         tables.theme = ggtheme, ...)
+                         tables.theme = ggtheme,
+                         obscure.less.than = NULL, obscure.zero = FALSE, ...)
 {
 
   if(is.data.frame(fit)){}
@@ -105,10 +121,10 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
 
   # Define time axis breaks
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  xmin <- ifelse(xlog, min(c(1, fit$time)), 0)
+  xmin <- ifelse(xlog, min(c(1, fit$time)), min(c(0, fit$time), na.rm = TRUE))
   if(is.null(xlim)) xlim <- c(xmin, max(fit$time))
   times <- .get_default_breaks(fit$time, .log = xlog)
-  if(!is.null(break.time.by) &!xlog) times <- seq(0, max(c(fit$time, xlim)), by = break.time.by)
+  if(!is.null(break.time.by) &!xlog) times <- .time_breaks(break.time.by, max(c(fit$time, xlim)))
 
 
 
@@ -132,9 +148,10 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
     title = title, xlab = xlab, ylab = ylab, xlog = xlog,
     legend = legend, legend.title = legend.title, legend.labs = legend.labs,
     y.text = y.text, y.text.col = y.text.col,
-    fontsize = fontsize, font.family = font.family,
+    fontsize = fontsize, font.family = font.family, hjust = hjust,
     axes.offset = axes.offset,
-    ggtheme = ggtheme, tables.theme = tables.theme,...)
+    ggtheme = ggtheme, tables.theme = tables.theme,
+    obscure.less.than = obscure.less.than, obscure.zero = obscure.zero, ...)
 
   res <- list()
   time <- strata <- label <- n.event <- cum.n.event <- NULL
@@ -176,6 +193,24 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
 
 
 
+# Small-cell suppression for disclosure control (#637, requested by @jwallib):
+# when `less.than` is a number, cell counts below it are replaced with the label
+# "<less.than" so small, potentially patient-identifying counts are not shown. A
+# count of 0 is kept unless `zero = TRUE`. `less.than = NULL` (the default of the
+# `obscure.less.than` argument) disables masking entirely, so the tables are
+# byte-identical to before. `.obscure_mask()` returns the rows to hide (compared
+# NUMERICALLY, so combined string labels like "10 (2)" are masked per component,
+# never lexically); `.obscure_label()` overwrites those rows in a label vector.
+.obscure_mask <- function(x, less.than, zero) {
+  num <- suppressWarnings(as.numeric(as.character(x)))
+  !is.na(num) & num < less.than & (num > 0 | zero)
+}
+.obscure_label <- function(label, mask, less.than) {
+  label <- as.character(label)
+  label[mask] <- paste0("<", less.than)
+  label
+}
+
 # Helper function to plot a specific survival table
 .plot_survtable <- function (survsummary, times, survtable = c("cumevents", "risk.table", "cumcensor"),
                              risk.table.type = c("absolute", "percentage", "abs_pct", "nrisk_cumcensor", "nrisk_cumevents"),
@@ -185,14 +220,29 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
                          xlog = FALSE, legend = "top",
                          legend.title = "Strata", legend.labs = NULL,
                          y.text = TRUE, y.text.col = TRUE, fontsize = 4.5,
-                         font.family = "",
-                         axes.offset = TRUE,
+                         font.family = "", hjust = 0.5,
+                         axes.offset = TRUE, origin.align = TRUE,
                          ggtheme = theme_survminer(), tables.theme = ggtheme,
+                         obscure.less.than = NULL, obscure.zero = FALSE,
                           ...)
 {
 
   survtable <- match.arg(survtable)
   risk.table.type <- match.arg(risk.table.type)
+
+  # Normalise the disclosure-control threshold once (#637): require a single
+  # value and coerce it to a number so masking is always a NUMERIC comparison
+  # (a numeric string like "5" works; a factor is read by its label via
+  # as.character(), NOT its integer level code -- the same coercion .obscure_mask
+  # uses, so a factor("5") threshold does not silently under-mask). A length != 1
+  # or non-numeric value errors rather than mis-masking. NULL leaves masking off.
+  if(!is.null(obscure.less.than)){
+    if(length(obscure.less.than) != 1L)
+      stop("`obscure.less.than` must be a single number, or NULL.", call. = FALSE)
+    obscure.less.than <- suppressWarnings(as.numeric(as.character(obscure.less.than)))
+    if(is.na(obscure.less.than))
+      stop("`obscure.less.than` must be a single number, or NULL.", call. = FALSE)
+  }
 
   # Defining plot title
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -246,30 +296,81 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   yticklabs <- rev(levels(survsummary$strata))
   n_strata <- length(levels(survsummary$strata))
   if(!y.text) yticklabs <- rep("\\-", n_strata)
+  else if(!.ggplot2_ge_4() && ((is.logical(y.text.col) && isTRUE(y.text.col[1])) || is.character(y.text.col)))
+    # On ggplot2 < 4.0 these labels are rendered with ggtext::element_markdown()
+    # below (coloured per strata), so HTML-escape <, >, & to render them literally
+    # instead of as markdown/HTML tags (#532). No-op for ordinary labels; when
+    # y.text.col is FALSE the labels use plain element_text and are left untouched.
+    # On ggplot2 >= 4.0 we use element_text() (see below), which shows the label
+    # literally, so no escaping is needed (and would show "&gt;").
+    yticklabs <- .escape_markdown(yticklabs)
 
-  time <- strata <- label <- n.event <- cum.n.event  <- cum.n.censor<- NULL
+  time <- strata <- label <- n.event <- cum.n.event  <- cum.n.censor<- .cumlabel <- NULL
+
+  # cumevents / cumcensor tables honour risk.table.type: "absolute" (default,
+  # the raw cumulative count, unchanged), "percentage" (count as a percent of
+  # the stratum size), or "abs_pct" ("count (pct)") (#499). The other risk-table
+  # types (nrisk_*) have no cumulative meaning and fall back to the count.
+  .cum_pct <- function(count) round(count / survsummary$strata_size * 100)
 
   # Ploting the cumulative number of events table
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   if(survtable == "cumevents"){
+    survsummary$.cumlabel <- switch(risk.table.type,
+      percentage = .cum_pct(survsummary$cum.n.event),
+      abs_pct    = paste0(survsummary$cum.n.event, " (", .cum_pct(survsummary$cum.n.event), ")"),
+      survsummary$cum.n.event)
+    # Mask small cumulative-event counts (whole cell, since every variant here is
+    # derived from cum.n.event) when disclosure control is requested (#637).
+    if(!is.null(obscure.less.than))
+      survsummary$.cumlabel <- .obscure_label(survsummary$.cumlabel,
+        .obscure_mask(survsummary$cum.n.event, obscure.less.than, obscure.zero),
+        obscure.less.than)
     mapping <- aes(x = time, y = rev(strata),
-                   label = cum.n.event, shape = rev(strata))
+                   label = .cumlabel, shape = rev(strata))
   }
   else if (survtable == "cumcensor"){
+    survsummary$.cumlabel <- switch(risk.table.type,
+      percentage = .cum_pct(survsummary$cum.n.censor),
+      abs_pct    = paste0(survsummary$cum.n.censor, " (", .cum_pct(survsummary$cum.n.censor), ")"),
+      survsummary$cum.n.censor)
+    # Mask small cumulative-censor counts, keyed on cum.n.censor (#637).
+    if(!is.null(obscure.less.than))
+      survsummary$.cumlabel <- .obscure_label(survsummary$.cumlabel,
+        .obscure_mask(survsummary$cum.n.censor, obscure.less.than, obscure.zero),
+        obscure.less.than)
     mapping <- aes(x = time, y = rev(strata),
-                   label = cum.n.censor, shape = rev(strata))
+                   label = .cumlabel, shape = rev(strata))
 
   }
   else if (survtable == "risk.table"){
     # risk table labels depending on the type argument
     pct.risk <- abs_pct.risk <- n.risk <- NULL
     llabels <- switch(risk.table.type,
-                      percentage = round(survsummary$n.risk*100/survsummary$strata_size),
+                      percentage = survsummary$pct.risk,
                       abs_pct = paste0(survsummary$n.risk, " (", survsummary$pct.risk, ")"),
                       nrisk_cumcensor = paste0(survsummary$n.risk, " (", survsummary$cum.n.censor, ")"),
                       nrisk_cumevents = paste0(survsummary$n.risk, " (", survsummary$cum.n.event, ")"),
                       survsummary$n.risk
     )
+    # Small-cell suppression (#637). For the combined "n.risk (count)" types each
+    # count is masked independently (so a large n.risk beside a small event count
+    # is not over-hidden); for the single-value types (absolute / percentage /
+    # abs_pct) the displayed cell derives from n.risk, so the whole cell is masked
+    # when the at-risk count is small. Guarded by obscure.less.than != NULL, so the
+    # default output is unchanged.
+    if(!is.null(obscure.less.than)){
+      .mask_n <- function(v) .obscure_label(v, .obscure_mask(v, obscure.less.than, obscure.zero),
+                                            obscure.less.than)
+      llabels <- switch(risk.table.type,
+        nrisk_cumcensor = paste0(.mask_n(survsummary$n.risk), " (",
+                                 .mask_n(survsummary$cum.n.censor), ")"),
+        nrisk_cumevents = paste0(.mask_n(survsummary$n.risk), " (",
+                                 .mask_n(survsummary$cum.n.event), ")"),
+        .obscure_label(llabels,
+          .obscure_mask(survsummary$n.risk, obscure.less.than, obscure.zero),
+          obscure.less.than))
+    }
     survsummary$llabels <- llabels
     mapping <- aes(x = time, y = rev(strata),
                    label = llabels, shape = rev(strata))
@@ -280,17 +381,30 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   # Plotting survival table
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   .expand <- ggplot2::waiver()
-  # Tables labels Offset from origing
+  .hjust <- hjust
+  # Tables labels offset from origin. With axes.offset = FALSE the table panel
+  # starts exactly at x = 0 (like the curve), so the t = 0 numbers-at-risk should
+  # sit at x = 0 to line up with the curve's t = 0. Historically they were nudged
+  # right to max(xlim)/30, which misaligned them (#645, #302, #448). On a linear
+  # axis we now keep them at x = 0 and left-align only the t = 0 column (a centred
+  # number at x = 0 would be clipped by the panel edge); interior columns keep the
+  # user's hjust. On a log axis x = 0 cannot be shown, so the historical
+  # relocation is kept. The inset table (risk.table.pos = "in") passes
+  # origin.align = FALSE to keep its own positioning geometry unchanged.
   if(!axes.offset){
     .expand <- c(0,0)
-    offset <- max(xlim)/30
-    survsummary <- survsummary %>%
-      dplyr::mutate(time = ifelse(time == 0, offset, time))
+    if(origin.align && !xlog){
+      .hjust <- ifelse(survsummary$time == 0, 0, hjust)
+    } else {
+      offset <- max(xlim)/30
+      survsummary <- survsummary %>%
+        dplyr::mutate(time = ifelse(time == 0, offset, time))
+    }
   }
 
   p <- ggplot(survsummary, mapping) +
     scale_shape_manual(values = 1:length(levels(survsummary$strata)))+
-    ggpubr::geom_exec(geom_text, data = survsummary, size = fontsize, color = color, family = font.family) +
+    ggpubr::geom_exec(geom_text, data = survsummary, size = fontsize, color = color, family = font.family, hjust = .hjust) +
     ggtheme +
     scale_y_discrete(breaks = as.character(levels(survsummary$strata)),labels = yticklabs ) +
     coord_cartesian(xlim = xlim) +
@@ -311,16 +425,22 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   p <- p + tables.theme
 
   if(!y.text) {
-    p <- .set_large_dash_as_ytext(p)
+    p <- .set_large_dash_as_ytext(p, size = 50)
   }
 
-  # Color table tick labels by strata
-  if(is.logical(y.text.col) & y.text.col[1] == TRUE){
-    cols <- .extract_ggplot_colors(p, grp.levels = legend.labs)
-    p <- p + theme(axis.text.y = ggtext::element_markdown(colour = rev(cols)))
+  # Color table tick labels by strata. On ggplot2 >= 4.0 use element_text() with a
+  # per-label colour vector (native, and mergeable with a user-supplied
+  # element_text() -- ggtext's element_markdown() is not, which broke risk-table
+  # customization under ggplot2 4.x, #557). On ggplot2 < 4.0, where element_text()
+  # does not accept a colour vector, keep element_markdown() (it merges fine there).
+  if((is.logical(y.text.col) & y.text.col[1] == TRUE) || is.character(y.text.col)){
+    ytext.cols <- if(is.character(y.text.col)) y.text.col
+                  else .extract_ggplot_colors(p, grp.levels = legend.labs)
+    # When y.text = FALSE the labels are an element_markdown() large dash (set
+    # above), so the colour must also be element_markdown() to merge; otherwise use
+    # element_text() on ggplot2 >= 4.0 for user-override compatibility (#557).
+    p <- .set_ytext_colour(p, rev(ytext.cols), markdown = !.ggplot2_ge_4() || !y.text)
   }
-  else if(is.character(y.text.col))
-    p <- p + theme(axis.text.y = ggtext::element_markdown(colour = rev(y.text.col)))
 
   p
 

@@ -9,8 +9,13 @@ NULL
 #'   \code{\link{ggsurvplot}()} function for doing that.
 #'
 #' @inheritParams ggsurvplot_arguments
-#' @param fit a named list of survfit objects.
-#' @param data the data frame used to compute survival curves.
+#' @param fit a named list whose elements are either survfit objects or
+#'   \code{\link{surv_summary}()} data frames (the latter are drawn directly, as
+#'   in \code{\link{ggsurvplot_df}()}). Note that the number-at-risk /
+#'   cumulative tables and median lines are only available for survfit elements
+#'   (they cannot be recomputed from a summary data frame).
+#' @param data the data frame used to compute survival curves. Optional; not
+#'   needed when \code{fit} contains only \code{surv_summary()} data frames.
 #' @param keep.data logical value specifying whether the plot data frame should be kept in the result.
 #' Setting these to FALSE (default) can give much smaller results and hence even save memory allocation time.
 #' @param ... other arguments to pass to the \code{\link{ggsurvplot}()} function.
@@ -48,7 +53,7 @@ NULL
 #' ggsurvplot_combine(fit, demo.data)
 #'
 #'@export
-ggsurvplot_combine <- function(fit, data,
+ggsurvplot_combine <- function(fit, data = NULL,
                                risk.table = FALSE, risk.table.pos = c("out", "in"),
                                cumevents = FALSE, cumcensor = FALSE,
                                tables.col = "black", tables.y.text = TRUE, tables.y.text.col = TRUE,
@@ -79,6 +84,24 @@ ggsurvplot_combine <- function(fit, data,
   }
   names(fit) <- fitnames
 
+  # A list element may be a survfit object (the usual input) OR a surv_summary()
+  # data frame, which is used directly for the curves -- the data-frame analogue
+  # of ggsurvplot_df() (#323). The number-at-risk / cumulative tables and the
+  # median lines need the survfit object (they are recomputed at the plot's time
+  # breaks), so they are not available from a summary data frame; error clearly
+  # rather than failing cryptically downstream.
+  has_df_fit <- any(vapply(fit, is.data.frame, logical(1)))
+  if(has_df_fit){
+    wants.tables <- !isFALSE(risk.table) || !isFALSE(cumevents) || !isFALSE(cumcensor)
+    smline <- .dots$surv.median.line
+    wants.median <- !is.null(smline) && !identical(smline, "none")
+    if(wants.tables || wants.median)
+      stop("When `fit` contains a surv_summary() data frame, risk.table, ",
+           "cumevents, cumcensor and surv.median.line are not available (they ",
+           "require the survfit object). Pass survfit objects for those, or turn ",
+           "these options off.", call. = FALSE)
+  }
+
     # Create a list-column data containing the list of fits
     #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     grouped.d <- tibble::tibble(name = names(fit)) %>%
@@ -92,7 +115,22 @@ ggsurvplot_combine <- function(fit, data,
     # Helper function
     .surv_summary <- function(fit, fitname, ...){
       time <- n.censor <- surv <- upper <- lower <- strata <- NULL
-      survsummary <- surv_summary(fit, ...)
+      # A surv_summary() data frame is used as-is; a survfit is summarised (#323).
+      # Coerce to a plain data.frame first: a tibble's `df[, col]` returns a
+      # one-column tibble that breaks downstream factor()/select() ("cannot xtfrm
+      # data frame"), the pitfall documented for surv_group_by/ggadjustedcurves
+      # (#501/#548). Also require the surv_summary() columns so a wrong data frame
+      # gives a clear error instead of silently producing an empty plot.
+      if(is.data.frame(fit)){
+        survsummary <- as.data.frame(fit)
+        .needed <- c("time", "surv", "upper", "lower", "n.censor")
+        .missing <- setdiff(.needed, colnames(survsummary))
+        if(length(.missing) > 0)
+          stop("A data-frame element of `fit` is missing the surv_summary() ",
+               "column(s): ", .collapse(.missing, sep = ", "),
+               ". Pass a surv_summary() output (see ?surv_summary).", call. = FALSE)
+      }
+      else survsummary <- surv_summary(fit, ...)
       # Bind fit name to the srata levels in survsummary
       if(is.null(survsummary$strata)) survsummary$strata <- as.factor(rep("All", nrow(survsummary)))
       strata.levels <- paste(fitname, "::", .levels(survsummary$strata), sep = "")
@@ -125,19 +163,43 @@ ggsurvplot_combine <- function(fit, data,
     # Survplot of combined survsummary data frame
     #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     p <- ggsurvplot_df(all.survsummary, ggtheme = ggtheme, ...)
+
+    # Median survival lines. ggsurvplot_df() does not draw them (that is handled
+    # in ggsurvplot_core for a single fit); forward surv.median.line here by
+    # computing the medians from the list of fits (#316).
+    surv.median.line <- .dots$surv.median.line
+    if(is.null(surv.median.line)) surv.median.line <- "none"
+    surv.median.line <- match.arg(surv.median.line, c("none", "hv", "h", "v"))
+    if(surv.median.line %in% c("hv", "h", "v")){
+      .fun <- .dots$fun
+      if(!is.null(.fun) && .fun %in% c("cumhaz", "cloglog"))
+        warning("Adding survival median lines is not allowed when fun is: ", .fun)
+      else {
+        med_y <- if(!is.null(.fun) && .fun == "pct") 50 else 0.5
+        medians <- surv_median(fit, combine = TRUE)$median
+        p <- .add_median_lines(p, medians, type = surv.median.line, med_y = med_y)
+      }
+    }
+
     res <- list(plot = p)
 
 
     # The main plot parameters, will be used to plot survival tables
     pms <- attr(p, "parameters")
     surv.color <- pms$color
-    pms$risk.table.type <- ifelse(is.null(.dots$risk.table.type),
-                                  "absolute", .dots$risk.table.type)
+    # Honour the risk-table type parsed from the `risk.table` argument (e.g.
+    # risk.table = "nrisk_cumcensor"), falling back to an explicit
+    # risk.table.type in ... and then to "absolute" (#641).
+    pms$risk.table.type <- if(!is.null(.dots$risk.table.type)) .dots$risk.table.type
+                           else risk.table.type
 
     pms$risk.table.title <- .dots$risk.table.title
     pms$cumevents.title <- .dots$cumevents.title
     pms$cumcensor.title <- .dots$cumcensor.title
-    pms$fontsize <- .dots$fontsize
+    # Honour risk.table.fontsize (as ggsurvplot() does), falling back to
+    # fontsize (#514).
+    pms$fontsize <- if(!is.null(.dots$risk.table.fontsize)) .dots$risk.table.fontsize
+                    else .dots$fontsize
     pms$ggtheme <- ggtheme
     pms$ylab <- pms$legend.title
     pms$tables.theme <- tables.theme
@@ -166,41 +228,48 @@ ggsurvplot_combine <- function(fit, data,
                                        "cum.n.censor", "strata_size")))
     }
 
-    grouped.d <- grouped.d %>%
-      mutate(survtable = purrr::map2(grouped.d$fit, grouped.d$name,
-                                     .surv_table, data = data, times = time.breaks))
+    # The number-at-risk / cumulative tables are recomputed from each survfit at
+    # the plot's time breaks, so they are only available for survfit inputs. For
+    # a surv_summary() data-frame input the table options are already refused
+    # above, so this whole block is skipped and the survfit path is unchanged.
+    all.survtable <- NULL
+    if(!has_df_fit){
+      grouped.d <- grouped.d %>%
+        mutate(survtable = purrr::map2(grouped.d$fit, grouped.d$name,
+                                       .surv_table, data = data, times = time.breaks))
 
-    # Row bind all survival table
-    #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    all.levels <- NULL
-    for(ss in grouped.d$survtable )
-      all.levels <- c(all.levels, .levels(ss$strata))
-    # convert strata into character before binding
-    # avoid this warning: Unequal factor levels: coercing to character
-    grouped.d$survtable <- map(grouped.d$survtable,
-                               function(x){
-                                 x$strata <- as.character(x$strata)
-                                 x
-                               })
-    all.survtable <- dplyr::bind_rows(grouped.d$survtable)
-    all.survtable$strata <- factor(all.survtable$strata, levels = all.levels)
+      # Row bind all survival table
+      #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+      all.levels <- NULL
+      for(ss in grouped.d$survtable )
+        all.levels <- c(all.levels, .levels(ss$strata))
+      # convert strata into character before binding
+      # avoid this warning: Unequal factor levels: coercing to character
+      grouped.d$survtable <- map(grouped.d$survtable,
+                                 function(x){
+                                   x$strata <- as.character(x$strata)
+                                   x
+                                 })
+      all.survtable <- dplyr::bind_rows(grouped.d$survtable)
+      all.survtable$strata <- factor(all.survtable$strata, levels = all.levels)
 
-     # Risk table
-    #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    pms$fit <- list(table = all.survtable, time = all.survsummary$time)
-    tables <- do.call(ggsurvtable, pms)
+       # Risk table
+      #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+      pms$fit <- list(table = all.survtable, time = all.survsummary$time)
+      tables <- do.call(ggsurvtable, pms)
 
-    if(risk.table)
-      res$table <- tables$risk.table
-    if(cumevents)
-      res$cumevents <- tables$cumevents
-    if(cumcensor)
-      res$ncensor.plot <- tables$cumcensor
+      if(risk.table)
+        res$table <- tables$risk.table
+      if(cumevents)
+        res$cumevents <- tables$cumevents
+      if(cumcensor)
+        res$ncensor.plot <- tables$cumcensor
+    }
     #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     if(keep.data){
     res$data.survplot <- tibble::as_tibble(all.survsummary)
-    res$data.survtable <- tibble::as_tibble(all.survtable)
+    if(!is.null(all.survtable)) res$data.survtable <- tibble::as_tibble(all.survtable)
     }
 
 
