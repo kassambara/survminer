@@ -58,9 +58,12 @@ NULL
 #'  p-value is not added to the label.
 #'@param risk.table logical value. Default is FALSE. If TRUE, a number-at-risk
 #'  table is drawn below the faceted curves, faceted with the same structure so
-#'  each panel's table aligns under its curves. When \code{risk.table} is not
-#'  FALSE the function returns an aligned \code{gtable} (printed with
-#'  \code{print()}); the default (FALSE) returns the faceted ggplot unchanged.
+#'  each panel's table aligns under its curves. Supported for a single
+#'  \code{facet.by} variable; with two it warns and returns the plot without a
+#'  table (a two-way \code{facet_grid} shares one y axis per row, so the per-panel
+#'  strata cannot be labelled correctly). When \code{risk.table} is not FALSE the
+#'  function returns an aligned \code{gtable} (printed with \code{print()}); the
+#'  default (FALSE) returns the faceted ggplot unchanged.
 #'@param risk.table.height,surv.plot.height the relative heights of the risk table
 #'  and the survival plot when \code{risk.table} is drawn. Defaults are 0.25 and
 #'  0.75.
@@ -441,6 +444,25 @@ ggsurvplot_facet <- function(fit, data, facet.by,
   # structure, and stack the two aligned grobs. Default risk.table = FALSE returns
   # the plain faceted ggplot unchanged.
   draw.table <- !is.null(risk.table) && !isFALSE(risk.table) && !identical(risk.table, "")
+  # A faceted risk table is only well-defined for a SINGLE faceting variable. With
+  # two, the table is drawn with facet_grid(), which shares one y axis per grid row;
+  # each panel then only holds a subset of that row's strata, so the shared axis
+  # cannot label (or colour) the per-panel strata correctly. Rather than draw a
+  # misleading table, warn and return the plot without one (mirrors pval.in.label).
+  if(draw.table && length(facet.by) != 1L){
+    warning("ggsurvplot_facet(): a faceted risk table is only supported for a single ",
+            "`facet.by` variable; returning the faceted plot without a risk table.",
+            call. = FALSE)
+    draw.table <- FALSE
+  }
+  # The within-panel grouping variable whose value labels the table's y axis. It is
+  # a real column of the (refit) survival summary regardless of the `color` argument,
+  # so labelling from it (rather than from `color`) stays correct even when the user
+  # passes a literal colour. On default calls `color` equals this variable, so the
+  # labels are unchanged.
+  .within.var <- if(length(vars.notin.groupby) == 1L) vars.notin.groupby
+                 else if(length(vars.notin.groupby) > 1L) ".strata."
+                 else NULL
   if(draw.table){
     # Re-run core for the table on the faceted (refit) object. Pass
     # legend.labs = NULL: the table labels the FULL strata (.strata. x facet.by),
@@ -467,14 +489,14 @@ ggsurvplot_facet <- function(fit, data, facet.by,
       # that itself contains '=', ',' or ';' is handled correctly -- no string
       # parsing of the combined label (cf. #291/#430/#599/#616/#680).
       tdata <- tab$data
-      if(!is.null(color) && length(color) == 1L && color %in% names(tdata) &&
+      if(!is.null(.within.var) && .within.var %in% names(tdata) &&
          "strata" %in% names(tdata)){
         .lv <- as.character(levels(tdata$strata))
         if(length(.lv) == 0L) .lv <- unique(as.character(tdata$strata))
-        .grp <- as.character(tdata[[color]][match(.lv, as.character(tdata$strata))])
+        .grp <- as.character(tdata[[.within.var]][match(.lv, as.character(tdata$strata))])
         # Match the main legend's formatting for the combined ".strata." column
         # (legend.labs above uses gsub(";", ",")).
-        if(identical(color, ".strata.")) .grp <- gsub(";", ",", .grp)
+        if(identical(.within.var, ".strata.")) .grp <- gsub(";", ",", .grp)
         # ggsurvtable draws the y axis with breaks = levels(strata) and
         # labels = rev(levels(strata)) (it maps aes(y = rev(strata)) so the first
         # stratum sits at the top and the row colours follow that order). Replace
@@ -506,12 +528,14 @@ ggsurvplot_facet <- function(fit, data, facet.by,
       g$widths <- grid::unit.pmax(p.grob$widths, t.grob$widths)
       # Set the plot vs table panel-row heights to surv.plot.height : risk.table.height.
       # After gtable_rbind the plot's panel rows keep their positions and the table's
-      # are offset by nrow(p.grob).
+      # rows are offset by nrow(p.grob); read each grob's own panel rows rather than
+      # assuming the two share the same layout.
       .prows <- unique(p.grob$layout$t[grepl("^panel", p.grob$layout$name)])
-      if(length(.prows)){
+      .trows <- unique(t.grob$layout$t[grepl("^panel", t.grob$layout$name)])
+      if(length(.prows))
         g$heights[.prows] <- grid::unit(surv.plot.height / length(.prows), "null")
-        g$heights[.prows + nrow(p.grob)] <- grid::unit(risk.table.height / length(.prows), "null")
-      }
+      if(length(.trows))
+        g$heights[.trows + nrow(p.grob)] <- grid::unit(risk.table.height / length(.trows), "null")
       g <- structure(g, class = c("ggsurvplot_facet", "ggsurv", class(g)))
       return(g)
     }

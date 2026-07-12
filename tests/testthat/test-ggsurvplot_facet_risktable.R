@@ -25,7 +25,8 @@ test_that("risk.table = FALSE returns the plain faceted ggplot (no regression)",
 })
 
 test_that("risk.table = TRUE returns an aligned gtable of class ggsurvplot_facet", {
-  skip_on_cran()
+  # Runs on CRAN: exercises the whole risk-table pipeline (core re-run, relabel,
+  # facet, gtable stacking) and its print method with version-robust assertions.
   fit <- survfit(Surv(time, status) ~ sex, data = colon)
   g <- suppressWarnings(suppressMessages(
     ggsurvplot_facet(fit, colon, facet.by = "rx", risk.table = TRUE)
@@ -35,6 +36,33 @@ test_that("risk.table = TRUE returns an aligned gtable of class ggsurvplot_facet
   # It draws without error through its print method.
   pdf(NULL); on.exit(dev.off())
   expect_error(print(g), NA)
+})
+
+test_that("a faceted risk table is refused (with a warning) for two faceting variables", {
+  fit <- survfit(Surv(time, status) ~ sex, data = colon)
+  expect_warning(
+    p <- ggsurvplot_facet(fit, colon, facet.by = c("rx", "adhere"), risk.table = TRUE),
+    "single .*facet.by. variable"
+  )
+  # Falls back to the plain faceted ggplot, never a mislabelled table.
+  expect_s3_class(p, "ggplot")
+  expect_false(inherits(p, "gtable"))
+})
+
+test_that("a literal `color` does not leak the raw combined strata into the table", {
+  skip_on_cran()
+  # The y axis is relabelled from the grouping column, not the `color` argument, so a
+  # literal colour still yields clean group labels (not "sex=0, rx=Obs"). The label
+  # text is verified in-review; here we assert the pipeline builds and does not leak
+  # the raw combined strata string.
+  fit <- survfit(Surv(time, status) ~ sex, data = colon)
+  g <- suppressWarnings(suppressMessages(
+    ggsurvplot_facet(fit, colon, facet.by = "rx", color = "red", risk.table = TRUE)
+  ))
+  expect_s3_class(g, "ggsurvplot_facet")
+  labs <- .facet_grob_labels(g)
+  expect_false(any(grepl("sex=0, rx=", labs)))
+  expect_false(any(grepl("\\.strata\\.", labs)))
 })
 
 test_that("faceted risk-table y labels are the clean within-panel group, not the raw strata", {

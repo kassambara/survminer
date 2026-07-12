@@ -148,9 +148,12 @@ and y direction, respectively.}
 
 \item{risk.table}{logical value. Default is FALSE. If TRUE, a number-at-risk
 table is drawn below the faceted curves, faceted with the same structure so
-each panel's table aligns under its curves. When \code{risk.table} is not
-FALSE the function returns an aligned \code{gtable} (printed with
-\code{print()}); the default (FALSE) returns the faceted ggplot unchanged.}
+each panel's table aligns under its curves. Supported for a single
+\code{facet.by} variable; with two it warns and returns the plot without a
+table (a two-way \code{facet_grid} shares one y axis per row, so the per-panel
+strata cannot be labelled correctly). When \code{risk.table} is not FALSE the
+function returns an aligned \code{gtable} (printed with \code{print()}); the
+default (FALSE) returns the faceted ggplot unchanged.}
 
 \item{risk.table.height, surv.plot.height}{the relative heights of the risk table
 and the survival plot when \code{risk.table} is drawn. Defaults are 0.25 and

@@ -13,8 +13,10 @@
   its row colours and ordering match the curves, and `pval.in.label` reuses the same
   p-value text as the on-panel label (so it also reflects `p.adjust.method`). This is the
   long-standing request to combine faceting with a risk table (#587, #330, #370, #478,
-  #511, #539, #620). `pval.in.label` needs a single `facet.by` variable; with two it warns
-  and draws the p-value on the panels instead.
+  #511, #539, #620). Both are for a single `facet.by` variable: `pval.in.label` with two
+  variables warns and draws the p-value on the panels, and `risk.table` with two warns and
+  returns the plot without a table (a two-way `facet_grid` shares one y axis per row, so
+  the per-panel strata cannot be labelled correctly).
 - New `customize_labels()` to set the font (size, style and color) of the main title,
   subtitle, caption, axis titles and axis tick labels across all components of a
   `ggsurvplot` object (survival curve, risk table and censor plot), or of an individual
