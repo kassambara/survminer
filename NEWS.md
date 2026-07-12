@@ -17,6 +17,8 @@
 
 ## Minor changes
 
+- `ggsurvplot()` now emits an informative message when `risk.table.y.text = TRUE` is explicitly set together with `risk.table.pos = "in"`, instead of silently ignoring it. An in-plot risk table is drawn over the survival panel's own y-axis, so its rows are coloured by strata (matching the curves) rather than labelled; the message explains this and points to `risk.table.pos = "out"` for text strata labels. It fires only when both arguments are explicitly passed, so default in-plot tables (which carry `risk.table.y.text = TRUE` by default) are unaffected. Reported by @Swechhya (#211).
+
 - `surv_median()` no longer errors on a `survfit` stored without confidence limits (`conf.type = "none"`) or fitted at a non-default confidence level (e.g. `conf.int = 0.9`). It hard-coded the `0.95LCL`/`0.95UCL` columns of `summary()$table`; these are now detected by suffix, so a `0.9` fit returns its real limits and a no-CI fit returns the median with `NA` limits instead of failing. Default (0.95) output is unchanged. Found alongside #639 (#818).
 
 - `ggsurvplot()` no longer errors with a cryptic `arguments imply differing number of rows` message on a `survfit` stored without confidence limits (e.g. fit with `conf.type = "none"`, or any fit that kept no CI). `surv_summary()` treated the absent `upper`/`lower` as length-0 columns; because it runs for every `ggsurvplot()`, such a fit could not be plotted at all -- even with `conf.int = FALSE`. The missing limits are now filled with `NA`, so the curve draws with no confidence band. Fits with confidence limits are unchanged. Reported by @pmpradhan (#639).
