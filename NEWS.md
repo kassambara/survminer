@@ -14,8 +14,9 @@
   colours are not a reliable row identifier, so the text label carries the identity), and
   `pval.in.label` reuses the same p-value text as the on-panel label (so it also reflects
   `p.adjust.method`). This is the
-  long-standing request to combine faceting with a risk table (#587, #330, #370, #478,
-  #511, #539, #620). Both are for a single `facet.by` variable: `pval.in.label` with two
+  long-standing request to combine faceting with a risk table (#587, #330, #539; the
+  single-variable case of #370 and #511). Both are for a single `facet.by` variable:
+  `pval.in.label` with two
   variables warns and draws the p-value on the panels, and `risk.table` with two warns and
   returns the plot without a table (a two-way `facet_grid` shares one y axis per row, so
   the per-panel strata cannot be labelled correctly).
