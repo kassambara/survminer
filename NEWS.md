@@ -2,6 +2,18 @@
 
 ## New features
 
+- New `ggrmst()` and `ggrmst_difference()` for restricted mean survival time (RMST) --
+  the area under the Kaplan-Meier curve up to a truncation time `tau`, an absolute
+  measure (in time units) that stays interpretable under non-proportional hazards.
+  `ggrmst()` draws the Kaplan-Meier curves with the RMST region shaded: for two groups
+  the area *between* the curves up to `tau` is highlighted (equal to the RMST difference
+  when the curves do not cross) and the difference is annotated with its confidence
+  interval and p-value;
+  for three or more groups the area under each curve is shaded, per panel.
+  `ggrmst_difference()` returns a tidy table of per-group RMST (with SE and CI) and the
+  RMST difference. The estimate is computed internally from the Kaplan-Meier curve (no
+  new run-time dependency; matches `survRM2::rmst2()`), and `tau` defaults to the
+  largest time at which every group's curve is defined. See Royston & Parmar (2013).
 - `ggsurvplot()` gains an `output` argument. The default `output = "classic"` returns
   the usual compound `ggsurvplot` object (unchanged). `output = "ggplot"` instead
   returns a single survival-curve `ggplot` -- one object that composes normally with

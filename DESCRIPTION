@@ -40,7 +40,8 @@ Suggests:
     cmprsk,
     markdown,
     testthat,
-    rmarkdown
+    rmarkdown,
+    survRM2
 VignetteBuilder: knitr
 URL: https://rpkgs.datanovia.com/survminer/index.html
 BugReports: https://github.com/kassambara/survminer/issues
@@ -68,6 +69,7 @@ Collate:
     'ggcoxzph.R'
     'ggflexsurvplot.R'
     'ggforest.R'
+    'ggrmst.R'
     'ggsurvevents.R'
     'ggsurvplot_combine.R'
     'ggsurvplot_facet.R'
