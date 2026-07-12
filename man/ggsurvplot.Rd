@@ -28,6 +28,7 @@ ggsurvplot(
   combine = FALSE,
   ggtheme = theme_survminer(),
   tables.theme = ggtheme,
+  output = c("classic", "ggplot"),
   ...
 )
 
@@ -110,10 +111,13 @@ to show both absolute number and percentage. \item "nrisk_cumcensor" and
 censoring and events, respectively. }}
 
 \item{cumevents}{logical value specifying whether to show or not the table of
-the cumulative number of events. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct"); "percentage" shows the count as a percent of the stratum size.}
+the cumulative number of events. Default is FALSE. Can also be a character
+string ("absolute", "percentage" or "abs_pct"); "percentage" shows the count
+as a percent of the stratum size.}
 
 \item{cumcensor}{logical value specifying whether to show or not the table of
-the cumulative number of censoring. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct").}
+the cumulative number of censoring. Default is FALSE. Can also be a character
+string ("absolute", "percentage" or "abs_pct").}
 
 \item{tables.height}{numeric value (in [0 - 1]) specifying the general height
 of all tables under the main survival plot.}
@@ -139,6 +143,24 @@ Alias of the \code{\link{ggsurvplot_combine}()} function.}
 \link{theme_survminer}. Allowed values include ggplot2 official themes: see
 \code{\link[ggplot2]{theme}}. Note that, \code{tables.theme} is incremental to \code{ggtheme}.}
 
+\item{output}{one of \code{"classic"} (default) or \code{"ggplot"}. With
+\code{"classic"} the usual compound \code{ggsurvplot} object is returned
+(unchanged). With \code{"ggplot"} a single survival-curve \code{ggplot} is
+returned instead -- one object that composes normally with \code{+ geom_*},
+\code{ggsave()} and \code{facet_wrap()} (useful for adding your own layers, e.g.
+an RMST area or a cumulative-incidence overlay). Any \code{pval},
+\code{conf.int} and \code{surv.median.line} are kept (they live on the curve).
+A risk / cumulative-events / cumulative-censor table or a separate censor
+barplot cannot be embedded in a single ggplot, so \code{risk.table},
+\code{cumevents}, \code{cumcensor} and \code{ncensor.plot} are dropped with a
+warning if requested; use the default and its \code{$table} for those. Faceting
+an \emph{external} covariate (not the strata) still needs
+\code{\link{ggsurvplot_facet}()}, which recomputes the curves per panel; a plain
+\code{facet_wrap()} on the returned plot does not, and a single \code{pval}
+annotation is replicated into every panel. \code{group.by} and an uncombined list
+of fits produce several plots (not one), so \code{output = "ggplot"} falls back to
+the classic object there (with a warning).}
+
 \item{...}{Futher arguments as described hereafter and
 other arguments to be passed i) to ggplot2 geom_*() functions such
  as linetype, size, ii) or to the function \link[ggpubr]{ggpar}() for
@@ -162,7 +184,9 @@ risk.table = FALSE.}
 generic; not used.}
 }
 \value{
-return an object of class ggsurvplot which is list containing the
+an object of class ggsurvplot (a list) by default, or -- when
+ \code{output = "ggplot"} -- a single survival-curve \code{ggplot}. The
+ \code{ggsurvplot} list contains the
  following components: \itemize{ \item plot: the survival plot (ggplot
  object) \item table: the number of subjects at risk table per time (ggplot
  object). \item cumevents: the cumulative number of events table (ggplot
@@ -396,6 +420,15 @@ The plot can be easily customized using additional arguments to be
 }
 
 \examples{
+
+#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
+# A single composable ggplot: output = "ggplot"
+#\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
+require("survival")
+fit <- survfit(Surv(time, status) ~ sex, data = lung)
+p <- ggsurvplot(fit, data = lung, conf.int = TRUE, output = "ggplot")
+# p is a plain ggplot -- add your own layers, save it, facet it
+p + geom_hline(yintercept = 0.5, linetype = "dashed")
 
 #\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%\%
 # Example 1: Survival curves with two groups
