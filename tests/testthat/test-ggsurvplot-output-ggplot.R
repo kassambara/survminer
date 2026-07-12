@@ -23,7 +23,8 @@ test_that("the returned ggplot composes with layers, scales, facets and ggsave",
     NA)
   # facet by the strata variable (external-covariate faceting stays ggsurvplot_facet's job)
   expect_error(ggplot2::ggplot_build(p + ggplot2::facet_wrap(~strata)), NA)
-  expect_error(ggplot2::ggsave(tempfile(fileext = ".png"), p, width = 6, height = 4), NA)
+  tf <- tempfile(fileext = ".png"); on.exit(unlink(tf), add = TRUE)
+  expect_error(ggplot2::ggsave(tf, p, width = 6, height = 4), NA)
 })
 
 test_that("pval / conf.int / surv.median.line layers are preserved on the bare curve", {
@@ -67,4 +68,18 @@ test_that("output = 'ggplot' works for the facet path (bare faceted ggplot)", {
   pf <- suppressWarnings(ggsurvplot(fit, data = lung, facet.by = "sex", output = "ggplot"))
   expect_s3_class(pf, "ggplot")
   expect_false(inherits(pf, "gtable"))
+})
+
+test_that("group.by falls back to the classic object WITH its tables intact", {
+  # group.by produces several plots (not one), so output='ggplot' cannot apply; it
+  # must fall back to the full classic object -- not a table-stripped one.
+  gb <- survfit(Surv(time, status) ~ sex, data = colon)
+  expect_warning(
+    r <- ggsurvplot(gb, data = colon, group.by = "rx", risk.table = TRUE,
+                    output = "ggplot"),
+    "not available for"
+  )
+  expect_s3_class(r, "ggsurvplot_list")
+  # the risk table the user asked for survives the fall-back
+  expect_false(is.null(r[[1]]$table))
 })

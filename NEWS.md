@@ -5,7 +5,8 @@
 - `ggsurvplot()` gains an `output` argument. The default `output = "classic"` returns
   the usual compound `ggsurvplot` object (unchanged). `output = "ggplot"` instead
   returns a single survival-curve `ggplot` -- one object that composes normally with
-  `+ geom_*`, `ggsave()` and `facet_wrap()`, so you can add your own layers (an RMST
+  `+ geom_*`, `ggsave()` and `facet_wrap()` (by strata; faceting an external covariate
+  still needs `ggsurvplot_facet()`), so you can add your own layers (an RMST
   area, a cumulative-incidence overlay, a reference line) without extracting `$plot`
   or fighting the compound object's `+`. `pval`, `conf.int` and `surv.median.line`
   are kept on the curve. A risk / cumulative-events / cumulative-censor table or a

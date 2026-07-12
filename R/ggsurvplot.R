@@ -240,7 +240,9 @@ NULL
 #'  an \emph{external} covariate (not the strata) still needs
 #'  \code{\link{ggsurvplot_facet}()}, which recomputes the curves per panel; a plain
 #'  \code{facet_wrap()} on the returned plot does not, and a single \code{pval}
-#'  annotation is replicated into every panel.
+#'  annotation is replicated into every panel. \code{group.by} and an uncombined list
+#'  of fits produce several plots (not one), so \code{output = "ggplot"} falls back to
+#'  the classic object there (with a warning).
 #'@return an object of class ggsurvplot (a list) by default, or -- when
 #'  \code{output = "ggplot"} -- a single survival-curve \code{ggplot}. The
 #'  \code{ggsurvplot} list contains the
@@ -404,6 +406,19 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
             "the in-plot risk table is coloured by strata (matching the curves) instead ",
             "of labelled, to avoid overlapping the survival plot's y-axis. Use ",
             "`risk.table.pos = \"out\"` if you need text strata labels.")
+
+  # output = "ggplot" returns a SINGLE ggplot, so it is only meaningful for the
+  # single-plot paths. `group.by` and an uncombined list of fits produce MULTIPLE
+  # plots (a `ggsurvplot_list`), which cannot be one ggplot; there, fall back to the
+  # classic object WITH its tables intact (do this BEFORE the table-drop below, so
+  # the fall-back object is a true classic object, not a stripped one) and warn once.
+  if (identical(output, "ggplot") &&
+      (!is.null(group.by) || (.is_list(fit) && !isTRUE(combine)))) {
+    warning("`output = \"ggplot\"` returns a single ggplot and is not available for ",
+            "`group.by` or an uncombined list of fits (which produce several plots); ",
+            "returning the classic object.", call. = FALSE)
+    output <- "classic"
+  }
 
   # output = "ggplot": return a single, composable survival-curve ggplot instead of
   # the compound `ggsurvplot` object. A single ggplot cannot embed an aligned risk /

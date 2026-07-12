@@ -157,7 +157,9 @@ warning if requested; use the default and its \code{$table} for those. Faceting
 an \emph{external} covariate (not the strata) still needs
 \code{\link{ggsurvplot_facet}()}, which recomputes the curves per panel; a plain
 \code{facet_wrap()} on the returned plot does not, and a single \code{pval}
-annotation is replicated into every panel.}
+annotation is replicated into every panel. \code{group.by} and an uncombined list
+of fits produce several plots (not one), so \code{output = "ggplot"} falls back to
+the classic object there (with a warning).}
 
 \item{...}{Futher arguments as described hereafter and
 other arguments to be passed i) to ggplot2 geom_*() functions such
