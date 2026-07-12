@@ -2,6 +2,7 @@
 % Please edit documentation in R/ggsurvplot_facet.R
 \name{ggsurvplot_facet}
 \alias{ggsurvplot_facet}
+\alias{print.ggsurvplot_facet}
 \title{Facet Survival Curves into Multiple Panels}
 \usage{
 ggsurvplot_facet(
@@ -16,6 +17,7 @@ ggsurvplot_facet(
   pval.size = 5,
   pval.coord = NULL,
   pval.method.coord = NULL,
+  pval.in.label = FALSE,
   p.adjust.method = "none",
   p.adjust.label = "adj.p =",
   nrow = NULL,
@@ -28,8 +30,17 @@ ggsurvplot_facet(
   panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
   panel.labs.font.x = panel.labs.font,
   panel.labs.font.y = panel.labs.font,
+  risk.table = FALSE,
+  risk.table.height = 0.25,
+  surv.plot.height = 0.75,
+  tables.y.text = TRUE,
+  tables.col = "black",
+  tables.theme = theme_survminer(),
+  fontsize = 4.5,
   ...
 )
+
+\method{print}{ggsurvplot_facet}(x, newpage = TRUE, ...)
 }
 \arguments{
 \item{fit}{an object of class survfit.}
@@ -78,6 +89,13 @@ coordinates of the p-value. Default values are NULL.}
 
 \item{pval.method.coord}{the same as \code{pval.coord} but for displaying
 \code{log.rank.weights} name}
+
+\item{pval.in.label}{logical value. Default is FALSE. If TRUE, the per-panel
+p-value is appended to the panel strip label instead of being drawn inside the
+panel. Requires \code{pval = TRUE} and a single \code{facet.by} variable (with
+two faceting variables the p-value is drawn on the panels instead, with a
+warning). If a \code{labeller} is also supplied it takes precedence and the
+p-value is not added to the label.}
 
 \item{p.adjust.method}{method for adjusting the per-panel p-values for multiple
 comparisons across panels, passed to \code{\link[stats]{p.adjust}()} (e.g.
@@ -128,7 +146,38 @@ face/style (e.g.: "plain", "bold", "italic", "bold.italic") and the color
 \item{panel.labs.font.x, panel.labs.font.y}{same as panel.labs.font but for x
 and y direction, respectively.}
 
+\item{risk.table}{logical value. Default is FALSE. If TRUE, a number-at-risk
+table is drawn below the faceted curves, faceted with the same structure so
+each panel's table aligns under its curves. Supported for a single
+\code{facet.by} variable; with two it warns and returns the plot without a
+table (a two-way \code{facet_grid} shares one y axis per row, so the per-panel
+strata cannot be labelled correctly). When \code{risk.table} is not FALSE the
+function returns an aligned \code{gtable} (printed with \code{print()}); the
+default (FALSE) returns the faceted ggplot unchanged. In the faceted table the
+strata rows are identified by their text labels in a single colour (not by the
+curve colours), because a panel that drops a stratum would otherwise recolour
+the remaining rows by position and mislabel them. The table rows are labelled by
+the grouping variable's own values; \code{legend.labs} relabels the curve legend
+but not the table rows.}
+
+\item{risk.table.height, surv.plot.height}{the relative heights of the risk table
+and the survival plot when \code{risk.table} is drawn. Defaults are 0.25 and
+0.75.}
+
+\item{tables.y.text}{logical value. Default is TRUE. In a faceted risk table the
+rows are identified by their text labels (the curve colours are not a reliable
+identifier across facets), so \code{FALSE} is not supported here: the labels are
+kept and a warning is issued.}
+
+\item{tables.col, tables.theme, fontsize}{colour, theme and font size of the risk
+table, as in \code{\link{ggsurvplot}}.}
+
 \item{...}{other arguments to pass to the function \code{\link{ggsurvplot}}.}
+
+\item{x}{an object of class ggsurvplot_facet (the gtable returned by
+\code{ggsurvplot_facet()} when \code{risk.table} is drawn).}
+
+\item{newpage}{logical. If TRUE (default), a new page is drawn before the plot.}
 }
 \description{
 Draw multi-panel survival curves of a data set grouped by one or
@@ -148,6 +197,16 @@ ggsurvplot_facet(fit, colon, facet.by = "rx",
 ggsurvplot_facet(fit, colon, facet.by = c("rx", "adhere"),
                 palette = "jco", pval = TRUE)
 
+
+# P-value in the panel labels (single faceting variable)
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ggsurvplot_facet(fit, colon, facet.by = "rx",
+                palette = "jco", pval = TRUE, pval.in.label = TRUE)
+
+# Faceted number-at-risk table
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ggsurvplot_facet(fit, colon, facet.by = "rx",
+                palette = "jco", risk.table = TRUE)
 
 # Another fit
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
