@@ -49,6 +49,20 @@ test_that("a faceted risk table is refused (with a warning) for two faceting var
   expect_false(inherits(p, "gtable"))
 })
 
+test_that("tables.y.text = FALSE warns and keeps the labels for a faceted risk table", {
+  fit <- survfit(Surv(time, status) ~ sex, data = colon)
+  expect_warning(
+    g <- ggsurvplot_facet(fit, colon, facet.by = "rx", risk.table = TRUE,
+                          tables.y.text = FALSE),
+    "tables.y.text"
+  )
+  expect_s3_class(g, "ggsurvplot_facet")
+  # Labels are kept (not hidden) so the rows stay identifiable, and the neutral
+  # colour override merges cleanly (no element-class crash).
+  pdf(NULL); on.exit(dev.off())
+  expect_error(print(g), NA)
+})
+
 test_that("a literal `color` does not leak the raw combined strata into the table", {
   skip_on_cran()
   # The y axis is relabelled from the grouping column, not the `color` argument, so a

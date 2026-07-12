@@ -162,8 +162,10 @@ the remaining rows by position and mislabel them.}
 and the survival plot when \code{risk.table} is drawn. Defaults are 0.25 and
 0.75.}
 
-\item{tables.y.text}{logical value. Default is TRUE. If FALSE, the risk-table
-y-axis tick labels (the strata) are hidden.}
+\item{tables.y.text}{logical value. Default is TRUE. In a faceted risk table the
+rows are identified by their text labels (the curve colours are not a reliable
+identifier across facets), so \code{FALSE} is not supported here: the labels are
+kept and a warning is issued.}
 
 \item{tables.col, tables.theme, fontsize}{colour, theme and font size of the risk
 table, as in \code{\link{ggsurvplot}}.}

@@ -9,9 +9,11 @@
   the panel. With `risk.table = TRUE` the function returns an aligned `gtable` (printed
   with `print()`); the default (`risk.table = FALSE`) still returns the faceted ggplot
   unchanged. The table's y-axis shows the within-panel group taken from the structured
-  survival summary (so a factor level containing `=`, `,` or `;` is labelled correctly),
-  its row colours and ordering match the curves, and `pval.in.label` reuses the same
-  p-value text as the on-panel label (so it also reflects `p.adjust.method`). This is the
+  survival summary (so a factor level containing `=`, `,` or `;` is labelled correctly,
+  in row order matching the curves and in a single colour -- across facets the curve
+  colours are not a reliable row identifier, so the text label carries the identity), and
+  `pval.in.label` reuses the same p-value text as the on-panel label (so it also reflects
+  `p.adjust.method`). This is the
   long-standing request to combine faceting with a risk table (#587, #330, #370, #478,
   #511, #539, #620). Both are for a single `facet.by` variable: `pval.in.label` with two
   variables warns and draws the p-value on the panels, and `risk.table` with two warns and

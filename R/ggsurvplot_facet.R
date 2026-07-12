@@ -70,8 +70,10 @@ NULL
 #'@param risk.table.height,surv.plot.height the relative heights of the risk table
 #'  and the survival plot when \code{risk.table} is drawn. Defaults are 0.25 and
 #'  0.75.
-#'@param tables.y.text logical value. Default is TRUE. If FALSE, the risk-table
-#'  y-axis tick labels (the strata) are hidden.
+#'@param tables.y.text logical value. Default is TRUE. In a faceted risk table the
+#'  rows are identified by their text labels (the curve colours are not a reliable
+#'  identifier across facets), so \code{FALSE} is not supported here: the labels are
+#'  kept and a warning is issued.
 #'@param tables.col,tables.theme,fontsize colour, theme and font size of the risk
 #'  table, as in \code{\link{ggsurvplot}}.
 #'@param ... other arguments to pass to the function \code{\link{ggsurvplot}}.
@@ -475,12 +477,20 @@ ggsurvplot_facet <- function(fit, data, facet.by,
     # its only unique diagnostic is that benign legend.labs-length warning; every
     # other warning it could raise was already surfaced by the curve build above
     # on the same fit/data, so nothing user-actionable is hidden here.
+    # In a faceted table each row is identified by its TEXT label (a single colour;
+    # the curve colours are not a reliable identifier across facets). tables.y.text =
+    # FALSE would hide that label and leave only the unreliable colour, so it is not
+    # supported here: the table is always built with the labels shown, and we warn.
+    if(!isTRUE(tables.y.text))
+      warning("ggsurvplot_facet(): `tables.y.text = FALSE` is not supported for a ",
+              "faceted risk table (its rows are identified by their text labels, not ",
+              "by colour); the labels are shown.", call. = FALSE)
     core.tab <- suppressWarnings(suppressMessages(
       ggsurvplot_core(fit, data = data, color = color, palette = palette,
                       legend.labs = NULL, risk.table = risk.table,
                       risk.table.height = risk.table.height,
                       surv.plot.height = surv.plot.height,
-                      tables.y.text = tables.y.text, tables.col = tables.col,
+                      tables.y.text = TRUE, tables.col = tables.col,
                       tables.theme = tables.theme, fontsize = fontsize, ...)
     ))
     tab <- core.tab$table
@@ -518,16 +528,14 @@ ggsurvplot_facet <- function(fit, data, facet.by,
       # and so point to the WRONG stratum by colour (e.g. a panel holding only the
       # second group paints its row the first group's colour). Each row is already
       # identified unambiguously by its (correct) label text and its panel, so a
-      # single colour is used rather than one that could mislead. Honour a
-      # user-supplied solid `tables.col`; the strata-colouring request ("strata")
-      # is the unreliable case, so it falls back to black. Applied only when the
-      # labels are shown.
-      if(isTRUE(tables.y.text)){
-        .tcol <- if(is.null(tables.col) || identical(tables.col, "strata"))
-          "black" else tables.col
-        tab <- tab + ggplot2::theme(
-          axis.text.y = ggplot2::element_text(colour = .tcol))
-      }
+      # single colour is used rather than one that could mislead. The table is always
+      # built with the labels shown (element_text), so this override merges cleanly.
+      # Honour a user-supplied solid `tables.col`; the strata-colouring request
+      # ("strata"), a NULL, or a non-scalar value all fall back to black.
+      .tcol <- if(is.null(tables.col) || length(tables.col) != 1L ||
+                  identical(tables.col, "strata")) "black" else tables.col
+      tab <- tab + ggplot2::theme(
+        axis.text.y = ggplot2::element_text(colour = .tcol))
       # The refit strata are the within-panel group x facet.by combination, so each
       # panel must FREE its y scale to drop the strata that belong to the other panels
       # (otherwise every panel shows every combination). Keep the x scale in step with
