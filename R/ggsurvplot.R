@@ -354,6 +354,24 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   if(length(group.by) > 2)
     stop("group.by should be of length 1 or 2.")
 
+  # `risk.table.y.text = TRUE` cannot show strata labels for an in-plot risk table
+  # (`risk.table.pos = "in"`): the table is drawn over the survival panel's own
+  # y-axis, so its rows are coloured by strata (matching the curves) rather than
+  # labelled. Tell the user instead of silently ignoring an explicit request. This
+  # fires only when BOTH `risk.table.pos = "in"` and `risk.table.y.text = TRUE` are
+  # explicitly passed (both live in `...`, absent otherwise), so a default in-plot
+  # table -- which carries `risk.table.y.text = TRUE` by default -- is not spammed (#211).
+  .dots <- list(...)
+  # `risk.table` is TRUE/FALSE or a type string ("absolute"/"abs_pct"/...); both
+  # non-FALSE forms draw an in-plot table, so cover the string case too.
+  if ((isTRUE(risk.table) || is.character(risk.table)) &&
+      identical(.dots[["risk.table.pos"]], "in") &&
+      isTRUE(.dots[["risk.table.y.text"]]))
+    message("`risk.table.y.text = TRUE` has no effect with `risk.table.pos = \"in\"`: ",
+            "the in-plot risk table is coloured by strata (matching the curves) instead ",
+            "of labelled, to avoid overlapping the survival plot's y-axis. Use ",
+            "`risk.table.pos = \"out\"` if you need text strata labels.")
+
 
   # Options for ggsurvplot_df
   # Don't accept arguments for pval and survival tables
