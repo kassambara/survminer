@@ -49,6 +49,20 @@ test_that("a faceted risk table is refused (with a warning) for two faceting var
   expect_false(inherits(p, "gtable"))
 })
 
+test_that("a faceted risk table tolerates an unused grouping factor level", {
+  skip_on_cran()
+  d <- colon
+  d$g <- factor(ifelse(d$sex == 0, "A", "B"), levels = c("A", "B", "C"))  # C: 0 rows
+  fit <- survfit(Surv(time, status) ~ g, data = d)
+  expect_error(
+    g <- suppressWarnings(suppressMessages(
+      ggsurvplot_facet(fit, d, facet.by = "rx", risk.table = TRUE)
+    )),
+    NA
+  )
+  expect_s3_class(g, "ggsurvplot_facet")
+})
+
 test_that("tables.y.text = FALSE warns and keeps the labels for a faceted risk table", {
   fit <- survfit(Surv(time, status) ~ sex, data = colon)
   expect_warning(

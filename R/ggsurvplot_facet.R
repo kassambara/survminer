@@ -66,7 +66,9 @@ NULL
 #'  default (FALSE) returns the faceted ggplot unchanged. In the faceted table the
 #'  strata rows are identified by their text labels in a single colour (not by the
 #'  curve colours), because a panel that drops a stratum would otherwise recolour
-#'  the remaining rows by position and mislabel them.
+#'  the remaining rows by position and mislabel them. The table rows are labelled by
+#'  the grouping variable's own values; \code{legend.labs} relabels the curve legend
+#'  but not the table rows.
 #'@param risk.table.height,surv.plot.height the relative heights of the risk table
 #'  and the survival plot when \code{risk.table} is drawn. Defaults are 0.25 and
 #'  0.75.
@@ -485,8 +487,17 @@ ggsurvplot_facet <- function(fit, data, facet.by,
       warning("ggsurvplot_facet(): `tables.y.text = FALSE` is not supported for a ",
               "faceted risk table (its rows are identified by their text labels, not ",
               "by colour); the labels are shown.", call. = FALSE)
+    # Drop unused factor levels of the grouping variable before building the table.
+    # An empty level makes the strata colour palette longer than the strata actually
+    # present, which errors in the colour extraction -- a table-only failure; the plot
+    # itself tolerates it. An empty level contributes no curve and no table row, so
+    # dropping it changes nothing visible.
+    data.tab <- data
+    if(!is.null(.within.var) && .within.var %in% names(data.tab) &&
+       is.factor(data.tab[[.within.var]]))
+      data.tab[[.within.var]] <- droplevels(data.tab[[.within.var]])
     core.tab <- suppressWarnings(suppressMessages(
-      ggsurvplot_core(fit, data = data, color = color, palette = palette,
+      ggsurvplot_core(fit, data = data.tab, color = color, palette = palette,
                       legend.labs = NULL, risk.table = risk.table,
                       risk.table.height = risk.table.height,
                       surv.plot.height = surv.plot.height,

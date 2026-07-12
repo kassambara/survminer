@@ -156,7 +156,9 @@ function returns an aligned \code{gtable} (printed with \code{print()}); the
 default (FALSE) returns the faceted ggplot unchanged. In the faceted table the
 strata rows are identified by their text labels in a single colour (not by the
 curve colours), because a panel that drops a stratum would otherwise recolour
-the remaining rows by position and mislabel them.}
+the remaining rows by position and mislabel them. The table rows are labelled by
+the grouping variable's own values; \code{legend.labs} relabels the curve legend
+but not the table rows.}
 
 \item{risk.table.height, surv.plot.height}{the relative heights of the risk table
 and the survival plot when \code{risk.table} is drawn. Defaults are 0.25 and
