@@ -226,7 +226,24 @@ NULL
 #'  Use font.x = 14, to change only font size; or use font.x =
 #'  "bold", to change only font face.
 #'
-#'@return return an object of class ggsurvplot which is list containing the
+#'@param output one of \code{"classic"} (default) or \code{"ggplot"}. With
+#'  \code{"classic"} the usual compound \code{ggsurvplot} object is returned
+#'  (unchanged). With \code{"ggplot"} a single survival-curve \code{ggplot} is
+#'  returned instead -- one object that composes normally with \code{+ geom_*},
+#'  \code{ggsave()} and \code{facet_wrap()} (useful for adding your own layers, e.g.
+#'  an RMST area or a cumulative-incidence overlay). Any \code{pval},
+#'  \code{conf.int} and \code{surv.median.line} are kept (they live on the curve).
+#'  A risk / cumulative-events / cumulative-censor table or a separate censor
+#'  barplot cannot be embedded in a single ggplot, so \code{risk.table},
+#'  \code{cumevents}, \code{cumcensor} and \code{ncensor.plot} are dropped with a
+#'  warning if requested; use the default and its \code{$table} for those. Faceting
+#'  an \emph{external} covariate (not the strata) still needs
+#'  \code{\link{ggsurvplot_facet}()}, which recomputes the curves per panel; a plain
+#'  \code{facet_wrap()} on the returned plot does not, and a single \code{pval}
+#'  annotation is replicated into every panel.
+#'@return an object of class ggsurvplot (a list) by default, or -- when
+#'  \code{output = "ggplot"} -- a single survival-curve \code{ggplot}. The
+#'  \code{ggsurvplot} list contains the
 #'  following components: \itemize{ \item plot: the survival plot (ggplot
 #'  object) \item table: the number of subjects at risk table per time (ggplot
 #'  object). \item cumevents: the cumulative number of events table (ggplot
@@ -237,6 +254,15 @@ NULL
 #'
 #'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @examples
+#'
+#'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#'# A single composable ggplot: output = "ggplot"
+#'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#'require("survival")
+#'fit <- survfit(Surv(time, status) ~ sex, data = lung)
+#'p <- ggsurvplot(fit, data = lung, conf.int = TRUE, output = "ggplot")
+#'# p is a plain ggplot -- add your own layers, save it, facet it
+#'p + geom_hline(yintercept = 0.5, linetype = "dashed")
 #'
 #'#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #'# Example 1: Survival curves with two groups
@@ -348,8 +374,10 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        group.by = NULL, facet.by = NULL, add.all = FALSE, combine = FALSE,
                        ggtheme = theme_survminer(),
                        tables.theme = ggtheme,
+                       output = c("classic", "ggplot"),
                        ...
 ){
+  output <- match.arg(output)
 
   if(length(group.by) > 2)
     stop("group.by should be of length 1 or 2.")
@@ -377,6 +405,24 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
             "of labelled, to avoid overlapping the survival plot's y-axis. Use ",
             "`risk.table.pos = \"out\"` if you need text strata labels.")
 
+  # output = "ggplot": return a single, composable survival-curve ggplot instead of
+  # the compound `ggsurvplot` object. A single ggplot cannot embed an aligned risk /
+  # cumulative-events / cumulative-censor table or a separate censor barplot (those
+  # are a multi-panel assembly), so any such request is dropped here -- with a
+  # warning only when one was actually made, so a plain `output = "ggplot"` call is
+  # quiet. The curve itself is byte-identical whether or not a table was requested,
+  # so dropping the table changes nothing on the returned curve.
+  if (identical(output, "ggplot")) {
+    if (.rt.draws.table || isTRUE(cumevents) || isTRUE(cumcensor) ||
+        isTRUE(.dots[["ncensor.plot"]]))
+      warning("`output = \"ggplot\"` returns the survival-curve panel only; ",
+              "`risk.table`/`cumevents`/`cumcensor`/`ncensor.plot` cannot be embedded ",
+              "in a single ggplot and are dropped. Use the default ",
+              "`output = \"classic\"` (then `$table`) for those.", call. = FALSE)
+    risk.table <- FALSE
+    cumevents <- FALSE
+    cumcensor <- FALSE
+  }
 
   # Options for ggsurvplot_df
   # Don't accept arguments for pval and survival tables
@@ -444,6 +490,19 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   else if(inherits(fit, "flexsurvreg"))
     ggsurv <- do.call(ggflexsurvplot, opts)
 
+
+  # Classic (default) returns the compound ggsurvplot object unchanged. For
+  # output = "ggplot" return the bare survival-curve ggplot: the `$plot` panel of a
+  # compound object, or the object itself when the path already produced a single
+  # ggplot (e.g. a bare faceted plot after the table was dropped above).
+  if (identical(output, "ggplot")) {
+    if (inherits(ggsurv, "ggplot"))
+      return(ggsurv)
+    if (!is.null(ggsurv$plot) && inherits(ggsurv$plot, "ggplot"))
+      return(ggsurv$plot)
+    warning("`output = \"ggplot\"` is not available for this input; returning the ",
+            "classic object.", call. = FALSE)
+  }
 
   return(ggsurv)
 }

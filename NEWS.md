@@ -2,6 +2,15 @@
 
 ## New features
 
+- `ggsurvplot()` gains an `output` argument. The default `output = "classic"` returns
+  the usual compound `ggsurvplot` object (unchanged). `output = "ggplot"` instead
+  returns a single survival-curve `ggplot` -- one object that composes normally with
+  `+ geom_*`, `ggsave()` and `facet_wrap()`, so you can add your own layers (an RMST
+  area, a cumulative-incidence overlay, a reference line) without extracting `$plot`
+  or fighting the compound object's `+`. `pval`, `conf.int` and `surv.median.line`
+  are kept on the curve. A risk / cumulative-events / cumulative-censor table or a
+  separate censor barplot cannot live in a single ggplot, so those are dropped with a
+  warning if requested (use the default and its `$table`).
 - `ggadjustedcurves()` gains a `risk.table` argument (#286). When set, a
   number-at-risk table is drawn below the adjusted curves and the function returns a
   `ggsurvplot` object (printed with `print()`) instead of a plain `ggplot`. Because
