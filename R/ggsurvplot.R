@@ -362,9 +362,14 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
   # explicitly passed (both live in `...`, absent otherwise), so a default in-plot
   # table -- which carries `risk.table.y.text = TRUE` by default -- is not spammed (#211).
   .dots <- list(...)
-  # `risk.table` is TRUE/FALSE or a type string ("absolute"/"abs_pct"/...); both
-  # non-FALSE forms draw an in-plot table, so cover the string case too.
-  if ((isTRUE(risk.table) || is.character(risk.table)) &&
+  # `risk.table` is TRUE/FALSE or a table-type string; both draw an in-plot table.
+  # Test the type strings against the allowed set (kept in sync with
+  # .parse_risk_table_arg() in ggsurvplot_core.R) so an INVALID string -- which
+  # errors there anyway -- does not get this message before its own error.
+  .rt.draws.table <- isTRUE(risk.table) ||
+    (is.character(risk.table) && length(risk.table) == 1L && risk.table %in%
+       c("absolute", "percentage", "abs_pct", "nrisk_cumcensor", "nrisk_cumevents"))
+  if (.rt.draws.table &&
       identical(.dots[["risk.table.pos"]], "in") &&
       isTRUE(.dots[["risk.table.y.text"]]))
     message("`risk.table.y.text = TRUE` has no effect with `risk.table.pos = \"in\"`: ",

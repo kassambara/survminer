@@ -10,11 +10,15 @@ context("in-plot risk table y.text message (#211)")
 library(survival)
 fit <- survfit(Surv(time, status) ~ sex, data = lung)
 
-# TRUE if the expression emits the #211 message (robust to unrelated messages)
+# TRUE if the expression emits the #211 message (robust to unrelated messages AND
+# to a downstream error -- an invalid risk.table string errors AFTER the gate, so
+# we still capture whether the message fired before it).
 emits_211 <- function(expr) {
   msgs <- character(0)
-  withCallingHandlers(force(expr),
-    message = function(m) { msgs <<- c(msgs, conditionMessage(m)); invokeRestart("muffleMessage") })
+  tryCatch(
+    withCallingHandlers(force(expr),
+      message = function(m) { msgs <<- c(msgs, conditionMessage(m)); invokeRestart("muffleMessage") }),
+    error = function(e) NULL)
   any(grepl("no effect with", msgs, fixed = TRUE))
 }
 
@@ -48,4 +52,14 @@ test_that("the message does NOT fire for default / other configurations (#211)",
   expect_false(emits_211(
     ggsurvplot(fit, data = lung, risk.table = TRUE, risk.table.pos = "in",
                risk.table.y.text.col = TRUE)))
+})
+
+test_that("an INVALID string risk.table does not emit the message before its error (#211)", {
+  # "none" / "" / "garbage" are not table-drawing values; .parse_risk_table_arg()
+  # rejects them. The message must NOT fire ahead of that rejection.
+  for (bad in c("none", "", "garbage"))
+    expect_false(emits_211(
+      ggsurvplot(fit, data = lung, risk.table = bad, risk.table.pos = "in",
+                 risk.table.y.text = TRUE)),
+      info = paste("bad =", bad))
 })
