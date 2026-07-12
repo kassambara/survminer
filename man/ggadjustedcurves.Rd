@@ -16,6 +16,14 @@ ggadjustedcurves(
   ylab = "Survival rate",
   size = 1,
   ggtheme = theme_survminer(),
+  risk.table = FALSE,
+  risk.table.height = 0.25,
+  risk.table.title = NULL,
+  break.time.by = NULL,
+  xlim = NULL,
+  tables.y.text = TRUE,
+  tables.theme = theme_survminer(),
+  fontsize = 4.5,
   ...
 )
 
@@ -65,10 +73,44 @@ function \link[grDevices]{palette}.}
 
 \item{ggtheme}{function, ggplot2 theme name. Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}.}
 
+\item{risk.table}{logical value (or a valid \code{\link{ggsurvplot}()} risk-table
+string). Default is FALSE. If not FALSE, a number-at-risk table is drawn below
+the adjusted curves and the function returns a \code{\link{ggsurvplot}} object
+(printed with \code{print()}), instead of the plain \code{ggplot} returned by
+default. The table is the \strong{Kaplan-Meier} number at risk \emph{by the
+grouping} \code{variable}: the adjusted curves are model-based expectations for
+covariate profiles and have no literal number at risk of their own, so this
+table is meaningful only when \code{variable} is a real subgroup. It is computed
+on the rows the Cox model used (its complete cases), so its baseline count
+matches \code{fit$n}. For \code{method = "marginal"}/\code{"conditional"} the
+curves are balanced/reweighted while this count is the raw Kaplan-Meier number
+at risk. Note that when a table is drawn the return value is a \code{ggsurvplot}
+object, so post-hoc \code{+ theme()}/\code{+ scale_*} no longer apply -- use the
+arguments below (\code{xlim}, \code{break.time.by}, \code{ylab}, \code{palette},
+\code{ggtheme}) instead.}
+
+\item{risk.table.height}{the height of the risk table relative to the plot when
+\code{risk.table} is drawn. Default is 0.25.}
+
+\item{risk.table.title}{the risk-table title. Default \code{NULL} uses
+"Number at risk (Kaplan-Meier, by <variable>)".}
+
+\item{break.time.by, xlim}{numeric time-axis break interval and axis limits,
+applied to \emph{both} the curves and the risk table so the two panels line up.
+Defaults \code{NULL} use the automatic breaks and the data's time range.}
+
+\item{tables.y.text}{logical. Default TRUE. If FALSE, the risk-table strata tick
+labels are hidden.}
+
+\item{tables.theme, fontsize}{the theme and font size of the risk table, as in
+\code{\link{ggsurvplot}()}.}
+
 \item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.}
 }
 \value{
-Returns an object of class \code{gg}.
+Returns an object of class \code{gg} (a \code{ggplot}); when
+ \code{risk.table} is not FALSE, returns a \code{\link{ggsurvplot}} object
+ (curves + aligned number-at-risk table) instead.
 }
 \description{
 The function \code{surv_adjustedcurves()} calculates while the function \code{ggadjustedcurves()} plots adjusted survival curves for the \code{coxph} model.
@@ -112,6 +154,11 @@ ggadjustedcurves(fit2, data = bladder, method = "marginal", variable = "rx",
 # conditional balancing in groups
 ggadjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
 curve <- surv_adjustedcurves(fit2, data = bladder, method = "conditional", variable = "rx")
+
+# With a Kaplan-Meier number-at-risk table by the grouping variable
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ggadjustedcurves(fit2, data = bladder, method = "average", variable = "rx",
+                 risk.table = TRUE)
 
 \dontrun{
 # this will take some time

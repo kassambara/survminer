@@ -286,13 +286,17 @@ is no per-profile risk table and this overlay would mislead.
 
 # Risk table under `ggadjustedcurves()`
 
-`ggadjustedcurves()` draws Cox-adjusted curves by a grouping variable and returns
-a plain `ggplot`, so `risk.table = TRUE` has no effect there (survminer issue
-[#286](https://github.com/kassambara/survminer/issues/286)). The same idea as the
-previous recipe applies, the other way round: build a normal Kaplan-Meier
-`ggsurvplot()` (which comes with a correctly aligned number-at-risk table for the
-grouping variable) and swap its `$plot` for the adjusted-curves plot, matching
-palette, `xlim` and x-breaks so the panels line up.
+`ggadjustedcurves()` now takes a `risk.table` argument directly (survminer issue
+[#286](https://github.com/kassambara/survminer/issues/286)): `ggadjustedcurves(fit,
+variable = "sex", data = data, risk.table = TRUE)` draws the Kaplan-Meier
+number-at-risk table for the grouping variable below the adjusted curves (computed
+on the model's complete cases, with a title that makes the Kaplan-Meier nature
+explicit) and returns a `ggsurvplot` object. The recipe below shows the manual
+equivalent, which is still useful when you want finer control over the two panels
+than the built-in arguments give: build a normal Kaplan-Meier `ggsurvplot()` (which
+comes with a correctly aligned number-at-risk table for the grouping variable) and
+swap its `$plot` for the adjusted-curves plot, matching palette, `xlim` and x-breaks
+so the panels line up.
 
 ```{r ggadjustedcurves-risktable, fig.height = 6}
 lung2 <- transform(lung, sex = factor(sex, labels = c("Male", "Female")))
