@@ -63,7 +63,10 @@ NULL
 #'  table (a two-way \code{facet_grid} shares one y axis per row, so the per-panel
 #'  strata cannot be labelled correctly). When \code{risk.table} is not FALSE the
 #'  function returns an aligned \code{gtable} (printed with \code{print()}); the
-#'  default (FALSE) returns the faceted ggplot unchanged.
+#'  default (FALSE) returns the faceted ggplot unchanged. In the faceted table the
+#'  strata rows are identified by their text labels in a single colour (not by the
+#'  curve colours), because a panel that drops a stratum would otherwise recolour
+#'  the remaining rows by position and mislabel them.
 #'@param risk.table.height,surv.plot.height the relative heights of the risk table
 #'  and the survival plot when \code{risk.table} is drawn. Defaults are 0.25 and
 #'  0.75.
@@ -499,18 +502,36 @@ ggsurvplot_facet <- function(fit, data, facet.by,
         if(identical(.within.var, ".strata.")) .grp <- gsub(";", ",", .grp)
         # ggsurvtable draws the y axis with breaks = levels(strata) and
         # labels = rev(levels(strata)) (it maps aes(y = rev(strata)) so the first
-        # stratum sits at the top and the row colours follow that order). Replace
-        # only the label TEXT with the clean group name, keeping the exact same
-        # breaks and rev() arrangement, so the labels stay aligned with the plotted
-        # rows and their colours (a full scale replacement would reset the order and
-        # silently swap the labels against the counts/colours).
+        # stratum sits at the top). Replace only the label TEXT with the clean group
+        # name, keeping the exact same breaks and rev() arrangement, so the labels
+        # stay aligned with the plotted rows and their counts (a full scale
+        # replacement would reset the order and silently swap the labels against the
+        # counts).
         tab <- suppressMessages(
           tab + ggplot2::scale_y_discrete(breaks = .lv, labels = rev(.grp))
         )
       }
-      # Facet the table like the plot. Always free the y scale so each panel shows
-      # only the strata present in it; keep the x scale in step with the plot so the
-      # time axes still align. space = "free_y" drops the empty rows for a 2-var grid.
+      # Draw the strata labels in a single neutral colour. ggsurvtable colours the
+      # y-axis text by strata via a POSITIONAL colour vector (a fixed theme setting,
+      # not a mapped scale), which facet_wrap cannot recolour per panel: once free_y
+      # drops a stratum from a panel, the remaining rows are recoloured by position
+      # and so point to the WRONG stratum by colour (e.g. a panel holding only the
+      # second group paints its row the first group's colour). Each row is already
+      # identified unambiguously by its (correct) label text and its panel, so a
+      # single colour is used rather than one that could mislead. Honour a
+      # user-supplied solid `tables.col`; the strata-colouring request ("strata")
+      # is the unreliable case, so it falls back to black. Applied only when the
+      # labels are shown.
+      if(isTRUE(tables.y.text)){
+        .tcol <- if(is.null(tables.col) || identical(tables.col, "strata"))
+          "black" else tables.col
+        tab <- tab + ggplot2::theme(
+          axis.text.y = ggplot2::element_text(colour = .tcol))
+      }
+      # The refit strata are the within-panel group x facet.by combination, so each
+      # panel must FREE its y scale to drop the strata that belong to the other panels
+      # (otherwise every panel shows every combination). Keep the x scale in step with
+      # the plot so the time axes still align.
       table.scales <- if(scales %in% c("free", "free_x")) "free" else "free_y"
       tp <- .facet(tab, facet.by, nrow = nrow, ncol = ncol, scales = table.scales,
                    short.panel.labs = short.panel.labs,
@@ -518,7 +539,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                    panel.labs.font = panel.labs.font,
                    panel.labs.font.x = panel.labs.font.x,
                    panel.labs.font.y = panel.labs.font.y,
-                   labeller = labeller, space = "free_y")
+                   labeller = labeller)
       # Stack the aligned plot and table grobs, honouring the height ratio.
       p.grob <- ggplot2::ggplotGrob(p)
       t.grob <- ggplot2::ggplotGrob(tp)
@@ -555,8 +576,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                    panel.labs.font = list(face = NULL, color = NULL, size = NULL, angle = NULL),
                    panel.labs.font.x = panel.labs.font,
                    panel.labs.font.y = panel.labs.font,
-                   labeller = NULL,
-                   space = "fixed"
+                   labeller = NULL
                    )
 {
 
@@ -576,9 +596,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
   }
   else if(length(facet.by) == 2){
     facet.formula <- paste(facet.by, collapse = " ~ ") %>% stats::as.formula()
-    # `space` lets the risk-table grid drop empty rows per panel (space = "free_y").
-    # Default "fixed" keeps the plot faceting byte-identical to before.
-    p <- p + facet_grid(facet.formula, scales = scales, labeller = .labeller, space = space)
+    p <- p + facet_grid(facet.formula, scales = scales, labeller = .labeller)
   }
 
   if(!.is_empty(panel.labs.background))

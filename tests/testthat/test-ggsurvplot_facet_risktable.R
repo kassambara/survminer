@@ -98,7 +98,7 @@ test_that("faceted risk-table labels map to the correct group / count (no swap)"
   tab2 <- suppressMessages(
     tab + ggplot2::scale_y_discrete(breaks = lv, labels = rev(grp))
   )
-  tp <- survminer:::.facet(tab2, "rx", scales = "free_y", space = "free_y")
+  tp <- survminer:::.facet(tab2, "rx", scales = "free_y")
   b  <- suppressWarnings(suppressMessages(ggplot2::ggplot_build(tp)))
   lay <- b$layout$layout
   obs.panel <- as.integer(lay$PANEL[lay$rx == "Obs"])

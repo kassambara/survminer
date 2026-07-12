@@ -153,7 +153,10 @@ each panel's table aligns under its curves. Supported for a single
 table (a two-way \code{facet_grid} shares one y axis per row, so the per-panel
 strata cannot be labelled correctly). When \code{risk.table} is not FALSE the
 function returns an aligned \code{gtable} (printed with \code{print()}); the
-default (FALSE) returns the faceted ggplot unchanged.}
+default (FALSE) returns the faceted ggplot unchanged. In the faceted table the
+strata rows are identified by their text labels in a single colour (not by the
+curve colours), because a panel that drops a stratum would otherwise recolour
+the remaining rows by position and mislabel them.}
 
 \item{risk.table.height, surv.plot.height}{the relative heights of the risk table
 and the survival plot when \code{risk.table} is drawn. Defaults are 0.25 and
