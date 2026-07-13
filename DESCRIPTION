@@ -70,6 +70,7 @@ Collate:
     'ggcoxzph.R'
     'ggflexsurvplot.R'
     'ggforest.R'
+    'ggforest_subgroup.R'
     'ggrmst.R'
     'ggsurvevents.R'
     'ggsurvplot_combine.R'
