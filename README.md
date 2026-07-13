@@ -26,7 +26,7 @@ Downloads](https://cranlogs.r-pkg.org/badges/grand-total/survminer?color=orange)
             curves](#uber-platinum-premium-customized-survival-curves)
     -   [Blog posts](#blog-posts)
 
-# survminer: Survival Analysis and Visualization
+# survminer: Survival Analysis and Visualization <img src="man/figures/logo.png" align="right" height="139" alt="survminer hex logo" />
 
 The **survminer** R package provides functions for facilitating
 **survival analysis** and **visualization**.
