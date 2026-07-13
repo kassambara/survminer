@@ -67,6 +67,7 @@ Collate:
     'ggcompetingrisks.R'
     'ggcoxdiagnostics.R'
     'ggcoxfunctional.R'
+    'ggcoxnph.R'
     'ggcoxzph.R'
     'ggflexsurvplot.R'
     'ggforest.R'
