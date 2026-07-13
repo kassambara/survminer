@@ -2,6 +2,15 @@
 
 ## New features
 
+- New `surv_adtte()` prepares a CDISC ADaM time-to-event dataset (ADTTE) for
+  analysis. ADTTE codes the censoring flag `CNSR` as 0 = event and >= 1 = censored
+  (the opposite of `survival::Surv()`), so passing `CNSR` straight into `Surv()`
+  silently inverts every result. `surv_adtte()` derives the correct event
+  (`event = CNSR == 0`, which also handles the multi-valued censoring-reason codes
+  that `1 - CNSR` breaks on), filters to one analysis parameter, validates `CNSR`
+  and `AVAL`, and returns the data with an `event` column ready for `surv_fit()` /
+  `ggsurvplot()`.
+
 - New `ggsurvparametric()` overlays the fitted survival curve of a parametric model
   on the Kaplan-Meier estimate, so the parametric fit can be judged against the data.
   It accepts a `survival::survreg` or a `flexsurv::flexsurvreg` model, draws the
