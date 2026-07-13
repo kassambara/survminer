@@ -2,6 +2,14 @@
 
 ## New features
 
+- New `weighted_logrank()` computes Fleming-Harrington `G(rho, gamma)` weighted
+  log-rank tests for one or more `(rho, gamma)` pairs, returning a tidy table of
+  `statistic`, `df` and `p.value`. `FH(0,0)` is the log-rank test, `FH(1,0)`
+  emphasises early differences, `FH(0,1)` late differences. The same arbitrary
+  weight is available via `surv_pvalue(method = "FH", rho =, gamma =)` and
+  `ggsurvplot(log.rank.weights = "FH", rho =, gamma =)`, and `surv_pvalue()` now
+  also returns the test `statistic` and `df`. Base R -- no new dependency.
+
 - `ggsurvplot()` gains a `preset` argument for one-call publication-ready figures.
   `preset = "publication"` bundles a full evidence panel (confidence bands, log-rank
   p-value, median-survival lines, a number-at-risk table, a colourblind-safe palette

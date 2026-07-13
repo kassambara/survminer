@@ -30,7 +30,15 @@ differences \item "S2": modified Peto-Peto (by Andersen), mPP \item
 "FH_p=1_q=1": Fleming-Harrington(p=1, q=1),  FH } To specify method, one can
 use either the weights (e.g.: "1", "n", "sqrtN", ...), or the full name
 ("log-rank", "gehan-breslow", "Peto-Peto", ...), or the acronyme LR, GB,
-.... Case insensitive partial match is allowed.\cr\cr To learn more about
+.... Case insensitive partial match is allowed.\cr\cr For an \strong{arbitrary
+Fleming-Harrington} \eqn{G(\rho, \gamma)} weight, use \code{method = "FH"}
+together with \code{rho} and \code{gamma} (passed via \code{...}): the weight
+is \eqn{S(t^-)^{\rho}(1 - S(t^-))^{\gamma}}. \code{FH(0, 0)} is the log-rank
+test, \code{FH(1, 0)} emphasises early differences, \code{FH(0, 1)} late
+differences and \code{FH(1, 1)} the middle. See \code{\link{weighted_logrank}()}
+for a batch version. Note: for backward compatibility a bare
+\code{method = "FH"} (with no \code{rho}/\code{gamma}) is \code{FH(1, 1)};
+pass \code{rho = 0, gamma = 0} for the log-rank test. \cr\cr To learn more about
 the mathematical background behind the different log-rank weights, read the
 following blog post on R-Addict:
 \href{https://rpkgs.datanovia.com/survminer/articles/Specifiying_weights_in_log-rank_comparisons.html}{Comparing
@@ -54,14 +62,15 @@ pvalue and pvalue-method coordinates on the survival plot; normally users
 don't need them.}
 }
 \value{
-Return a data frame with the columns (pval, method, pval.txt and
- variable). If additional arguments (pval, pval.coord, pval.method.coord,
- get_coord) are specified, then extra columns (pval.x, pval.y, method.x and
- method.y) are returned. \itemize{ \item pval: pvalue \item method: method
- used to compute pvalues \item pval.txt: formatted text ready to use for
- annotating plots \item pval.x, pval.y: x & y coordinates of the pvalue for
- annotating the plot \item method.x, method.y: x & y coordinates of pvalue
- method }
+Return a data frame with the columns (variable, pval, method,
+ pval.txt, statistic and df). If additional arguments (pval, pval.coord,
+ pval.method.coord, get_coord) are specified, then extra columns (pval.x,
+ pval.y, method.x and method.y) are returned. \itemize{ \item pval: pvalue
+ \item method: method used to compute pvalues \item pval.txt: formatted text
+ ready to use for annotating plots \item statistic: the test statistic
+ (chi-square) \item df: its degrees of freedom \item pval.x, pval.y: x & y
+ coordinates of the pvalue for annotating the plot \item method.x, method.y: x
+ & y coordinates of pvalue method }
 }
 \description{
 Compute p-value from survfit objects or parse it when provided by

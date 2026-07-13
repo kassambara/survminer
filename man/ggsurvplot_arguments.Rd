@@ -50,9 +50,9 @@ character vector c("solid", "dashed").}
 
 \item{break.time.by}{numeric value controlling time axis breaks. A single
 value gives regularly spaced breaks (from 0 by that step); a numeric vector
-is used as the exact break positions (e.g. \code{c(0, 100, 300, 600)}), which
-also keeps the survival curve and the risk/censor tables aligned. Default value
-is NULL.}
+is used as the exact break positions (e.g. \code{c(0, 100, 300, 600)}),
+which also keeps the survival curve and the risk/censor tables aligned.
+Default value is NULL.}
 
 \item{break.x.by}{alias of break.time.by. Numeric value (or vector) controlling
 x axis breaks. Default value is NULL.}
@@ -178,7 +178,9 @@ time t is plotted. Default is FALSE. Ignored when cumcensor = TRUE.}
 \code{ncensor.plot = TRUE}.}
 
 \item{cumevents}{logical value specifying whether to show or not the table of
-the cumulative number of events. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct"); "percentage" shows the count as a percent of the stratum size.}
+the cumulative number of events. Default is FALSE. Can also be a character
+string ("absolute", "percentage" or "abs_pct"); "percentage" shows the count
+as a percent of the stratum size.}
 
 \item{cumevents.title}{The title to be used for the cumulative events table.}
 
@@ -195,7 +197,8 @@ tick labels of the cumulative events will be colored by strata.}
 Default is 0.25. Ignored when cumevents = FALSE.}
 
 \item{cumcensor}{logical value specifying whether to show or not the table of
-the cumulative number of censoring. Default is FALSE. Can also be a character string ("absolute", "percentage" or "abs_pct").}
+the cumulative number of censoring. Default is FALSE. Can also be a character
+string ("absolute", "percentage" or "abs_pct").}
 
 \item{cumcensor.title}{The title to be used for the cumcensor table.}
 
@@ -228,7 +231,11 @@ to calculate regular log-rank test (with weights == 1). A user can specify
 \code{"1", "n", "sqrtN", "S1", "S2", "FH"} so that weights correspond to
 the test as: 1 - log-rank, n - Gehan-Breslow (generalized Wilcoxon),
 sqrtN - Tarone-Ware, S1 - Peto-Peto's modified survival estimate,
-S2 - modified Peto-Peto (by Andersen), FH - Fleming-Harrington(p=1, q=1).}
+S2 - modified Peto-Peto (by Andersen), FH - Fleming-Harrington(p=1, q=1).
+For an arbitrary Fleming-Harrington weight, use \code{log.rank.weights = "FH"}
+together with \code{rho} and \code{gamma} (weight \eqn{S(t^-)^{\rho}(1 -
+S(t^-))^{\gamma}}); e.g. \code{rho = 1, gamma = 0} for early emphasis or
+\code{rho = 0, gamma = 1} for late emphasis.}
 
 \item{pval.method}{whether to add a text with the test name used for
 calculating the pvalue, that corresponds to survival curves' comparison -
