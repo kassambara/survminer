@@ -2,6 +2,15 @@
 
 ## New features
 
+- New `ggsurvparametric()` overlays the fitted survival curve of a parametric model
+  on the Kaplan-Meier estimate, so the parametric fit can be judged against the data.
+  It accepts a `survival::survreg` or a `flexsurv::flexsurvreg` model, draws the
+  Kaplan-Meier as a solid step function and the model as a dashed line in the same
+  colour per group, and (with `conf.int = TRUE`) adds a confidence band -- a
+  parametric-bootstrap band for `survreg`, the model's own band for `flexsurvreg`.
+  This extends `ggflexsurvplot()` (flexsurv only) to `survreg` and to a cleaner,
+  colour-matched overlay.
+
 - `ggcompetingrisks()` gains competing-risks features. It now accepts a
   `tidycmprsk::cuminc` object (with proper pointwise confidence limits and the
   data). `pval = TRUE` annotates Gray's test p-value for each cause as a subtitle

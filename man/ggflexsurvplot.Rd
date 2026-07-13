@@ -58,6 +58,10 @@ ggflexsurvplot(fit)
 }
 
 }
+\seealso{
+\code{\link{ggsurvparametric}}, which draws the same parametric-over-KM
+ overlay for \code{survreg} models as well as \code{flexsurvreg}.
+}
 \author{
 Alboukadel Kassambara, \email{alboukadel.kassambara@gmail.com}
 }

@@ -17,6 +17,8 @@ NULL
 #' @param ... additional arguments passed to the function \code{\link{ggsurvplot}()}.
 #' @author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #' @return a ggsurvplot
+#' @seealso \code{\link{ggsurvparametric}}, which draws the same parametric-over-KM
+#'  overlay for \code{survreg} models as well as \code{flexsurvreg}.
 #' @examples
 #' \donttest{
 #' if(require("flexsurv")) {
