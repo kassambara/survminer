@@ -128,7 +128,7 @@ ggrmst <- function(fit, data = NULL, tau = NULL, conf.int = 0.95,
   glevels <- levels(ext$group)
   tab <- ggrmst_difference(fit, data = ext$data, tau = tau, conf.int = conf.int)
 
-  # Bare, composable survival-curve ggplot (P0.1a). No table -- RMST is a single plot.
+  # Bare, composable survival-curve ggplot (output = "ggplot"). No table -- RMST is a single plot.
   p <- ggsurvplot(fit, data = ext$data, palette = palette, ggtheme = ggtheme,
                   output = "ggplot", ...)
 

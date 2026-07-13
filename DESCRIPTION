@@ -41,7 +41,8 @@ Suggests:
     markdown,
     testthat,
     rmarkdown,
-    survRM2
+    survRM2,
+    prodlim
 VignetteBuilder: knitr
 URL: https://rpkgs.datanovia.com/survminer/index.html
 BugReports: https://github.com/kassambara/survminer/issues
@@ -81,4 +82,5 @@ Collate:
     'surv_group_by.R'
     'surv_fit.R'
     'surv_median.R'
+    'surv_median_followup.R'
     'weighted_logrank.R'
