@@ -207,7 +207,15 @@ ggsurvplot_df <- function(fit, fun = NULL,
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   df[, .strata.var] <- factor( df[, .strata.var], levels = .levels(.strata), labels = legend.labs)
 
-  surv.layer <- ggpubr::geom_exec(surv.geom, data = df, linewidth = size, color = color, linetype = linetype, ...)
+  # `size` is captured above and forwarded as `linewidth`; drop it from the extra
+  # dots so ggpubr::geom_exec() does not also set the deprecated `size` line
+  # aesthetic (deprecated in ggplot2 3.4.0). `linewidth` already carries the value,
+  # so the drawn width is unchanged.
+  .extra <- list(...)
+  .extra$size <- NULL
+  surv.layer <- do.call(ggpubr::geom_exec,
+                        c(list(surv.geom, data = df, linewidth = size,
+                               color = color, linetype = linetype), .extra))
   # ggpubr::geom_exec() does not forward `linejoin` to the step geom, so set it
   # directly on the built layer. The default "round" reproduces geom_step()'s own
   # default, so the curve is byte-identical unless the user opts into another join
