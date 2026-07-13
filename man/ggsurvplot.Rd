@@ -29,6 +29,7 @@ ggsurvplot(
   ggtheme = theme_survminer(),
   tables.theme = ggtheme,
   output = c("classic", "ggplot"),
+  preset = "none",
   ...
 )
 
@@ -160,6 +161,18 @@ an \emph{external} covariate (not the strata) still needs
 annotation is replicated into every panel. \code{group.by} and an uncombined list
 of fits produce several plots (not one), so \code{output = "ggplot"} falls back to
 the classic object there (with a warning).}
+
+\item{preset}{a publication preset that bundles sensible defaults so a single
+call yields a ready-to-publish figure. One of \code{"none"} (default, no
+preset), \code{"publication"} (full evidence panel: confidence bands, log-rank
+p-value, median-survival lines, number-at-risk table, colourblind-safe palette,
+clean theme), \code{"minimal"} (airy single panel, no table or bands),
+\code{"classic"} (grey textbook step curves with a risk table) or
+\code{"presentation"} (bold, large fonts for slides). A preset only sets
+arguments you did \strong{not} pass yourself, so any explicit argument (e.g.
+\code{conf.int = FALSE}, \code{palette = "npg"}) always overrides it. The
+companion themes \code{\link{theme_surv_classic}()}, \code{_minimal()} and
+\code{_bold()} can also be used on their own via \code{ggtheme}.}
 
 \item{...}{Futher arguments as described hereafter and
 other arguments to be passed i) to ggplot2 geom_*() functions such

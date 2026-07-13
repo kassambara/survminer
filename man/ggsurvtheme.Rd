@@ -3,6 +3,9 @@
 \name{theme_survminer}
 \alias{theme_survminer}
 \alias{theme_cleantable}
+\alias{theme_surv_classic}
+\alias{theme_surv_minimal}
+\alias{theme_surv_bold}
 \title{Theme for Survminer Plots}
 \usage{
 theme_survminer(
@@ -20,6 +23,48 @@ theme_survminer(
 )
 
 theme_cleantable(base_size = 12, base_family = "", ...)
+
+theme_surv_classic(
+  base_size = 12,
+  base_family = "",
+  font.main = c(16, "bold", "black"),
+  font.submain = c(15, "plain", "black"),
+  font.x = c(14, "bold", "black"),
+  font.y = c(14, "bold", "black"),
+  font.caption = c(15, "plain", "black"),
+  font.tickslab = c(12, "plain", "black"),
+  legend = c("bottom", "top", "left", "right", "none"),
+  font.legend = c(11, "plain", "black"),
+  ...
+)
+
+theme_surv_minimal(
+  base_size = 12,
+  base_family = "",
+  font.main = c(15, "plain", "black"),
+  font.submain = c(14, "plain", "black"),
+  font.x = c(13, "plain", "black"),
+  font.y = c(13, "plain", "black"),
+  font.caption = c(13, "plain", "black"),
+  font.tickslab = c(11, "plain", "black"),
+  legend = c("bottom", "top", "left", "right", "none"),
+  font.legend = c(10, "plain", "black"),
+  ...
+)
+
+theme_surv_bold(
+  base_size = 14,
+  base_family = "",
+  font.main = c(20, "bold", "black"),
+  font.submain = c(17, "bold", "black"),
+  font.x = c(16, "bold", "black"),
+  font.y = c(16, "bold", "black"),
+  font.caption = c(15, "plain", "black"),
+  font.tickslab = c(14, "bold", "black"),
+  legend = c("top", "bottom", "left", "right", "none"),
+  font.legend = c(14, "plain", "black"),
+  ...
+)
 }
 \arguments{
 \item{base_size}{base font size}
@@ -50,6 +95,17 @@ Default theme for plots generated with survminer.
 \item \code{theme_cleantable()}: theme for drawing a clean risk table and cumulative
 number of events table. A theme similar to theme_survminer() without i)
 axis lines and, ii) x axis ticks and title.
+
+\item \code{theme_surv_classic()}: a clean, publication-classic look for survival curves:
+\code{\link{theme_survminer}()} with bold axis titles, no panel gridlines,
+crisp axis lines and a bottom legend. A good default for a manuscript figure.
+
+\item \code{theme_surv_minimal()}: a minimal, airy look: no axis lines or ticks and only a
+faint horizontal gridline, for a clean single-panel figure. Pairs well with
+an inside legend.
+
+\item \code{theme_surv_bold()}: a bold, slide-friendly look: large fonts and heavy axis
+lines so the figure stays legible when projected on a poster or in a talk.
 
 }}
 \examples{
