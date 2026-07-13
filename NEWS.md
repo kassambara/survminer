@@ -2,6 +2,16 @@
 
 ## New features
 
+- `ggsurvplot()` gains a `preset` argument for one-call publication-ready figures.
+  `preset = "publication"` bundles a full evidence panel (confidence bands, log-rank
+  p-value, median-survival lines, a number-at-risk table, a colourblind-safe palette
+  and a clean theme); `"minimal"`, `"classic"` and `"presentation"` offer airy,
+  textbook and slide-friendly looks. A preset only sets arguments you did not pass
+  yourself, so any explicit argument still wins, and `preset = "none"` (default)
+  leaves every existing call unchanged. Three reusable companion themes --
+  `theme_surv_classic()`, `theme_surv_minimal()` and `theme_surv_bold()`
+  -- are also exported for use via `ggtheme`.
+
 - New `ggforest_subgroup()` draws the subgroup forest plot used in clinical
   reporting: the hazard ratio of a treatment *within* each level of one or more
   subgroup variables, with the treatment-by-subgroup interaction test. Per-level

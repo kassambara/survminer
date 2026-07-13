@@ -243,6 +243,17 @@ NULL
 #'  annotation is replicated into every panel. \code{group.by} and an uncombined list
 #'  of fits produce several plots (not one), so \code{output = "ggplot"} falls back to
 #'  the classic object there (with a warning).
+#'@param preset a publication preset that bundles sensible defaults so a single
+#'  call yields a ready-to-publish figure. One of \code{"none"} (default, no
+#'  preset), \code{"publication"} (full evidence panel: confidence bands, log-rank
+#'  p-value, median-survival lines, number-at-risk table, colourblind-safe palette,
+#'  clean theme), \code{"minimal"} (airy single panel, no table or bands),
+#'  \code{"classic"} (grey textbook step curves with a risk table) or
+#'  \code{"presentation"} (bold, large fonts for slides). A preset only sets
+#'  arguments you did \strong{not} pass yourself, so any explicit argument (e.g.
+#'  \code{conf.int = FALSE}, \code{palette = "npg"}) always overrides it. The
+#'  companion themes \code{\link{theme_surv_classic}()}, \code{_minimal()} and
+#'  \code{_bold()} can also be used on their own via \code{ggtheme}.
 #'@return an object of class ggsurvplot (a list) by default, or -- when
 #'  \code{output = "ggplot"} -- a single survival-curve \code{ggplot}. The
 #'  \code{ggsurvplot} list contains the
@@ -377,9 +388,11 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                        ggtheme = theme_survminer(),
                        tables.theme = ggtheme,
                        output = c("classic", "ggplot"),
+                       preset = "none",
                        ...
 ){
   output <- match.arg(output)
+  preset <- match.arg(preset, c("none", names(.survminer_presets())))
 
   if(length(group.by) > 2)
     stop("group.by should be of length 1 or 2.")
@@ -439,15 +452,40 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     cumcensor <- FALSE
   }
 
+  # Publication preset resolution (preset != "none"). Apply the preset's defaults
+  # ONLY for arguments the user did not pass, so an explicit user value always
+  # wins. `match.call(expand.dots = TRUE)` names every supplied argument by its
+  # full formal name (completing partial names and naming positionals) and keeps
+  # `...` keys verbatim, so both formals and dots are detected uniformly. Keys
+  # that are ggsurvplot() formals override the built `opts`/`opts_df` (below);
+  # non-formal keys ride along in `.dots`. `preset = "none"` is a strict no-op.
+  inject_formal <- list()
+  if (!identical(preset, "none")) {
+    mc <- match.call(expand.dots = TRUE)
+    supplied <- names(mc); supplied <- supplied[nzchar(supplied)]
+    defs <- .resolve_preset(preset, fit)
+    inject <- defs[setdiff(names(defs), supplied)]
+    fn <- names(formals(sys.function()))
+    inject_formal <- inject[intersect(names(inject), fn)]
+    inject_dots   <- inject[setdiff(names(inject), fn)]
+    # when the preset sets ggtheme and neither the user nor the preset set
+    # tables.theme, let the tables inherit the preset theme (tables.theme defaults
+    # to ggtheme). A preset's own tables.theme (e.g. theme_cleantable()) wins.
+    if ("ggtheme" %in% names(inject_formal) && !("tables.theme" %in% supplied) &&
+        is.null(inject_formal$tables.theme))
+      inject_formal$tables.theme <- inject_formal$ggtheme
+    .dots <- utils::modifyList(.dots, inject_dots)
+  }
+
   # Options for ggsurvplot_df
   # Don't accept arguments for pval and survival tables
-  opts_df <- list(
+  opts_df <- c(list(
                 fit = fit, fun = fun,
                 color = color, palette = palette, linetype = linetype,
-                conf.int = conf.int,  ggtheme = ggtheme, ...)
+                conf.int = conf.int,  ggtheme = ggtheme), .dots)
 
   # Options for the remaining ggsurvplot_*() functions
-  opts <- list(
+  opts <- c(list(
                fit = fit, data = data, fun = fun,
                color = color, palette = palette, linetype = linetype,
                conf.int = conf.int, pval = pval, pval.method = pval.method,
@@ -455,7 +493,22 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
                surv.median.line = surv.median.line,
                risk.table = risk.table, cumevents = cumevents, cumcensor = cumcensor,
                tables.height = tables.height, ggtheme = ggtheme,
-               tables.theme = tables.theme, ...)
+               tables.theme = tables.theme), .dots)
+
+  # Apply preset formal-argument defaults to the assembled option lists (only the
+  # keys the user did not pass; see above). This reaches every dispatch branch.
+  if (length(inject_formal) > 0) {
+    opts <- utils::modifyList(opts, inject_formal)
+    opts_df <- utils::modifyList(opts_df,
+                                 inject_formal[names(inject_formal) %in% names(opts_df)])
+    # output = "ggplot" returns the curve panel only and cannot carry a table;
+    # a preset would otherwise inject one only for it to be discarded. Re-drop.
+    if (identical(output, "ggplot")) {
+      opts$risk.table <- FALSE
+      opts$cumevents <- FALSE
+      opts$cumcensor <- FALSE
+    }
+  }
 
 
 
@@ -471,10 +524,14 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
     # the number-at-risk / cumulative tables from the data frame when requested
     # (#409); with no table requested it returns the bare ggplot exactly as
     # ggsurvplot_df() did.
+    # Read the table arguments from `opts` (not the raw formals) so a preset's
+    # injected risk.table / tables.theme / ... also reach the data-frame path.
     ggsurv <- do.call(.ggsurvplot_df_tables,
-                      c(opts_df, list(risk.table = risk.table, cumevents = cumevents,
-                                      cumcensor = cumcensor, tables.height = tables.height,
-                                      tables.theme = tables.theme)))
+                      c(opts_df, list(risk.table = opts$risk.table,
+                                      cumevents = opts$cumevents,
+                                      cumcensor = opts$cumcensor,
+                                      tables.height = opts$tables.height,
+                                      tables.theme = opts$tables.theme)))
 
   else if(.is_survfit(fit)){
 
@@ -492,7 +549,11 @@ ggsurvplot <- function(fit, data = NULL, fun = NULL,
 
     else{
       if(is.null(fit$strata)){
-        if(missing(conf.int)){
+        # Default a null-model curve to a shaded confidence band -- but not when a
+        # preset already set conf.int (e.g. minimal sets it FALSE); the preset
+        # must win. `missing(conf.int)` alone would clobber the preset because the
+        # preset injects into `opts`, not the formal.
+        if(missing(conf.int) && is.null(inject_formal$conf.int)){
           opts$conf.int = TRUE
           opts$conf.int.fill = "strata"
         }

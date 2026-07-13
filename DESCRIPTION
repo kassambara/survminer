@@ -79,6 +79,7 @@ Collate:
     'ggurvplot_arguments.R'
     'myeloma.R'
     'pairwise_survdiff.R'
+    'presets.R'
     'surv_cutpoint.R'
     'surv_group_by.R'
     'surv_fit.R'

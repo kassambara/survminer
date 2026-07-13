@@ -145,3 +145,87 @@ theme_cleantable <- function(base_size = 12, base_family = "", ...)
       axis.title.y = element_blank()
     )
 }
+
+# Keep the same ggplot2 (<3.5.2) class fix theme_survminer() applies, so the
+# companion themes are the exact same object shape.
+.finish_theme <- function(t) {
+  if (!is_pkg_version_sup("ggplot2", "3.5.2")) class(t) <- "theme"
+  t
+}
+
+#' @describeIn ggsurvtheme a clean, publication-classic look for survival curves:
+#'   \code{\link{theme_survminer}()} with bold axis titles, no panel gridlines and
+#'   crisp axis lines. A good default for a manuscript figure.
+#' @export
+theme_surv_classic <- function(
+    base_size = 12, base_family = "",
+    font.main = c(16, "bold", "black"), font.submain = c(15, "plain", "black"),
+    font.x = c(14, "bold", "black"), font.y = c(14, "bold", "black"),
+    font.caption = c(15, "plain", "black"), font.tickslab = c(12, "plain", "black"),
+    legend = c("bottom", "top", "left", "right", "none"),
+    font.legend = c(11, "plain", "black"), ...) {
+  if (!is(legend, "numeric")) legend <- match.arg(legend)
+  .finish_theme(
+    theme_survminer(
+      base_size = base_size, base_family = base_family,
+      font.main = font.main, font.submain = font.submain,
+      font.x = font.x, font.y = font.y, font.caption = font.caption,
+      font.tickslab = font.tickslab, legend = legend, font.legend = font.legend, ...) %+replace%
+      theme(
+        panel.grid = element_blank(),
+        axis.line = element_line(linewidth = 0.6)
+      )
+  )
+}
+
+#' @describeIn ggsurvtheme a minimal, airy look: no axis lines or ticks and only a
+#'   faint horizontal gridline, for a clean single-panel figure. Pairs well with
+#'   an inside legend.
+#' @export
+theme_surv_minimal <- function(
+    base_size = 12, base_family = "",
+    font.main = c(15, "plain", "black"), font.submain = c(14, "plain", "black"),
+    font.x = c(13, "plain", "black"), font.y = c(13, "plain", "black"),
+    font.caption = c(13, "plain", "black"), font.tickslab = c(11, "plain", "black"),
+    legend = c("bottom", "top", "left", "right", "none"),
+    font.legend = c(10, "plain", "black"), ...) {
+  if (!is(legend, "numeric")) legend <- match.arg(legend)
+  .finish_theme(
+    theme_survminer(
+      base_size = base_size, base_family = base_family,
+      font.main = font.main, font.submain = font.submain,
+      font.x = font.x, font.y = font.y, font.caption = font.caption,
+      font.tickslab = font.tickslab, legend = legend, font.legend = font.legend, ...) %+replace%
+      theme(
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major.y = element_line(colour = "grey92", linewidth = 0.3),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank()
+      )
+  )
+}
+
+#' @describeIn ggsurvtheme a bold, slide-friendly look: large fonts and heavy axis
+#'   lines so the figure stays legible when projected on a poster or in a talk.
+#' @export
+theme_surv_bold <- function(
+    base_size = 14, base_family = "",
+    font.main = c(20, "bold", "black"), font.submain = c(17, "bold", "black"),
+    font.x = c(16, "bold", "black"), font.y = c(16, "bold", "black"),
+    font.caption = c(15, "plain", "black"), font.tickslab = c(14, "bold", "black"),
+    legend = c("top", "bottom", "left", "right", "none"),
+    font.legend = c(14, "plain", "black"), ...) {
+  if (!is(legend, "numeric")) legend <- match.arg(legend)
+  .finish_theme(
+    theme_survminer(
+      base_size = base_size, base_family = base_family,
+      font.main = font.main, font.submain = font.submain,
+      font.x = font.x, font.y = font.y, font.caption = font.caption,
+      font.tickslab = font.tickslab, legend = legend, font.legend = font.legend, ...) %+replace%
+      theme(
+        panel.grid = element_blank(),
+        axis.line = element_line(linewidth = 1)
+      )
+  )
+}
