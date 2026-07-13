@@ -75,6 +75,7 @@ Collate:
     'ggforest_subgroup.R'
     'ggrmst.R'
     'ggsurvevents.R'
+    'ggsurvparametric.R'
     'ggsurvplot_combine.R'
     'ggsurvplot_facet.R'
     'ggsurvtheme.R'
