@@ -266,7 +266,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 
     if(!pms$xlog) ncensor_plot <- ncensor_plot + scale_x_continuous(breaks = pms$time.breaks,
                                                                     labels = pms$xticklabels, expand = .expand)
-    else ncensor_plot <- ncensor_plot + ggplot2::scale_x_continuous(breaks = pms$time.breaks, trans = "log10", labels = pms$xticklabels)
+    else ncensor_plot <- ncensor_plot + .scale_x_log10(breaks = pms$time.breaks, labels = pms$xticklabels)
 
   }
   else if(cumcensor){

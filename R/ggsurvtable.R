@@ -419,8 +419,7 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
   #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   xticklabels <- .format_xticklabels(labels = times, xscale = xscale)
   if(!xlog) p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels, expand = .expand)
-  else p <- p + ggplot2::scale_x_continuous(breaks = times,
-                                            trans = "log10", labels = xticklabels)
+  else p <- p + .scale_x_log10(breaks = times, labels = xticklabels)
 
   p <- p + tables.theme
 

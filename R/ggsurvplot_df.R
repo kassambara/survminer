@@ -251,7 +251,7 @@ ggsurvplot_df <- function(fit, fun = NULL,
     p <- p + ggplot2::scale_x_continuous(breaks = times, labels = xticklabels, expand = .expand) +
       ggplot2::expand_limits(x = 0, y = 0)
   }
-  else p <- p + ggplot2::scale_x_continuous(breaks = times, trans = "log10", labels = xticklabels)
+  else p <- p + .scale_x_log10(breaks = times, labels = xticklabels)
 
   # Add confidence interval
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

@@ -39,6 +39,7 @@ cases <- list(
                                                       pval = TRUE, risk.table = TRUE,
                                                       ncensor.plot = TRUE),
   "ggsurvplot(fun=cumhaz)"    = function() ggsurvplot(km, data = lung2, fun = "cumhaz", size = 0.8),
+  "ggsurvplot(fun=cloglog)"   = function() ggsurvplot(km, data = lung2, fun = "cloglog"),
   "ggsurvplot(fun=event)"     = function() ggsurvplot(km, data = lung2, fun = "event"),
   "ggsurvplot(ci step)"       = function() ggsurvplot(km, data = lung2, conf.int = TRUE,
                                                       conf.int.style = "step", size = 0.8),

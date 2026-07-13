@@ -835,3 +835,15 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
 
 
 
+
+# A log10 x-axis scale that works across ggplot2 versions: ggplot2 3.5.0 renamed
+# the scale `trans` argument to `transform` and soft-deprecated `trans`. Pick the
+# name the installed ggplot2 understands so the cloglog / log-time axes stay
+# deprecation-free without raising the package's ggplot2 floor.
+.scale_x_log10 <- function(breaks = ggplot2::waiver(),
+                           labels = ggplot2::waiver()) {
+  args <- list(breaks = breaks, labels = labels)
+  arg <- if (utils::packageVersion("ggplot2") >= "3.5.0") "transform" else "trans"
+  args[[arg]] <- "log10"
+  do.call(ggplot2::scale_x_continuous, args)
+}
