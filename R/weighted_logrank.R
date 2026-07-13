@@ -1,3 +1,52 @@
+#' Fleming-Harrington Weighted Log-Rank Tests
+#'
+#' @description Computes Fleming-Harrington \eqn{G(\rho, \gamma)} weighted
+#'   log-rank tests for one or more \code{(rho, gamma)} parameter pairs. At each
+#'   event time the weight is \eqn{S(t^-)^{\rho}\,(1 - S(t^-))^{\gamma}}, where
+#'   \eqn{S} is the pooled Kaplan-Meier estimate. Different weights emphasise
+#'   different parts of the follow-up: \code{FH(0, 0)} is the ordinary log-rank
+#'   test (equal weight), \code{FH(1, 0)} emphasises \emph{early} differences,
+#'   \code{FH(0, 1)} \emph{late} differences and \code{FH(1, 1)} the middle. This
+#'   is the base-R engine behind \code{\link{surv_pvalue}(method = "FH", rho =,
+#'   gamma =)} and \code{\link{ggsurvplot}()}.
+#' @param formula a survival formula, e.g. \code{Surv(time, status) ~ group}.
+#' @param data a data frame.
+#' @param rho,gamma numeric vectors of Fleming-Harrington parameters. They are
+#'   recycled to a common length and one test is run per \code{(rho, gamma)}
+#'   pair. Default \code{FH(0, 0)}, the log-rank test.
+#' @return a data frame with one row per \code{(rho, gamma)} pair and the columns:
+#'   \code{weight} (a \code{"FH(rho, gamma)"} label), \code{rho}, \code{gamma},
+#'   \code{statistic} (the chi-square statistic), \code{df} (degrees of freedom)
+#'   and \code{p.value}.
+#' @seealso \code{\link{surv_pvalue}()}
+#' @examples
+#' library(survival)
+#' # Log-rank, early- and late-emphasis tests in one call
+#' weighted_logrank(Surv(time, status) ~ sex, data = lung,
+#'                  rho = c(0, 1, 0), gamma = c(0, 0, 1))
+#' @export
+weighted_logrank <- function(formula, data, rho = 0, gamma = 0) {
+  if (!is.numeric(rho) || !is.numeric(gamma))
+    stop("`rho` and `gamma` must be numeric.", call. = FALSE)
+  if (any(rho < 0) || any(gamma < 0))
+    stop("Fleming-Harrington `rho` and `gamma` must be >= 0.", call. = FALSE)
+  n <- max(length(rho), length(gamma))
+  if (n == 0L) stop("`rho`/`gamma` must have at least one value.", call. = FALSE)
+  rho <- rep_len(rho, n); gamma <- rep_len(gamma, n)
+  rows <- lapply(seq_len(n), function(i) {
+    t <- .weighted_logrank_test(formula, data, method = "FH",
+                                rho = rho[i], gamma = gamma[i])
+    data.frame(weight = sprintf("FH(%g, %g)", rho[i], gamma[i]),
+               rho = rho[i], gamma = gamma[i],
+               statistic = t$statistic, df = t$df, p.value = t$pvalue,
+               stringsAsFactors = FALSE)
+  })
+  out <- do.call(rbind, rows)
+  rownames(out) <- NULL
+  out
+}
+
+
 # Internal weighted log-rank test implementation
 # Replaces dependency on survMisc::ten() and survMisc::comp()
 #
@@ -9,10 +58,16 @@
 #
 # @param formula a survival formula (e.g. Surv(time, status) ~ group)
 # @param data a data frame
-# @param method weight method: "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"
+# @param method weight method: "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1", or
+#   "FH" for an arbitrary Fleming-Harrington G(rho, gamma) weight.
+# @param rho,gamma Fleming-Harrington parameters used when method = "FH": the
+#   weight is S(t-)^rho * (1 - S(t-))^gamma, where S is the pooled Kaplan-Meier
+#   estimate. FH(0,0) is the log-rank test, FH(1,0) early emphasis, FH(0,1) late
+#   emphasis, FH(1,1) mid emphasis. Ignored by the fixed-weight methods.
 # @param test.for.trend logical; if TRUE, compute 1-df trend test
-# @return list with pvalue and method_name
+# @return list with statistic (chi-square), df, pvalue and method_name
 .weighted_logrank_test <- function(formula, data, method = "1",
+                                   rho = 0, gamma = 0,
                                    test.for.trend = FALSE) {
   # Build model frame
   mf <- stats::model.frame(formula, data)
@@ -76,6 +131,13 @@
       s_left <- c(1, surv_km[-n_times])
       s_left * (1 - s_left)
     },
+    "FH" = {
+      # Fleming-Harrington G(rho, gamma): w = S(t-)^rho * (1 - S(t-))^gamma,
+      # S(t-) the left-continuous pooled KM estimate. FH(0,0) == log-rank.
+      surv_km <- cumprod(1 - d_i / n_i)
+      s_left <- c(1, surv_km[-n_times])
+      s_left^rho * (1 - s_left)^gamma
+    },
     stop("Unknown weight method: ", method)
   )
 
@@ -88,7 +150,9 @@
     "S2" = "modified Peto-Peto",
     "FH_p=1_q=1" = "Fleming-Harrington (p=1, q=1)"
   )
-  test_name <- test_names[method]
+  test_name <- if (method == "FH")
+    sprintf("Fleming-Harrington (rho=%g, gamma=%g)", rho, gamma)
+  else test_names[method]
 
   if (test.for.trend) {
     # 1-df trend test using integer group scores
@@ -125,6 +189,7 @@
     Var_trend <- as.numeric(t(scores) %*% V %*% scores)
     Z <- Q_trend / sqrt(Var_trend)
     pvalue <- 2 * stats::pnorm(abs(Z), lower.tail = FALSE)
+    statistic <- Z^2; df <- 1
     test_name <- paste0(test_name, ", tft")
   } else if (ngroups == 2) {
     # 2-group test: use Z-statistic (normal distribution)
@@ -136,6 +201,7 @@
                    (n_i^2 * (n_i - 1)), na.rm = TRUE)
     Z <- Q / sqrt(Var_Q)
     pvalue <- 2 * stats::pnorm(abs(Z), lower.tail = FALSE)
+    statistic <- Z^2; df <- 1
   } else {
     # 3+ groups: chi-squared test
     # U_j = sum w * (d_j - e_j) for each group j (drop last group)
@@ -167,9 +233,10 @@
     chiSq <- as.numeric(t(U_red) %*% solve(V_red) %*% U_red)
     df <- ngroups - 1
     pvalue <- stats::pchisq(chiSq, df = df, lower.tail = FALSE)
+    statistic <- chiSq
   }
 
-  list(pvalue = pvalue, method_name = test_name)
+  list(statistic = statistic, df = df, pvalue = pvalue, method_name = test_name)
 }
 
 

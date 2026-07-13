@@ -14,7 +14,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
                             pval.parse = FALSE,
                             test.for.trend = FALSE,
                             pval.method = FALSE, pval.method.size = pval.size, pval.method.coord = c(NULL, NULL),
-                            log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1"),
+                            log.rank.weights = c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1", "FH"),
                             title = NULL,  xlab = "Time", ylab = "Survival probability",
                             xlim = NULL, ylim = NULL, axes.offset = TRUE,
                             legend = c("top", "bottom", "left", "right", "none"),
@@ -45,7 +45,7 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   if(!inherits(fit, "survfit"))
     stop("Can't handle an object of class ", class(fit))
   surv.median.line <- match.arg(surv.median.line)
-  stopifnot(log.rank.weights %in% c("survdiff", "1", "n", "sqrtN", "S1", "S2","FH_p=1_q=1"))
+  stopifnot(log.rank.weights %in% c("survdiff", "1", "n", "sqrtN", "S1", "S2", "FH_p=1_q=1", "FH"))
   log.rank.weights <- match.arg(log.rank.weights)
 
   # cumevents / cumcensor accept the same values as risk.table: TRUE/FALSE, or a
@@ -138,11 +138,14 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
 
   # Add pvalue
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  # Compute pvalue or parse it if provided by the user
+  # Compute pvalue or parse it if provided by the user. Forward the
+  # Fleming-Harrington rho/gamma (from ...) so log.rank.weights = "FH" with
+  # rho/gamma reaches surv_pvalue() instead of silently defaulting to FH(1,1).
   pval <- surv_pvalue(fit, method = log.rank.weights, data = data,
                       pval = pval, pval.coord = pval.coord,
                       pval.method.coord = pval.method.coord,
-                      test.for.trend = test.for.trend)
+                      test.for.trend = test.for.trend,
+                      rho = extra.params$rho, gamma = extra.params$gamma)
 
   if(pval$pval.txt != ""){
     p <- p + ggplot2::annotate("text", x = pval$pval.x, y = pval$pval.y,

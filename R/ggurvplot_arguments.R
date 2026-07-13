@@ -166,6 +166,10 @@
 #'  the test as: 1 - log-rank, n - Gehan-Breslow (generalized Wilcoxon),
 #'  sqrtN - Tarone-Ware, S1 - Peto-Peto's modified survival estimate,
 #'  S2 - modified Peto-Peto (by Andersen), FH - Fleming-Harrington(p=1, q=1).
+#'  For an arbitrary Fleming-Harrington weight, use \code{log.rank.weights = "FH"}
+#'  together with \code{rho} and \code{gamma} (weight \eqn{S(t^-)^{\rho}(1 -
+#'  S(t^-))^{\gamma}}); e.g. \code{rho = 1, gamma = 0} for early emphasis or
+#'  \code{rho = 0, gamma = 1} for late emphasis.
 #'@param pval.method whether to add a text with the test name used for
 #'  calculating the pvalue, that corresponds to survival curves' comparison -
 #'  used only when \code{pval=TRUE}
