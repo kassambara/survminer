@@ -93,14 +93,14 @@ ggflexsurvplot <- function(fit, data = NULL,
   time <- est <- strata <- lcl <- ucl <- NULL
   ggsurv$plot <- ggsurv$plot +
     geom_line(aes(time, est, color = strata),
-              data = summ, size = size)
+              data = summ, linewidth = size)
 
   if(conf.int.flex)
     ggsurv$plot <- ggsurv$plot +
     geom_line(aes(time, lcl, color = strata), data = summ,
-              size = 0.5, linetype = "dashed")+
+              linewidth = 0.5, linetype = "dashed")+
     geom_line(aes(time, ucl, color = strata), data = summ,
-              size = 0.5, linetype = "dashed")
+              linewidth = 0.5, linetype = "dashed")
 
 
   ggsurv

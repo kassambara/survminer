@@ -176,6 +176,8 @@
 
 ## Bug fixes
 
+- `ggsurvplot()` and `ggflexsurvplot()` no longer emit a ggplot2 deprecation warning when you set the curve line width with `size`. The width was already applied through `linewidth`, but `size` was also passed on to the line geom, where it is a deprecated aesthetic (as of ggplot2 3.4.0). It is no longer forwarded; the drawn line width is unchanged.
+
 - `ggflexsurvplot()` now honors a user-supplied `summary.flexsurv` and the `fun` argument for a single-stratum fit. The single-stratum branch of the internal summary helper recomputed `summary(fit)` with the default time grid and type, so a `summary.flexsurv` meant to extend the fitted curve to a wider `xlim` was ignored (the curve stopped at the last observed time), and `fun = "cumhaz"` fell back to the survival curve. It now uses the already-selected summary. Multi-stratum fits and the default single-stratum survival curve are unchanged (#400).
 
 - `ggsurvplot()` now accepts a per-strata `linetype` vector that contains a hex dash pattern, e.g. `linetype = c("solid", "F1")`. Only all-base-name or all-numeric vectors were mapped to a manual per-strata scale; a vector with a hex pattern fell through and crashed with "the condition has length > 1". Any length-1 value (including a single hex pattern or `"strata"`) is unchanged (#344).
