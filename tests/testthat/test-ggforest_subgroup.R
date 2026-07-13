@@ -93,6 +93,25 @@ test_that("named subgroups become the header labels", {
   expect_setequal(tab$label[tab$type == "header"], c("Sex", "Age"))
 })
 
+test_that("the N column counts match the subgroup subsets and the total", {
+  d <- .cc()
+  fit <- coxph(Surv(time, status) ~ rx, data = d)
+  tab <- survminer:::.subgroup_forest_table(fit, d, "rx",
+            c("sex", "age.grp"), show.overall = TRUE)
+  # overall N = rows of data; per-level N = rows in that level
+  expect_equal(tab$n[tab$type == "overall"], nrow(d))
+  expect_equal(tab$n[tab$type == "level" & tab$label == "Male"],
+               sum(d$sex == "Male"))
+  expect_equal(tab$n[tab$type == "level" & tab$label == ">=60"],
+               sum(d$age.grp == ">=60"))
+  expect_true(is.na(tab$n[tab$type == "header"][1]))
+  expect_equal(attr(tab, "n.overall"), nrow(d))
+  # show.n = FALSE builds without the column (still a valid ggplot)
+  expect_error(ggplot2::ggplot_build(
+    ggforest_subgroup(fit, data = d, treatment = "rx",
+                      subgroups = "sex", show.n = FALSE)), NA)
+})
+
 test_that("show.overall toggles the overall row", {
   d <- .cc()
   fit <- coxph(Surv(time, status) ~ rx, data = d)
