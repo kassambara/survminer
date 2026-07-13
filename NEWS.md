@@ -9,8 +9,8 @@
   variable gets one interaction p-value from a likelihood-ratio test (the test of
   effect modification, as opposed to the per-level estimates). Unstratifiable
   levels are dropped with a warning. Returns a themeable ggplot with an optional
-  overall row, precision-weighted boxes and a "favours" annotation. Complements
-  `ggforest()` and resolves the long-standing request in #271 and #366.
+  overall row, a "No. of patients (\%)" column, precision-weighted boxes and a
+  "favours" annotation. Complements `ggforest()` (see #271 and #366).
 
 - New `surv_median_followup()` returns the median follow-up time computed with the
   reverse Kaplan-Meier method (Schemper & Smith, 1996) -- the roles of the event and

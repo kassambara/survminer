@@ -52,6 +52,11 @@ NULL
 #'   ratio row at the top. Default \code{TRUE}.
 #' @param show.pinteraction logical; show the per-variable interaction p-value.
 #'   Default \code{TRUE}.
+#' @param show.n logical; show a "No. of patients (\%)" column giving the number of
+#'   subjects in each subgroup level (and their percentage of the total). Default
+#'   \code{TRUE}. This count is the subgroup size; when the model has adjusting
+#'   covariates with missing values it can exceed the complete-case sample the
+#'   hazard ratio is actually fit on.
 #' @param favours optional length-2 character vector
 #'   \code{c("Favours treatment", "Favours control")} drawn under the axis on the
 #'   left (HR < 1) and right (HR > 1) sides of the reference line. Default
@@ -88,7 +93,8 @@ NULL
 ggforest_subgroup <- function(model, data = NULL, treatment,
                               subgroups, conf.int = 0.95,
                               show.overall = TRUE, show.pinteraction = TRUE,
-                              favours = NULL, point.size.by.precision = TRUE,
+                              show.n = TRUE, favours = NULL,
+                              point.size.by.precision = TRUE,
                               main = "Treatment effect by subgroup",
                               xlab = NULL, noDigits = 2,
                               ggtheme = theme_survminer()) {
@@ -101,7 +107,8 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
   # Top-to-bottom display order mapped to descending y (first row at the top).
   tab$y <- rev(seq_len(nrow(tab)))
   est <- tab[tab$type != "header", , drop = FALSE]
-  yr <- range(tab$y) + c(-1, 1)
+  head.y <- max(tab$y) + 1.4                 # column-title row, above the data
+  yr <- c(min(tab$y) - 1, head.y + 0.3)
   if (!is.null(favours) && length(favours) == 2L) yr[1] <- yr[1] - 0.6
 
   ref.lev <- attr(tab, "ref"); trt.lev <- attr(tab, "trt")
@@ -160,31 +167,61 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
   label.panel <- ggplot2::ggplot(lab.df, ggplot2::aes(x = 0, y = y)) +
     ggplot2::geom_text(ggplot2::aes(label = text, fontface = face),
                        hjust = 0, size = 3.3) +
+    ggplot2::annotate("text", x = 0, y = head.y, label = "Subgroup",
+                      hjust = 0, fontface = "bold", size = 3.15) +
     ggplot2::scale_x_continuous(limits = c(0, 1), expand = c(0, 0)) + void
+
+  # optional "No. of patients (%)" column (per subgroup level, % of the total).
+  # Right-aligned with a generous panel width so the count never clips.
+  n.panel <- NULL
+  if (isTRUE(show.n) && any(!is.na(tab$n))) {
+    n.overall <- attr(tab, "n.overall")
+    n.df <- tab[!is.na(tab$n), c("y", "n"), drop = FALSE]
+    n.df$nlab <- sprintf("%d (%d%%)", n.df$n, round(100 * n.df$n / n.overall))
+    nlab <- NULL
+    n.panel <- ggplot2::ggplot(n.df, ggplot2::aes(x = 1, y = y)) +
+      ggplot2::geom_text(ggplot2::aes(label = nlab), hjust = 1, size = 3.2) +
+      ggplot2::annotate("text", x = 1, y = head.y, label = "No. (%)",
+                        hjust = 1, fontface = "bold", size = 3.15) +
+      ggplot2::scale_x_continuous(limits = c(0, 1),
+                                  expand = ggplot2::expansion(mult = c(0.04, 0.02))) + void
+  }
 
   # HR text is right-aligned so it sits adjacent to the p-int column (rather than
   # drifting to a wide right-edge gap as the figure widens).
   est$hrci <- .fmt_hrci(est, noDigits)
   hrci.panel <- ggplot2::ggplot(est, ggplot2::aes(x = 1, y = y)) +
     ggplot2::geom_text(ggplot2::aes(label = hrci), hjust = 1, size = 3.3) +
-    ggplot2::scale_x_continuous(limits = c(0, 1), expand = c(0, 0)) + void
+    ggplot2::annotate("text", x = 1, y = head.y, label = "HR (95% CI)",
+                      hjust = 1, fontface = "bold", size = 3.15) +
+    ggplot2::scale_x_continuous(limits = c(0, 1),
+                                expand = ggplot2::expansion(mult = c(0.04, 0.02))) + void
 
   # p-int as its own fixed-width column, so its offset from the HR text does not
   # drift with the figure size.
   hdr <- tab[tab$type == "header", , drop = FALSE]
   has.pint <- show.pinteraction && nrow(hdr) > 0 && any(!is.na(hdr$pint))
-  panels <- list(label.panel, forest, hrci.panel)
-  widths <- c(0.6 + 0.085 * max(nchar(lab.df$text)), 3.4,
-              0.4 + 0.075 * max(nchar(est$hrci)))
+  panels <- list(label.panel)
+  widths <- 0.6 + 0.085 * max(nchar(c(lab.df$text, "Subgroup")))
+  if (!is.null(n.panel)) {
+    panels <- c(panels, list(n.panel))
+    widths <- c(widths, 0.5 + 0.095 * max(nchar(c(n.df$nlab, "No. (%)"))))
+  }
+  panels <- c(panels, list(forest, hrci.panel))
+  widths <- c(widths, 3.4, 0.5 + 0.085 * max(nchar(c(est$hrci, "HR (95% CI)"))))
   if (has.pint) {
+    # bare p-value under a "P-int" header (shorter than an inline "p-int x" label,
+    # so the rightmost column does not clip at narrow widths), centred in its panel.
     hdr$plab <- ifelse(is.na(hdr$pint), "",
-                       paste0("p-int ", format.pval(hdr$pint, digits = noDigits, eps = 1e-3)))
-    pint.panel <- ggplot2::ggplot(hdr, ggplot2::aes(x = 0, y = y)) +
-      ggplot2::geom_text(ggplot2::aes(label = plab), hjust = 0, size = 3.05,
+                       format.pval(hdr$pint, digits = noDigits, eps = 1e-3))
+    pint.panel <- ggplot2::ggplot(hdr, ggplot2::aes(x = 0.5, y = y)) +
+      ggplot2::geom_text(ggplot2::aes(label = plab), hjust = 0.5, size = 3.05,
                          fontface = "italic", colour = "grey30") +
+      ggplot2::annotate("text", x = 0.5, y = head.y, label = "P-int",
+                        hjust = 0.5, fontface = "bold", size = 3.15, colour = "grey20") +
       ggplot2::scale_x_continuous(limits = c(0, 1), expand = c(0, 0)) + void
     panels <- c(panels, list(pint.panel))
-    widths <- c(widths, 1.0)
+    widths <- c(widths, 0.5 + 0.08 * max(nchar(c(hdr$plab, "P-int"))))
   }
 
   # ---- assemble: widths scale with the longest text in each column --------
@@ -239,9 +276,10 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
   }
 
   rows <- list()
+  n.overall <- nrow(data)
   if (show.overall) {
     o <- one(data)
-    rows[[length(rows) + 1L]] <- .row("overall", "Overall", o)
+    rows[[length(rows) + 1L]] <- .row("overall", "Overall", o, n = n.overall)
   }
 
   dropped <- character(0)
@@ -259,7 +297,7 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
       dsub <- data[!is.na(x) & x == lv, , drop = FALSE]
       o <- if (nrow(dsub) > 0) one(dsub) else NULL
       if (is.null(o)) { dropped <- c(dropped, paste0(v, "=", lv)); next }
-      rows[[length(rows) + 1L]] <- .row("level", as.character(lv), o)
+      rows[[length(rows) + 1L]] <- .row("level", as.character(lv), o, n = nrow(dsub))
     }
   }
   if (length(dropped) > 0)
@@ -270,13 +308,14 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
   out <- do.call(rbind, rows)
   attr(out, "trt") <- tkey$trt
   attr(out, "ref") <- tkey$ref
+  attr(out, "n.overall") <- n.overall
   out
 }
 
 # One table row; `o` is NULL (header / unestimable) or a list(hr,lower,upper,prec).
-.row <- function(type, label, o) {
+.row <- function(type, label, o, n = NA_integer_) {
   data.frame(
-    type = type, label = label,
+    type = type, label = label, n = as.integer(n),
     hr    = if (is.null(o)) NA_real_ else o$hr,
     lower = if (is.null(o)) NA_real_ else o$lower,
     upper = if (is.null(o)) NA_real_ else o$upper,

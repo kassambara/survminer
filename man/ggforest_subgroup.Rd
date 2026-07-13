@@ -12,6 +12,7 @@ ggforest_subgroup(
   conf.int = 0.95,
   show.overall = TRUE,
   show.pinteraction = TRUE,
+  show.n = TRUE,
   favours = NULL,
   point.size.by.precision = TRUE,
   main = "Treatment effect by subgroup",
@@ -44,6 +45,12 @@ ratio row at the top. Default \code{TRUE}.}
 
 \item{show.pinteraction}{logical; show the per-variable interaction p-value.
 Default \code{TRUE}.}
+
+\item{show.n}{logical; show a "No. of patients (\%)" column giving the number of
+subjects in each subgroup level (and their percentage of the total). Default
+\code{TRUE}. This count is the subgroup size; when the model has adjusting
+covariates with missing values it can exceed the complete-case sample the
+hazard ratio is actually fit on.}
 
 \item{favours}{optional length-2 character vector
 \code{c("Favours treatment", "Favours control")} drawn under the axis on the
