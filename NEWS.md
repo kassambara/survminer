@@ -2,6 +2,15 @@
 
 ## New features
 
+- New `ggcoxnph()` draws a multi-panel diagnostic for the proportional-hazards
+  assumption of a Cox model, for one covariate of interest: log-cumulative-hazard
+  vs log-time by group, the scaled Schoenfeld residuals with a smoothed estimate
+  of the time-varying coefficient (Grambsch and Therneau, 1994) and the
+  Grambsch-Therneau test p-value, a hazard-ratio trend that shows the shape of a
+  time-varying effect, and the restricted-mean-survival-time difference as a
+  function of the follow-up horizon. Panels that do not apply to the chosen
+  covariate are dropped with a message. `ggcoxnph(fit, "sex")`.
+
 - `ggadjustedcurves()` gains `show.hr`: annotate the covariate-adjusted survival
   curves with the grouping variable's hazard ratio and 95% confidence interval
   taken from the Cox model (the effect adjusted for the model's other terms). A
