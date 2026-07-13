@@ -83,7 +83,6 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
 
   xx <- x$x
   yy <- x$y
-  d <- nrow(yy)
   df <- max(df)
   nvar <- ncol(yy)
   pred.x <- seq(from = min(xx), to = max(xx), length = nsmo)
@@ -94,11 +93,9 @@ ggcoxzph <- function (fit, resid = TRUE, se = TRUE, df = 4, nsmo = 40, var,
   qmat <- qr(xmat)
   if (qmat$rank < df)
     stop("Spline fit is singular, try a smaller degrees of freedom")
-  if (se) {
-    bk <- backsolve(qmat$qr[1:df, 1:df], diag(df))
-    xtx <- bk %*% t(bk)
-    seval <- d * ((pmat %*% xtx) * pmat) %*% rep(1, df)
-  }
+  # NB: the pointwise SE band is computed per panel below (from `x$var[i, i]`);
+  # there is no `d` (number of events) factor -- that matches survival's own
+  # plot.cox.zph under survival >= 3.0.
   ylab <- paste("Beta(t) for", dimnames(yy)[[2]])
   # Variable selection. `var_pval` is an alternative to `var`: keep only the terms
   # whose Grambsch-Therneau test p-value (x$table[, 3], per-variable rows, GLOBAL
