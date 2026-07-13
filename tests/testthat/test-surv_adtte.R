@@ -90,6 +90,20 @@ test_that("missing required columns error clearly", {
   expect_error(surv_adtte(1:5), "data frame")
 })
 
+test_that("the bundled adtte dataset is well-formed and separates clearly", {
+  data("adtte", package = "survminer")
+  expect_true(all(c("USUBJID", "PARAMCD", "AVAL", "CNSR", "TRT01P") %in% names(adtte)))
+  expect_setequal(unique(adtte$PARAMCD), c("OS", "PFS"))
+  expect_true(all(adtte$CNSR %in% 0:2))            # 0 event, 1-2 censoring reasons
+  # a clear, significant treatment effect for both parameters
+  for (pc in c("OS", "PFS")) {
+    os <- suppressMessages(surv_adtte(adtte, pc))
+    sd <- survival::survdiff(survival::Surv(AVAL, event) ~ TRT01P, data = os)
+    p <- stats::pchisq(sd$chisq, length(sd$n) - 1, lower.tail = FALSE)
+    expect_lt(p, 0.001)
+  }
+})
+
 test_that("the result feeds survfit correctly", {
   d <- .adtte()
   os <- suppressMessages(surv_adtte(d, "OS"))

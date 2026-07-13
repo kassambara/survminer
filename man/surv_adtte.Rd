@@ -64,18 +64,14 @@ Prepares a CDISC ADaM time-to-event dataset (\code{ADTTE}) for
  censoring-reason codes.
 }
 \examples{
-# a small synthetic ADTTE (CNSR: 0 = event, >= 1 = censored)
-adtte <- data.frame(
-  USUBJID = sprintf("S\%03d", 1:8),
-  PARAMCD = rep(c("OS", "PFS"), each = 4),
-  AVAL    = c(120, 300, 450, 600, 90, 150, 200, 500),
-  CNSR    = c(0, 1, 0, 2, 0, 0, 1, 0),
-  TRT01P  = rep(c("A", "B"), 4)
-)
+# example ADTTE bundled with survminer (CNSR: 0 = event, >= 1 = censored)
+data("adtte")
+head(adtte)
 
+# derive the event, filter to overall survival, and plot
 os <- surv_adtte(adtte, paramcd = "OS")
 fit <- surv_fit(survival::Surv(AVAL, event) ~ TRT01P, data = os)
-ggsurvplot(fit, data = os)
+ggsurvplot(fit, data = os, pval = TRUE, risk.table = TRUE)
 
 }
 \seealso{
