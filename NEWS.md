@@ -2,13 +2,20 @@
 
 ## New features
 
+- `ggadjustedcurves()` gains `show.hr`: annotate the covariate-adjusted survival
+  curves with the grouping variable's hazard ratio and 95% confidence interval
+  taken from the Cox model (the effect adjusted for the model's other terms). A
+  factor with more than two levels shows one line per non-reference level; a
+  `strata()` term (which has no coefficient) is skipped with a warning. Works with
+  the number-at-risk table too.
+
 - New `weighted_logrank()` computes Fleming-Harrington `G(rho, gamma)` weighted
   log-rank tests for one or more `(rho, gamma)` pairs, returning a tidy table of
   `statistic`, `df` and `p.value`. `FH(0,0)` is the log-rank test, `FH(1,0)`
   emphasises early differences, `FH(0,1)` late differences. The same arbitrary
   weight is available via `surv_pvalue(method = "FH", rho =, gamma =)` and
   `ggsurvplot(log.rank.weights = "FH", rho =, gamma =)`, and `surv_pvalue()` now
-  also returns the test `statistic` and `df`. Base R -- no new dependency.
+  also returns the test `statistic` and `df`.
 
 - `ggsurvplot()` gains a `preset` argument for one-call publication-ready figures.
   `preset = "publication"` bundles a full evidence panel (confidence bands, log-rank
@@ -34,8 +41,7 @@
   reverse Kaplan-Meier method (Schemper & Smith, 1996) -- the roles of the event and
   censoring indicators are swapped and the median of the resulting curve is reported,
   per group. This is the follow-up counterpart of `surv_median()` (median survival),
-  a number routinely reported in clinical publications. Computed from base `survival`
-  (no new run-time dependency).
+  a number routinely reported in clinical publications.
 - New `ggrmst()` and `ggrmst_difference()` for restricted mean survival time (RMST) --
   the area under the Kaplan-Meier curve up to a truncation time `tau`, an absolute
   measure (in time units) that stays interpretable under non-proportional hazards.

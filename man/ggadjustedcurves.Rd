@@ -24,6 +24,9 @@ ggadjustedcurves(
   tables.y.text = TRUE,
   tables.theme = theme_survminer(),
   fontsize = 4.5,
+  show.hr = FALSE,
+  hr.coord = NULL,
+  hr.size = 4,
   ...
 )
 
@@ -104,6 +107,24 @@ labels are hidden.}
 
 \item{tables.theme, fontsize}{the theme and font size of the risk table, as in
 \code{\link{ggsurvplot}()}.}
+
+\item{show.hr}{logical. Default \code{FALSE}. If \code{TRUE}, annotate the plot
+with the covariate hazard ratio and 95\% confidence interval for the grouping
+\code{variable}, taken from the Cox model \code{fit} -- i.e. the hazard ratio
+\emph{adjusted} for the model's other terms. Drawn only when \code{variable}
+is an estimated model coefficient (not a \code{strata()} term, an interaction,
+or a non-treatment contrast such as an ordered factor); a factor with more
+than two levels shows one line per non-reference level.}
+
+\item{hr.coord}{numeric vector \code{c(x, y)} giving a time and survival point
+at which to place the hazard-ratio annotation \emph{inside} the panel, in a
+translucent box. This is manual placement: on a small figure a label near the
+panel centre can run past an edge, so adjust the coordinate or the figure size
+if it does. Default \code{NULL} draws the annotation as a subtitle above the
+plot instead, which keeps it clear of the curves at the usual figure sizes and
+for any \code{fun} transform.}
+
+\item{hr.size}{the font size of the hazard-ratio annotation. Default 4.}
 
 \item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.}
 }

@@ -10,3 +10,6 @@ Meta
 /docs/
 .claude
 CLAUDE.md
+
+# R plot device artifacts from test runs
+Rplots.pdf

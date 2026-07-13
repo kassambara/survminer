@@ -66,6 +66,21 @@ NULL
 #'  labels are hidden.
 #'@param tables.theme,fontsize the theme and font size of the risk table, as in
 #'  \code{\link{ggsurvplot}()}.
+#'@param show.hr logical. Default \code{FALSE}. If \code{TRUE}, annotate the plot
+#'  with the covariate hazard ratio and 95\% confidence interval for the grouping
+#'  \code{variable}, taken from the Cox model \code{fit} -- i.e. the hazard ratio
+#'  \emph{adjusted} for the model's other terms. Drawn only when \code{variable}
+#'  is an estimated model coefficient (not a \code{strata()} term, an interaction,
+#'  or a non-treatment contrast such as an ordered factor); a factor with more
+#'  than two levels shows one line per non-reference level.
+#'@param hr.coord numeric vector \code{c(x, y)} giving a time and survival point
+#'  at which to place the hazard-ratio annotation \emph{inside} the panel, in a
+#'  translucent box. This is manual placement: on a small figure a label near the
+#'  panel centre can run past an edge, so adjust the coordinate or the figure size
+#'  if it does. Default \code{NULL} draws the annotation as a subtitle above the
+#'  plot instead, which keeps it clear of the curves at the usual figure sizes and
+#'  for any \code{fun} transform.
+#'@param hr.size the font size of the hazard-ratio annotation. Default 4.
 #'@inheritParams ggpubr::ggpar
 #'@param ... further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.
 #'@return Returns an object of class \code{gg} (a \code{ggplot}); when
@@ -146,7 +161,8 @@ ggadjustedcurves <- function(fit,
                                 xlim = NULL,
                                 tables.y.text = TRUE,
                                 tables.theme = theme_survminer(),
-                                fontsize = 4.5, ...) {
+                                fontsize = 4.5,
+                                show.hr = FALSE, hr.coord = NULL, hr.size = 4, ...) {
   stopifnot(method %in% c("marginal", "average", "conditional", "single"))
   draw.table <- !is.null(risk.table) && !isFALSE(risk.table) && !identical(risk.table, "")
 
@@ -190,6 +206,44 @@ ggadjustedcurves <- function(fit,
   if (method == "single")
     pl <- pl + theme(legend.position = "none")
 
+  # Resolve the grouping variable (the argument, else a strata() term). Shared by
+  # the optional HR annotation and the risk table below.
+  .var <- variable
+  if (is.null(.var)) {
+    .tl <- attr(stats::terms(fit$formula), "term.labels")
+    .st <- grep("strata(", .tl, fixed = TRUE, value = TRUE)
+    if (length(.st) > 0)
+      .var <- gsub("[\\) ]", "", gsub("strata(", "", .st[1], fixed = TRUE))
+  }
+
+  # Optional adjusted hazard-ratio annotation: the covariate hazard ratio with
+  # 95% CI from the Cox model -- adjusted for the model's other terms. By default
+  # it is a subtitle (outside the panel, so it stays clear of the curves at the
+  # usual sizes and for any `fun` transform); pass `hr.coord` to place it inside
+  # the panel at a chosen (time, survival) point instead.
+  if (isTRUE(show.hr)) {
+    hr.lab <- .adjusted_hr_label(fit, .var)
+    if (!is.null(hr.lab)) {
+      txt <- paste(hr.lab, collapse = "\n")
+      if (is.null(hr.coord)) {
+        pl <- pl + ggplot2::labs(subtitle = txt) +
+          ggplot2::theme(plot.subtitle = ggplot2::element_text(size = hr.size * 2.5))
+      } else {
+        xr <- range(curve$time, na.rm = TRUE)
+        # right-align when the anchor is past the mid-time, so a long label grows
+        # left into the panel instead of clipping at the right edge.
+        hj <- if (hr.coord[1] > xr[1] + 0.5 * diff(xr)) 1 else 0
+        # a translucent white box keeps the label legible where it sits over the
+        # curves (borderless, so it reads as a highlight rather than a box).
+        pl <- pl + ggplot2::geom_label(
+          data = data.frame(x = hr.coord[1], y = hr.coord[2], label = txt),
+          mapping = ggplot2::aes(x = .data$x, y = .data$y, label = .data$label),
+          inherit.aes = FALSE, hjust = hj, vjust = 1, size = hr.size,
+          linewidth = 0, fill = grDevices::adjustcolor("white", 0.7))
+      }
+    }
+  }
+
   # Default (no risk table): return the plain adjusted-curves ggplot, unchanged.
   # `xlim` is only forwarded to ggpar() when the user supplied it, so an ordinary
   # call (xlim = NULL) is byte-identical to before.
@@ -215,17 +269,9 @@ ggadjustedcurves <- function(fit,
   # this count is the raw Kaplan-Meier number at risk (documented).
   adj.plot <- ggpubr::ggpar(pl, palette = palette, ...)
 
-  # Resolve the grouping variable exactly as surv_adjustedcurves() does: the
-  # argument, else a strata() term; a model with neither gives a single curve and
-  # an overall (~ 1) table.
-  .var <- variable
-  if (is.null(.var)) {
-    .tl <- attr(stats::terms(fit$formula), "term.labels")
-    .st <- grep("strata(", .tl, fixed = TRUE, value = TRUE)
-    if (length(.st) > 0)
-      .var <- gsub("[\\) ]", "",
-                   gsub("strata(", "", .st[1], fixed = TRUE))
-  }
+  # `.var` (the grouping variable) was resolved above, shared with the HR
+  # annotation. A model with neither an argument nor a strata() term gives a
+  # single curve and an overall (~ 1) table.
 
   # Restrict the KM fit to the model's rows (complete cases on the model variables)
   # so the number at risk describes the population the adjusted curves are built on.
@@ -462,3 +508,76 @@ ggadjustedcurves.conditional <- function(data, fit, variable, size = 1) {
   curve
 }
 
+
+
+# Adjusted hazard-ratio label(s) for the grouping `variable`, taken from the
+# coxph fit: exp(coef) with a 95% CI, adjusted for the model's other terms.
+# Returns a character vector (one line per estimated level of a factor) or NULL
+# (with a warning) when no hazard ratio is available -- no grouping variable, or
+# a strata()/non-coefficient term.
+.adjusted_hr_label <- function(fit, variable) {
+  if (is.null(variable)) {
+    warning("`show.hr = TRUE` needs a grouping `variable` that is a model ",
+            "coefficient; no hazard ratio drawn.", call. = FALSE)
+    return(NULL)
+  }
+  # Coefficient index for the term, backtick-safe (a non-syntactic name is stored
+  # quoted in names(fit$assign)).
+  idx <- fit$assign[[variable]]
+  if (is.null(idx)) {
+    pos <- which(gsub("`", "", names(fit$assign)) == variable)
+    if (length(pos) == 1L) idx <- fit$assign[[pos]]
+  }
+  if (is.null(idx) || length(idx) == 0L) {
+    warning("No adjusted hazard ratio for `", variable, "`: it is a strata() ",
+            "term or not a main-effect coefficient in the model; no hazard ratio ",
+            "drawn.", call. = FALSE)
+    return(NULL)
+  }
+  # If `variable` is part of an interaction, a single adjusted hazard ratio is not
+  # well defined -- exp(coef) is the effect at the other term's reference/zero, not
+  # an adjusted HR -- so refuse rather than annotate a misleading number.
+  .terms <- attr(stats::terms(fit), "term.labels")
+  .inter <- grep(":", .terms, fixed = TRUE, value = TRUE)
+  if (any(vapply(.inter, function(t)
+        variable %in% gsub("`", "", strsplit(t, ":", fixed = TRUE)[[1]]),
+        logical(1)))) {
+    warning("`", variable, "` appears in an interaction term, so a single ",
+            "adjusted hazard ratio is not well defined; no hazard ratio drawn.",
+            call. = FALSE)
+    return(NULL)
+  }
+  tid <- broom::tidy(fit, conf.int = TRUE, exponentiate = TRUE)
+  rows <- tid[idx, , drop = FALSE]
+  ref <- fit$xlevels[[variable]][1]                 # NULL for a numeric covariate
+  val <- sprintf("%.2f (95%% CI %.2f to %.2f)",
+                 rows$estimate, rows$conf.low, rows$conf.high)
+  # each HR is a "contrast:" line then a "value" line; wrap a long contrast onto
+  # extra lines so the annotation fits a narrow panel / small figure without
+  # clipping (short labels stay on one line). Vectorised: one element per level.
+  fmt <- function(head) mapply(function(h, v)
+      paste0(paste(strwrap(h, width = 32), collapse = "\n"), "\n", v),
+      head, val, USE.NAMES = FALSE)
+  if (is.null(ref)) {
+    fmt(sprintf("Adjusted HR (%s, per unit):", variable))
+  } else {
+    # strip the term's "variable" prefix to get the level name; the coefficient is
+    # named "variableLevel", or "`variable`Level" for a non-syntactic name.
+    bt <- paste0("`", variable, "`")
+    lvl <- ifelse(startsWith(rows$term, bt),
+                  substring(rows$term, nchar(bt) + 1L),
+                  substring(rows$term, nchar(variable) + 1L))
+    # only a treatment-style "level vs reference" contrast can be read as a
+    # pairwise HR. An ordered factor (or any non-default contrast) gives
+    # polynomial/Helmert coefficients (.L, .Q, ...) whose stripped name is not a
+    # real level -- exp(coef) is then not a level-to-reference hazard ratio, so
+    # refuse rather than mislabel it.
+    if (!all(lvl %in% fit$xlevels[[variable]])) {
+      warning("`", variable, "` does not use treatment contrasts (e.g. an ",
+              "ordered factor), so its coefficients are not level-vs-reference ",
+              "hazard ratios; no hazard ratio drawn.", call. = FALSE)
+      return(NULL)
+    }
+    fmt(sprintf("Adjusted HR (%s vs %s):", lvl, ref))
+  }
+}
