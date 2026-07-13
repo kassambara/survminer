@@ -122,7 +122,8 @@ gglandmark <- function(fit, data = NULL, landmark.time, conf.int = FALSE,
   dots <- list(...)
   args <- list(fit = fit.lm, data = d.lm, conf.int = conf.int, xlab = xlab)
   if (!"subtitle" %in% names(dots)) {
-    sub <- paste0("Landmark at t = ", L, "  (n = ", n.risk, " at risk",
+    sub <- paste0("Landmark at t = ", L, "  (n = ", n.risk,
+                  " at risk at the landmark, shown at time 0 below",
                   if (n.drop.ev) paste0("; ", n.drop.ev,
                                         " event(s) at the landmark excluded") else "",
                   ")")

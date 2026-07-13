@@ -204,7 +204,7 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
       pts$mlab <- paste0(round(100 * pts$surv), "%")
       gg <- gg + ggplot2::geom_label(
         data = pts, ggplot2::aes(x = time, y = surv, label = mlab, colour = strata),
-        inherit.aes = FALSE, show.legend = FALSE, size = 3, hjust = -0.15,
+        inherit.aes = FALSE, show.legend = FALSE, size = 3.7, hjust = -0.15,
         linewidth = 0, fill = grDevices::adjustcolor("white", 0.7))
     }
   }
@@ -244,8 +244,8 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
     gg <- gg + ggplot2::labs(caption = paste(lines, collapse = "\n"))
 
   gg <- gg + ggplot2::theme(
-    plot.subtitle = ggplot2::element_text(size = 9.5, colour = "grey30"),
-    plot.caption  = ggplot2::element_text(size = 8, colour = "grey40", hjust = 0))
+    plot.subtitle = ggplot2::element_text(size = 11, colour = "grey30"),
+    plot.caption  = ggplot2::element_text(size = 10, colour = "grey30", hjust = 0))
 
   attr(gg, "milestone.table") <- milestone.table
   if (inherits(p, "ggsurvplot")) { p$plot <- gg; p } else gg
