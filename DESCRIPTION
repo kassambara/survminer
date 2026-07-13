@@ -38,6 +38,7 @@ Suggests:
     knitr,
     flexsurv,
     cmprsk,
+    tidycmprsk,
     markdown,
     testthat,
     rmarkdown,

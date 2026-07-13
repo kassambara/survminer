@@ -2,6 +2,16 @@
 
 ## New features
 
+- `ggcompetingrisks()` gains competing-risks features. It now accepts a
+  `tidycmprsk::cuminc` object (with proper pointwise confidence limits and the
+  data). `pval = TRUE` annotates Gray's test p-value for each cause as a subtitle
+  (for `cmprsk`/`tidycmprsk` inputs with more than one group). `add.naive.km = TRUE`
+  overlays, for one `cause`, the naive complement-of-Kaplan-Meier that censors the
+  competing events and therefore overestimates the cumulative incidence -- the
+  classic teaching contrast. The `conf.int` confidence band is kept within
+  `[0, 1]`. The default output for existing `cuminc`/`survfitms` inputs is
+  unchanged.
+
 - New `ggcoxnph()` draws a multi-panel diagnostic for the proportional-hazards
   assumption of a Cox model, for one covariate of interest: log-cumulative-hazard
   vs log-time by group, the scaled Schoenfeld residuals with a smoothed estimate

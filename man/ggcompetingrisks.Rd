@@ -12,11 +12,16 @@ ggcompetingrisks(
   ggtheme = theme_survminer(),
   coef = 1.96,
   conf.int = FALSE,
+  pval = FALSE,
+  add.naive.km = FALSE,
+  cause = NULL,
   ...
 )
 }
 \arguments{
-\item{fit}{an object of a class \code{cmprsk::cuminc} - created with \code{cmprsk::cuminc} function or \code{survfitms} created with \link[survival]{survfit} function.}
+\item{fit}{a cumulative-incidence object: a \code{cmprsk::cuminc}, a
+\code{\link[tidycmprsk]{cuminc}} (\pkg{tidycmprsk}), or a \code{survfitms} from
+\code{\link[survival]{survfit}}.}
 
 \item{gnames}{a vector with group names. If not supplied then will be extracted from \code{fit} object (\code{cuminc} only).}
 
@@ -31,14 +36,37 @@ Allowed values include ggplot2 official themes: see \code{\link[ggplot2]{theme}}
 
 \item{conf.int}{if \code{TRUE} then additional layer (\code{geom_ribbon}) is added around the point estimate. The ribon is plotted with boundries +- \code{coef}*standard deviation.}
 
+\item{pval}{logical or a character string. If \code{TRUE}, annotate Gray's test
+p-value for each cause (comparing the groups) as a subtitle; a character string
+is used verbatim as the subtitle. Gray's test is available only for a
+\code{cmprsk} / \code{tidycmprsk} \code{cuminc} object with more than one group;
+for other inputs \code{pval} is ignored with a message (Gray, 1988).}
+
+\item{add.naive.km}{logical. If \code{TRUE}, overlay the naive
+complement-of-Kaplan-Meier for one cause (a dashed line), which censors the
+competing events and therefore \emph{overestimates} the cumulative incidence --
+the classic teaching contrast (Putter, Fiocco and Geskus, 2007). Supported for a
+\code{\link[tidycmprsk]{cuminc}} object (which carries the data) on the faceted
+layout; ignored with a message otherwise.}
+
+\item{cause}{the cause to overlay when \code{add.naive.km = TRUE}. Required when
+the model has more than one cause.}
+
 \item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.}
 }
 \value{
-Returns an object of class \code{gg}.
+Returns an object of class \code{gg}. The cumulative-incidence data and,
+ where computed, Gray's test table and the naive-KM data are attached as
+ \code{attr(x, "cr.data")}, \code{attr(x, "grays.test")} and
+ \code{attr(x, "naive.km")}.
 }
 \description{
 This function plots Cumulative Incidence Curves. For \code{cuminc} objects it's a \code{ggplot2} version of \code{plot.cuminc}.
 For \code{survfitms} objects a different geometry is used, as suggested by \code{@teigentler}.
+It also accepts a \code{\link[tidycmprsk]{cuminc}} object from the \pkg{tidycmprsk}
+package (which carries proper pointwise confidence limits and the data), can
+annotate Gray's test, and can overlay the naive complement-of-Kaplan-Meier for
+teaching.
 }
 \examples{
 \dontrun{
@@ -64,12 +92,29 @@ fit2 <- survfit(Surv(time, status, type="mstate") ~ 1, data=df)
 ggcompetingrisks(fit2)
 fit3 <- survfit(Surv(time, status, type="mstate") ~ group, data=df)
 ggcompetingrisks(fit3)
+
+# tidycmprsk input: Gray's test p-value and the naive-KM teaching overlay
+if (require("tidycmprsk")) {
+  dd <- data.frame(time = ss, group = gg, status = cc)
+  tfit <- tidycmprsk::cuminc(Surv(time, status) ~ group, data = dd)
+  ggcompetingrisks(tfit, pval = TRUE)
+  ggcompetingrisks(tfit, add.naive.km = TRUE, cause = "death")
+}
 }
 
   library(ggsci)
   library(cowplot)
   ggcompetingrisks(fit3) + theme_cowplot() + scale_fill_jco()
 }
+}
+\references{
+Gray, R. J. (1988). A class of K-sample tests for comparing the
+ cumulative incidence of a competing risk. \emph{The Annals of Statistics},
+ 16(3), 1141-1154. \doi{10.1214/aos/1176350951}.
+
+ Putter, H., Fiocco, M. and Geskus, R. B. (2007). Tutorial in biostatistics:
+ competing risks and multi-state models. \emph{Statistics in Medicine}, 26(11),
+ 2389-2430. \doi{10.1002/sim.2712}.
 }
 \author{
 Przemyslaw Biecek, \email{przemyslaw.biecek@gmail.com}
