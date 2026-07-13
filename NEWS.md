@@ -2,6 +2,21 @@
 
 ## New features
 
+- New `gglandmark()` draws a landmark analysis: the Kaplan-Meier curves are
+  re-origined at a landmark time `L` (restricted to subjects event-free and at risk
+  at `L`, with the clock reset to `time - L`), the standard remedy for immortal-time
+  (guarantee-time) bias when groups are defined by a post-baseline status. A subject
+  whose event falls exactly on `L` is excluded so the re-origined curve correctly
+  starts at S = 1, and any requested log-rank p-value or risk table is computed on
+  the landmark cohort.
+
+- New `ggmilestone()` annotates milestone (fixed-time) survival: `S(t)` at one or
+  more clinical timepoints with its confidence interval and, for a two-arm
+  comparison, the between-arm difference with confidence interval and p-value
+  (three or more arms via `ref.group`). A milestone beyond an arm's follow-up is
+  returned as `NA` with a warning rather than silently dropped, and the full
+  milestone table is attached as `attr(x$plot, "milestone.table")`.
+
 - New `surv_adtte()` prepares a CDISC ADaM time-to-event dataset (ADTTE) for
   analysis. ADTTE codes the censoring flag `CNSR` as 0 = event and >= 1 = censored
   (the opposite of `survival::Surv()`), so passing `CNSR` straight into `Surv()`
