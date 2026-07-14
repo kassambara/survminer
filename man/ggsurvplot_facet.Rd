@@ -18,6 +18,7 @@ ggsurvplot_facet(
   pval.coord = NULL,
   pval.method.coord = NULL,
   pval.in.label = FALSE,
+  pval.stratified = FALSE,
   p.adjust.method = "none",
   p.adjust.label = "adj.p =",
   nrow = NULL,
@@ -96,6 +97,21 @@ panel. Requires \code{pval = TRUE} and a single \code{facet.by} variable (with
 two faceting variables the p-value is drawn on the panels instead, with a
 warning). If a \code{labeller} is also supplied it takes precedence and the
 p-value is not added to the label.}
+
+\item{pval.stratified}{logical value. Default is FALSE. If TRUE, a single
+\strong{pooled stratified log-rank} p-value -- \code{survdiff(Surv(time, status)
+~ group + strata(facet.by))}, the group effect adjusting for the faceting
+variable -- is shown as a figure-level subtitle. This is the statistic the whole
+figure illustrates: the per-panel p-values (\code{pval = TRUE}) are within-facet
+and several may be non-significant even when the pooled effect is strong.
+\code{pval.stratified} is independent of \code{pval} and can be combined with it.
+Several \code{facet.by} variables are combined into one \code{strata()}. The
+pooled test is the log-rank / Peto family (a weighted Fleming-Harrington
+\code{method} is ignored, as \code{survdiff} has no stratified
+Fleming-Harrington). \strong{Caveat:} the stratified log-rank assumes the group
+effect is consistent across the facet strata; it sums the score over strata, so
+opposite-direction effects cancel and it is \emph{not} a test of a group-by-facet
+interaction (Klein & Moeschberger, 2003).}
 
 \item{p.adjust.method}{method for adjusting the per-panel p-values for multiple
 comparisons across panels, passed to \code{\link[stats]{p.adjust}()} (e.g.
@@ -202,6 +218,11 @@ ggsurvplot_facet(fit, colon, facet.by = c("rx", "adhere"),
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ggsurvplot_facet(fit, colon, facet.by = "rx",
                 palette = "jco", pval = TRUE, pval.in.label = TRUE)
+
+# Pooled stratified log-rank p (figure-level), with the per-panel p-values
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ggsurvplot_facet(fit, colon, facet.by = "rx",
+                palette = "jco", pval = TRUE, pval.stratified = TRUE)
 
 # Faceted number-at-risk table
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::
