@@ -73,7 +73,10 @@ NULL
 #'  \item \strong{legend.title}: legend title.
 #'  \item \strong{legend.labs}: character vector specifying legend labels. Used to replace
 #'  the names of the strata from the fit. Should be given in the same order as
-#'  those strata.
+#'  those strata. May also be a vector or list of \code{\link[grDevices]{plotmath}}
+#'  expressions (e.g. \code{c(expression(beta[1]), expression(x^2))}) to render
+#'  superscripts, subscripts and Greek letters in the legend and the
+#'  number-at-risk table, with the palette unchanged.
 #'}
 #'
 #'

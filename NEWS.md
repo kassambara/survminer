@@ -2,6 +2,8 @@
 
 ## New features
 
+- `ggsurvplot()` now accepts `plotmath` expressions in `legend.labs` (e.g. `legend.labs = c(expression(beta[1]), expression(x^2))`), rendering superscripts, subscripts and Greek letters in the legend and the number-at-risk table while leaving the palette unchanged (#350). A plain character `legend.labs` behaves exactly as before.
+
 - New `ggforest_models()` draws a forest plot comparing one covariate's hazard ratio across several Cox models -- one row per model -- for the crude-versus-adjusted (or naive-versus-time-varying) comparison. The hazard ratio, CI and p-value are read from each model (robust variance when present); a model missing the term is dropped with a warning, and a very wide interval is clamped to a robust axis window with an arrow (the full interval stays in the table) so one model cannot crush the shared scale. It is the model-wise sibling of `ggforest()` and `ggforest_subgroup()`.
 
 - `ggsurvplot_facet()` gains `pval.stratified = TRUE`, showing a single pooled stratified log-rank p-value -- `survdiff(Surv(time, status) ~ group + strata(facet.by))`, the group effect adjusting for the faceting variable -- as a figure-level subtitle. This is the statistic the whole figure illustrates: the per-panel p-values are within-facet, and several may be non-significant even when the pooled effect is strong. It is independent of `pval` (they combine). Only the log-rank / Peto (`rho`) family is used; the pooled test assumes a consistent group effect across strata.
