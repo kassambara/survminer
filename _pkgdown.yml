@@ -14,52 +14,66 @@ copy:
 
 reference:
   - title: Fit survival curves
-    desc: Fit survival curves and compute p-values as well as median survival times.
+    desc: Fit survival curves and compute p-values, median survival and median follow-up.
     contents:
       - surv_group_by
       - surv_fit
+      - surv_summary
       - surv_median
+      - surv_median_followup
       - surv_pvalue
-  - title: Survival Curves
-    desc:  Summarize and visualize survival curves.
+      - weighted_logrank
+      - pairwise_survdiff
+      - surv_cutpoint
+  - title: Visualize survival curves
+    desc: Summarize and visualize Kaplan-Meier survival curves.
     contents:
       - ggsurvplot
+      - ggsurvplot_facet
+      - ggsurvplot_combine
+      - ggsurvplot_group_by
+      - ggsurvplot_add_all
+      - ggsurvplot_df
+      - ggsurvplot_list
       - ggflexsurvplot
+      - ggsurvparametric
       - arrange_ggsurvplots
       - ggsurvevents
-      - surv_summary
-      - surv_cutpoint
-      - pairwise_survdiff
-  - title: Diagnostics of Cox Model
+  - title: Modern methods
+    desc: RMST, landmark, milestone and competing-risks summaries reviewers now expect.
+    contents:
+      - ggrmst_difference
+      - gglandmark
+      - ggmilestone
+      - ggcompetingrisks
+  - title: Cox model summary and forest plots
+    contents:
+      - ggforest
+      - ggforest_models
+      - ggforest_subgroup
+      - ggadjustedcurves
+  - title: Diagnostics of Cox model
     contents:
       - ggcoxdiagnostics
       - ggcoxfunctional
       - ggcoxzph
-  - title: Summary of Cox Model
+      - ggcoxnph
+  - title: Clinical trial data
+    desc: Prepare CDISC ADaM time-to-event (ADTTE) data for analysis.
     contents:
-      - ggforest
-      - ggadjustedcurves
-  - title: Competing Risks
-    contents:
-      - ggcompetingrisks
-  - title: Helpers
+      - surv_adtte
+  - title: Tables, themes and helpers
     contents:
       - ggsurvtable
-      - ggsurvplot_df
-      - ggsurvplot_list
-      - ggsurvplot_group_by
-      - ggsurvplot_add_all
-      - ggsurvplot_combine
-      - ggsurvplot_facet
+      - customize_labels
+      - build_ggsurvplot
+      - add_ggsurvplot
+      - ggsurvplot_arguments
+      - theme_survminer
   - title: Data
     contents:
       - myeloma
       - BMT
-  - title: Others
-    contents:
-      - theme_survminer
-      - add_ggsurvplot
-      - ggsurvplot_arguments
       - BRCAOV.survInfo
 
 
