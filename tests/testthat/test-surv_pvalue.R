@@ -1,7 +1,6 @@
 context("surv_pvalue")
 
 library(survival)
-data(lung)
 
 # Basic 2-group fit
 fit_sex <- survfit(Surv(time, status) ~ sex, data = lung)
