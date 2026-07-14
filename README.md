@@ -48,6 +48,9 @@ categories as follow.
 
 -   **ggsurvevents**(): Plots the distribution of event’s times.
 
+-   **ggsurvparametric**(): Overlays a parametric (survreg or flexsurv)
+    survival fit on the Kaplan-Meier curves.
+
 -   **surv_summary**(): Summary of a survival curve. Compared to the
     default summary() function, surv_summary() creates a data frame
     containing a nice summary from survfit results.
@@ -57,9 +60,33 @@ categories as follow.
     cutpoint that correspond to the most significant relation with
     survival.
 
+-   **surv_median_followup**(): Computes the median follow-up time by
+    the reverse Kaplan-Meier method.
+
 -   **pairwise_survdiff**(): Multiple comparisons of survival curves.
     Calculate pairwise comparisons between group levels with corrections
     for multiple testing.
+
+-   **weighted_logrank**(): Weighted (Fleming-Harrington) log-rank tests
+    for arbitrary early/late emphasis.
+
+<br/>
+
+**Modern effect measures**
+<hr/>
+
+<br/>
+
+-   **ggrmst**() / **ggrmst_difference**(): Restricted mean survival
+    time (RMST) — shades the area to a horizon tau and annotates the
+    between-arm difference with its confidence interval and p-value.
+
+-   **gglandmark**(): Landmark analysis — re-origins the survival curves
+    at a landmark time to avoid immortal-time (guarantee-time) bias.
+
+-   **ggmilestone**(): Milestone (fixed-time) survival at one or more
+    timepoints, with the between-arm difference, confidence interval and
+    p-value.
 
 <br/>
 
@@ -80,6 +107,10 @@ categories as follow.
     hazards model. It helps to properly choose the functional form of
     continuous variable in cox model.
 
+-   **ggcoxnph**(): Non-proportional-hazards diagnostic panel (cloglog,
+    scaled Schoenfeld with a time-varying-coefficient smooth,
+    hazard-ratio trend and RMST difference).
+
 <br/>
 
 **Summary of Cox Model**
@@ -88,6 +119,13 @@ categories as follow.
 <br/>
 
 -   **ggforest**(): Draws forest plot for CoxPH model.
+
+-   **ggforest_models**(): Forest plot comparing one covariate’s hazard
+    ratio across several Cox models (crude vs. adjusted).
+
+-   **ggforest_subgroup**(): Subgroup forest plot — the treatment hazard
+    ratio within each subgroup, with the interaction (effect-modification)
+    p-value.
 
 -   **ggadjustedcurves**(): Plots adjusted survival curves for coxph
     model.
@@ -101,6 +139,17 @@ categories as follow.
 
 -   **ggcompetingrisks**(): Plots cumulative incidence curves for
     competing risks.
+
+<br/>
+
+**Clinical trial data**
+<hr/>
+
+<br/>
+
+-   **surv_adtte**(): Prepares a CDISC ADaM time-to-event (ADTTE)
+    dataset for analysis, deriving the event indicator from the CNSR
+    flag (avoiding the silent censoring-flag inversion).
 
 <br/>
 
