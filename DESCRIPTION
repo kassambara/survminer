@@ -75,6 +75,7 @@ Collate:
     'ggflexsurvplot.R'
     'ggforest.R'
     'ggforest_subgroup.R'
+    'ggforest_models.R'
     'gglandmark.R'
     'ggmilestone.R'
     'ggrmst.R'
