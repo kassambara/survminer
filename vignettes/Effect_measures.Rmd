@@ -1,0 +1,163 @@
+---
+title: "Absolute effect measures: RMST, milestone and landmark analysis"
+author: "survminer"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Absolute effect measures: RMST, milestone and landmark analysis}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7,
+  fig.height = 5,
+  dpi = 96
+)
+```
+
+The log-rank p-value tells you *whether* two survival curves differ; the hazard
+ratio summarises the difference as a single ratio -- but only if the hazards
+stay proportional. When curves cross, converge, or separate late, a reviewer
+increasingly asks for an **absolute** effect measure in the units of the study:
+months of life gained, or the survival probability at a clinically meaningful
+time. This article covers the three survminer draws for you: restricted mean
+survival time, milestone survival, and landmark analysis.
+
+```{r setup}
+library(survminer)
+library(survival)
+
+# Readable arm names for every figure.
+lung$sex <- factor(lung$sex, labels = c("Male", "Female"))
+fit <- survfit(Surv(time, status) ~ sex, data = lung)
+```
+
+# Why a single hazard ratio may not be enough
+
+A Cox hazard ratio assumes the effect of a group is a constant multiplier of the
+hazard over all follow-up. Under non-proportional hazards that single number
+averages together periods where one arm does better and periods where it does
+worse, and it is no longer a faithful summary. The absolute measures below make
+no proportional-hazards assumption -- they read the difference directly off the
+Kaplan-Meier curves.
+
+# Restricted mean survival time (RMST)
+
+The restricted mean survival time up to a horizon **τ** is the *area under the
+survival curve* from 0 to τ -- the average survival time a subject can expect
+over the first τ units of follow-up. The **difference** in RMST between two arms
+is an absolute benefit measured in time units (here, days), and unlike the
+hazard ratio it needs no proportional-hazards assumption.
+
+`ggrmst()` shades the area between the two curves up to τ and annotates the
+difference with its confidence interval and p-value:
+
+```{r rmst}
+ggrmst(fit, data = lung, tau = 500, palette = "jco",
+       legend.labs = c("Male", "Female"))
+```
+
+Here the curves do not cross, so the shaded region *equals* the ΔRMST: over the
+first 500 days, women survive on average about 82 **days** longer than men.
+Because RMST is an area, it stays well defined even when the curves cross --
+exactly the case where a hazard ratio struggles. (When the curves *do* cross,
+the shaded band shows the *total* separation and the reported difference, which
+nets the two directions, can be smaller than the band.)
+
+## Reading and reporting RMST
+
+`ggrmst_difference()` returns the numbers behind the figure: the per-arm RMST
+with its standard error and confidence interval, and the between-arm difference
+with its confidence interval and p-value.
+
+```{r rmst-table}
+ggrmst_difference(fit, data = lung, tau = 500)
+```
+
+**Choosing τ.** RMST is only defined up to a horizon where all arms still have
+subjects at risk, so τ must lie within the follow-up of every arm. If you omit
+`tau`, survminer uses the largest commonly admissible time; if you pass a τ
+beyond an arm's support, it stops with a clear message rather than extrapolating.
+Report τ alongside the estimate -- "the RMST difference at τ = 500 days" -- since
+the value depends on it.
+
+# Milestone (fixed-time) survival
+
+A milestone is the survival probability at a fixed clinical timepoint --
+one-year survival, two-year survival -- and the quantity a reader often wants is
+the **between-arm difference** at that time, with a confidence interval.
+`ggmilestone()` marks each timepoint and reports that difference:
+
+```{r milestone, fig.height = 5.5}
+ggmilestone(fit, data = lung, milestone.times = c(180, 360, 540),
+            palette = "jco", legend.labs = c("Male", "Female"))
+```
+
+Each dashed line is a milestone; the caption gives, per timepoint, the survival
+in each arm and their difference with a 95% confidence interval and p-value. The
+difference is reported as Male − Female, so the negative values mean women do
+better at every timepoint -- consistent with the positive Female − Male RMST
+above. The full table is also attached to the plot:
+
+```{r milestone-table}
+p <- ggmilestone(fit, data = lung, milestone.times = c(180, 360, 540))
+attr(p$plot, "milestone.table")
+```
+
+A milestone that falls beyond an arm's follow-up is returned as `NA` with a
+warning rather than silently dropped.
+
+# Landmark analysis and immortal-time bias
+
+When the groups you compare are defined by something that happens *after*
+baseline -- responded to treatment by week 8, received a transplant, achieved
+remission -- a naive Kaplan-Meier from time zero is biased. To be classified in
+the "responder" group a subject must first *survive* long enough to respond, so
+that group is credited with "immortal" time it was guaranteed to survive. This
+is **immortal-time (guarantee-time) bias**, and it makes the post-baseline group
+look artificially better.
+
+The standard remedy is a **landmark analysis**: pick a landmark time `L` after
+which group membership is fixed, keep only subjects still event-free and at risk
+at `L`, and reset the clock to `time - L`. `gglandmark()` does exactly this:
+
+`lung` has no post-baseline grouping variable, so we apply the landmark to `sex`
+only to show the mechanics -- being a fixed *baseline* covariate, `sex` does not
+itself suffer immortal-time bias; in practice the grouping would be the
+post-baseline event (responder, transplant, remission).
+
+```{r landmark}
+lm <- gglandmark(fit, data = lung, landmark.time = 180, palette = "jco",
+                 legend.labs = c("Male", "Female"))
+# the function's long auto-subtitle is replaced by a short one; the details
+# are in the text below
+lm$plot <- lm$plot + ggplot2::labs(subtitle = "Landmark at day 180")
+lm
+```
+
+The curves now start at `L` (shown as time 0 on a "Time since landmark" axis),
+restricted to the subjects still at risk then -- at day 180, 159 subjects remain
+at risk, and one subject with an event exactly at `L` is excluded so each curve
+correctly begins at S = 1. Any log-rank p-value or risk table you request is
+computed on this landmark cohort.
+
+Use a landmark analysis whenever the grouping variable is measured after
+follow-up begins; choose `L` from clinical reasoning (when the classifying event
+has typically occurred), not from the data.
+
+# Where to next
+
+- **Get started** -- presets, themes, and the composable curve.
+- **Interrogating a Cox model** -- forest plots and proportional-hazards
+  diagnostics (`ggcoxnph()`), the diagnostic that tells you *when* to reach for
+  the absolute measures above.
+- **Competing risks** -- cumulative incidence when subjects can fail in more
+  than one way.
