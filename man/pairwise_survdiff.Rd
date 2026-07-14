@@ -11,7 +11,8 @@ pairwise_survdiff(
   na.action,
   rho = 0,
   method = "survdiff",
-  ref.group = NULL
+  ref.group = NULL,
+  detailed = FALSE
 )
 }
 \arguments{
@@ -47,10 +48,21 @@ compared against this one group only (rather than all pairwise comparisons),
 and the p-values are adjusted over just those comparisons -- useful for a
 many-treatments-vs-one-control design, which needs a smaller multiple-testing
 correction. The default \code{NULL} performs all pairwise comparisons.}
+
+\item{detailed}{logical. If \code{TRUE}, attach a per-pair table
+\code{res$detailed} with the test statistic (chi-square) and its degrees of
+freedom, the raw and adjusted p-values, and a Cox proportional-hazards hazard
+ratio with 95\% confidence interval for each pair (the hazard of
+\code{group2} relative to \code{group1}). The default \code{FALSE} returns the
+usual p-value matrix only. The hazard ratio and its interval can be unstable or
+infinite for a pair with (near-)complete separation; such a pair returns
+\code{NA} if the Cox model does not fit.}
 }
 \value{
 Returns an object of class "pairwise.htest", which is a list
- containing the p values.
+ containing the p values. With \code{detailed = TRUE} it also carries a
+ \code{detailed} data frame of per-pair statistics, degrees of freedom,
+ p-values and Cox hazard ratios.
 }
 \description{
 Calculate pairwise comparisons between group levels with

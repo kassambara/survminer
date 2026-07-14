@@ -192,3 +192,61 @@ test_that("an invalid ref.group errors clearly (#364)", {
                       ref.group = c("MAF", "MMSET")),
     "single grouping level")
 })
+
+# detailed = TRUE: per-pair statistics
+
+test_that("detailed = FALSE is unchanged (no detailed element)", {
+  library(survival); data(myeloma)
+  a <- pairwise_survdiff(Surv(time, event) ~ molecular_group, data = myeloma)
+  b <- pairwise_survdiff(Surv(time, event) ~ molecular_group, data = myeloma,
+                         detailed = FALSE)
+  expect_null(a$detailed)
+  expect_equal(a, b)
+})
+
+test_that("detailed = TRUE returns per-pair statistic, df, p and Cox HR", {
+  library(survival); data(myeloma)
+  r <- pairwise_survdiff(Surv(time, event) ~ molecular_group, data = myeloma,
+                         detailed = TRUE)
+  d <- r$detailed
+  expect_s3_class(d, "data.frame")
+  expect_setequal(names(d), c("group1", "group2", "statistic", "df",
+                              "p.value", "p.adj", "hr", "hr.lower", "hr.upper"))
+  # one row per pair (k*(k-1)/2)
+  k <- nlevels(factor(myeloma$molecular_group))
+  expect_equal(nrow(d), k * (k - 1) / 2)
+  # statistic equals a direct survdiff chi-square; HR equals a direct coxph
+  pr <- d[1, ]
+  sub <- myeloma[myeloma$molecular_group %in% c(pr$group1, pr$group2), ]
+  sd <- survival::survdiff(Surv(time, event) ~ molecular_group, data = sub)
+  expect_equal(pr$statistic, unname(sd$chisq))
+  expect_equal(pr$df, length(sd$n) - 1)
+  cx <- survival::coxph(
+    Surv(time, event) ~ factor(molecular_group, levels = c(pr$group1, pr$group2)),
+    data = sub)
+  expect_equal(pr$hr, unname(summary(cx)$conf.int[1, "exp(coef)"]), tolerance = 1e-6)
+  # adjusted p matches the p-value matrix
+  expect_equal(pr$p.adj, r$p.value[pr$group2, pr$group1], tolerance = 1e-8)
+})
+
+test_that("detailed = TRUE honours ref.group and weighted methods", {
+  library(survival); data(myeloma)
+  r <- pairwise_survdiff(Surv(time, event) ~ molecular_group, data = myeloma,
+                         ref.group = "Cyclin D-1", detailed = TRUE)
+  expect_true(all(r$detailed$group1 == "Cyclin D-1"))
+  expect_equal(nrow(r$detailed), nlevels(factor(myeloma$molecular_group)) - 1)
+  rw <- pairwise_survdiff(Surv(time, event) ~ molecular_group, data = myeloma,
+                          method = "FH_p=1_q=1", detailed = TRUE)
+  expect_true(all(rw$detailed$df == 1))
+  expect_true(all(is.finite(rw$detailed$statistic)))
+})
+
+test_that("detailed = TRUE does not crash on a single-level grouping variable", {
+  library(survival); data(myeloma)
+  d <- myeloma[myeloma$molecular_group == myeloma$molecular_group[1], ]
+  expect_error(
+    r <- suppressWarnings(pairwise_survdiff(Surv(time, event) ~ molecular_group,
+                                            data = d, detailed = TRUE)),
+    NA)
+  expect_null(r$detailed)     # nothing to compare -> no detailed table
+})

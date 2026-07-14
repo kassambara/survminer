@@ -2,6 +2,8 @@
 
 ## New features
 
+- `pairwise_survdiff()` gains `detailed = TRUE`, attaching a per-pair table (`res$detailed`) with the test statistic (chi-square) and its degrees of freedom, the raw and adjusted p-values, and a Cox proportional-hazards hazard ratio with 95% confidence interval for each pair. The default (`detailed = FALSE`) returns the usual p-value matrix only.
+
 - `ggcompetingrisks()` gains `risk.table = TRUE`, drawing a per-group number-at-risk table beneath the cumulative-incidence curves, locked to the same time axis. It is available for a `tidycmprsk::cuminc` object on the overlaid single-panel layout; the at-risk count is the number still event-free and under observation (competing events count as leaving the risk set), matching the Kaplan-Meier at-risk convention of `ggsurvplot()`. `risk.table` also accepts the `ggsurvplot()` content strings (`"percentage"`, `"nrisk_cumcensor"`, ...), and `break.time.by` controls the shared axis breaks. With `risk.table = TRUE` the function returns a compound object that prints the curves above the aligned table and works with `ggsave()` (#838).
 
 - New `gglandmark()` draws a landmark analysis: the Kaplan-Meier curves are

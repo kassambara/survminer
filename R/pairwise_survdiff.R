@@ -29,9 +29,19 @@ NULL
 #'  and the p-values are adjusted over just those comparisons -- useful for a
 #'  many-treatments-vs-one-control design, which needs a smaller multiple-testing
 #'  correction. The default \code{NULL} performs all pairwise comparisons.
+#'@param detailed logical. If \code{TRUE}, attach a per-pair table
+#'  \code{res$detailed} with the test statistic (chi-square) and its degrees of
+#'  freedom, the raw and adjusted p-values, and a Cox proportional-hazards hazard
+#'  ratio with 95\% confidence interval for each pair (the hazard of
+#'  \code{group2} relative to \code{group1}). The default \code{FALSE} returns the
+#'  usual p-value matrix only. The hazard ratio and its interval can be unstable or
+#'  infinite for a pair with (near-)complete separation; such a pair returns
+#'  \code{NA} if the Cox model does not fit.
 #'@seealso survival::survdiff
 #'@return Returns an object of class "pairwise.htest", which is a list
-#'  containing the p values.
+#'  containing the p values. With \code{detailed = TRUE} it also carries a
+#'  \code{detailed} data frame of per-pair statistics, degrees of freedom,
+#'  p-values and Cox hazard ratios.
 #'
 #'@author Alboukadel Kassambara, \email{alboukadel.kassambara@@gmail.com}
 #'
@@ -55,7 +65,7 @@ NULL
 #'@rdname pairwise_survdiff
 #'@export
 pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, rho = 0,
-                              method = "survdiff", ref.group = NULL)
+                              method = "survdiff", ref.group = NULL, detailed = FALSE)
 
 {
   if(missing(na.action)) na.action <- options()$na.action
@@ -164,8 +174,58 @@ pairwise_survdiff <- function(formula, data, p.adjust.method = "BH", na.action, 
 
   res <- list(method = METHOD, data.name = DNAME, p.value = PVAL,
               p.adjust.method = p.adjust.method)
+
+  # Per-pair statistics (opt-in). The chi-square and df are already computed in
+  # compare.levels() but discarded there; detailed = TRUE surfaces them together
+  # with the raw and adjusted p-values and a Cox hazard ratio for each pair.
+  if (isTRUE(detailed) && nlevels(group) >= 2L) {
+    pairs <- if (is.null(ref.group))
+      utils::combn(levels(group), 2L, simplify = FALSE)
+    else lapply(others, function(g) c(ref.group, g))
+    res$detailed <- do.call(rbind, lapply(pairs, function(pr)
+      .pairwise_detail(pr, group, data, formula, rhs, method, rho, na.action, PVAL)))
+    rownames(res$detailed) <- NULL
+  }
+
   class(res) <- "pairwise.htest"
   res
+}
+
+# Per-pair statistic, df, raw + adjusted p-value and Cox HR (group2 vs group1).
+.pairwise_detail <- function(pr, group, data, formula, rhs, method, rho, na.action, PVAL){
+  a <- pr[1]; b <- pr[2]
+  sub_data <- data[group %in% c(a, b), , drop = FALSE]
+  if (method == "survdiff") {
+    sdif <- survival::survdiff(formula, data = sub_data, rho = rho, na.action = na.action)
+    statistic <- unname(sdif$chisq); df <- length(sdif$n) - 1L
+    p.raw <- stats::pchisq(statistic, df, lower.tail = FALSE)
+  } else {
+    wt <- .weighted_logrank_test(formula, data = sub_data, method = method)
+    statistic <- unname(wt$statistic); df <- wt$df; p.raw <- wt$pvalue
+  }
+  # Cox HR of b relative to a (a = reference); NA if the model cannot be fit
+  hr <- lo <- hi <- NA_real_
+  sub_data[[rhs]] <- factor(as.character(sub_data[[rhs]]), levels = c(a, b))
+  cox <- tryCatch(survival::coxph(formula, data = sub_data), error = function(e) NULL)
+  if (!is.null(cox)) {
+    ci <- summary(cox)$conf.int
+    ridx <- which(startsWith(rownames(ci), rhs))
+    if (length(ridx)) {
+      hr <- ci[ridx[1], "exp(coef)"]
+      lo <- ci[ridx[1], "lower .95"]; hi <- ci[ridx[1], "upper .95"]
+    }
+  }
+  data.frame(group1 = a, group2 = b, statistic = statistic, df = as.integer(df),
+             p.value = p.raw, p.adj = .pval_lookup(PVAL, a, b),
+             hr = hr, hr.lower = lo, hr.upper = hi, stringsAsFactors = FALSE)
+}
+
+# Adjusted p-value for a pair from the pairwise.table matrix (either dimname order).
+.pval_lookup <- function(PVAL, a, b){
+  rn <- rownames(PVAL); cn <- colnames(PVAL)
+  if (b %in% rn && a %in% cn && !is.na(PVAL[b, a])) return(PVAL[b, a])
+  if (a %in% rn && b %in% cn && !is.na(PVAL[a, b])) return(PVAL[a, b])
+  NA_real_
 }
 
 
