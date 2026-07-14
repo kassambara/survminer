@@ -56,6 +56,20 @@ NULL
 #'  two faceting variables the p-value is drawn on the panels instead, with a
 #'  warning). If a \code{labeller} is also supplied it takes precedence and the
 #'  p-value is not added to the label.
+#'@param pval.stratified logical value. Default is FALSE. If TRUE, a single
+#'  \strong{pooled stratified log-rank} p-value -- \code{survdiff(Surv(time, status)
+#'  ~ group + strata(facet.by))}, the group effect adjusting for the faceting
+#'  variable -- is shown as a figure-level subtitle. This is the statistic the whole
+#'  figure illustrates: the per-panel p-values (\code{pval = TRUE}) are within-facet
+#'  and several may be non-significant even when the pooled effect is strong.
+#'  \code{pval.stratified} is independent of \code{pval} and can be combined with it.
+#'  Several \code{facet.by} variables are combined into one \code{strata()}. The
+#'  pooled test is the log-rank / Peto family (a weighted Fleming-Harrington
+#'  \code{method} is ignored, as \code{survdiff} has no stratified
+#'  Fleming-Harrington). \strong{Caveat:} the stratified log-rank assumes the group
+#'  effect is consistent across the facet strata; it sums the score over strata, so
+#'  opposite-direction effects cancel and it is \emph{not} a test of a group-by-facet
+#'  interaction (Klein & Moeschberger, 2003).
 #'@param risk.table logical value. Default is FALSE. If TRUE, a number-at-risk
 #'  table is drawn below the faceted curves, faceted with the same structure so
 #'  each panel's table aligns under its curves. Supported for a single
@@ -99,6 +113,11 @@ NULL
 #'ggsurvplot_facet(fit, colon, facet.by = "rx",
 #'                 palette = "jco", pval = TRUE, pval.in.label = TRUE)
 #'
+#'# Pooled stratified log-rank p (figure-level), with the per-panel p-values
+#'#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#'ggsurvplot_facet(fit, colon, facet.by = "rx",
+#'                 palette = "jco", pval = TRUE, pval.stratified = TRUE)
+#'
 #'# Faceted number-at-risk table
 #'#::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #'ggsurvplot_facet(fit, colon, facet.by = "rx",
@@ -116,7 +135,7 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                              legend.labs = NULL,
                              pval = FALSE, pval.method = FALSE, pval.size = 5,
                              pval.coord = NULL, pval.method.coord = NULL,
-                             pval.in.label = FALSE,
+                             pval.in.label = FALSE, pval.stratified = FALSE,
                              p.adjust.method = "none", p.adjust.label = "adj.p =",
                              nrow = NULL, ncol = NULL,
                              scales = "fixed",
@@ -431,6 +450,14 @@ ggsurvplot_facet <- function(fit, data, facet.by,
               panel.labs.font.y = panel.labs.font.y,
               labeller = strip.labeller)
 
+  # Pooled stratified log-rank p (a single, figure-level statistic), independent of
+  # the per-panel `pval`. Added to `p` here so it reaches both the plain return and
+  # the risk-table grob assembly below.
+  #:::::::::::::::::::::::::::::::::::::::::
+  if(isTRUE(pval.stratified))
+    p <- .facet_stratified_pval(p, surv.obj, vars.notin.groupby, facet.by, data,
+                                dots = list(...))
+
   # Draw the p-values on the panels unless they were placed in the labels
   #:::::::::::::::::::::::::::::::::::::::::
   if(draw.pval && !add.pval.to.label){
@@ -642,6 +669,46 @@ print.ggsurvplot_facet <- function(x, newpage = TRUE, ...) {
   if(newpage) grid::grid.newpage()
   grid::grid.draw(x)
   invisible(x)
+}
+
+# Append a pooled stratified log-rank p-value as a figure-level subtitle. The test
+# is survdiff(Surv ~ group + strata(facet.by)) -- the group effect adjusting for the
+# facet variable, the statistic the whole figure illustrates. GROUP is the vetted
+# grouping set (vars.notin.groupby) and FACET is facet.by; several facet variables
+# are combined into one strata(). Only the log-rank / Peto (rho) family is available
+# (survdiff has no stratified Fleming-Harrington), so a weighted `method` falls back
+# to rho with a message. The pooled test assumes a consistent group effect across
+# strata; it cannot detect a group x facet interaction (opposite-direction effects
+# cancel) -- see the caveat in the ggsurvplot_facet() documentation.
+.facet_stratified_pval <- function(p, surv.obj, group.vars, facet.by, data, dots){
+  if(length(group.vars) == 0L){
+    message("ggsurvplot_facet(): `pval.stratified = TRUE` needs a grouping variable ",
+            "(the fit is ~ 1); no pooled p drawn.")
+    return(p)
+  }
+  if("method" %in% names(dots) &&
+     !identical(.resolve_logrank_method(dots$method), "survdiff"))
+    message("ggsurvplot_facet(): the pooled stratified test uses the log-rank / ",
+            "Peto (rho) family only (survdiff has no stratified Fleming-Harrington); ",
+            "the pooled p ignores `method`.")
+  rho <- if("rho" %in% names(dots)) dots$rho else 0
+  strata.term <- paste0("strata(", paste(facet.by, collapse = ", "), ")")
+  form <- .build_formula(surv.obj, paste(c(group.vars, strata.term), collapse = " + "))
+  sdiff <- tryCatch(survival::survdiff(form, data = data, rho = rho),
+                    error = function(e) NULL)
+  if(is.null(sdiff) || length(sdiff$n) < 2L){
+    message("ggsurvplot_facet(): the pooled stratified log-rank test is not defined ",
+            "here (a single group, or a non-plain grouping term); no pooled p drawn.")
+    return(p)
+  }
+  df <- length(sdiff$n) - 1L
+  pv <- stats::pchisq(sdiff$chisq, df, lower.tail = FALSE)
+  ptxt <- if(pv < 1e-4) "p < 0.0001" else paste0("p = ", format.pval(pv, digits = 2))
+  label <- sprintf("Stratified log-rank %s (stratified by %s)",
+                   ptxt, paste(facet.by, collapse = ", "))
+  old.sub <- p$labels$subtitle
+  p + ggplot2::labs(subtitle = if(is.null(old.sub)) label
+                    else paste0(old.sub, "\n", label))
 }
 
 
