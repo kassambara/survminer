@@ -77,6 +77,29 @@ reference:
       - BRCAOV.survInfo
 
 
+articles:
+  - title: Get started
+    navbar: Get started
+    contents:
+      - Get_started
+  - title: Methods
+    navbar: Methods
+    desc: The survival summaries a manuscript reports.
+    contents:
+      - Effect_measures
+      - Cox_forests_diagnostics
+      - Competing_risks
+      - Specifiying_weights_in_log-rank_comparisons
+  - title: Customization and examples
+    navbar: Customization
+    desc: Tune the look and compose on the objects survminer returns.
+    contents:
+      - Customization_recipes
+      - Playing_with_fonts_and_texts
+      - ggforest-show-interactions-hazard-ratio
+      - Informative_Survival_Plots
+
+
 navbar:
   title: "survminer"
   left:
