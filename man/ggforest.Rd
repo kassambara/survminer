@@ -15,6 +15,7 @@ ggforest(
   global.stats = TRUE,
   ref.display = TRUE,
   var.labels = NULL,
+  palette = NULL,
   ggtheme = NULL
 )
 }
@@ -30,20 +31,25 @@ will be extracted from 'fit' object.}
 
 \item{fontsize}{relative size of annotations in the plot. Default value: 0.7.}
 
-\item{refLabel}{label for reference levels of factor variables.}
+\item{refLabel}{label for reference levels of factor variables. Either a single
+string (default \code{"reference"}, applied to every reference level) or a named
+character vector mapping a variable name to its reference label, e.g.
+\code{c(sex = "female (ref)", rx = "Obs (ref)")}; variables not named keep the
+default label. Match is on the model term name (before any \code{var.labels}
+relabelling).}
 
 \item{noDigits}{number of digits for estimates and p-values in the plot.}
 
-\item{global.stats}{logical value. Default is TRUE. If FALSE, the bottom caption
-reporting the global statistics (number of events, global likelihood-ratio-test
-p-value, AIC and concordance index) is omitted. Useful when arranging several
-forest plots in a panel.}
+\item{global.stats}{logical value. Default is TRUE. If FALSE, the bottom
+caption reporting the global statistics (number of events, global
+likelihood-ratio-test p-value, AIC and concordance index) is omitted. Useful
+when arranging several forest plots in a panel.}
 
-\item{ref.display}{logical value. Default is TRUE. If FALSE, the rows that have
-no hazard ratio -- factor baselines, and any non-estimable / aliased or
-\code{strata()} terms, i.e. the rows labelled \code{refLabel} ("reference") --
-are omitted from both the plot and the table, keeping only the estimated levels.
-Default TRUE shows every row (unchanged).}
+\item{ref.display}{logical value. Default is TRUE. If FALSE, the rows that
+have no hazard ratio -- factor baselines, and any non-estimable / aliased or
+\code{strata()} terms, i.e. the rows labelled \code{refLabel} ("reference")
+-- are omitted from both the plot and the table, keeping only the estimated
+levels. Default TRUE shows every row (unchanged).}
 
 \item{var.labels}{a named character vector giving display labels for the
 variable names, e.g. \code{c(age = "Age (years)", sex = "Sex")}. The names
@@ -51,14 +57,26 @@ must match the model term names (as shown in the plot by default); only
 matched terms are relabelled, unmatched terms keep their original name.
 Default \code{NULL} uses the term names unchanged.}
 
+\item{palette}{the colour of the hazard-ratio points and confidence intervals.
+Default \code{NULL} draws them in black (unchanged). A single colour (name or
+hex) draws every point/interval in that one accent colour -- the recommended,
+tasteful choice, since colour on a forest plot does not otherwise carry meaning.
+Alternatively a palette -- a vector of colours or a palette name accepted by
+\code{\link[ggpubr]{get_palette}} (e.g. \code{"npg"}, \code{"lancet"}) --
+colours the points by variable (one colour per variable); no colour legend is
+drawn, as the rows are already labelled. A colour vector longer than the number
+of variables is interpolated (\code{get_palette} behaviour). Prefer a palette
+without grey (e.g. \code{"npg"}) so a point is not low-contrast on the shaded
+rows.}
+
 \item{ggtheme}{a ggplot2 theme (e.g. the result of \code{theme(...)} or a
-complete theme) applied to the forest plot. Because \code{ggforest()} returns
-a rasterised \code{gtable}, a theme added to the returned object has no effect;
-pass it here instead, e.g. \code{ggtheme = theme(text = element_text(size =
-14))}. It is added after the built-in theme: a partial \code{theme(...)}
-overrides only the matching elements, whereas a complete theme (e.g.
-\code{theme_void()}) replaces the built-in look entirely. Default \code{NULL}
-leaves the appearance unchanged.}
+complete theme) applied to the forest plot. Because \code{ggforest()}
+returns a rasterised \code{gtable}, a theme added to the returned object
+has no effect; pass it here instead, e.g.
+\code{ggtheme = theme(text = element_text(size = 14))}. It is added after
+the built-in theme: a partial \code{theme(...)} overrides only the matching
+elements, whereas a complete theme (e.g. \code{theme_void()}) replaces the
+built-in look entirely. Default \code{NULL} leaves the appearance unchanged.}
 }
 \value{
 returns a ggplot2 object (invisibly)
@@ -81,6 +99,10 @@ bigmodel <-
   coxph(Surv(time, status) ~ sex + rx + adhere + differ + extent + node4,
     data = colon )
 ggforest(bigmodel)
+
+# a single accent colour, and per-variable reference labels
+ggforest(bigmodel, palette = "#0073C2",
+  refLabel = c(sex = "female (ref)", rx = "Obs (ref)"))
 
 }
 \author{

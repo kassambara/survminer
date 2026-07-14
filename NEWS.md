@@ -2,6 +2,8 @@
 
 ## New features
 
+- `ggforest()` gains a `palette` argument to colour the hazard-ratio points and confidence intervals (a single colour for one accent, or a palette to colour by variable; default `NULL` keeps them black), and its `refLabel` now also accepts a named character vector to set per-variable reference labels (e.g. `c(sex = "female (ref)")`). This also fixes the reference-row label alignment when a custom `refLabel` is used.
+
 - `pairwise_survdiff()` gains `detailed = TRUE`, attaching a per-pair table (`res$detailed`) with the test statistic (chi-square) and its degrees of freedom, the raw and adjusted p-values, and a Cox proportional-hazards hazard ratio with 95% confidence interval for each pair. The default (`detailed = FALSE`) returns the usual p-value matrix only.
 
 - `ggcompetingrisks()` gains `risk.table = TRUE`, drawing a per-group number-at-risk table beneath the cumulative-incidence curves, locked to the same time axis. It is available for a `tidycmprsk::cuminc` object on the overlaid single-panel layout; the at-risk count is the number still event-free and under observation (competing events count as leaving the risk set), matching the Kaplan-Meier at-risk convention of `ggsurvplot()`. `risk.table` also accepts the `ggsurvplot()` content strings (`"percentage"`, `"nrisk_cumcensor"`, ...), and `break.time.by` controls the shared axis breaks. With `risk.table = TRUE` the function returns a compound object that prints the curves above the aligned table and works with `ggsave()` (#838).

@@ -7,7 +7,23 @@
 #' @param main title of the plot.
 #' @param cpositions relative positions of first three columns in the OX scale.
 #' @param fontsize relative size of annotations in the plot. Default value: 0.7.
-#' @param refLabel label for reference levels of factor variables.
+#' @param refLabel label for reference levels of factor variables. Either a single
+#'  string (default \code{"reference"}, applied to every reference level) or a named
+#'  character vector mapping a variable name to its reference label, e.g.
+#'  \code{c(sex = "female (ref)", rx = "Obs (ref)")}; variables not named keep the
+#'  default label. Match is on the model term name (before any \code{var.labels}
+#'  relabelling).
+#' @param palette the colour of the hazard-ratio points and confidence intervals.
+#'  Default \code{NULL} draws them in black (unchanged). A single colour (name or
+#'  hex) draws every point/interval in that one accent colour -- the recommended,
+#'  tasteful choice, since colour on a forest plot does not otherwise carry meaning.
+#'  Alternatively a palette -- a vector of colours or a palette name accepted by
+#'  \code{\link[ggpubr]{get_palette}} (e.g. \code{"npg"}, \code{"lancet"}) --
+#'  colours the points by variable (one colour per variable); no colour legend is
+#'  drawn, as the rows are already labelled. A colour vector longer than the number
+#'  of variables is interpolated (\code{get_palette} behaviour). Prefer a palette
+#'  without grey (e.g. \code{"npg"}) so a point is not low-contrast on the shaded
+#'  rows.
 #' @param noDigits number of digits for estimates and p-values in the plot.
 #' @param global.stats logical value. Default is TRUE. If FALSE, the bottom
 #'   caption reporting the global statistics (number of events, global
@@ -53,6 +69,10 @@
 #'     data = colon )
 #' ggforest(bigmodel)
 #'
+#' # a single accent colour, and per-variable reference labels
+#' ggforest(bigmodel, palette = "#0073C2",
+#'   refLabel = c(sex = "female (ref)", rx = "Obs (ref)"))
+#'
 #' @export
 #' @import broom
 #' @import grid
@@ -64,7 +84,7 @@ ggforest <- function(model, data = NULL,
   main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
   fontsize = 0.7, refLabel = "reference", noDigits=2,
   global.stats = TRUE, ref.display = TRUE, var.labels = NULL,
-  ggtheme = NULL) {
+  palette = NULL, ggtheme = NULL) {
   conf.high <- conf.low <- estimate <- .row <- NULL
   stopifnot(inherits(model, "coxph"))
 
@@ -231,6 +251,11 @@ ggforest <- function(model, data = NULL,
   toShowExpClean <- data.frame(toShow,
     pvalue = signif(toShow[,4],noDigits+1),
     toShowExp)
+  # Reference rows (factor baselines / non-estimable terms) have an NA estimate.
+  # Capture the mask now, before `estimate` is zeroed below, so the reference
+  # label and its text alignment key on this rather than a literal "reference"
+  # string (which broke a custom refLabel).
+  toShowExpClean$.isref <- is.na(toShowExpClean$estimate)
   # ref.display = FALSE drops the rows with no hazard ratio -- factor baselines,
   # plus any non-estimable / aliased or strata() terms -- from both the drawn
   # point and the table, keeping only the estimated levels. These are exactly the
@@ -245,7 +270,16 @@ ggforest <- function(model, data = NULL,
     ifelse(toShowExpClean$p.value < 0.01, "*",""),
     ifelse(toShowExpClean$p.value < 0.001, "*",""))
   toShowExpClean$ci <- paste0("(",toShowExpClean[,"conf.low.1"]," - ",toShowExpClean[,"conf.high.1"],")")
-  toShowExpClean$estimate.1[is.na(toShowExpClean$estimate)] = refLabel
+  # Reference label(s): a single string (default), or a named character vector
+  # keyed by the model term name -- `var` still holds the raw term name here
+  # (the var.labels remap runs below), so keying on it is clean.
+  if (is.null(names(refLabel))) {
+    toShowExpClean$estimate.1[toShowExpClean$.isref] <- refLabel[1]
+  } else {
+    lab <- refLabel[as.character(toShowExpClean$var[toShowExpClean$.isref])]
+    lab[is.na(lab)] <- "reference"
+    toShowExpClean$estimate.1[toShowExpClean$.isref] <- lab
+  }
   toShowExpClean$stars[which(toShowExpClean$p.value < 0.001)] = "<0.001 ***"
   toShowExpClean$stars[is.na(toShowExpClean$estimate)] = ""
   toShowExpClean$ci[is.na(toShowExpClean$estimate)] = ""
@@ -284,6 +318,9 @@ ggforest <- function(model, data = NULL,
     .hit <- toShowExpClean$var %in% names(.map)
     toShowExpClean$var[.hit] <- .map[toShowExpClean$var[.hit]]
   }
+  # Undeduplicated per-variable key for optional colouring (the `var` column below
+  # is blanked for repeated levels, so it cannot be used as a colour group).
+  toShowExpClean$.grp <- factor(toShowExpClean$var, levels = unique(toShowExpClean$var))
   toShowExpClean$var[duplicated(toShowExpClean$var)] = ""
   # make label strings:
   toShowExpClean$N <- paste0("(N=",toShowExpClean$N,")")
@@ -350,15 +387,36 @@ ggforest <- function(model, data = NULL,
   annot_size_mm <- fontsize *
     as.numeric(convertX(unit(theme_get()$text$size, "pt"), "mm"))
 
+  # Hazard-ratio point + interval layers. Default (palette = NULL) keeps the exact
+  # black, no-colour-aesthetic geoms so the output is unchanged; a palette colours
+  # them by variable via a hidden manual colour scale. A single colour recycles to
+  # every variable (one accent); a palette gives one colour per variable.
+  .drawable <- toShowExpClean[!toShowExpClean$.nonfinite, , drop = FALSE]
+  if (is.null(palette)) {
+    .pt <- geom_point(data = .drawable, aes(x = .row, y = exp(estimate)),
+                      pch = 15, size = 4)
+    .eb <- geom_errorbar(data = .drawable,
+                         aes(x = .row, ymin = exp(conf.low), ymax = exp(conf.high)),
+                         width = 0.15)
+    .col_scale <- NULL
+  } else {
+    .cols <- ggpubr::get_palette(palette, length(levels(toShowExpClean$.grp)))
+    .cols <- stats::setNames(.cols, levels(toShowExpClean$.grp))
+    .pt <- geom_point(data = .drawable,
+                      aes(x = .row, y = exp(estimate), colour = .grp),
+                      pch = 15, size = 4)
+    .eb <- geom_errorbar(data = .drawable,
+                         aes(x = .row, ymin = exp(conf.low), ymax = exp(conf.high),
+                             colour = .grp), width = 0.15)
+    .col_scale <- scale_colour_manual(values = .cols, guide = "none")
+  }
+
   p <- ggplot(toShowExpClean, aes(seq_along(var), exp(estimate))) +
     geom_rect(aes(xmin = seq_along(var) - .5, xmax = seq_along(var) + .5,
       ymin = exp(rangeplot[1]), ymax = exp(rangeplot[2]),
       fill = ordered(seq_along(var) %% 2 + 1))) +
     scale_fill_manual(values = c("#FFFFFF33", "#00000033"), guide = "none") +
-    geom_point(data = toShowExpClean[!toShowExpClean$.nonfinite, , drop = FALSE],
-      aes(x = .row, y = exp(estimate)), pch = 15, size = 4) +
-    geom_errorbar(data = toShowExpClean[!toShowExpClean$.nonfinite, , drop = FALSE],
-      aes(x = .row, ymin = exp(conf.low), ymax = exp(conf.high)), width = 0.15) +
+    .pt + .eb + .col_scale +
     geom_hline(yintercept = 1, linetype = 3) +
     coord_flip(ylim = exp(rangeplot)) +
     ggtitle(main) +
@@ -389,7 +447,7 @@ ggforest <- function(model, data = NULL,
       size = annot_size_mm) +
     annotate(geom = "text", x = x_annotate, y = exp(y_cistring),
       label = toShowExpClean$estimate.1, size = annot_size_mm,
-      vjust = ifelse(toShowExpClean$estimate.1 == "reference", .5, -0.1)) +
+      vjust = ifelse(toShowExpClean$.isref, .5, -0.1)) +
     annotate(geom = "text", x = x_annotate, y = exp(y_cistring),
       label = toShowExpClean$ci, size = annot_size_mm,
       vjust = 1.1,  fontface = "italic") +
