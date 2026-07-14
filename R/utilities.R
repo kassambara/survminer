@@ -562,6 +562,78 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
   .cols
 }
 
+# Native plotmath in legend.labs (#350)
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# Detect whether legend.labs carries plotmath: an expression() (possibly
+# multi-element via c()) or a list containing language objects (call/symbol).
+# A plain character/factor/numeric vector is NOT plotmath, so the classic path
+# is left completely unchanged (byte-identical).
+.is_plotmath <- function(x){
+  if(is.null(x)) return(FALSE)
+  if(is.expression(x)) return(TRUE)
+  if(is.list(x))
+    return(any(vapply(x, function(e) is.call(e) || is.symbol(e) || is.expression(e),
+                      logical(1))))
+  FALSE
+}
+
+# A safe character rendering of plotmath legend labels, used for the strata
+# factor levels and every internal lookup (colour extraction, tables) so the
+# internal logic stays character-based; the math itself is overlaid on the plot
+# legend at the end. Deparsing keeps the labels distinct and stable.
+.plotmath_to_char <- function(x){
+  if(is.expression(x))
+    return(vapply(seq_along(x),
+                  function(i) paste(deparse(x[[i]]), collapse = ""), character(1)))
+  vapply(x, function(e){
+    if(is.character(e)) e else paste(deparse(e), collapse = "")
+  }, character(1))
+}
+
+# Flatten plotmath legend labels to a single expression vector. A user may pass
+# either an expression vector (`c(expression(a), expression(b))`, already flat)
+# or a list of language/expression/character elements (`list(...)`); the latter
+# must be flattened, because `as.expression(list(expression(a), ...))` nests the
+# expressions and plotmath then renders nothing (#350).
+.as_plotmath_vector <- function(x){
+  if(is.expression(x)) return(x)
+  do.call(c, lapply(x, function(e) if(is.expression(e)) e else as.expression(e)))
+}
+
+# Overlay plotmath legend labels on a built survival-curve plot, preserving the
+# palette exactly: re-apply the colour/fill (and, when linetype maps to strata,
+# linetype) scales with the expression labels and the colours already drawn.
+# Gated by the caller behind .is_plotmath(), so the character path never reaches
+# here.
+.apply_plotmath_legend <- function(p, labs.expr, grp.levels,
+                                   linetype = "strata", linetype.manual = NULL){
+  cols <- .extract_ggplot_colors(p, grp.levels = grp.levels)
+  labs.expr <- .as_plotmath_vector(labs.expr)
+  suppressMessages({
+    p <- p +
+      ggplot2::scale_colour_manual(values = unname(cols), labels = labs.expr) +
+      ggplot2::scale_fill_manual(values = unname(cols), labels = labs.expr)
+    if(identical(linetype, "strata")){
+      if(!is.null(linetype.manual))
+        p <- p + ggplot2::scale_linetype_manual(values = linetype.manual,
+                                                labels = labs.expr)
+      else
+        p <- p + ggplot2::scale_linetype_discrete(labels = labs.expr)
+    }
+  })
+  p
+}
+
+# Overlay plotmath labels on a survival-table y-axis (risk table / cumevents /
+# cumcensor), reversed because the table lists strata top-to-bottom while the
+# discrete y-axis orders its breaks bottom-to-top. Gated by the caller. (#350)
+.apply_plotmath_table_yaxis <- function(tbl, labs.expr){
+  if(is.null(tbl)) return(tbl)
+  suppressMessages(
+    tbl + ggplot2::scale_y_discrete(labels = rev(.as_plotmath_vector(labs.expr)))
+  )
+}
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Helper functions for survival curves
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

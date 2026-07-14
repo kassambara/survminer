@@ -181,6 +181,12 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
   pms <- attr(p, "parameters")
   surv.color <- pms$color
 
+  # Native plotmath legend labels (#350): render the same math on the table
+  # strata rows. Captured as a local and removed from pms so it is not forwarded
+  # to ggsurvtable; NULL for character labels, so the tables are byte-identical.
+  legend.labs.math <- pms$legend.labs.math
+  pms$legend.labs.math <- NULL
+
   pms$fit <- fit
   pms$data <- data
   pms$risk.table.type <- risk.table.type
@@ -218,6 +224,8 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     # color risk.table ticks by strata
     if(risk.table.y.text.col) pms$y.text.col <- scurve_cols
     res$table <- risktable <- do.call(ggsurvtable, pms)
+    if(!is.null(legend.labs.math) && risk.table.y.text)
+      res$table <- .apply_plotmath_table_yaxis(res$table, legend.labs.math)
   }
 
   # Add the cumulative number of events
@@ -231,6 +239,8 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     pms$risk.table.type <- cumevents.type   # absolute (default) / percentage / abs_pct (#499)
     pms$origin.align <- TRUE   # always laid out "out"; align t=0 to the origin
     res$cumevents <- do.call(ggsurvtable, pms)
+    if(!is.null(legend.labs.math) && cumevents.y.text)
+      res$cumevents <- .apply_plotmath_table_yaxis(res$cumevents, legend.labs.math)
   }
 
   # Add ncensor.plot or cumcensor plot
@@ -279,6 +289,8 @@ ggsurvplot_core <- function(fit, data = NULL, fun = NULL,
     pms$risk.table.type <- cumcensor.type   # absolute (default) / percentage / abs_pct (#499)
     pms$origin.align <- TRUE   # always laid out "out"; align t=0 to the origin
     ncensor_plot  <- do.call(ggsurvtable, pms)
+    if(!is.null(legend.labs.math) && cumcensor.y.text)
+      ncensor_plot <- .apply_plotmath_table_yaxis(ncensor_plot, legend.labs.math)
   }
   if(ncensor.plot | cumcensor)
     res$ncensor.plot <- ncensor_plot

@@ -161,6 +161,16 @@ ggsurvplot_df <- function(fit, fun = NULL,
   else if(is.null(legend.labs))
     legend.labs <- strata_names
 
+  # Native plotmath in legend.labs (#350): an expression() or a list of language
+  # objects renders as math. Keep a character version for all internal logic
+  # (factor levels, colour extraction, tables) so the character path is
+  # byte-identical; the expressions are overlaid on the legend at the end.
+  legend.labs.math <- NULL
+  if(.is_plotmath(legend.labs)){
+    legend.labs.math <- legend.labs
+    legend.labs <- .plotmath_to_char(legend.labs)
+  }
+
   if(is.null(legend.title)) legend.title <- .strata.var
 
   # Connect surv data to the origin for plotting: time = 0, surv = 1
@@ -302,12 +312,18 @@ ggsurvplot_df <- function(fit, fun = NULL,
   p <-  .set_general_gpar(p, legend = legend, ...) # general graphical parameters
   if(!is.null(linetype.manual)) p <- p + scale_linetype_manual(values = linetype.manual)
 
+  # Overlay plotmath legend labels (#350). Gated: character labels leave
+  # legend.labs.math NULL and never reach here, so the plot is byte-identical.
+  if(!is.null(legend.labs.math))
+    p <- .apply_plotmath_legend(p, legend.labs.math, grp.levels = legend.labs,
+                                linetype = linetype, linetype.manual = linetype.manual)
+
   pms <- list(
     data = df, color = color, palette = palette,
     break.time.by =  break.time.by,
     xlim = xlim,
     legend = legend, legend.title = legend.title,
-    legend.labs = legend.labs, xlog = xlog,
+    legend.labs = legend.labs, legend.labs.math = legend.labs.math, xlog = xlog,
     time.breaks = times,
     xlab = xlab, ylab = ylab,
     xscale = xscale, xticklabels = xticklabels
