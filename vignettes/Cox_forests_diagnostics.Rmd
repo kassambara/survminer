@@ -1,0 +1,174 @@
+---
+title: "Interrogating a Cox model: forest plots and proportional-hazards diagnostics"
+author: "survminer"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Interrogating a Cox model: forest plots and proportional-hazards diagnostics}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 8,
+  fig.height = 5,
+  dpi = 96
+)
+```
+
+Once you have fitted a Cox model there are four questions a reader (or a
+reviewer) will ask: *what does each covariate do?*, *is the treatment effect the
+same in every subgroup?*, *does that effect survive adjustment?*, and *can I
+trust the hazard ratio at all?* survminer answers each with a dedicated function
+-- `ggforest()`, `ggforest_subgroup()`, `ggforest_models()`, and the
+proportional-hazards diagnostic `ggcoxnph()`.
+
+```{r setup}
+library(survminer)
+library(survival)
+
+# Colon cancer adjuvant-therapy trial: overall survival (etype == 2), comparing
+# observation with the Lev+5FU arm. A few covariates are given readable labels.
+colon2 <- subset(colon, etype == 2 & rx %in% c("Obs", "Lev+5FU"))
+colon2$rx     <- droplevels(colon2$rx)
+colon2$sex    <- factor(colon2$sex,    labels = c("Female", "Male"))
+colon2$differ <- factor(colon2$differ, labels = c("well", "moderate", "poor"))
+colon2$agegrp <- cut(colon2$age, c(0, 50, 70, 100),
+                     labels = c("<50", "50-70", ">70"))
+
+cox <- coxph(Surv(time, status) ~ rx + sex + age + nodes + differ,
+             data = colon2)
+```
+
+# One model's coefficients
+
+`ggforest()` draws the hazard ratio and 95% confidence interval for every term
+of a single Cox model, with the reference level, N, and p-value laid out beside
+each row and a global model summary in the caption:
+
+```{r forest, fig.height = 6}
+ggforest(cox, data = colon2)
+```
+
+**Reading a forest plot.** The vertical reference line at **HR = 1** marks "no
+effect": a box to its **left** (HR < 1) means that level lowers the hazard
+relative to the reference, to its **right** (HR > 1) means it raises the hazard.
+The box is the point estimate and the whiskers its 95% confidence interval; a
+whisker that **crosses 1** is not statistically significant. The box *size*
+grows with the precision of the estimate. (The same reference line appears in
+every forest below.)
+
+`ggforest()` has arguments to tailor the layout -- `columns` chooses which
+statistic columns appear (any subset of `c("N", "hr", "ci", "p")`), and
+`palette` colours the points and intervals (by variable, or a single accent)
+instead of the default black.
+
+# Is the effect the same in every subgroup?
+
+A single model gives one averaged treatment effect. What clinicians publish is
+the **treatment effect within each subgroup**, next to a test of whether the
+effect actually differs across a subgroup's levels. `ggforest_subgroup()` draws
+exactly that:
+
+```{r subgroup, fig.height = 5, fig.width = 8.5}
+ggforest_subgroup(
+  cox, data = colon2,
+  treatment = "rx",
+  subgroups = c(Sex = "sex", "Age group" = "agegrp", Differentiation = "differ")
+)
+```
+
+Read it in two parts, because it combines two different models:
+
+- each **row** is the treatment hazard ratio estimated *within* that subgroup
+  level (a Cox model refit on that subset), so you can see where the benefit is
+  larger or smaller;
+- each **header** carries one **interaction p-value** for the whole subgroup
+  variable -- from a single model with a `treatment × subgroup` term (a
+  likelihood-ratio test), *not* one p per level. A small interaction p is
+  evidence of genuine effect modification; a large one says the apparent
+  differences between levels are within noise.
+
+This two-model structure is why a subgroup forest cannot be read off a single
+`ggforest()`. Two details worth stating: the per-level hazard ratios are the
+*treatment-only* effect within each subset (not adjusted for the other
+covariates), and the `No. (%)` column counts the subgroup size -- so "Overall"
+here is 619, the full cohort, which is larger than the 594 complete cases the
+multivariable `ggforest()` above was fit on.
+
+# One covariate across several models
+
+When you add covariates to a model, the estimate for a key variable moves. The
+classic reporting device -- unadjusted versus adjusted, or naive versus
+time-varying -- puts that one covariate's hazard ratio on one row per model.
+`ggforest_models()` does this:
+
+```{r models, fig.height = 4}
+cox_crude <- coxph(Surv(time, status) ~ rx, data = colon2)
+
+ggforest_models(
+  list("Unadjusted" = cox_crude, "Adjusted" = cox),
+  term = "rx"
+)
+```
+
+Here the treatment hazard ratio moves little after adjustment (0.69 unadjusted →
+0.66 adjusted), consistent with limited confounding by the measured covariates
+-- though part of the small shift is a change of sample, since the adjusted
+model drops the few cases with missing covariates. The hazard ratio, confidence
+interval and p-value are read from each model with a robust variance when one is
+present, and a model missing the term is dropped with a warning.
+
+# Can you trust the hazard ratio? The proportional-hazards check
+
+Every hazard ratio above assumes **proportional hazards** -- that a covariate's
+effect is a constant multiplier over all follow-up. When that fails, the single
+HR is a time-average that can hide a treatment whose benefit grows, shrinks, or
+reverses. `ggcoxnph()` gathers the standard non-proportional-hazards diagnostics
+into one panel. We use the `veteran` lung-cancer trial and a performance-status
+split (Karnofsky ≤ 60 vs > 60), a textbook example where the effect is strongly
+time-varying:
+
+```{r nph, fig.height = 6}
+veteran$perf <- factor(ifelse(veteran$karno <= 60, "Poor", "Good"),
+                       levels = c("Poor", "Good"))
+cox_perf <- coxph(Surv(time, status) ~ perf, data = veteran)
+
+ggcoxnph(cox_perf, variable = "perf", palette = "jco")
+```
+
+- **A. Complementary log-log survival** by group: parallel curves support
+  proportional hazards; here they clearly converge, warning against it.
+- **B. Scaled Schoenfeld residuals** with a smooth of β(t) and the
+  Grambsch-Therneau p-value: a flat line (large p) is consistent with
+  proportional hazards; here β(t) drifts and p = 0.00032, so PH is rejected.
+- **C. Hazard-ratio trend** exp(β(t)): the *shape* of the effect over time --
+  here the protective hazard ratio sits far below 1 early and drifts back toward
+  it, so the benefit of good performance status is largest early and attenuates
+  over follow-up (read it as shape, not magnitude).
+- **D. RMST difference versus horizon**: the absolute benefit as the follow-up
+  window lengthens -- a proportional-hazards-free view that previews the
+  restricted mean survival time from the **Absolute effect measures** vignette.
+
+# When the assumption fails
+
+That is exactly this case: panel B rejects proportional hazards (p = 0.00032)
+and panel A's curves converge, so a single hazard ratio for performance status
+is not a faithful summary -- report an **absolute** effect measure instead. The
+**Absolute effect measures** vignette covers restricted mean survival time,
+milestone survival, and landmark analysis for this situation.
+
+# Where to next
+
+- **Get started** -- presets, themes, and the composable curve.
+- **Absolute effect measures** -- RMST, milestone, and landmark analysis for
+  when proportional hazards fails.
+- **Competing risks** -- cumulative incidence when subjects can fail in more
+  than one way.
