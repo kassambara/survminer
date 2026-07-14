@@ -141,11 +141,39 @@ ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE,
 
 ```{r}
 ggsurvplot(fit, data = lung, pval = TRUE, pval.method = TRUE,
-           log.rank.weights = "FH_p=1_q=1", 
+           log.rank.weights = "FH_p=1_q=1",
            pval.method.coord = c(5, 0.1),
            pval.method.size = 4)
 ```
 
+# The `weighted_logrank()` function
+
+The examples above annotate a single weighted test on a plot. When you want the
+tests themselves -- the statistic, its degrees of freedom and the p-value -- as a
+tidy table, use `weighted_logrank()`. It takes vectors of `rho` and `gamma`, so
+you can compute a whole family of Fleming-Harrington G(rho, gamma) tests in one
+call. The classic three are FH(0, 0) (the standard log-rank), FH(1, 0)
+(early-emphasis, the Peto-Peto / Prentice weighting), and FH(0, 1)
+(late-emphasis):
+
+```{r}
+weighted_logrank(Surv(time, status) ~ sex, data = lung,
+                 rho = c(0, 1, 0), gamma = c(0, 0, 1))
+```
+
+Each row is one test with its weight, `rho`, `gamma`, chi-square `statistic`, `df`
+and `p.value`. Here the early-emphasis FH(1, 0) test gives the smallest p-value
+and the late-emphasis FH(0, 1) test the largest, which tells you the two survival
+curves separate more in early follow-up than late -- the kind of shape a single
+log-rank p-value hides.
+
+The same arbitrary `(rho, gamma)` are available inside `ggsurvplot()` through
+`log.rank.weights = "FH"` with `rho =` and `gamma =`, and `surv_pvalue()` now
+returns the test `statistic` and `df` alongside the p-value:
+
+```{r}
+surv_pvalue(fit, data = lung, method = "FH", rho = 0, gamma = 1)
+```
 
 # References
 
