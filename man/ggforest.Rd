@@ -104,6 +104,10 @@ ggforest(bigmodel)
 ggforest(bigmodel, palette = "#0073C2",
   refLabel = c(sex = "female (ref)", rx = "Obs (ref)"))
 
+# a clean, publication-ready look: one accent colour and a slightly larger
+# font. Add global.stats = FALSE when placing several forests in one figure.
+ggforest(bigmodel, palette = "#0073C2", fontsize = 0.9)
+
 }
 \author{
 Przemyslaw Biecek (\email{przemyslaw.biecek@gmail.com}),
