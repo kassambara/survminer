@@ -11,6 +11,10 @@
 #' @importFrom utils capture.output
 #' @importFrom rlang !! sym
 
+# Variables used in non-standard evaluation (ggplot2 aes(), dplyr) that R CMD
+# check would otherwise flag as "no visible binding for global variable".
+utils::globalVariables(c(".grp", "mlab", "strata", "ymax", "ymin"))
+
 
 # Check if an installed package version is superior to a specified version
 # Version, pkg: character vector

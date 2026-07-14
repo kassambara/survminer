@@ -17,3 +17,5 @@
 ^CLAUDE\.md$
 ^\.claude$
 ^data-raw$
+Rplots\.pdf$
+^scratchpad$
