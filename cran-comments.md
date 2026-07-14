@@ -15,8 +15,17 @@ There was 1 NOTE:
 ## Downstream dependencies
 survminer has 72 reverse dependencies on CRAN. This release is additive: new
 functionality is provided through new functions and opt-in arguments, and the
-default output of existing functions is unchanged. I have checked the reverse
-dependencies I could install and found no problems introduced by this update.
+default output of existing functions is unchanged.
+
+I ran a scoped reverse-dependency check: I downloaded all 72 source packages and
+searched them for the small set of functions whose behaviour changed this cycle
+(`surv_pvalue()` gained two output columns; `ggcompetingrisks()` was modernized
+with its default output unchanged; `ggcoxfunctional()` no longer warns on the
+formula form). Four reverse dependencies call one of these -- clustcurv, Coxmos
+and ggquickeda use `surv_pvalue()`, and simstudy uses `ggcompetingrisks()`. I
+checked each: all read `surv_pvalue()` results by column name (the new columns
+are additive), and simstudy's `ggcompetingrisks()` call reproduces unchanged.
+No problems are introduced by this update.
 
 ## Update
 
