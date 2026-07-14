@@ -16,6 +16,7 @@ ggforest(
   ref.display = TRUE,
   var.labels = NULL,
   palette = NULL,
+  columns = c("N", "hr", "ci", "p"),
   ggtheme = NULL
 )
 }
@@ -68,6 +69,15 @@ drawn, as the rows are already labelled. A colour vector longer than the number
 of variables is interpolated (\code{get_palette} behaviour). Prefer a palette
 without grey (e.g. \code{"npg"}) so a point is not low-contrast on the shaded
 rows.}
+
+\item{columns}{character vector selecting which statistic columns to display,
+any subset of \code{c("N", "hr", "ci", "p")} -- the sample size, the hazard-ratio
+value, the confidence interval, and the p-value / significance stars. The
+variable name, the level and the forest itself are always shown. Case-insensitive;
+order is ignored (the column positions are fixed). A dropped column reflows so a
+stacked partner re-centres and the p-value's reserved right margin is reclaimed;
+the default (all four) is unchanged. Note the reference-level label (\code{refLabel})
+is drawn in the \code{"hr"} column, so omitting \code{"hr"} also hides it.}
 
 \item{ggtheme}{a ggplot2 theme (e.g. the result of \code{theme(...)} or a
 complete theme) applied to the forest plot. Because \code{ggforest()}
