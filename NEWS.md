@@ -163,6 +163,8 @@
 
 ## Minor changes
 
+- The number-at-risk, cumulative-events and censor tables are now locked to the survival curve's x-axis by an explicit, guarded column-width equalization shared with the faceted path, replacing the previous panel-index heuristic. Rendered output is unchanged; the alignment is now robust to `ggplot2` layout changes rather than relying on an incidental gtable layout.
+
 - `ggsurvplot()` now emits an informative message when `risk.table.y.text = TRUE` is explicitly set together with `risk.table.pos = "in"`, instead of silently ignoring it. An in-plot risk table is drawn over the survival panel's own y-axis, so its rows are coloured by strata (matching the curves) rather than labelled; the message explains this and points to `risk.table.pos = "out"` for text strata labels. It fires only when both arguments are explicitly passed, so default in-plot tables (which carry `risk.table.y.text = TRUE` by default) are unaffected. Reported by @Swechhya (#211).
 
 - `surv_median()` no longer errors on a `survfit` stored without confidence limits (`conf.type = "none"`) or fitted at a non-default confidence level (e.g. `conf.int = 0.9`). It hard-coded the `0.95LCL`/`0.95UCL` columns of `summary()$table`; these are now detected by suffix, so a `0.9` fit returns its real limits and a no-CI fit returns the median with `NA` limits instead of failing. Default (0.95) output is unchanged. Found alongside #639 (#818).

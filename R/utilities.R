@@ -39,6 +39,21 @@ is_pkg_version_sup<- function(pkg, version){
   nplot
 }
 
+# Lock stacked panels (survival curve + risk/censor tables) to a common left
+# layout so they share an identical x-axis. Equalizes the full width vector across
+# every grob, guarded to their common column count (`ncmin`) so it can never
+# recycle mismatched-length units. This is intentional and robust to ggplot2
+# layout changes, unlike keying on panel-row indices. The same primitive backs the
+# classic assembly (.build_ggsurvplot) and the facet stack (ggsurvplot_facet).
+.align_panel_widths <- function(grobs){
+  grobs <- grobs[!vapply(grobs, is.null, logical(1))]
+  if(length(grobs) < 2) return(grobs)
+  ncmin <- min(vapply(grobs, function(g) length(g$widths), integer(1)))
+  maxwidth <- do.call(grid::unit.pmax, lapply(grobs, function(g) g$widths[seq_len(ncmin)]))
+  for(i in seq_along(grobs)) grobs[[i]]$widths[seq_len(ncmin)] <- as.list(maxwidth)
+  grobs
+}
+
 # Extract legend from a ggplot
 .get_legend <- function(myggplot){
   tmp <- ggplot_gtable(ggplot_build(myggplot))

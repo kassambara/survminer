@@ -559,13 +559,16 @@ ggsurvplot_facet <- function(fit, data, facet.by,
                    panel.labs.font.x = panel.labs.font.x,
                    panel.labs.font.y = panel.labs.font.y,
                    labeller = labeller)
-      # Stack the aligned plot and table grobs, honouring the height ratio.
-      p.grob <- ggplot2::ggplotGrob(p)
-      t.grob <- ggplot2::ggplotGrob(tp)
+      # Stack the aligned plot and table grobs, honouring the height ratio. Lock
+      # both to a common left column layout first (shared with the classic path) so
+      # their x-axes align, then row-bind.
+      aligned <- .align_panel_widths(list(ggplot2::ggplotGrob(p),
+                                          ggplot2::ggplotGrob(tp)))
+      p.grob <- aligned[[1]]
+      t.grob <- aligned[[2]]
       ncol.min <- min(ncol(p.grob), ncol(t.grob))
       g <- gridExtra::gtable_rbind(p.grob[, seq_len(ncol.min)],
                                    t.grob[, seq_len(ncol.min)], size = "max")
-      g$widths <- grid::unit.pmax(p.grob$widths, t.grob$widths)
       # Set the plot vs table panel-row heights to surv.plot.height : risk.table.height.
       # After gtable_rbind the plot's panel rows keep their positions and the table's
       # rows are offset by nrow(p.grob); read each grob's own panel rows rather than
