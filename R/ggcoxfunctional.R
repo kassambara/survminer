@@ -10,8 +10,13 @@ NULL
 #'cox proportional hazards model, for each term in of the right side of \code{formula}. This might help to properly
 #'choose the functional form of continuous variable in cox model (\link[survival]{coxph}). Fitted lines with \link[stats]{lowess} function
 #'should be linear to satisfy cox proportional hazards model assumptions.
-#'@param fit an object of class \link[survival]{coxph.object} - created with \link[survival]{coxph} function.
-#'@param formula a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \link[survival]{Surv} function.
+#'@param fit an object of class \link[survival]{coxph.object} - created with the
+#'  \link[survival]{coxph} function. Provide either \code{fit}, or \code{formula}
+#'  and \code{data}; the diagnostic is identical (it uses only the model formula).
+#'@param formula a formula object, with the response on the left of a ~ operator,
+#'  and the terms on the right. The response must be a survival object as returned
+#'  by the \link[survival]{Surv} function. An alternative to \code{fit} when you
+#'  have not fitted a \code{coxph} model; supply \code{data} as well.
 #'@param data a \code{data.frame} in which to interpret the variables named in the formula,
 #'@param iter parameter of \link[stats]{lowess}.
 #'@param f parameter of \link[stats]{lowess}.
@@ -37,6 +42,10 @@ NULL
 #' ggcoxfunctional(res.cox, data = mgus, point.col = "blue", point.alpha = 0.5,
 #'                 title = "Pass the title", caption = "Pass the caption")
 #'
+#' # equivalently, from a formula + data (no fitted model needed)
+#' ggcoxfunctional(Surv(futime, death) ~ mspike + log(mspike) + age,
+#'                 data = mgus)
+#'
 #'
 #'@describeIn ggcoxfunctional Functional Form of Continuous Variable in Cox Proportional Hazards Model.
 #'@export
@@ -47,14 +56,13 @@ ggcoxfunctional <- function (formula, data = NULL, fit, iter = 0, f = 0.6,
                              title = NULL, caption = NULL,
                              ggtheme = theme_survminer(), ...){
 
+  # Accept either a fitted coxph model or a formula + data. The functional-form
+  # diagnostic uses only the model formula (the martingale residuals come from the
+  # NULL Cox model, not the fitted coefficients), so the two forms are equivalent.
+  # A coxph passed as the first positional argument is treated as `fit`.
   if(!missing(formula)){
     if(inherits(formula, "coxph")) fit <- formula
-    else{
-      warning("arguments formula is deprecated; ",
-              "will be removed in the next version; ",
-              "please use fit instead.", call. = FALSE)
-      fit <- list(formula = formula, call = list(data = data))
-    }
+    else fit <- list(formula = formula, call = list(data = data))
   }
   formula <- fit$formula
   data <- .get_data(fit, data)

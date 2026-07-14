@@ -27,11 +27,16 @@ ggcoxfunctional(
 \method{print}{ggcoxfunctional}(x, ..., newpage = TRUE)
 }
 \arguments{
-\item{formula}{a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \link[survival]{Surv} function.}
+\item{formula}{a formula object, with the response on the left of a ~ operator,
+and the terms on the right. The response must be a survival object as returned
+by the \link[survival]{Surv} function. An alternative to \code{fit} when you
+have not fitted a \code{coxph} model; supply \code{data} as well.}
 
 \item{data}{a \code{data.frame} in which to interpret the variables named in the formula,}
 
-\item{fit}{an object of class \link[survival]{coxph.object} - created with \link[survival]{coxph} function.}
+\item{fit}{an object of class \link[survival]{coxph.object} - created with the
+\link[survival]{coxph} function. Provide either \code{fit}, or \code{formula}
+and \code{data}; the diagnostic is identical (it uses only the model formula).}
 
 \item{iter}{parameter of \link[stats]{lowess}.}
 
@@ -79,6 +84,10 @@ res.cox <- coxph(Surv(futime, death) ~ mspike + log(mspike) + I(mspike^2) +
 ggcoxfunctional(res.cox,  data = mgus, point.col = "blue", point.alpha = 0.5)
 ggcoxfunctional(res.cox, data = mgus, point.col = "blue", point.alpha = 0.5,
                 title = "Pass the title", caption = "Pass the caption")
+
+# equivalently, from a formula + data (no fitted model needed)
+ggcoxfunctional(Surv(futime, death) ~ mspike + log(mspike) + age,
+                data = mgus)
 
 
 }
