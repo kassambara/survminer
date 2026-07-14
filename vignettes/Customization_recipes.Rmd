@@ -428,6 +428,11 @@ multi-level factor contributes one row per level. Swap in a multivariable
 `ggforest(coxph(Surv(time, status) ~ ., data = ...))` when you want one adjusted
 model instead.
 
+A related but different question — the hazard ratio of *one* covariate across
+*several* models (e.g. crude vs. adjusted, or as covariates are added) — is
+answered directly by `ggforest_models()`, which puts one model per row for a
+single shared term.
+
 # Smooth parametric (survreg / Weibull) survival curves
 
 A `survreg()` accelerated-failure-time fit predicts a *smooth* survival curve;
