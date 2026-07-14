@@ -24,6 +24,14 @@
 #'  of variables is interpolated (\code{get_palette} behaviour). Prefer a palette
 #'  without grey (e.g. \code{"npg"}) so a point is not low-contrast on the shaded
 #'  rows.
+#' @param columns character vector selecting which statistic columns to display,
+#'  any subset of \code{c("N", "hr", "ci", "p")} -- the sample size, the hazard-ratio
+#'  value, the confidence interval, and the p-value / significance stars. The
+#'  variable name, the level and the forest itself are always shown. Case-insensitive;
+#'  order is ignored (the column positions are fixed). A dropped column reflows so a
+#'  stacked partner re-centres and the p-value's reserved right margin is reclaimed;
+#'  the default (all four) is unchanged. Note the reference-level label (\code{refLabel})
+#'  is drawn in the \code{"hr"} column, so omitting \code{"hr"} also hides it.
 #' @param noDigits number of digits for estimates and p-values in the plot.
 #' @param global.stats logical value. Default is TRUE. If FALSE, the bottom
 #'   caption reporting the global statistics (number of events, global
@@ -88,7 +96,18 @@ ggforest <- function(model, data = NULL,
   main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
   fontsize = 0.7, refLabel = "reference", noDigits=2,
   global.stats = TRUE, ref.display = TRUE, var.labels = NULL,
-  palette = NULL, ggtheme = NULL) {
+  palette = NULL, columns = c("N", "hr", "ci", "p"), ggtheme = NULL) {
+
+  # Which statistic columns to draw (the variable name, level and forest are always
+  # shown). Case-insensitive; order is ignored -- the positions are fixed. NULL means
+  # the default (all four), not "none".
+  if (is.null(columns)) columns <- c("N", "hr", "ci", "p")
+  columns <- tolower(columns)
+  .allowed.cols <- c("n", "hr", "ci", "p")
+  .bad <- setdiff(columns, .allowed.cols)
+  if (length(.bad))
+    stop("Unknown `columns` value(s): ", paste(.bad, collapse = ", "),
+         ". Allowed: N, hr, ci, p.", call. = FALSE)
   conf.high <- conf.low <- estimate <- .row <- NULL
   stopifnot(inherits(model, "coxph"))
 
@@ -376,8 +395,10 @@ ggforest <- function(model, data = NULL,
   rangeplot <- rangeb
   # make plot twice as wide as needed to create space for annotations
   rangeplot[1] <- rangeplot[1] - diff(rangeb)
-  # increase white space on right for p-vals:
-  rangeplot[2] <- rangeplot[2] + .15 * diff(rangeb)
+  # increase white space on right for p-vals (only when the p column is drawn, so
+  # dropping it reclaims the band instead of leaving it empty):
+  if ("p" %in% columns)
+    rangeplot[2] <- rangeplot[2] + .15 * diff(rangeb)
 
   width <- diff(rangeplot)
   # y-coordinates for labels:
@@ -444,20 +465,28 @@ ggforest <- function(model, data = NULL,
       label = toShowExpClean$var, fontface = "bold", hjust = 0,
       size = annot_size_mm) +
     annotate(geom = "text", x = x_annotate, y = exp(y_nlevel), hjust = 0,
-      label = toShowExpClean$level, vjust = -0.1, size = annot_size_mm) +
-    annotate(geom = "text", x = x_annotate, y = exp(y_nlevel),
+      label = toShowExpClean$level,
+      vjust = ifelse("n" %in% columns, -0.1, .5), size = annot_size_mm)
+  # Optional statistic columns (N / HR value / CI / p-stars). Each dropped column
+  # reflows so its stacked partner re-centres (via vjust); with all four shown the
+  # vjusts reduce to the previous constants, so the default output is unchanged.
+  if ("n" %in% columns)
+    p <- p + annotate(geom = "text", x = x_annotate, y = exp(y_nlevel),
       label = toShowExpClean$N, fontface = "italic", hjust = 0,
       vjust = ifelse(toShowExpClean$level == "", .5, 1.1),
-      size = annot_size_mm) +
-    annotate(geom = "text", x = x_annotate, y = exp(y_cistring),
+      size = annot_size_mm)
+  if ("hr" %in% columns)
+    p <- p + annotate(geom = "text", x = x_annotate, y = exp(y_cistring),
       label = toShowExpClean$estimate.1, size = annot_size_mm,
-      vjust = ifelse(toShowExpClean$.isref, .5, -0.1)) +
-    annotate(geom = "text", x = x_annotate, y = exp(y_cistring),
+      vjust = ifelse(toShowExpClean$.isref | !("ci" %in% columns), .5, -0.1))
+  if ("ci" %in% columns)
+    p <- p + annotate(geom = "text", x = x_annotate, y = exp(y_cistring),
       label = toShowExpClean$ci, size = annot_size_mm,
-      vjust = 1.1,  fontface = "italic") +
-    annotate(geom = "text", x = x_annotate, y = exp(y_stars),
+      vjust = ifelse("hr" %in% columns, 1.1, .5), fontface = "italic")
+  if ("p" %in% columns)
+    p <- p + annotate(geom = "text", x = x_annotate, y = exp(y_stars),
       label = toShowExpClean$stars, size = annot_size_mm,
-      hjust = -0.2,  fontface = "italic")
+      hjust = -0.2, fontface = "italic")
   # Global statistics caption (# events, global p-value, AIC, concordance).
   # Optional: set global.stats = FALSE to omit it (e.g. panels of forest plots).
   # `broom::glance()$p.value.log` is the p-value of the *likelihood ratio test*

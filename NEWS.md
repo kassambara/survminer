@@ -6,6 +6,8 @@
 
 - `ggsurvplot_facet()` gains `pval.stratified = TRUE`, showing a single pooled stratified log-rank p-value -- `survdiff(Surv(time, status) ~ group + strata(facet.by))`, the group effect adjusting for the faceting variable -- as a figure-level subtitle. This is the statistic the whole figure illustrates: the per-panel p-values are within-facet, and several may be non-significant even when the pooled effect is strong. It is independent of `pval` (they combine). Only the log-rank / Peto (`rho`) family is used; the pooled test assumes a consistent group effect across strata.
 
+- `ggforest()` gains a `columns` argument to choose which statistic columns are shown -- any subset of `c("N", "hr", "ci", "p")` (the variable, level and forest are always drawn). A dropped column reflows the rest (a stacked partner re-centres, and the p-value's reserved right margin is reclaimed); the default shows all four and is unchanged.
+
 - `ggforest()` gains a `palette` argument to colour the hazard-ratio points and confidence intervals (a single colour for one accent, or a palette to colour by variable; default `NULL` keeps them black), and its `refLabel` now also accepts a named character vector to set per-variable reference labels (e.g. `c(sex = "female (ref)")`). This also fixes the reference-row label alignment when a custom `refLabel` is used.
 
 - `pairwise_survdiff()` gains `detailed = TRUE`, attaching a per-pair table (`res$detailed`) with the test statistic (chi-square) and its degrees of freedom, the raw and adjusted p-values, and a Cox proportional-hazards hazard ratio with 95% confidence interval for each pair. The default (`detailed = FALSE`) returns the usual p-value matrix only.
