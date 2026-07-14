@@ -1,0 +1,203 @@
+---
+title: "Get started: from data to a publication-ready figure"
+author: "survminer"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Get started: from data to a publication-ready figure}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7,
+  fig.height = 5,
+  dpi = 96
+)
+```
+
+survminer turns a survival fit into a figure you can put straight into a
+manuscript. This page is the three-minute tour: fit a curve, get a
+publication-ready figure with one argument, adjust the look, report the numbers
+a reviewer expects, and build on the plot when you need something bespoke.
+
+```{r setup}
+library(survminer)
+library(survival)
+
+# Label the sex factor once, so every figure shows readable arm names
+# (rather than "sex=1" / "sex=2").
+lung$sex <- factor(lung$sex, labels = c("Male", "Female"))
+```
+
+Every example uses the `lung` data set (NCCTG lung cancer) from the survival
+package, so you can paste and run any chunk as-is.
+
+# Three lines to a survival curve
+
+Fit a Kaplan-Meier curve with `survival::survfit()`, then draw it with
+`ggsurvplot()`. That is the whole minimal workflow:
+
+```{r first-curve}
+fit <- survfit(Surv(time, status) ~ sex, data = lung)
+ggsurvplot(fit, data = lung)
+```
+
+`ggsurvplot()` already gives you a coloured curve per group, a censoring
+legend, and clean axis labels. From here every element -- confidence bands, a
+p-value, a number-at-risk table -- is one more argument.
+
+# One argument to a publication-ready figure
+
+Instead of setting a dozen arguments by hand, pass `preset = "publication"`. It
+bundles the evidence a survival figure is expected to carry -- confidence
+bands, the log-rank p-value, median-survival crosshairs, a number-at-risk
+table, a colourblind-friendly palette, and a percent y-axis:
+
+```{r publication, fig.height = 6.5}
+ggsurvplot(fit, data = lung, preset = "publication")
+```
+
+Everything in that figure maps to an argument you could have set yourself:
+
+| Visible element                    | Argument the preset set          |
+|------------------------------------|----------------------------------|
+| Shaded confidence bands            | `conf.int = TRUE`                |
+| p-value, labelled "Log-rank"       | `pval = TRUE, pval.method = TRUE`|
+| Dashed median-survival crosshairs  | `surv.median.line = "hv"`        |
+| Number-at-risk table below         | `risk.table = TRUE`              |
+| Colourblind-friendly colours       | `palette = "jco"`                |
+| Survival as a percentage           | `surv.scale = "percent"`         |
+
+The preset is a starting point, not a straitjacket -- the next section shows
+how your own arguments override it.
+
+# Your arguments always win
+
+A preset only fills in the arguments you did **not** supply. Anything you pass
+explicitly wins, so you can take the publication bundle and change just one
+thing -- here, the palette:
+
+```{r override, fig.height = 6.5}
+ggsurvplot(
+  fit, data = lung,
+  preset  = "publication",
+  palette = c("#E7B800", "#2E9FDF")   # your palette overrides the preset's "jco"
+)
+```
+
+The default is `preset = "none"`, which changes nothing -- existing code keeps
+its exact output.
+
+# Choosing a look
+
+There are four presets. `"publication"` is the full evidence panel above;
+`"classic"` is a greyscale-safe textbook look (one line type per group);
+`"minimal"` is an airy, stripped-back curve; `"presentation"` uses bold, large
+type for slides. Compare them on the same fit:
+
+To compare them like-for-like we override two preset defaults so every panel is
+the same height -- turning the risk table and the median lines off (another
+illustration of "your arguments win") -- and look only at the styling:
+
+```{r presets-grid, fig.width = 9.5, fig.height = 6.5}
+looks <- c("classic", "minimal", "presentation", "publication")
+plots <- lapply(looks, function(p)
+  ggsurvplot(fit, data = lung, preset = p, title = p,
+             risk.table = FALSE, surv.median.line = "none"))
+arrange_ggsurvplots(plots, ncol = 2, nrow = 2)
+```
+
+Pick `"publication"` or `"classic"` for a paper, `"presentation"` for a talk,
+`"minimal"` when the curve is one panel of a larger figure.
+
+# Reusable themes
+
+A preset bundles the *look* **and** the evidence layers (bands, p-value, table);
+a theme restyles only the *look*. The looks above are also available as
+standalone ggplot2 themes you can apply to any survminer plot (or any ggplot)
+through `ggtheme`, without a preset: `theme_surv_classic()`,
+`theme_surv_minimal()`, and `theme_surv_bold()`.
+
+```{r themes}
+ggsurvplot(
+  fit, data = lung,
+  conf.int = TRUE,
+  palette  = "jco",
+  ggtheme  = theme_surv_bold()
+)
+```
+
+# The numbers every KM paper reports
+
+Two numbers belong in the caption of almost every Kaplan-Meier figure: the
+**median survival** per group, and the **median follow-up** (the typical
+observation time -- estimated by the reverse Kaplan-Meier method, which swaps
+the event and censoring roles).
+
+```{r numbers}
+# Median survival per group (with 95% CI)
+surv_median(fit)
+
+# Median follow-up per group (reverse Kaplan-Meier)
+surv_median_followup(fit, data = lung)
+```
+
+Both return tidy data frames, so you can drop them into a table or paste the
+values into a figure caption.
+
+# Building on the curve
+
+`ggsurvplot()` returns a compound object (the curve in `$plot`, the risk table
+in `$table`, and more), which is ideal for a finished figure but is not a plain
+ggplot you can freely add layers to. When you want to compose your own
+annotations, ask for a bare ggplot with `output = "ggplot"`:
+
+The bare curve does not carry the compound object's risk table or the preset
+styling -- you add exactly the layers you want:
+
+```{r composable}
+p <- ggsurvplot(fit, data = lung, palette = "jco", output = "ggplot")
+
+# it is a genuine ggplot, so ordinary ggplot2 verbs work
+p +
+  ggplot2::geom_hline(yintercept = 0.5, linetype = "dashed", colour = "grey50") +
+  ggplot2::annotate("text", x = 0, y = 0.53, hjust = 0, size = 3,
+                    label = "median survival") +
+  ggplot2::labs(title = "Add any layer you like")
+```
+
+Because it is a real ggplot, `+ geom_*`, `facet_wrap()`, and `ggsave()` all
+behave normally -- the bare curve is the surface to build RMST shading, a
+competing-risks overlay, or a parametric fit on (see the other articles).
+
+# Saving your figure
+
+`ggsave()` works directly on the object `ggsurvplot()` returns -- the curve and
+its risk table are saved together, correctly aligned:
+
+```{r save, eval = FALSE}
+fig <- ggsurvplot(fit, data = lung, preset = "publication")
+ggplot2::ggsave("survival.png", fig, width = 7, height = 6.5, dpi = 300)
+```
+
+For a journal, a width of 7 inches at 300 dpi is a safe starting point.
+
+# Where to next
+
+- **Absolute effect measures beyond the p-value** -- restricted mean survival
+  time (RMST), milestone survival, and landmark analysis.
+- **Interrogating a Cox model** -- forest plots (`ggforest()`,
+  `ggforest_models()`, `ggforest_subgroup()`) and proportional-hazards
+  diagnostics.
+- **Competing risks** -- cumulative incidence done right, with Gray's test and
+  the naive-Kaplan-Meier contrast.
+- **Customization recipes** -- compose on the objects survminer returns to
+  solve one-off requests.
