@@ -27,13 +27,38 @@
 #'  competing events and therefore \emph{overestimates} the cumulative incidence --
 #'  the classic teaching contrast (Putter, Fiocco and Geskus, 2007). Supported for a
 #'  \code{\link[tidycmprsk]{cuminc}} object (which carries the data) on the faceted
-#'  layout; ignored with a message otherwise.
+#'  layout; ignored with a message otherwise. It is therefore not drawn together
+#'  with \code{risk.table = TRUE}, which uses the overlaid single-panel layout.
 #' @param cause the cause to overlay when \code{add.naive.km = TRUE}. Required when
 #'  the model has more than one cause.
-#' @return Returns an object of class \code{gg}. The cumulative-incidence data and,
-#'  where computed, Gray's test table and the naive-KM data are attached as
-#'  \code{attr(x, "cr.data")}, \code{attr(x, "grays.test")} and
-#'  \code{attr(x, "naive.km")}.
+#' @param risk.table logical or a character string. If \code{TRUE}, draw a
+#'  number-at-risk table beneath the cumulative-incidence curves, locked to the
+#'  same time axis. A character string selects the table content, one of
+#'  \code{"absolute"} (the default for \code{TRUE}), \code{"percentage"},
+#'  \code{"abs_pct"}, \code{"nrisk_cumcensor"} or \code{"nrisk_cumevents"} (as in
+#'  \code{\link{ggsurvplot}}). The table is available for a
+#'  \code{\link[tidycmprsk]{cuminc}} object (which carries the data), on the
+#'  overlaid single-panel layout; it is drawn with \code{multiple_panels = FALSE}
+#'  (a message is shown if \code{multiple_panels = TRUE} was passed explicitly).
+#'  For a \code{cmprsk::cuminc} or \code{survfitms} input the at-risk counts are
+#'  not available in a single overlaid panel, so \code{risk.table} is ignored with
+#'  a message. The number at risk is the count still event-free and under
+#'  observation (competing events count as leaving the risk set), matching the
+#'  Kaplan-Meier at-risk convention of \code{\link{ggsurvplot}}.
+#' @param risk.table.height the height of the risk table as a fraction of the whole
+#'  figure. Default 0.25.
+#' @param risk.table.title the title of the risk table. Default "Number at risk".
+#' @param risk.table.fontsize the font size of the risk-table numbers. Default 4.5.
+#' @param risk.table.y.text logical. If \code{TRUE} (default) the risk-table rows are
+#'  labelled by group; if \code{FALSE} a short dash is shown instead.
+#' @param break.time.by numeric value controlling the time-axis breaks shared by the
+#'  curves and the risk table. Default \code{NULL} uses automatic breaks.
+#' @return Returns a \code{gg} object; with \code{risk.table = TRUE} a compound
+#'  \code{ggcompetingrisks} object (a list with \code{$plot} and \code{$table}) that
+#'  prints the curves above the aligned table and works with \code{ggsave()}. The
+#'  cumulative-incidence data and, where computed, Gray's test table and the
+#'  naive-KM data are attached as \code{attr(x, "cr.data")},
+#'  \code{attr(x, "grays.test")} and \code{attr(x, "naive.km")}.
 #'
 #' @references Gray, R. J. (1988). A class of K-sample tests for comparing the
 #'  cumulative incidence of a competing risk. \emph{The Annals of Statistics},
@@ -89,8 +114,28 @@ ggcompetingrisks <- function(fit, gnames = NULL, gsep=" ",
                              multiple_panels = TRUE,
                              ggtheme = theme_survminer(),
                              coef = 1.96, conf.int = FALSE,
-                             pval = FALSE, add.naive.km = FALSE, cause = NULL, ...) {
+                             pval = FALSE, add.naive.km = FALSE, cause = NULL,
+                             risk.table = FALSE, risk.table.height = 0.25,
+                             risk.table.title = "Number at risk",
+                             risk.table.fontsize = 4.5, risk.table.y.text = TRUE,
+                             break.time.by = NULL, ...) {
   stopifnot(inherits(fit, c("cuminc", "tidycuminc", "survfitms")))
+
+  # A number-at-risk table needs the per-group at-risk counts on an overlaid
+  # single panel. Only a tidycmprsk::cuminc carries the data to compute them; its
+  # table is drawn with multiple_panels = FALSE. Degrade honestly for the rest.
+  want.table <- isTRUE(risk.table) || is.character(risk.table)
+  if (want.table && !inherits(fit, "tidycuminc")) {
+    message("ggcompetingrisks(): a number-at-risk table is available only for a ",
+            "tidycmprsk::cuminc object; `risk.table` ignored.")
+    want.table <- FALSE
+  }
+  if (want.table) {
+    if (!missing(multiple_panels) && isTRUE(multiple_panels))
+      message("ggcompetingrisks(): the number-at-risk table is drawn on the ",
+              "overlaid single-panel layout; using multiple_panels = FALSE.")
+    multiple_panels <- FALSE
+  }
 
   gray <- NULL              # Gray's-test table, for the p-value subtitle + attr
   if (inherits(fit, "tidycuminc")) {
@@ -149,7 +194,84 @@ ggcompetingrisks <- function(fit, gnames = NULL, gsep=" ",
 
   attr(pl, "cr.data") <- cr.data
   if (!is.null(gray)) attr(pl, "grays.test") <- gray
-  ggpubr::ggpar(pl, ...)
+  if (!want.table) return(ggpubr::ggpar(pl, ...))
+
+  # Number-at-risk table locked to the CIF x-axis (tidycmprsk, single panel).
+  # Apply ggpar WITHOUT `xlim` here (the table path locks the x-axis with a single
+  # coord for alignment) and honour a user `xlim` inside .cr_add_risktable, so the
+  # curve and table share one limit and no duplicate coord is added.
+  dots <- list(...)
+  pl <- do.call(ggpubr::ggpar, c(list(pl), dots[setdiff(names(dots), "xlim")]))
+  res <- .cr_add_risktable(fit, pl, risk.table = risk.table,
+                           risk.table.height = risk.table.height,
+                           title = risk.table.title, fontsize = risk.table.fontsize,
+                           y.text = risk.table.y.text, break.time.by = break.time.by,
+                           xlim = dots[["xlim"]], ggtheme = ggtheme)
+  # mirror the CIF attributes onto the compound object and its $plot so
+  # attr(x, "cr.data") reads the same as on the bare-plot path
+  for (a in c("cr.data", "grays.test", "naive.km")) {
+    v <- attr(pl, a)
+    if (!is.null(v)) attr(res, a) <- attr(res$plot, a) <- v
+  }
+  res
+}
+
+# Build the event-free number-at-risk table from a tidycmprsk::cuminc fit and stack
+# it under the CIF plot, sharing one time axis. The at-risk count is computed with
+# the same machinery as ggsurvplot's KM table (summary(survfit, times=)): a subject
+# leaves the risk set at its event (of ANY cause) or censoring, so the count is
+# #{still event-free and under observation}. `fit$data`/`fit$formula` are carried by
+# tidycmprsk (also used by the naive-KM overlay).
+.cr_add_risktable <- function(fit, pl, risk.table = TRUE, risk.table.height = 0.25,
+                              title = "Number at risk", fontsize = 4.5,
+                              y.text = TRUE, break.time.by = NULL, xlim = NULL,
+                              ggtheme = theme_survminer()) {
+  data  <- fit$data
+  tvar  <- all.vars(fit$formula[[2]])[1]
+  svar  <- all.vars(fit$formula[[2]])[2]
+  gvars <- all.vars(fit$formula[[3]])
+  data[[".cr_event"]] <- as.integer(as.character(data[[svar]]) %in% names(fit$failcode))
+  form <- stats::reformulate(if (length(gvars)) gvars else "1",
+                             response = paste0("survival::Surv(", tvar, ", .cr_event)"))
+  sf <- surv_fit(form, data = data)
+
+  # one shared time axis: derive breaks and limits from the SAME source ggsurvtable
+  # uses internally (sf$time), so the curve ticks and the table columns coincide
+  # exactly (a single source of truth, not two parallel break computations). A
+  # user-supplied `xlim` (via `...`) is honoured on both panels.
+  if (is.null(xlim)) xlim <- c(0, max(sf$time))
+  brk  <- if (is.null(break.time.by)) .get_default_breaks(sf$time)
+          else .time_breaks(break.time.by, max(c(sf$time, xlim)))
+  pl <- pl + ggplot2::scale_x_continuous(breaks = brk) +
+             ggplot2::coord_cartesian(xlim = xlim)
+
+  rt.type <- if (is.character(risk.table)) risk.table else "absolute"
+  tbl <- ggsurvtable(sf, data = data, survtable = "risk.table",
+                     risk.table.type = rt.type, break.time.by = break.time.by,
+                     xlim = xlim, title = title, ylab = "", xlab = "Time",
+                     fontsize = fontsize, y.text = y.text, y.text.col = FALSE,
+                     ggtheme = ggtheme)
+  # the table has no mapped colour aesthetic (y.text.col = FALSE), so drop the
+  # inherited "Strata" colour label to avoid a spurious "Ignoring unknown labels"
+  # note when it is drawn
+  tbl$labels$colour <- NULL
+
+  # assemble a ggsurvplot-shaped compound so the tested aligned-render path
+  # (.build_ggsurvplot: shared-width alignment + legend + heights) draws it
+  res <- list(plot = pl, table = tbl)
+  attr(res, "heights") <- list(plot = 1 - risk.table.height, table = risk.table.height,
+                               ncensor.plot = 0, cumevents = 0)
+  attr(res, "y.text")     <- list(plot = TRUE,  table = y.text)
+  attr(res, "y.text.col") <- list(plot = FALSE, table = FALSE)
+  attr(res, "cumcensor")      <- FALSE
+  attr(res, "axes.offset")    <- TRUE
+  attr(res, "risk.table.pos") <- "out"
+  attr(res, "legend.position") <- "top"
+  # legend.labs must match the number of colours in the CIF (colour = cause), so
+  # .build_ggsurvplot's colour-naming does not error on a length mismatch
+  attr(res, "legend.labs") <- names(fit$failcode)
+  class(res) <- c("ggcompetingrisks", "ggsurvplot", "ggsurv", "list")
+  res
 }
 
 

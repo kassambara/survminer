@@ -15,6 +15,12 @@ ggcompetingrisks(
   pval = FALSE,
   add.naive.km = FALSE,
   cause = NULL,
+  risk.table = FALSE,
+  risk.table.height = 0.25,
+  risk.table.title = "Number at risk",
+  risk.table.fontsize = 4.5,
+  risk.table.y.text = TRUE,
+  break.time.by = NULL,
   ...
 )
 }
@@ -47,18 +53,49 @@ complement-of-Kaplan-Meier for one cause (a dashed line), which censors the
 competing events and therefore \emph{overestimates} the cumulative incidence --
 the classic teaching contrast (Putter, Fiocco and Geskus, 2007). Supported for a
 \code{\link[tidycmprsk]{cuminc}} object (which carries the data) on the faceted
-layout; ignored with a message otherwise.}
+layout; ignored with a message otherwise. It is therefore not drawn together
+with \code{risk.table = TRUE}, which uses the overlaid single-panel layout.}
 
 \item{cause}{the cause to overlay when \code{add.naive.km = TRUE}. Required when
 the model has more than one cause.}
 
+\item{risk.table}{logical or a character string. If \code{TRUE}, draw a
+number-at-risk table beneath the cumulative-incidence curves, locked to the
+same time axis. A character string selects the table content, one of
+\code{"absolute"} (the default for \code{TRUE}), \code{"percentage"},
+\code{"abs_pct"}, \code{"nrisk_cumcensor"} or \code{"nrisk_cumevents"} (as in
+\code{\link{ggsurvplot}}). The table is available for a
+\code{\link[tidycmprsk]{cuminc}} object (which carries the data), on the
+overlaid single-panel layout; it is drawn with \code{multiple_panels = FALSE}
+(a message is shown if \code{multiple_panels = TRUE} was passed explicitly).
+For a \code{cmprsk::cuminc} or \code{survfitms} input the at-risk counts are
+not available in a single overlaid panel, so \code{risk.table} is ignored with
+a message. The number at risk is the count still event-free and under
+observation (competing events count as leaving the risk set), matching the
+Kaplan-Meier at-risk convention of \code{\link{ggsurvplot}}.}
+
+\item{risk.table.height}{the height of the risk table as a fraction of the whole
+figure. Default 0.25.}
+
+\item{risk.table.title}{the title of the risk table. Default "Number at risk".}
+
+\item{risk.table.fontsize}{the font size of the risk-table numbers. Default 4.5.}
+
+\item{risk.table.y.text}{logical. If \code{TRUE} (default) the risk-table rows are
+labelled by group; if \code{FALSE} a short dash is shown instead.}
+
+\item{break.time.by}{numeric value controlling the time-axis breaks shared by the
+curves and the risk table. Default \code{NULL} uses automatic breaks.}
+
 \item{...}{further arguments passed to the function \code{\link[ggpubr]{ggpar}} for customizing the plot.}
 }
 \value{
-Returns an object of class \code{gg}. The cumulative-incidence data and,
- where computed, Gray's test table and the naive-KM data are attached as
- \code{attr(x, "cr.data")}, \code{attr(x, "grays.test")} and
- \code{attr(x, "naive.km")}.
+Returns a \code{gg} object; with \code{risk.table = TRUE} a compound
+ \code{ggcompetingrisks} object (a list with \code{$plot} and \code{$table}) that
+ prints the curves above the aligned table and works with \code{ggsave()}. The
+ cumulative-incidence data and, where computed, Gray's test table and the
+ naive-KM data are attached as \code{attr(x, "cr.data")},
+ \code{attr(x, "grays.test")} and \code{attr(x, "naive.km")}.
 }
 \description{
 This function plots Cumulative Incidence Curves. For \code{cuminc} objects it's a \code{ggplot2} version of \code{plot.cuminc}.

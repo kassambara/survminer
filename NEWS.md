@@ -2,6 +2,8 @@
 
 ## New features
 
+- `ggcompetingrisks()` gains `risk.table = TRUE`, drawing a per-group number-at-risk table beneath the cumulative-incidence curves, locked to the same time axis. It is available for a `tidycmprsk::cuminc` object on the overlaid single-panel layout; the at-risk count is the number still event-free and under observation (competing events count as leaving the risk set), matching the Kaplan-Meier at-risk convention of `ggsurvplot()`. `risk.table` also accepts the `ggsurvplot()` content strings (`"percentage"`, `"nrisk_cumcensor"`, ...), and `break.time.by` controls the shared axis breaks. With `risk.table = TRUE` the function returns a compound object that prints the curves above the aligned table and works with `ggsave()` (#838).
+
 - New `gglandmark()` draws a landmark analysis: the Kaplan-Meier curves are
   re-origined at a landmark time `L` (restricted to subjects event-free and at risk
   at `L`, with the clock reset to `time - L`), the standard remedy for immortal-time
