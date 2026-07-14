@@ -167,6 +167,8 @@
 
 ## Minor changes
 
+- `ggcoxfunctional()` no longer deprecates the `formula` argument. Passing a formula plus `data` is equivalent to passing a fitted `coxph` model (the functional-form diagnostic uses only the model formula), so both forms are now supported without a warning.
+
 - The number-at-risk, cumulative-events and censor tables are now locked to the survival curve's x-axis by an explicit, guarded column-width equalization shared with the faceted path, replacing the previous panel-index heuristic. Rendered output is unchanged; the alignment is now robust to `ggplot2` layout changes rather than relying on an incidental gtable layout.
 
 - `ggsurvplot()` now emits an informative message when `risk.table.y.text = TRUE` is explicitly set together with `risk.table.pos = "in"`, instead of silently ignoring it. An in-plot risk table is drawn over the survival panel's own y-axis, so its rows are coloured by strata (matching the curves) rather than labelled; the message explains this and points to `risk.table.pos = "out"` for text strata labels. It fires only when both arguments are explicitly passed, so default in-plot tables (which carry `risk.table.y.text = TRUE` by default) are unaffected. Reported by @Swechhya (#211).
