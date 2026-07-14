@@ -1,0 +1,139 @@
+---
+title: "Competing risks: cumulative incidence, Gray's test, and the naive-KM trap"
+author: "survminer"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Competing risks: cumulative incidence, Gray's test, and the naive-KM trap}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7,
+  fig.height = 5,
+  dpi = 96
+)
+has_tcr <- requireNamespace("tidycmprsk", quietly = TRUE)
+```
+
+When a subject can fail in more than one way -- relapse *or* death, one cancer
+*or* another -- the events *compete*: the first one to happen removes the subject
+from being at risk for the others. In that setting the ordinary Kaplan-Meier
+estimate of "probability of event X" is biased upward, because it treats the
+competing events as if they were merely censored. The right summary is the
+**cumulative incidence function** (CIF), and survminer draws it with
+`ggcompetingrisks()`.
+
+```{r setup}
+library(survminer)
+library(survival)
+```
+
+We use the `mgus2` data (monoclonal gammopathy): the competing events are
+progression to a **plasma-cell malignancy** (PCM) and **death** without
+progression. The standard construction records, for each subject, the time to
+the first event and which event it was:
+
+```{r data}
+mgus2$etime <- with(mgus2, ifelse(pstat == 1, ptime, futime))
+mgus2$event <- with(mgus2, ifelse(pstat == 1, 1, 2 * death))
+mgus2$event <- factor(mgus2$event, 0:2, labels = c("censor", "PCM", "death"))
+mgus2$sex   <- factor(mgus2$sex,   labels = c("Female", "Male"))
+
+table(mgus2$event)
+```
+
+```{r fallback, echo = FALSE, results = "asis", eval = !has_tcr}
+cat("> **Note:** the cumulative-incidence figures below are built with the",
+    "*tidycmprsk* package, which is not installed in this build, so they are",
+    "not shown. Install it with `install.packages(\"tidycmprsk\")` to reproduce",
+    "them.")
+```
+
+# Why not 1 − Kaplan-Meier?
+
+A subject who dies without progressing can never progress afterwards. The
+Kaplan-Meier estimate for PCM ignores that -- it censors the deaths and lets the
+remaining subjects stand in for them, which inflates the estimated probability
+of PCM to a value the data cannot support (in the limit, 1 − KM for every cause
+can sum to more than 1). The cumulative incidence function counts a competing
+event as leaving the risk set, so the incidences of all causes add up correctly.
+
+# Cumulative incidence, the right way
+
+`ggcompetingrisks()` accepts a `tidycmprsk::cuminc()` fit, which carries proper
+pointwise confidence intervals. Fit the cumulative incidence by group and plot
+one panel per cause:
+
+```{r cif, eval = has_tcr}
+cif <- tidycmprsk::cuminc(Surv(etime, event) ~ sex, data = mgus2)
+
+ggcompetingrisks(cif, conf.int = TRUE, palette = "jco")
+```
+
+Each curve rises to the fraction of the cohort that has experienced that cause by
+time *t*, with a shaded pointwise confidence band. Death (without progression) is
+far more common than progression to PCM and accumulates faster in men;
+progression to PCM is uncommon in either sex and, as Gray's test below shows, not
+significantly different by sex.
+
+# The naive-KM trap, made visible
+
+The clearest way to see the bias is to overlay the naive 1 − KM estimate for one
+cause on its cumulative incidence. `add.naive.km = TRUE` draws that contrast for
+the chosen cause:
+
+```{r naive, eval = has_tcr}
+ggcompetingrisks(cif, add.naive.km = TRUE, cause = "PCM", palette = "jco")
+```
+
+The dashed line is 1 − KM for PCM; the solid line is its cumulative incidence.
+The dashed curve sits well above the solid one and climbs steeply late in
+follow-up: in women it reaches about **0.75** by the end of follow-up, against a
+true cumulative incidence near **0.20** -- more than triple. That gap is the bias
+the CIF avoids; reporting the dashed value would materially overstate a patient's
+risk of progression.
+
+# Testing between groups: Gray's test
+
+Gray's test compares the cumulative incidence of a cause across groups (the
+competing-risks analogue of the log-rank test). `pval = TRUE` annotates it per
+cause:
+
+```{r pval, eval = has_tcr}
+ggcompetingrisks(cif, pval = TRUE, palette = "jco")
+```
+
+Here the incidence of death differs by sex (p = 0.00064) while progression to
+PCM does not (p = 0.27). Gray's test is available on the `cmprsk` /
+`tidycmprsk` path; an Aalen-Johansen (`survfit`) object carries no Gray's test.
+
+# A number-at-risk table
+
+`risk.table = TRUE` adds a per-group number-at-risk table beneath the plot,
+locked to the same time axis. Note the layout changes: to share one time axis
+with the table, the causes are drawn in a **single overlaid panel** -- each cause
+is a colour and each group a **linetype** (solid Female, dashed Male) -- rather
+than the separate panels above. (So here a dashed line marks the *male group*,
+not the naive estimate of the earlier figure.) A subject who has had a competing
+event counts as having left the risk set, matching the Kaplan-Meier convention
+used elsewhere in survminer:
+
+```{r risktable, eval = has_tcr, fig.height = 6}
+ggcompetingrisks(cif, risk.table = TRUE, break.time.by = 60, palette = "jco")
+```
+
+# Where to next
+
+- **Get started** -- presets, themes, and the composable curve.
+- **Absolute effect measures** -- RMST, milestone, and landmark analysis.
+- **Interrogating a Cox model** -- forest plots and proportional-hazards
+  diagnostics.
