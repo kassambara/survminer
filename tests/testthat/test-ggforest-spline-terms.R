@@ -219,3 +219,24 @@ test_that("a penalised term alongside an interaction or a namespaced term draws"
   Ln <- .forest_labels(mn, d)
   expect_equal(sum(grepl("^\\(N=", Ln)), 5L)   # 2 pspline + 3 spline rows
 })
+
+test_that("a pspline() term is re-keyed even when its indices fit inside the table", {
+  # pspline() has 12 design columns, so once the model carries ten or more other
+  # coefficients those indices fall INSIDE the summary and stop overrunning it --
+  # the term then quietly absorbed its neighbours' rows and every covariate was
+  # drawn twice. Being in range is not the same as not having been collapsed.
+  set.seed(3)
+  n <- 400
+  D <- data.frame(time = rexp(n, 0.05), status = rbinom(n, 1, 0.7),
+                  age = rnorm(n, 60, 10))
+  for (i in 1:10) D[[paste0("z", i)]] <- rnorm(n)
+  m <- survival::coxph(
+    stats::as.formula(paste("survival::Surv(time, status) ~ pspline(age) +",
+                            paste0("z", 1:10, collapse = " + "))), data = D)
+  # the indices no longer overrun, which is what makes this case slip through
+  expect_lte(max(m$assign[["pspline(age)"]]), nrow(broom::tidy(m)))
+
+  L <- .forest_labels(m, D)
+  expect_equal(sum(grepl("^\\(N=", L)), 12L)   # 2 pspline rows + 10 covariates
+  for (z in paste0("z", 1:10)) expect_equal(sum(L == z), 1L, info = z)
+})

@@ -187,8 +187,22 @@ ggforest <- function(model, data = NULL,
       pos <- which(.assign.bare == var)
       if (length(pos) == 1L) idx <- model$assign[[pos]]
     }
-    # In range means tidy() did not collapse this term: use the indices as before.
-    if (!is.null(idx) && length(idx) && all(idx <= nrow(coef))) return(idx)
+    # When the summary has exactly one row per design column nothing was collapsed
+    # and the indices address `coef` directly -- this is every ordinary model, and
+    # it also covers terms whose coefficients are not named after them, such as
+    # ridge(age, wt.loss) or an interaction.
+    if (nrow(coef) == length(stats::coef(model))) return(idx)
+    # Otherwise the counts differ somewhere in the model, so check this term: its
+    # indices must be inside the table AND land on rows that are actually its own.
+    # In range alone is not enough -- pspline() has 12 design columns, so in a model
+    # with ten or more other coefficients its indices fit inside the table and it
+    # would quietly absorb its neighbours' rows.
+    # The rows-are-its-own test is skipped for an interaction, whose coefficient
+    # ("grpb:grp2y") never starts with the term label ("grp:grp2").
+    ok <- !is.null(idx) && length(idx) && all(idx <= nrow(coef))
+    if (ok && !grepl(":", var, fixed = TRUE))
+      ok <- all(startsWith(gsub("`", "", coef$term[idx]), var))
+    if (ok) return(idx)
     # Otherwise match by name. startsWith() rather than a regex so a name carrying
     # metacharacters ("pspline(age)") is matched as written; a longer term name
     # that also matches is excluded so a shorter variable cannot absorb the
@@ -196,6 +210,10 @@ ggforest <- function(model, data = NULL,
     cterm <- gsub("`", "", coef$term)
     hit <- startsWith(cterm, var)
     if (!any(hit)) return(NULL)
+    # one-directional: this stops a shorter term absorbing a longer term's
+    # coefficients, which is the shape #689 took. The reverse (a longer term name
+    # matching a shorter factor's level coefficient) needs contrived naming and is
+    # caught downstream by the contrast reconciliation in .factor_level_keys().
     longer <- .assign.bare[.assign.bare != var & startsWith(.assign.bare, var)]
     for (o in longer) hit <- hit & !startsWith(cterm, o)
     if (!any(hit)) NULL else which(hit)

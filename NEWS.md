@@ -8,7 +8,8 @@
   covariate correctly again. Such a term has more model coefficients than the
   summary has rows, which left the plot with a block of blank "reference" rows and
   dropped the fitted level of every variable after it, so a factor could show all
-  of its levels as the reference and its hazard ratio under a row of its own. (A
+  of its levels as the reference and its hazard ratio under a row of its own. In a
+  larger model the same term instead drew every other covariate a second time. (A
   model of `pspline()` terms only still cannot be drawn: every one of its rows has
   an undefined confidence limit, so there is no axis to draw.)
 
