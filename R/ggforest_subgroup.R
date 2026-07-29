@@ -31,14 +31,33 @@ NULL
 #' interaction test is the inference; the individual per-level hazard ratios are
 #' descriptive and subject to multiplicity (see Wang et al., 2007).
 #'
-#' The refits reproduce the fit the user supplied: the case weights and the tie
-#' handling of \code{model} are carried into every subset fit, so a subgroup
-#' hazard ratio is the weighted one whenever the model is weighted. The two
-#' models compared by the interaction test are fit without a robust variance,
-#' which \code{\link[survival]{coxph}()} otherwise attaches to a weighted fit:
-#' the likelihood-ratio test compares log-likelihoods, which the variance
-#' estimator does not change, and \code{\link[stats]{anova}()} declines a fit
-#' that carries one.
+#' The subset fits are made the way \code{model} itself was: its case weights,
+#' tie handling and clustering are carried over, so a weighted model reports
+#' weighted subgroup estimates and a clustered model cluster-robust intervals.
+#' The weights and the clustering are read from the fitted object and matched to
+#' the rows of \code{data}; if they cannot be matched -- \code{data} reordered,
+#' or not the frame the model was fitted on -- that is an error rather than a
+#' quietly unweighted plot.
+#'
+#' Which interaction test is used follows the variance the fit carries. With the
+#' ordinary model-based variance it is the likelihood-ratio test described above.
+#' When the fit carries a robust variance -- \code{\link[survival]{coxph}()}
+#' attaches one to any clustered, \code{robust = TRUE} or non-integer weighted
+#' fit -- differences in the log-partial-likelihood no longer have a chi-square
+#' distribution, and \code{\link[survival]{anova.coxph}} declines to compare
+#' them for that reason; the interaction is then tested by a Wald chi-square on
+#' the treatment-by-subgroup coefficients, taken from that robust variance.
+#' Integer (frequency) weights leave the variance model-based, so they keep the
+#' likelihood-ratio test.
+#'
+#' The per-level hazard ratio is estimated by refitting on that level alone, so
+#' each level carries its own baseline hazard and, in an adjusted model, its own
+#' covariate coefficients. It is the estimate a reader reproduces by running
+#' \code{\link[survival]{coxph}()} on that subset by hand. Some tools instead
+#' read the within-level effects off a single treatment-by-subgroup interaction
+#' model fitted to everyone, which pools the baseline hazard across levels; the
+#' two agree closely in large balanced strata and can differ appreciably in small
+#' or heterogeneous ones.
 #'
 #' The plot is composed of three aligned panels (labels, forest, statistics), so
 #' the text columns keep a fixed width and do not collide with the forest at any
@@ -66,7 +85,8 @@ NULL
 #'   subjects in each subgroup level (and their percentage of the total). Default
 #'   \code{TRUE}. This count is the subgroup size; when the model has adjusting
 #'   covariates with missing values it can exceed the complete-case sample the
-#'   hazard ratio is actually fit on.
+#'   hazard ratio is actually fit on. It counts subjects, so for a weighted model
+#'   it does not equal the sum of the weights the hazard ratio is estimated from.
 #' @param favours optional length-2 character vector
 #'   \code{c("Favours treatment", "Favours control")} drawn under the axis on the
 #'   left (HR < 1) and right (HR > 1) sides of the reference line. Default
@@ -279,28 +299,46 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
   # reported a different estimate than the one the model carries, with nothing on
   # the plot to say so. The weights ride along as a data column, so subsetting the
   # data subsets them too.
-  wcol <- NULL
-  w.all <- .model_weights(model, data)
-  if (!is.null(w.all)) {
+  menv <- environment(stats::formula(model))
+  if (is.null(menv)) menv <- parent.frame()
+  # Weights and clustering ride along as data columns, so subsetting the data
+  # subsets them too. Both are taken from the fitted object where survival stores
+  # them, never re-evaluated from the call: re-evaluating would resolve the name
+  # wherever this function happens to be standing and can pick up an unrelated
+  # object of the same name.
+  wcol <- ccol <- NULL
+  if (!is.null(model$weights)) {
+    w.all <- .fit_vector(model$weights, model, data)
+    if (is.null(w.all) || isFALSE(.data_is_fit_data(model, data)))
+      stop("ggforest_subgroup() cannot match the case weights of `model` to the rows ",
+           "of `data`. Supply the data frame `model` was fitted on.", call. = FALSE)
     wcol <- ".ggf_weights"
     while (wcol %in% names(data)) wcol <- paste0(wcol, "_")
     data[[wcol]] <- w.all
   }
+  # cluster() written in the formula is moved to the call by coxph(), so both
+  # spellings arrive here the same way.
+  if (!is.null(model$call$cluster)) {
+    c.all <- .model_call_vector(model$call$cluster, data, menv)
+    if (is.null(c.all) || isFALSE(.data_is_fit_data(model, data)))
+      stop("ggforest_subgroup() cannot match the clustering of `model` to the rows of ",
+           "`data`. Supply the data frame `model` was fitted on.", call. = FALSE)
+    ccol <- ".ggf_cluster"
+    while (ccol %in% names(data)) ccol <- paste0(ccol, "_")
+    data[[ccol]] <- c.all
+  }
   fit.args <- list()
-  if (!is.null(model$call$ties)) fit.args$ties <- eval(model$call$ties)
-  if (!is.null(model$call$robust)) fit.args$robust <- eval(model$call$robust)
-  .coxph_like <- function(fo, dsub, robust = NULL) {
+  if (!is.null(model$call$ties))
+    fit.args$ties <- tryCatch(eval(model$call$ties, envir = menv), error = function(e) NULL)
+  if (!is.null(model$call$robust))
+    fit.args$robust <- tryCatch(eval(model$call$robust, envir = menv), error = function(e) NULL)
+  fit.args <- fit.args[!vapply(fit.args, is.null, logical(1))]
+  .coxph_like <- function(fo, dsub) {
     a <- c(list(formula = fo, data = dsub), fit.args)
     if (!is.null(wcol)) a$weights <- dsub[[wcol]]
-    if (!is.null(robust)) a$robust <- robust
+    if (!is.null(ccol)) a$cluster <- dsub[[ccol]]
     do.call(survival::coxph, a)
   }
-  # The interaction test is a likelihood-ratio test, which compares log-likelihoods
-  # and so does not use the variance estimator -- but anova() refuses a fit that
-  # carries a robust variance, which coxph() gives any weighted fit by default.
-  # Fit the two comparison models without it: same coefficients, same likelihoods,
-  # and the test is then the weighted one rather than an unweighted stand-in.
-  .coxph_lrt <- function(fo, dsub) .coxph_like(fo, dsub, robust = FALSE)
 
   # per-subset treatment HR/CI/precision from a refit of the model formula
   one <- function(dsub) {
@@ -333,7 +371,7 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
            "categories first.", call. = FALSE)
     f <- if (is.factor(x)) x else factor(x)
     hrow <- .row("header", sg.labs[j], NULL)
-    hrow$pint <- .interaction_p(model, data, treatment, v, fitter = .coxph_lrt)
+    hrow$pint <- .interaction_p(model, data, treatment, v, fitter = .coxph_like)
     rows[[length(rows) + 1L]] <- hrow
     for (lv in levels(f)) {
       dsub <- data[!is.na(x) & x == lv, , drop = FALSE]
@@ -389,11 +427,19 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
   list(coef = coefs, trt = trt, ref = ref)
 }
 
-# Likelihood-ratio interaction p-value for one subgroup variable: additive
-# (model + subgroup) vs interaction (+ treatment:subgroup), on the shared
-# complete cases, both fitted the way the model itself was (`fitter`). Names
-# are back-quoted so non-syntactic variable names do not break the formula.
-# Returns NA if either fit fails.
+# Interaction p-value for one subgroup variable, comparing the additive model
+# (model + subgroup) with the interaction model (+ treatment:subgroup) on the
+# shared complete cases, both fitted the way the model itself was (`fitter`).
+# Names are back-quoted so non-syntactic variable names do not break the formula.
+#
+# Which test is used follows the variance the fit carries. With the model-based
+# variance this is the likelihood-ratio test. When the fit carries a robust
+# variance -- coxph() attaches one to any non-integer weighted, clustered or
+# robust = TRUE fit -- differences in the log-partial-likelihood no longer have
+# a chi-square distribution (see ?anova.coxph, which declines such a comparison
+# for exactly that reason), so the interaction coefficients are tested with a
+# Wald chi-square built on the robust variance itself. Returns NA if the fits or
+# the test fail.
 .interaction_p <- function(model, data, treatment, v,
                            fitter = function(fo, dd) survival::coxph(fo, data = dd)) {
   bt  <- function(x) paste0("`", gsub("`", "", x), "`")
@@ -406,23 +452,73 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
                 paste(c(base, paste0(bt(treatment), ":", bt(v))), collapse = " + ")))
     vars <- unique(c(all.vars(add_f), v))
     dd <- data[stats::complete.cases(data[, intersect(vars, colnames(data)), drop = FALSE]), ]
-    a <- fitter(add_f, dd); i <- fitter(int_f, dd)
-    stats::anova(a, i)[["Pr(>|Chi|)"]][2]
+    i <- fitter(int_f, dd)
+    if (is.null(i$naive.var)) {                      # model-based variance
+      a <- fitter(add_f, dd)
+      return(stats::anova(a, i)[["Pr(>|Chi|)"]][2])
+    }
+    newt <- setdiff(attr(stats::terms(i), "term.labels"),
+                    attr(stats::terms(add_f), "term.labels"))
+    k <- unlist(i$assign[newt], use.names = FALSE)
+    if (!length(k)) return(NA_real_)
+    b <- stats::coef(i)[k]
+    V <- stats::vcov(i)[k, k, drop = FALSE]
+    if (anyNA(b) || anyNA(V)) return(NA_real_)
+    stats::pchisq(drop(t(b) %*% solve(V, b)), df = length(k), lower.tail = FALSE)
   }, error = function(e) NA_real_, warning = function(w) NA_real_)
 }
 
-# The weights the model was fitted with, aligned to the rows of `data`, or NULL.
-# Evaluated in `data` first (the usual `weights = w` naming a column), then in the
-# call's own environment for a weights vector held outside the data frame.
-.model_weights <- function(model, data) {
-  wq <- model$call$weights
-  if (is.null(wq)) return(NULL)
-  env <- environment(stats::formula(model))
-  if (is.null(env)) env <- parent.frame()
-  w <- tryCatch(eval(wq, envir = data, enclos = env), error = function(e) NULL)
-  if (is.null(w)) w <- tryCatch(eval(wq, envir = env), error = function(e) NULL)
-  if (is.null(w) || !is.numeric(w) || length(w) != nrow(data)) return(NULL)
-  as.numeric(w)
+# A vector survival kept from the fit (weights), put back on the rows of `data`:
+# coxph stores it post-na.action, and `model$na.action` says which rows it dropped.
+# Those rows come back as NA, which drops them from the refits as well -- they
+# were not in the model either. NULL when the two cannot be lined up.
+.fit_vector <- function(x, model, data) {
+  if (is.null(x)) return(NULL)
+  n <- nrow(data)
+  if (length(x) == n) return(as.numeric(x))
+  om <- model$na.action
+  if (!is.null(om) && length(x) + length(om) == n) {
+    full <- rep(NA_real_, n)
+    full[-as.integer(om)] <- as.numeric(x)
+    return(full)
+  }
+  NULL
+}
+
+# TRUE when `data` is, row for row, the data `model` was fitted on -- checked by
+# rebuilding the model's response from `data` and comparing it with the one the
+# fit stored. Only consulted when something is being carried across from the fit,
+# where a reordered or different `data` would attach a weight to the wrong
+# subject. NA when there is nothing to compare against.
+.data_is_fit_data <- function(model, data) {
+  y <- model$y
+  if (is.null(y)) return(NA)
+  yd <- tryCatch(eval(stats::formula(model)[[2]], envir = data,
+                      enclos = environment(stats::formula(model))),
+                 error = function(e) NULL)
+  if (is.null(yd)) return(NA)
+  om <- model$na.action
+  if (!is.null(om) && NROW(yd) == NROW(y) + length(om))
+    yd <- yd[-as.integer(om), , drop = FALSE]
+  if (NROW(yd) != NROW(y)) return(FALSE)
+  isTRUE(all.equal(unclass(yd), unclass(y), check.attributes = FALSE, tolerance = 0))
+}
+
+# A vector the model call refers to (weights, cluster), aligned to the rows of
+# `data`, or NULL. Evaluated in `data` first -- the usual `weights = w` naming a
+# column -- then in the call's own environment for a vector held outside the data
+# frame. A length that does not match `data` means the two do not correspond, so
+# nothing is carried.
+.model_call_vector <- function(q, data, env, numeric = FALSE) {
+  if (is.null(q)) return(NULL)
+  x <- tryCatch(eval(q, envir = data, enclos = env), error = function(e) NULL)
+  if (is.null(x)) x <- tryCatch(eval(q, envir = env), error = function(e) NULL)
+  if (is.null(x) || length(x) != nrow(data)) return(NULL)
+  if (numeric) {
+    if (!is.numeric(x)) return(NULL)
+    return(as.numeric(x))
+  }
+  x
 }
 
 # Drop from a model formula any RHS term that is constant in `dsub` (would make

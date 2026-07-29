@@ -51,7 +51,8 @@ Default \code{TRUE}.}
 subjects in each subgroup level (and their percentage of the total). Default
 \code{TRUE}. This count is the subgroup size; when the model has adjusting
 covariates with missing values it can exceed the complete-case sample the
-hazard ratio is actually fit on.}
+hazard ratio is actually fit on. It counts subjects, so for a weighted model
+it does not equal the sum of the weights the hazard ratio is estimated from.}
 
 \item{favours}{optional length-2 character vector
 \code{c("Favours treatment", "Favours control")} drawn under the axis on the
@@ -105,14 +106,33 @@ fit on the observations complete for both. As with any subgroup analysis the
 interaction test is the inference; the individual per-level hazard ratios are
 descriptive and subject to multiplicity (see Wang et al., 2007).
 
-The refits reproduce the fit the user supplied: the case weights and the tie
-handling of \code{model} are carried into every subset fit, so a subgroup
-hazard ratio is the weighted one whenever the model is weighted. The two
-models compared by the interaction test are fit without a robust variance,
-which \code{\link[survival]{coxph}()} otherwise attaches to a weighted fit:
-the likelihood-ratio test compares log-likelihoods, which the variance
-estimator does not change, and \code{\link[stats]{anova}()} declines a fit
-that carries one.
+The subset fits are made the way \code{model} itself was: its case weights,
+tie handling and clustering are carried over, so a weighted model reports
+weighted subgroup estimates and a clustered model cluster-robust intervals.
+The weights and the clustering are read from the fitted object and matched to
+the rows of \code{data}; if they cannot be matched -- \code{data} reordered,
+or not the frame the model was fitted on -- that is an error rather than a
+quietly unweighted plot.
+
+Which interaction test is used follows the variance the fit carries. With the
+ordinary model-based variance it is the likelihood-ratio test described above.
+When the fit carries a robust variance -- \code{\link[survival]{coxph}()}
+attaches one to any clustered, \code{robust = TRUE} or non-integer weighted
+fit -- differences in the log-partial-likelihood no longer have a chi-square
+distribution, and \code{\link[survival]{anova.coxph}} declines to compare
+them for that reason; the interaction is then tested by a Wald chi-square on
+the treatment-by-subgroup coefficients, taken from that robust variance.
+Integer (frequency) weights leave the variance model-based, so they keep the
+likelihood-ratio test.
+
+The per-level hazard ratio is estimated by refitting on that level alone, so
+each level carries its own baseline hazard and, in an adjusted model, its own
+covariate coefficients. It is the estimate a reader reproduces by running
+\code{\link[survival]{coxph}()} on that subset by hand. Some tools instead
+read the within-level effects off a single treatment-by-subgroup interaction
+model fitted to everyone, which pools the baseline hazard across levels; the
+two agree closely in large balanced strata and can differ appreciably in small
+or heterogeneous ones.
 
 The plot is composed of three aligned panels (labels, forest, statistics), so
 the text columns keep a fixed width and do not collide with the forest at any

@@ -141,11 +141,14 @@
 - New `ggforest_subgroup()` draws the subgroup forest plot used in clinical
   reporting: the hazard ratio of a treatment *within* each level of one or more
   subgroup variables, with the treatment-by-subgroup interaction test. Per-level
-  hazard ratios come from refitting the Cox model on each subset, reproducing the
-  fit supplied: the case weights and the tie handling of the model are carried
-  into every refit, so a weighted model reports weighted subgroup estimates. Each
-  subgroup variable gets one interaction p-value from a likelihood-ratio test (the
-  test of effect modification, as opposed to the per-level estimates). Unstratifiable
+  hazard ratios come from refitting the Cox model on each subset, with the case
+  weights, tie handling, clustering and robust-variance setting of the model
+  carried into every refit -- so a weighted model reports weighted subgroup
+  estimates and a clustered one cluster-robust intervals. Each subgroup variable
+  gets one interaction p-value (the test of effect modification, as opposed to the
+  per-level estimates): a likelihood-ratio test, or a Wald chi-square on the
+  treatment-by-subgroup coefficients when the fit carries a robust variance, where
+  a likelihood comparison would not be valid. Unstratifiable
   levels are dropped with a warning. Returns a themeable ggplot with an optional
   overall row, a "No. of patients (\%)" column, precision-weighted boxes and a
   "favours" annotation. Complements `ggforest()` (see #271 and #366).
