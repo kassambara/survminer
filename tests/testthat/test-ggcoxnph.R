@@ -127,3 +127,26 @@ test_that("conf.level is validated and a stale conf.int is refused", {
   expect_error(ggcoxnph(fit, data = d, variable = "sexf", conf.level = NA_real_),
                "single number in \\(0, 1\\)")
 })
+
+test_that("the conf.int guard covers abbreviations and does not force the dots", {
+  skip_if_not_installed("survival")
+  d <- survival::lung
+  d$sexf <- factor(d$sex, labels = c("M", "F"))
+  fit <- survival::coxph(survival::Surv(time, status) ~ sexf, data = d)
+
+  # `conf.i` used to partial-match the old `conf.int`; it is not a prefix of
+  # `conf.level`, so without the prefix test it lands in ... and is ignored
+  for (nm in c("conf.int", "conf.in", "conf.i")) {
+    args <- list(fit, data = d, variable = "sexf", panels = "hr")
+    args[[nm]] <- 0.9
+    expect_error(do.call(ggcoxnph, args), "not a ggcoxnph\\(\\) argument",
+                 info = nm)
+  }
+
+  # the guard must inspect the dots NAMES only -- evaluating them would turn an
+  # unused argument into an error
+  expect_error(
+    suppressWarnings(ggcoxnph(fit, data = d, variable = "sexf", panels = "hr",
+                              unused = stop("must not be forced"))),
+    NA)
+})
