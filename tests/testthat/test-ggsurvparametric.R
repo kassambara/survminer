@@ -105,3 +105,58 @@ test_that("non-parametric inputs error with a helpful message", {
                "ggsurvplot")
   expect_error(ggsurvparametric(lm(1 ~ 1)), "survreg or flexsurvreg")
 })
+
+test_that("a transformed or multi-variable right-hand side still draws every curve", {
+  skip_if_not_installed("survival")
+  # The overlay used to be matched to the KM by rebuilding the strata label as
+  # paste0(variable, "=", value). That misses a transform -- survfit stores
+  # "factor(sex)=1", not "sex=1" -- and misses the padding survival::strata()
+  # applies with several variables, so every covariate row came out NA and the
+  # curve was silently never drawn while the legend still advertised the fit.
+  n_na <- function(p) {
+    ps <- attr(p$plot, "parametric")
+    c(rows = nrow(ps), na = sum(is.na(ps$surv)))
+  }
+
+  # (a) a transform on the right-hand side: every row was NA, zero curves drawn
+  f1 <- survival::survreg(survival::Surv(time, status) ~ factor(sex),
+                          data = survival::lung, dist = "weibull")
+  r1 <- n_na(suppressWarnings(ggsurvparametric(f1, data = survival::lung)))
+  expect_gt(r1[["rows"]], 0)
+  expect_equal(r1[["na"]], 0)
+
+  # (b) two grouping variables: survival::strata() pads the labels to a common
+  # width, so half the rows were NA and half the curves were missing
+  d <- survival::lung[!is.na(survival::lung$ph.ecog), ]
+  d$sexf <- factor(d$sex, labels = c("Male", "F"))     # unequal label widths
+  d$e <- factor(ifelse(d$ph.ecog > 0, "bad", "good"))
+  f2 <- survival::survreg(survival::Surv(time, status) ~ sexf + e, data = d,
+                          dist = "weibull")
+  p2 <- suppressWarnings(ggsurvparametric(f2, data = d))
+  r2 <- n_na(p2)
+  expect_equal(r2[["na"]], 0)
+
+  # one fitted curve per stratum, aligned to the fit's own strata
+  km <- survival::survfit(survival::Surv(time, status) ~ sexf + e, data = d)
+  expect_equal(length(unique(attr(p2$plot, "parametric")$strata)),
+               length(km$strata))
+})
+
+test_that("the parametric overlay is on the curve it belongs to", {
+  skip_if_not_installed("survival")
+  # a drawn-but-misaligned overlay is worse than a missing one: check the fitted
+  # value tracks its own arm rather than merely being non-NA
+  d <- survival::lung[!is.na(survival::lung$sex), ]
+  d$sexf <- factor(d$sex, labels = c("M", "F"))
+  f <- survival::survreg(survival::Surv(time, status) ~ sexf, data = d,
+                         dist = "weibull")
+  ps <- attr(suppressWarnings(ggsurvparametric(f, data = d))$plot, "parametric")
+  # predict() for each stratum's own covariate row, computed independently
+  for (lv in levels(d$sexf)) {
+    got <- ps[as.character(ps$strata) == lv, ]
+    got <- got[order(got$time), ]
+    ref <- predict(f, newdata = data.frame(sexf = factor(lv, levels = levels(d$sexf))),
+                   type = "quantile", p = 1 - got$surv)
+    expect_equal(unname(as.numeric(ref)), got$time, tolerance = 1e-6, info = lv)
+  }
+})

@@ -4,6 +4,11 @@
 
 - `ggsurvplot()` now accepts `plotmath` expressions in `legend.labs` (e.g. `legend.labs = c(expression(beta[1]), expression(x^2))`), rendering superscripts, subscripts and Greek letters in the legend and the number-at-risk table while leaving the palette unchanged (#350). A plain character `legend.labs` behaves exactly as before.
 
+- `ggsurvparametric()` draws the fitted curve for every group again when the
+  right-hand side carries a transform (`~ factor(sex)`) or names more than one
+  variable. Those two cases produced no fitted curve at all and half of them
+  respectively, while the legend still showed the distribution's key.
+
 - `ggforest()` draws a Cox model containing a `pspline()` term alongside another
   covariate correctly again. Such a term has more model coefficients than the
   summary has rows, which left the plot with a block of blank "reference" rows and
