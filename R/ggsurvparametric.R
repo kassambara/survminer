@@ -90,7 +90,7 @@ ggsurvparametric <- function(fit, data = NULL, conf.int = FALSE, linewidth = 1,
 
   # ---- parametric survival per group over the observed time grid ----------
   times <- seq(0, max(km$time, na.rm = TRUE), length.out = 100)
-  newdata <- .parametric_newdata(data, rhs, raw.strata)
+  newdata <- .parametric_newdata(data, fml, rhs, raw.strata)
   psurv <- .parametric_surv(fit, newdata, times, conf.int, conf.level, nsim)
   psurv$strata <- factor(km.strata[psurv$.row], levels = km.strata)
 
@@ -138,19 +138,56 @@ ggsurvparametric <- function(fit, data = NULL, conf.int = FALSE, linewidth = 1,
   paste0(toupper(substr(d, 1, 1)), substr(d, 2, nchar(d)))
 }
 
-# one newdata row per survfit stratum, in the survfit strata order. Matches the
-# observed covariate combinations to the survfit's "var=level, ..." strata names,
-# so the overlay lines up with the KM by position regardless of covariate type
-# (numeric grouping included).
-.parametric_newdata <- function(data, rhs, raw.strata) {
-  if (length(rhs) == 0)
-    return(data.frame(row.names = seq_along(raw.strata)))
-  combos <- unique(data[, rhs, drop = FALSE])
-  combos <- combos[stats::complete.cases(combos), , drop = FALSE]
-  labs <- apply(combos, 1, function(r)
-    paste(paste0(rhs, "=", r), collapse = ", "))
-  ord <- match(raw.strata, labs)
-  combos[ord, , drop = FALSE]
+# One representative covariate row per stratum, in the fit's own strata order.
+#
+# The strata labels are read from the fit rather than rebuilt as
+# paste0(variable, "=", value): a rebuilt label misses a transformed term --
+# `~ factor(sex)` is stored as "factor(sex)=1", not "sex=1" -- and misses the
+# padding survival::strata() applies when a formula has several variables. Either
+# mismatch made every match() NA, so the parametric curve was silently computed
+# from NA covariates and never drawn, while the legend still advertised the fit.
+.parametric_newdata <- function(data, fml, rhs, raw.strata) {
+  g <- .strata_group_from_formula(fml, data)
+  # No grouping at all (`~ 1`, or a right-hand side carrying only an offset): a
+  # single curve. Keep the right-hand-side columns so an offset term can still be
+  # evaluated; for `~ 1` there are none and this is an empty row, as before.
+  if (nlevels(g) <= 1L) {
+    one <- data[rep(1L, length(raw.strata)), rhs, drop = FALSE]
+    rownames(one) <- NULL
+    return(one)
+  }
+  gc <- as.character(g)
+  rows <- vapply(raw.strata, function(s) {
+    i <- which(!is.na(gc) & gc == s)
+    if (length(i)) i[1L] else NA_integer_
+  }, integer(1), USE.NAMES = FALSE)
+  # keep only the right-hand-side variables: an unrelated column carrying NA
+  # would otherwise be dropped by predict()'s na.action and lose that curve.
+  out <- data[rows, rhs, drop = FALSE]
+  rownames(out) <- NULL
+
+  # predict() re-evaluates the formula against these rows alone, so a term whose
+  # value depends on the rest of the column -- (age > mean(age)), scale(x),
+  # cut(x, 3) -- can be recomputed into a different group than the model was fitted
+  # with, and the curve would be drawn from another group's parameters. Recompute
+  # the grouping on the rows themselves: each must still label as its own stratum.
+  if (anyNA(rows))
+    stop("ggsurvparametric() could not find the data rows for ",
+         sum(is.na(rows)), " of the fit's ", length(rows), " groups, so their ",
+         "curves cannot be predicted. This happens when the data passed here do ",
+         "not produce the same groups as the fit -- pass the same data the model ",
+         "was fitted on.", call. = FALSE)
+  ok <- tryCatch(identical(as.character(.strata_group_from_formula(fml, out)),
+                           as.character(raw.strata)),
+                 error = function(e) FALSE)
+  if (!ok)
+    stop("ggsurvparametric() cannot draw a fitted curve for a grouping term whose ",
+         "value depends on the other observations (for example `mean()`, ",
+         "`median()`, `scale()` or `cut()` inside the formula): predicting one row ",
+         "per group would re-evaluate it and could place a curve on the wrong ",
+         "group. Compute the grouping variable before fitting and use it directly.",
+         call. = FALSE)
+  out
 }
 
 # model-agnostic parametric S(t): a long data frame time, surv, .row (the newdata
