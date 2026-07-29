@@ -50,7 +50,8 @@ NULL
 #'  fit and can change the drawn shape.
 #'@param tau maximum horizon for the \code{rmst} panel. \code{NULL} (default)
 #'  uses the largest admissible time.
-#'@param conf.int confidence level for the pointwise bands. Default \code{0.95}.
+#'@param conf.level confidence level for the pointwise bands, a single number in
+#'  (0, 1). Default \code{0.95}.
 #'@param df degrees of freedom of the natural-spline smooth of the Schoenfeld
 #'  residuals. Default \code{4}; \code{df = 2} gives an almost-linear fit.
 #'@param numeric.split for a numeric covariate, whether to split it at its median
@@ -100,7 +101,7 @@ NULL
 #'@export
 ggcoxnph <- function(fit, variable = NULL, data = NULL,
                      panels = c("cloglog", "schoenfeld", "hr", "rmst"),
-                     transform = "km", tau = NULL, conf.int = 0.95, df = 4,
+                     transform = "km", tau = NULL, conf.level = 0.95, df = 4,
                      numeric.split = FALSE,
                      palette = NULL, ggtheme = theme_survminer(),
                      title = NULL, ...) {
@@ -108,7 +109,15 @@ ggcoxnph <- function(fit, variable = NULL, data = NULL,
   if (!methods::is(fit, "coxph"))
     stop("`fit` must be a coxph model.", call. = FALSE)
   panels <- match.arg(panels, several.ok = TRUE)
-  z <- stats::qnorm(1 - (1 - conf.int) / 2)
+  if (!is.numeric(conf.level) || length(conf.level) != 1L || is.na(conf.level) ||
+      conf.level <= 0 || conf.level >= 1)
+    stop("`conf.level` must be a single number in (0, 1).", call. = FALSE)
+  # `conf.int` means "draw the confidence band" throughout survminer; it is not a
+  # ggcoxnph() argument, and `...` would otherwise swallow the older spelling.
+  if ("conf.int" %in% names(list(...)))
+    stop("`conf.int` is not a ggcoxnph() argument. Use `conf.level` to set the ",
+         "confidence level of the pointwise bands.", call. = FALSE)
+  z <- stats::qnorm(1 - (1 - conf.level) / 2)
 
   # ---- resolve the covariate and its term structure ----------------------
   term.labels <- attr(stats::terms(fit), "term.labels")
@@ -246,7 +255,7 @@ ggcoxnph <- function(fit, variable = NULL, data = NULL,
     plots$hr <- .nph_panel_hr(beta_t, beta_hat, variable, ggtheme)
   rmst_tau <- NULL
   if ("rmst" %in% want) {
-    rp <- .nph_panel_rmst(time, status, group, tau, z, conf.int, variable,
+    rp <- .nph_panel_rmst(time, status, group, tau, z, conf.level, variable,
                           palette, ggtheme, group.msg)
     plots$rmst <- rp$plot
     rmst_tau <- rp$data
@@ -417,7 +426,7 @@ ggcoxnph <- function(fit, variable = NULL, data = NULL,
   data.frame(tau = taus, rmst = out["rmst", ], var = out["var", ])
 }
 
-.nph_panel_rmst <- function(time, status, group, tau, z, conf.int, variable,
+.nph_panel_rmst <- function(time, status, group, tau, z, conf.level, variable,
                             palette, ggtheme, group.msg) {
   d <- data.frame(time = time, status = status, .g = group)
   d <- d[stats::complete.cases(d), , drop = FALSE]

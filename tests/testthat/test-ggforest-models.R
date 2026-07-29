@@ -116,5 +116,17 @@ test_that("the CI-column header tracks conf.int (no hardcoded 95%)", {
     w(gt); L
   }
   expect_true(any(grepl("HR (80% CI)", labs(
-    ggforest_models(list(A = m, B = m), term = "age", conf.int = 0.8)), fixed = TRUE)))
+    ggforest_models(list(A = m, B = m), term = "age", conf.level = 0.8)), fixed = TRUE)))
+})
+
+test_that("conf.level is validated and names the confidence level", {
+  m <- survival::coxph(survival::Surv(time, status) ~ age + sex, data = survival::lung)
+  # a narrower level must give a strictly narrower interval
+  w95 <- survminer:::.models_forest_table(list(A = m), "age", 0.95, NULL)
+  w80 <- survminer:::.models_forest_table(list(A = m), "age", 0.80, NULL)
+  expect_true(all(w80$hi - w80$lo < w95$hi - w95$lo))
+  # the stale spelling has no `...` to hide in, so it fails loudly
+  # match the argument name, not R's "unused argument" wording, which is translated
+  expect_error(ggforest_models(list(A = m), term = "age", conf.int = 0.9),
+               "conf\\.int")
 })

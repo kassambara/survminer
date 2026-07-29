@@ -31,7 +31,8 @@ NULL
 #'  "Model 1", "Model 2", ...).
 #' @param term the model variable (or a single coefficient name) whose hazard ratio
 #'  is compared across the models.
-#' @param conf.int the confidence level for the intervals. Default 0.95.
+#' @param conf.level the confidence level for the intervals, a single number in
+#'   (0, 1). Default 0.95.
 #' @param model.names optional character vector of row labels, used when the
 #'  \code{models} list is unnamed.
 #' @param show.p logical. Show the per-model Wald p-value column. Default TRUE.
@@ -61,7 +62,7 @@ NULL
 #' ggforest_models(list("Crude" = m.crude, "Adjusted" = m.adjusted), term = "age")
 #'
 #' @export
-ggforest_models <- function(models, term, conf.int = 0.95, model.names = NULL,
+ggforest_models <- function(models, term, conf.level = 0.95, model.names = NULL,
                             show.p = TRUE, show.n = TRUE, favours = NULL,
                             point.size.by.precision = FALSE,
                             main = "Hazard ratio comparison", xlab = NULL,
@@ -76,7 +77,7 @@ ggforest_models <- function(models, term, conf.int = 0.95, model.names = NULL,
     stop("Every element of `models` must be a coxph model; element(s) ",
          paste(bad, collapse = ", "), " are not.", call. = FALSE)
 
-  tab <- .models_forest_table(models, term, conf.int, model.names)
+  tab <- .models_forest_table(models, term, conf.level, model.names)
   if (!nrow(tab))
     stop("No model contained `", term, "`; nothing to plot.", call. = FALSE)
 
@@ -87,7 +88,7 @@ ggforest_models <- function(models, term, conf.int = 0.95, model.names = NULL,
   if (!is.null(favours) && length(favours) == 2L) yr[1] <- yr[1] - 0.6
 
   if (is.null(xlab))
-    xlab <- sprintf("Hazard ratio for %s (%g%% CI, log scale)", term, conf.int * 100)
+    xlab <- sprintf("Hazard ratio for %s (%g%% CI, log scale)", term, conf.level * 100)
 
   # robust drawing window from the point HRs, so one wide CI cannot dominate the
   # shared axis; clip whiskers to it and flag the clipped ends with an arrow.
@@ -184,7 +185,7 @@ ggforest_models <- function(models, term, conf.int = 0.95, model.names = NULL,
     widths <- c(widths, 0.5 + 0.095 * max(nchar(c(n.df$nlab, "Events/N"))))
   }
 
-  ci.header <- sprintf("HR (%g%% CI)", conf.int * 100)
+  ci.header <- sprintf("HR (%g%% CI)", conf.level * 100)
   tab$hrci <- .fmt_hrci(tab, noDigits)
   hrci.panel <- ggplot2::ggplot(tab, ggplot2::aes(x = 1, y = y)) +
     ggplot2::geom_text(ggplot2::aes(label = hrci), hjust = 1, size = 3.3) +
@@ -218,7 +219,7 @@ ggforest_models <- function(models, term, conf.int = 0.95, model.names = NULL,
 
 # Extract one term's HR / CI / p from each coxph model (base survival, robust-safe).
 # Returns a data.frame of estimable + dropped rows (one per kept model).
-.models_forest_table <- function(models, term, conf.int, model.names) {
+.models_forest_table <- function(models, term, conf.level, model.names) {
   # Row labels: list names, filling only the missing ones (a partially named list
   # keeps its real names), then model.names, then "Model i".
   labs <- names(models); if (is.null(labs)) labs <- rep("", length(models))
@@ -226,7 +227,7 @@ ggforest_models <- function(models, term, conf.int = 0.95, model.names = NULL,
           else paste("Model", seq_along(models))
   empty <- !nzchar(labs); labs[empty] <- fill[empty]
   labs <- make.unique(labs)
-  z <- stats::qnorm(1 - (1 - conf.int) / 2)
+  z <- stats::qnorm(1 - (1 - conf.level) / 2)
 
   rows <- list(); classes <- character(); coef.names <- character()
   for (i in seq_along(models)) {

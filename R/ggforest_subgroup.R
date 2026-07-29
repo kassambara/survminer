@@ -47,7 +47,8 @@ NULL
 #'   May be named, in which case the names are used as the display labels, e.g.
 #'   \code{c(Sex = "sex", "Age group" = "age.grp")}. Continuous variables must be
 #'   binned first.
-#' @param conf.int the confidence level for the intervals. Default 0.95.
+#' @param conf.level the confidence level for the intervals, a single number in
+#'   (0, 1). Default 0.95.
 #' @param show.overall logical; add an overall (all-subjects) treatment hazard
 #'   ratio row at the top. Default \code{TRUE}.
 #' @param show.pinteraction logical; show the per-variable interaction p-value.
@@ -91,7 +92,7 @@ NULL
 #'                   subgroups = c(Sex = "sex", Age = "age.grp", Differentiation = "differ"))
 #' @export
 ggforest_subgroup <- function(model, data = NULL, treatment,
-                              subgroups, conf.int = 0.95,
+                              subgroups, conf.level = 0.95,
                               show.overall = TRUE, show.pinteraction = TRUE,
                               show.n = TRUE, favours = NULL,
                               point.size.by.precision = TRUE,
@@ -100,7 +101,7 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
                               ggtheme = theme_survminer()) {
 
   tab <- .subgroup_forest_table(model, data, treatment, subgroups,
-                                conf.int, show.overall)
+                                conf.level, show.overall)
   if (nrow(tab[tab$type != "header", , drop = FALSE]) == 0L)
     stop("No subgroup level could be estimated; nothing to plot.", call. = FALSE)
 
@@ -116,7 +117,7 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
     xlab <- sprintf("Hazard ratio (%s, %g%% CI, log scale)",
                     if (!is.na(trt.lev) && !is.na(ref.lev))
                       paste(trt.lev, "vs", ref.lev) else "treatment",
-                    conf.int * 100)
+                    conf.level * 100)
 
   # ---- forest panel (the only one with an x-axis) --------------------------
   rng <- range(c(est$lower, est$upper), na.rm = TRUE)
@@ -239,7 +240,7 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
 # treatment HR + CI and the per-variable interaction p-value. Attaches the
 # treatment/reference labels used in the axis title.
 .subgroup_forest_table <- function(model, data, treatment, subgroups,
-                                    conf.int = 0.95, show.overall = TRUE) {
+                                    conf.level = 0.95, show.overall = TRUE) {
   if (!inherits(model, "coxph"))
     stop("`model` must be a coxph object.", call. = FALSE)
   if (missing(treatment) || length(treatment) != 1L || !is.character(treatment))
@@ -257,7 +258,7 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
   if (length(miss) > 0)
     stop("Not found in the data: ", paste(miss, collapse = ", "), ".", call. = FALSE)
 
-  alpha <- 1 - conf.int
+  alpha <- 1 - conf.level
   tkey  <- .treatment_key(model, treatment, data)   # coef name + labels
 
   # per-subset treatment HR/CI/precision from a refit of the model formula

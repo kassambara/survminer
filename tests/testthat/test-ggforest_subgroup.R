@@ -17,7 +17,7 @@ test_that("within-level hazard ratios match a manual coxph on each subset", {
   d <- .cc()
   fit <- coxph(Surv(time, status) ~ rx, data = d)
   tab <- survminer:::.subgroup_forest_table(fit, d, "rx",
-            c("sex", "age.grp", "differ"), conf.int = 0.95, show.overall = TRUE)
+            c("sex", "age.grp", "differ"), conf.level = 0.95, show.overall = TRUE)
 
   # overall
   m0 <- coxph(Surv(time, status) ~ rx, data = d)
