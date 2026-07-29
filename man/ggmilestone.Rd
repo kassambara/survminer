@@ -52,10 +52,13 @@ a \code{ggsurvplot} object: the Kaplan-Meier curves with a dashed line at
   each milestone, the per-arm \eqn{S(t)} marked, and the milestone survival (and
   between-arm difference) reported in the caption. The full milestone table --
   per-arm \eqn{S(t)}, CI, and any between-arm differences with CI and p-value --
-  is attached as \code{attr(x$plot, "milestone.table")}. Its \code{group} column
-  carries the fit's own strata label -- \code{"All"} for an ungrouped fit, as in
-  \code{\link{surv_median}()} -- which is what the caption shows unless
-  \code{legend.labs} renames the arms on the plot.
+  is attached as \code{attr(x$plot, "milestone.table")}. Its \code{strata} column
+  carries the fit's own label -- \code{"All"} for an ungrouped fit, as in
+  \code{\link{surv_median}()} and \code{\link{surv_summary}()} -- which is what
+  the caption shows unless \code{legend.labs} renames the arms on the plot. A
+  between-arm difference row is labelled with its contrast; only a difference row
+  can carry a \code{p.value}, though it is \code{NA} when the difference is not
+  estimable (a milestone beyond an arm's follow-up, or a zero standard error).
 }
 \description{
 Annotates Kaplan-Meier curves with \strong{milestone survival}: the survival

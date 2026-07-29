@@ -70,10 +70,13 @@ NULL
 #'   each milestone, the per-arm \eqn{S(t)} marked, and the milestone survival (and
 #'   between-arm difference) reported in the caption. The full milestone table --
 #'   per-arm \eqn{S(t)}, CI, and any between-arm differences with CI and p-value --
-#'   is attached as \code{attr(x$plot, "milestone.table")}. Its \code{group} column
-#'   carries the fit's own strata label -- \code{"All"} for an ungrouped fit, as in
-#'   \code{\link{surv_median}()} -- which is what the caption shows unless
-#'   \code{legend.labs} renames the arms on the plot.
+#'   is attached as \code{attr(x$plot, "milestone.table")}. Its \code{strata} column
+#'   carries the fit's own label -- \code{"All"} for an ungrouped fit, as in
+#'   \code{\link{surv_median}()} and \code{\link{surv_summary}()} -- which is what
+#'   the caption shows unless \code{legend.labs} renames the arms on the plot. A
+#'   between-arm difference row is labelled with its contrast; only a difference row
+#'   can carry a \code{p.value}, though it is \code{NA} when the difference is not
+#'   estimable (a milestone beyond an arm's follow-up, or a zero standard error).
 #'
 #' @references
 #' Klein JP, Logan B, Harhoff M, Andersen PK (2007). Analyzing survival curves at a
@@ -129,7 +132,7 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
     tmax <- max(ti, na.rm = TRUE)
     s.end <- fa$surv[length(fa$surv)]
     do.call(rbind, lapply(milestone.times, function(t) {
-      na.row <- data.frame(group = g, time = t, surv = NA_real_, se = NA_real_,
+      na.row <- data.frame(strata = g, time = t, surv = NA_real_, se = NA_real_,
                            lower = NA_real_, upper = NA_real_,
                            row.names = NULL, stringsAsFactors = FALSE)
       if (t <= tmax) {
@@ -137,7 +140,7 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
         # A fit stored with conf.type = "none" has no $lower/$upper at all; report
         # NA limits rather than failing to build the row.
         or_na <- function(v) if (is.null(v) || !length(v)) NA_real_ else as.numeric(v)
-        return(data.frame(group = g, time = t, surv = sm$surv, se = or_na(sm$std.err),
+        return(data.frame(strata = g, time = t, surv = sm$surv, se = or_na(sm$std.err),
                           lower = or_na(sm$lower), upper = or_na(sm$upper),
                           row.names = NULL, stringsAsFactors = FALSE))
       }
@@ -156,7 +159,7 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
     b <- tab[is.na(tab$surv), ]
     warning(n.beyond, " arm x milestone combination(s) lie beyond the observed ",
             "follow-up and are not estimable (returned as NA): ",
-            paste(sprintf("%s @ %g", b$group, b$time), collapse = "; "), ".",
+            paste(sprintf("%s @ %g", b$strata, b$time), collapse = "; "), ".",
             call. = FALSE)
   }
 
@@ -169,7 +172,7 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
     diffs <- list(c(glevels[2], glevels[1]))
   } else if (length(glevels) >= 3L && !is.null(ref.group)) {
     if (!ref.group %in% glevels)
-      stop("`ref.group` must be one of the arm labels: ",
+      stop("`ref.group` must be one of the strata labels: ",
            paste(glevels, collapse = ", "), call. = FALSE)
     diffs <- lapply(setdiff(glevels, ref.group), function(g) c(g, ref.group))
   }
@@ -189,7 +192,7 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
     diff.tab <- do.call(rbind, lapply(diffs, function(pr) {
       do.call(rbind, lapply(seq_along(milestone.times), function(k) {
         s <- diff_stats(pr, k)
-        data.frame(group = paste(pr[1], "-", pr[2]), time = milestone.times[k],
+        data.frame(strata = paste(pr[1], "-", pr[2]), time = milestone.times[k],
                    surv = s$d, se = s$sd, lower = s$lower, upper = s$upper,
                    p.value = s$p, row.names = NULL, stringsAsFactors = FALSE)
       }))
@@ -212,7 +215,9 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
   lab <- function(g) remap[[g]]
 
   pts <- tab[!is.na(tab$surv), , drop = FALSE]
-  pts$strata <- factor(remap[pts$group],
+  # Plotting copy only: swap the canonical strata label for the one the plot shows
+  # (ggsurvplot may rename via legend.labs). milestone.table keeps the canonical one.
+  pts$strata <- factor(remap[as.character(pts$strata)],
                        levels = if (!is.null(plot.strata)) plot.strata else glevels)
 
   # vertical dashed lines at each milestone (drawn before the points).
@@ -259,10 +264,10 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
     lines <- vapply(seq_len(nrow(tab)), function(r) {
       if (is.na(tab$surv[r]))
         sprintf("%s @ t=%g: not estimable (beyond follow-up)",
-                lab(tab$group[r]), tab$time[r])
+                lab(tab$strata[r]), tab$time[r])
       else
         sprintf("%s @ t=%g: %s (%d%% CI %s to %s)",
-                lab(tab$group[r]), tab$time[r], pc(tab$surv[r]), cl,
+                lab(tab$strata[r]), tab$time[r], pc(tab$surv[r]), cl,
                 pc(tab$lower[r]), pc(tab$upper[r]))
     }, character(1))
   }

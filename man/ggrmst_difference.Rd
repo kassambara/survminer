@@ -55,10 +55,17 @@ interval, not of the band.}
 }
 \value{
 \code{ggrmst_difference()} returns a data.frame with one row per group
-  (\code{group}, \code{rmst}, \code{se}, \code{lower}, \code{upper}, \code{tau})
+  (\code{strata}, \code{rmst}, \code{se}, \code{lower}, \code{upper}, \code{tau})
   and, when a two-group (or \code{ref.group}) difference is defined, additional
   \code{"... - ..."} rows carrying \code{rmst} (the difference), \code{se},
-  \code{lower}, \code{upper} and \code{p.value}. \code{ggrmst()} returns a ggplot.
+  \code{lower}, \code{upper} and \code{p.value}. The \code{strata} column holds
+  the fit's own labels, as \code{\link{surv_median}()} and
+  \code{\link{surv_summary}()} do; a difference row is labelled with its contrast.
+  Only a difference row carries a \code{p.value}; the per-group rows have
+  \code{NA}. A comparison whose estimated variance is zero yields \code{p = 0}
+  for a non-zero difference and \code{NaN} for a zero one; treat either as
+  uninformative rather than significant.
+  \code{ggrmst()} returns a ggplot.
 }
 \description{
 Restricted mean survival time (RMST) is the area under the Kaplan-Meier curve
