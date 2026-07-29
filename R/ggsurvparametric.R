@@ -151,17 +151,40 @@ ggsurvparametric <- function(fit, data = NULL, conf.int = FALSE, linewidth = 1,
 # mismatch made every match() NA, so the parametric curve was silently computed
 # from NA covariates and never drawn, while the legend still advertised the fit.
 .parametric_newdata <- function(data, fml, rhs, raw.strata) {
-  if (length(attr(stats::terms(fml), "term.labels")) == 0)
-    return(data.frame(row.names = seq_along(raw.strata)))
-  g <- as.character(.strata_group_from_formula(fml, data))
+  g <- .strata_group_from_formula(fml, data)
+  # No grouping at all (`~ 1`, or a right-hand side carrying only an offset): a
+  # single curve. Keep the right-hand-side columns so an offset term can still be
+  # evaluated; for `~ 1` there are none and this is an empty row, as before.
+  if (nlevels(g) <= 1L) {
+    one <- data[rep(1L, length(raw.strata)), rhs, drop = FALSE]
+    rownames(one) <- NULL
+    return(one)
+  }
+  gc <- as.character(g)
   rows <- vapply(raw.strata, function(s) {
-    i <- which(!is.na(g) & g == s)
+    i <- which(!is.na(gc) & gc == s)
     if (length(i)) i[1L] else NA_integer_
   }, integer(1), USE.NAMES = FALSE)
   # keep only the right-hand-side variables: an unrelated column carrying NA
   # would otherwise be dropped by predict()'s na.action and lose that curve.
   out <- data[rows, rhs, drop = FALSE]
   rownames(out) <- NULL
+
+  # predict() re-evaluates the formula against these rows alone, so a term whose
+  # value depends on the rest of the column -- (age > mean(age)), scale(x),
+  # cut(x, 3) -- can be recomputed into a different group than the model was fitted
+  # with, and the curve would be drawn from another group's parameters. Recompute
+  # the grouping on the rows themselves: each must still label as its own stratum.
+  ok <- tryCatch(identical(as.character(.strata_group_from_formula(fml, out)),
+                           as.character(raw.strata)),
+                 error = function(e) FALSE)
+  if (!ok)
+    stop("ggsurvparametric() cannot draw a fitted curve for a grouping term whose ",
+         "value depends on the other observations (for example `mean()`, ",
+         "`median()`, `scale()` or `cut()` inside the formula): predicting one row ",
+         "per group would re-evaluate it and could place a curve on the wrong ",
+         "group. Compute the grouping variable before fitting and use it directly.",
+         call. = FALSE)
   out
 }
 

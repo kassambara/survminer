@@ -144,19 +144,86 @@ test_that("a transformed or multi-variable right-hand side still draws every cur
 
 test_that("the parametric overlay is on the curve it belongs to", {
   skip_if_not_installed("survival")
-  # a drawn-but-misaligned overlay is worse than a missing one: check the fitted
-  # value tracks its own arm rather than merely being non-NA
+  # A drawn-but-misaligned overlay is worse than a missing one, so check the fitted
+  # value against an independent predict() for that stratum's own covariate row.
+  # NOTE the strata column carries the plot's DISPLAY labels ("sexf=M"), not the
+  # bare factor levels -- filtering with the wrong one silently selects no rows and
+  # compares empty vectors, so assert the selection is non-empty first.
   d <- survival::lung[!is.na(survival::lung$sex), ]
   d$sexf <- factor(d$sex, labels = c("M", "F"))
   f <- survival::survreg(survival::Surv(time, status) ~ sexf, data = d,
                          dist = "weibull")
   ps <- attr(suppressWarnings(ggsurvparametric(f, data = d))$plot, "parametric")
-  # predict() for each stratum's own covariate row, computed independently
-  for (lv in levels(d$sexf)) {
-    got <- ps[as.character(ps$strata) == lv, ]
+  disp <- levels(ps$strata)
+  expect_equal(length(disp), nlevels(d$sexf))
+
+  for (i in seq_along(disp)) {
+    got <- ps[as.character(ps$strata) == disp[i], ]
+    expect_gt(nrow(got), 0)                       # the filter must select rows
     got <- got[order(got$time), ]
+    lv <- levels(d$sexf)[i]                       # display order tracks fit order
     ref <- predict(f, newdata = data.frame(sexf = factor(lv, levels = levels(d$sexf))),
                    type = "quantile", p = 1 - got$surv)
-    expect_equal(unname(as.numeric(ref)), got$time, tolerance = 1e-6, info = lv)
+    expect_equal(unname(as.numeric(ref)), got$time, tolerance = 1e-6, info = disp[i])
   }
+})
+
+test_that("each arm of a multi-variable fit gets its own curve", {
+  skip_if_not_installed("survival")
+  # with four strata a swapped assignment is invisible unless each curve is checked
+  # against its own arm's linear predictor
+  d <- survival::lung[!is.na(survival::lung$ph.ecog), ]
+  d$sexf <- factor(d$sex, labels = c("Male", "F"))
+  d$e <- factor(ifelse(d$ph.ecog > 0, "bad", "good"))
+  f <- survival::survreg(survival::Surv(time, status) ~ sexf + e, data = d,
+                         dist = "weibull")
+  ps <- attr(suppressWarnings(ggsurvparametric(f, data = d))$plot, "parametric")
+  km <- survival::survfit(survival::Surv(time, status) ~ sexf + e, data = d)
+  disp <- levels(ps$strata)
+  expect_equal(length(disp), length(km$strata))
+
+  # rebuild each stratum's covariate row from its own label and predict directly
+  for (i in seq_along(disp)) {
+    lab <- names(km$strata)[i]
+    parts <- strsplit(trimws(strsplit(lab, ", ", fixed = TRUE)[[1]]), "=", fixed = TRUE)
+    nd <- data.frame(sexf = factor(parts[[1]][2], levels = levels(d$sexf)),
+                     e    = factor(parts[[2]][2], levels = levels(d$e)))
+    got <- ps[as.character(ps$strata) == disp[i], ]
+    expect_gt(nrow(got), 0)
+    got <- got[order(got$time), ]
+    ref <- predict(f, newdata = nd, type = "quantile", p = 1 - got$surv)
+    expect_equal(unname(as.numeric(ref)), got$time, tolerance = 1e-6, info = lab)
+  }
+})
+
+test_that("a grouping term that depends on the other rows is refused", {
+  skip_if_not_installed("survival")
+  # predict() re-evaluates the formula against the one row per group handed to it,
+  # so mean()/cut() inside the formula can put a representative row in a different
+  # group than the model was fitted with and draw another group's curve.
+  set.seed(3)
+  age  <- c(59, 1, 61, 62, rep(60, 120))
+  d <- data.frame(time = rexp(length(age), 0.03),
+                  status = rbinom(length(age), 1, 0.7), age = age,
+                  sexf = factor(c("F", "M", "F", "M", rep(c("F", "M"), 60))))
+  f <- survival::survreg(survival::Surv(time, status) ~ (age > mean(age)) + sexf,
+                         data = d)
+  expect_error(suppressWarnings(ggsurvparametric(f, data = d)),
+               "depends on the other observations")
+
+  # a row-wise transform is fine and must still draw
+  f2 <- survival::survreg(survival::Surv(time, status) ~ (age > 60) + sexf, data = d)
+  ps <- attr(suppressWarnings(ggsurvparametric(f2, data = d))$plot, "parametric")
+  expect_equal(sum(is.na(ps$surv)), 0L)
+})
+
+test_that("a right-hand side of only an offset still draws one curve", {
+  skip_if_not_installed("survival")
+  d <- survival::lung
+  d$off <- 0
+  f <- suppressWarnings(
+    survival::survreg(survival::Surv(time, status) ~ offset(off), data = d))
+  ps <- attr(suppressWarnings(ggsurvparametric(f, data = d))$plot, "parametric")
+  expect_gt(nrow(ps), 0)
+  expect_equal(sum(is.na(ps$surv)), 0L)
 })
