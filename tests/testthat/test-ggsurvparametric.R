@@ -227,3 +227,22 @@ test_that("a right-hand side of only an offset still draws one curve", {
   expect_gt(nrow(ps), 0)
   expect_equal(sum(is.na(ps$surv)), 0L)
 })
+
+test_that("a group with no matching row is reported as such", {
+  skip_if_not_installed("survival")
+  # the fit drops rows with a missing response, so a numeric grouping value that
+  # survives only on dropped rows changes survival::strata()'s label padding and
+  # no representative row matches. That is a different problem from a term being
+  # re-evaluated, and the advice for it is different too.
+  set.seed(5)
+  d <- data.frame(a = factor(rep(c("x", "y"), 30)),
+                  b = rep(c(1, 2, 10), each = 20),
+                  time = c(rexp(40, 0.05), rep(NA_real_, 20)),
+                  status = 1L)
+  f <- survival::survreg(survival::Surv(time, status) ~ a + b, data = d)
+  err <- tryCatch(suppressWarnings(ggsurvparametric(f, data = d)),
+                  error = function(e) conditionMessage(e))
+  expect_type(err, "character")
+  expect_match(err, "could not find the data rows", fixed = TRUE)
+  expect_false(grepl("depends on the other observations", err, fixed = TRUE))
+})

@@ -138,10 +138,6 @@ ggsurvparametric <- function(fit, data = NULL, conf.int = FALSE, linewidth = 1,
   paste0(toupper(substr(d, 1, 1)), substr(d, 2, nchar(d)))
 }
 
-# one newdata row per survfit stratum, in the survfit strata order. Matches the
-# observed covariate combinations to the survfit's "var=level, ..." strata names,
-# so the overlay lines up with the KM by position regardless of covariate type
-# (numeric grouping included).
 # One representative covariate row per stratum, in the fit's own strata order.
 #
 # The strata labels are read from the fit rather than rebuilt as
@@ -175,6 +171,12 @@ ggsurvparametric <- function(fit, data = NULL, conf.int = FALSE, linewidth = 1,
   # cut(x, 3) -- can be recomputed into a different group than the model was fitted
   # with, and the curve would be drawn from another group's parameters. Recompute
   # the grouping on the rows themselves: each must still label as its own stratum.
+  if (anyNA(rows))
+    stop("ggsurvparametric() could not find the data rows for ",
+         sum(is.na(rows)), " of the fit's ", length(rows), " groups, so their ",
+         "curves cannot be predicted. This happens when the data passed here do ",
+         "not produce the same groups as the fit -- pass the same data the model ",
+         "was fitted on.", call. = FALSE)
   ok <- tryCatch(identical(as.character(.strata_group_from_formula(fml, out)),
                            as.character(raw.strata)),
                  error = function(e) FALSE)
