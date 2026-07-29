@@ -16,14 +16,14 @@ test_that("ggrmst_difference matches survRM2::rmst2() (numeric parity)", {
   # default tau
   expect_equal(tab$tau[1], ref$tau, tolerance = 1e-6)
   # per-arm RMST + SE
-  r_obs <- tab[tab$group == "rx=Obs", ]
-  r_trt <- tab[tab$group == "rx=Lev+5FU", ]
+  r_obs <- tab[tab$strata == "rx=Obs", ]
+  r_trt <- tab[tab$strata == "rx=Lev+5FU", ]
   expect_equal(r_obs$rmst, ref$RMST.arm0$rmst[[1]], tolerance = 1e-4)
   expect_equal(r_obs$se,   ref$RMST.arm0$rmst[[2]], tolerance = 1e-4)
   expect_equal(r_trt$rmst, ref$RMST.arm1$rmst[[1]], tolerance = 1e-4)
   expect_equal(r_trt$se,   ref$RMST.arm1$rmst[[2]], tolerance = 1e-4)
   # difference + CI + p (rmst2 unadjusted.result row 1 = RMST diff arm1 - arm0)
-  dr <- tab[grepl(" - ", tab$group), ]
+  dr <- tab[grepl(" - ", tab$strata), ]
   expect_equal(dr$rmst,    ref$unadjusted.result[1, 1], tolerance = 1e-4)
   expect_equal(dr$lower,   ref$unadjusted.result[1, 2], tolerance = 1e-4)
   expect_equal(dr$upper,   ref$unadjusted.result[1, 3], tolerance = 1e-4)
@@ -33,10 +33,10 @@ test_that("ggrmst_difference matches survRM2::rmst2() (numeric parity)", {
 test_that("ggrmst_difference structure and columns", {
   fit <- survfit(Surv(time, status) ~ sex, data = lung)
   tab <- ggrmst_difference(fit, data = lung)
-  expect_true(all(c("group", "rmst", "se", "lower", "upper", "tau", "p.value") %in% names(tab)))
+  expect_true(all(c("strata", "rmst", "se", "lower", "upper", "tau", "p.value") %in% names(tab)))
   expect_equal(nrow(tab), 3L)                 # 2 groups + 1 difference row
-  expect_true(any(grepl(" - ", tab$group)))
-  expect_true(is.na(tab$p.value[tab$group == "sex=1"]))   # per-group rows have no p
+  expect_true(any(grepl(" - ", tab$strata)))
+  expect_true(is.na(tab$p.value[tab$strata == "sex=1"]))   # per-group rows have no p
 })
 
 test_that("tau default is the admissible max; out-of-range tau errors", {
@@ -69,10 +69,10 @@ test_that("ggrmst() facets per arm for 3+ groups (no invented pairwise differenc
   expect_equal(nrow(b$layout$layout), 3L)   # 3 panels, not 6
   tab <- ggrmst_difference(fit, data = d)
   expect_equal(nrow(tab), 3L)               # 3 groups, no difference rows by default
-  expect_false(any(grepl(" - ", tab$group)))
+  expect_false(any(grepl(" - ", tab$strata)))
   # with a reference group, differences vs the reference appear
   tab2 <- ggrmst_difference(fit, data = d, ref.group = "ph.ecog=0")
-  expect_equal(sum(grepl(" - ", tab2$group)), 2L)
+  expect_equal(sum(grepl(" - ", tab2$strata)), 2L)
 })
 
 test_that("competing-risks / multi-state and left-censored data are refused", {
@@ -119,10 +119,10 @@ test_that("RMST is tau, not 0, for an arm with no observation before tau", {
   fit <- survival::survfit(survival::Surv(time, status) ~ arm, data = d)
   tab <- ggrmst_difference(fit, data = d, tau = 6.5)
 
-  expect_equal(tab$rmst[tab$group == "arm=B"], 6.5)
-  expect_equal(tab$se[tab$group == "arm=B"], 0)
-  dr <- tab[grepl(" - ", tab$group), ]
-  expect_equal(dr$rmst, 6.5 - tab$rmst[tab$group == "arm=A"])
+  expect_equal(tab$rmst[tab$strata == "arm=B"], 6.5)
+  expect_equal(tab$se[tab$strata == "arm=B"], 0)
+  dr <- tab[grepl(" - ", tab$strata), ]
+  expect_equal(dr$rmst, 6.5 - tab$rmst[tab$strata == "arm=A"])
   expect_gt(dr$rmst, 0)                       # B is better than A here
 })
 
@@ -135,13 +135,13 @@ test_that("groups come from the fit's strata: order, labels and expressions", {
   tab <- ggrmst_difference(fit, data = d)
   # labels AND order must match survfit's own strata, else the plot remap
   # attaches each arm's statistics to the wrong curve
-  expect_equal(tab$group, unname(names(fit$strata)))
+  expect_equal(tab$strata, unname(names(fit$strata)))
 
   # a transformed right-hand side is one group per stratum, not per distinct value
   f2 <- survival::survfit(survival::Surv(time, status) ~ (age > 60),
                           data = survival::lung)
   t2 <- ggrmst_difference(f2, data = survival::lung)
-  expect_equal(t2$group[1:2], unname(names(f2$strata)))
+  expect_equal(t2$strata[1:2], unname(names(f2$strata)))
   expect_equal(nrow(t2), 3L)                  # 2 groups + 1 difference row
 })
 
@@ -203,7 +203,7 @@ test_that("the strata helper survives cluster terms, hostile names and a bare fo
   # a cluster() term is not a stratum -- survfit drops it, so we must too,
   # otherwise every subject becomes its own "group"
   fc <- survival::survfit(survival::Surv(time, status) ~ sexf + cluster(id), data = d)
-  expect_equal(ggrmst_difference(fc, data = d)$group[1:2],
+  expect_equal(ggrmst_difference(fc, data = d)$strata[1:2],
                unname(names(fc$strata)))
   expect_equal(nrow(ggrmst_difference(fc, data = d)), 3L)   # 2 groups + difference
 
@@ -213,7 +213,7 @@ test_that("the strata helper survives cluster terms, hostile names and a bare fo
     dd <- d; dd[[nm]] <- dd$sexf
     f <- eval(bquote(survival::survfit(
       survival::Surv(time, status) ~ .(as.name(nm)), data = dd)))
-    expect_equal(ggrmst_difference(f, data = dd)$group[1:2],
+    expect_equal(ggrmst_difference(f, data = dd)$strata[1:2],
                  unname(names(f$strata)),
                  info = paste("grouping variable named", nm))
   }
@@ -248,7 +248,7 @@ test_that("a collapsed grouping variable with NAs keeps the fit's cohort", {
   expect_lt(fit$n, nrow(d))                      # the fit dropped the NA rows
 
   tab <- ggrmst_difference(fit, data = d, tau = 500)
-  expect_equal(tab$group, "All")
+  expect_equal(tab$strata, "All")
   # the estimate must be the one the plotted curve carries
   ref <- survminer:::.rmst_one_arm(
     d$time[!is.na(d$g)], d$status[!is.na(d$g)], tau = 500, alpha = 0.05)

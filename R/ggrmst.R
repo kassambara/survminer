@@ -68,10 +68,14 @@ NULL
 #' @param palette,ggtheme,... passed to \code{\link{ggsurvplot}()} for the underlying
 #'   curves.
 #' @return \code{ggrmst_difference()} returns a data.frame with one row per group
-#'   (\code{group}, \code{rmst}, \code{se}, \code{lower}, \code{upper}, \code{tau})
+#'   (\code{strata}, \code{rmst}, \code{se}, \code{lower}, \code{upper}, \code{tau})
 #'   and, when a two-group (or \code{ref.group}) difference is defined, additional
 #'   \code{"... - ..."} rows carrying \code{rmst} (the difference), \code{se},
-#'   \code{lower}, \code{upper} and \code{p.value}. \code{ggrmst()} returns a ggplot.
+#'   \code{lower}, \code{upper} and \code{p.value}. The \code{strata} column holds
+#'   the fit's own labels, as \code{\link{surv_median}()} and
+#'   \code{\link{surv_summary}()} do; a difference row is labelled with its contrast
+#'   and is the only kind of row with a non-\code{NA} \code{p.value}.
+#'   \code{ggrmst()} returns a ggplot.
 #' @references
 #' Royston P, Parmar MKB (2013). Restricted mean survival time: an alternative to
 #' the hazard ratio for the design and analysis of randomized trials with a
@@ -102,7 +106,7 @@ ggrmst_difference <- function(fit, data = NULL, tau = NULL, conf.level = 0.95,
   z <- stats::qnorm(1 - alpha / 2)
 
   out <- data.frame(
-    group = glevels,
+    strata = glevels,
     rmst  = vapply(per, function(x) x[["rmst"]], numeric(1)),
     se    = vapply(per, function(x) x[["se"]],  numeric(1)),
     lower = vapply(per, function(x) x[["lower"]], numeric(1)),
@@ -117,7 +121,7 @@ ggrmst_difference <- function(fit, data = NULL, tau = NULL, conf.level = 0.95,
     diffs <- list(c(glevels[2], glevels[1]))
   } else if (length(glevels) >= 3L && !is.null(ref.group)) {
     if (!ref.group %in% glevels)
-      stop("`ref.group` must be one of the group levels: ",
+      stop("`ref.group` must be one of the strata labels: ",
            paste(glevels, collapse = ", "), call. = FALSE)
     others <- setdiff(glevels, ref.group)
     diffs <- lapply(others, function(g) c(g, ref.group))
@@ -128,7 +132,7 @@ ggrmst_difference <- function(fit, data = NULL, tau = NULL, conf.level = 0.95,
       a <- per[[pr[1]]]; b <- per[[pr[2]]]
       d  <- a[["rmst"]] - b[["rmst"]]
       sd <- sqrt(a[["var"]] + b[["var"]])
-      data.frame(group = paste(pr[1], "-", pr[2]),
+      data.frame(strata = paste(pr[1], "-", pr[2]),
                  rmst = d, se = sd, lower = d - z * sd, upper = d + z * sd,
                  tau = tau, p.value = 2 * stats::pnorm(-abs(d / sd)),
                  row.names = NULL, stringsAsFactors = FALSE)

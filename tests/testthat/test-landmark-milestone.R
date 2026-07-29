@@ -71,13 +71,13 @@ test_that("ggmilestone tabulates per-arm S(t) and the between-arm difference", {
   tab <- attr(p$plot, "milestone.table")
   # per-arm S(t) matches summary.survfit
   s <- summary(fit, times = 365)
-  arm1 <- tab$surv[tab$group == levels(factor(tab$group))[1] & tab$time == 365]
+  arm1 <- tab$surv[tab$strata == levels(factor(tab$strata))[1] & tab$time == 365]
   expect_equal(round(arm1, 6), round(s$surv[1], 6))
   # difference row = S_A - S_B with additive Greenwood variance
-  dr <- tab[grepl(" - ", tab$group) & tab$time == 365, ]
+  dr <- tab[grepl(" - ", tab$strata) & tab$time == 365, ]
   expect_equal(nrow(dr), 1L)
-  a <- tab[tab$group == "sex=1" & tab$time == 365, ]
-  b <- tab[tab$group == "sex=2" & tab$time == 365, ]
+  a <- tab[tab$strata == "sex=1" & tab$time == 365, ]
+  b <- tab[tab$strata == "sex=2" & tab$time == 365, ]
   expect_equal(dr$surv, b$surv - a$surv)
   expect_equal(dr$se, sqrt(a$se^2 + b$se^2))
   expect_true(dr$p.value > 0 && dr$p.value < 1)
@@ -89,7 +89,7 @@ test_that("ggmilestone returns NA (with a warning) for a time beyond follow-up",
                                   milestone.times = c(365, 1e6)),
                  "beyond the observed follow-up")
   tab <- attr(p$plot, "milestone.table")
-  expect_true(all(is.na(tab$surv[tab$time == 1e6 & !grepl(" - ", tab$group)])))
+  expect_true(all(is.na(tab$surv[tab$time == 1e6 & !grepl(" - ", tab$strata)])))
 })
 
 test_that("ggmilestone gives no difference for one arm", {
@@ -106,10 +106,10 @@ test_that("ggmilestone needs ref.group for 3+ arms and validates it", {
   f3 <- survival::survfit(survival::Surv(time, status) ~ g, data = d)
   # no ref.group -> per-arm only (no difference rows)
   p <- ggmilestone(f3, data = d, milestone.times = 365)
-  expect_false(any(grepl(" - ", attr(p$plot, "milestone.table")$group)))
+  expect_false(any(grepl(" - ", attr(p$plot, "milestone.table")$strata)))
   # ref.group -> difference vs the reference
   pr <- ggmilestone(f3, data = d, milestone.times = 365, ref.group = "g=0")
-  expect_true(any(grepl(" - g=0$", attr(pr$plot, "milestone.table")$group)))
+  expect_true(any(grepl(" - g=0$", attr(pr$plot, "milestone.table")$strata)))
   expect_error(ggmilestone(f3, data = d, milestone.times = 365, ref.group = "z"),
                "ref.group")
 })
@@ -168,8 +168,8 @@ test_that("ggmilestone reports 0 beyond follow-up when the curve has reached 0",
   p <- suppressWarnings(ggmilestone(fit, data = d, milestone.times = 20))
   tab <- attr(p$plot, "milestone.table")
   # allevent's curve reaches 0 -> S(20) = 0 (estimable); censlast -> NA
-  expect_equal(tab$surv[tab$group == "g=allevent" & tab$time == 20], 0)
-  expect_true(is.na(tab$surv[tab$group == "g=censlast" & tab$time == 20]))
+  expect_equal(tab$surv[tab$strata == "g=allevent" & tab$time == 20], 0)
+  expect_true(is.na(tab$surv[tab$strata == "g=censlast" & tab$time == 20]))
 })
 
 test_that("an empty factor level is labelled like survfit, not refused", {
@@ -179,11 +179,11 @@ test_that("an empty factor level is labelled like survfit, not refused", {
   p <- ggmilestone(fit, data = d, milestone.times = 100)
   tab <- attr(p$plot, "milestone.table")
   # the composed label carries the variable name, so it is never itself empty
-  expect_equal(sort(unique(tab$group[!grepl(" - ", tab$group)])),
+  expect_equal(sort(unique(tab$strata[!grepl(" - ", tab$strata)])),
                sort(unname(names(fit$strata))))
   s <- summary(fit, times = 100)
-  expect_equal(tab$surv[tab$group == "arm="][1],  s$surv[1])
-  expect_equal(tab$surv[tab$group == "arm=X"][1], s$surv[2])
+  expect_equal(tab$surv[tab$strata == "arm="][1],  s$surv[1])
+  expect_equal(tab$surv[tab$strata == "arm=X"][1], s$surv[2])
 })
 
 test_that("gglandmark re-origined curve equals an independent manual survfit", {
@@ -205,9 +205,9 @@ test_that("ggmilestone difference equals the independent Greenwood formula", {
   fit <- .fit2()
   tab <- attr(ggmilestone(fit, data = survival::lung,
                           milestone.times = 365)$plot, "milestone.table")
-  a <- tab[tab$group == "sex=1" & tab$time == 365, ]
-  b <- tab[tab$group == "sex=2" & tab$time == 365, ]
-  dr <- tab[grepl(" - ", tab$group), ]
+  a <- tab[tab$strata == "sex=1" & tab$time == 365, ]
+  b <- tab[tab$strata == "sex=2" & tab$time == 365, ]
+  dr <- tab[grepl(" - ", tab$strata), ]
   # independent recomputation from survival::summary.survfit
   s <- summary(fit, times = 365)
   d.ref  <- s$surv[2] - s$surv[1]
@@ -238,10 +238,10 @@ test_that("ggmilestone arm labels and values line up with the plotted strata", {
   fit <- survival::survfit(survival::Surv(time, status) ~ s + e, data = d)
   tab <- attr(ggmilestone(fit, data = d, milestone.times = 365)$plot,
               "milestone.table")
-  per <- tab[!grepl(" - ", tab$group), ]
+  per <- tab[!grepl(" - ", tab$strata), ]
   # order AND value must agree with survfit; a positional remap that disagrees
   # attaches one arm's survival to another arm's label
-  expect_equal(per$group, unname(names(fit$strata)))
+  expect_equal(per$strata, unname(names(fit$strata)))
   expect_equal(per$surv, unname(summary(fit, times = 365)$surv))
 })
 
@@ -250,7 +250,7 @@ test_that("a transformed right-hand side groups into its strata", {
                          data = survival::lung)
   tab <- attr(ggmilestone(f, data = survival::lung, milestone.times = 365)$plot,
               "milestone.table")
-  expect_equal(sort(unique(tab$group[!grepl(" - ", tab$group)])),
+  expect_equal(sort(unique(tab$strata[!grepl(" - ", tab$strata)])),
                sort(unname(names(f$strata))))
 })
 
@@ -269,7 +269,7 @@ test_that("ggmilestone survives a fit stored with conf.type = 'none'", {
                          data = survival::lung, conf.type = "none")
   tab <- attr(ggmilestone(f, data = survival::lung, milestone.times = 365)$plot,
               "milestone.table")
-  per <- tab[!grepl(" - ", tab$group), ]
+  per <- tab[!grepl(" - ", tab$strata), ]
   expect_equal(per$surv, unname(summary(f, times = 365)$surv))
   expect_true(all(is.na(per$lower)))          # no limits were requested
   expect_true(all(is.na(per$upper)))
@@ -333,9 +333,9 @@ test_that("a fit that collapses to one stratum is labelled All, like surv_median
   expect_null(f$strata)
 
   tab <- attr(ggmilestone(f, data = d, milestone.times = 365)$plot, "milestone.table")
-  expect_equal(unique(tab$group), "All")
+  expect_equal(unique(tab$strata), "All")
   expect_equal(surv_median(f)$strata, "All")
-  expect_equal(ggrmst_difference(f, data = d)$group, "All")
+  expect_equal(ggrmst_difference(f, data = d)$strata, "All")
 })
 
 test_that("gglandmark() rejects a numeric conf.int, like its siblings", {
@@ -353,7 +353,7 @@ test_that("the ggmilestone caption follows legend.labs and the table stays tidy"
   expect_false(grepl("sex=2", p$plot$labels$caption, fixed = TRUE))
   # the attached table keeps the fit's own labels, with clean row names
   tab <- attr(p$plot, "milestone.table")
-  expect_true(any(grepl("sex=", tab$group, fixed = TRUE)))
+  expect_true(any(grepl("sex=", tab$strata, fixed = TRUE)))
   expect_equal(rownames(tab), as.character(seq_len(nrow(tab))))
 })
 

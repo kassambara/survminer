@@ -4,6 +4,11 @@
 
 - `ggsurvplot()` now accepts `plotmath` expressions in `legend.labs` (e.g. `legend.labs = c(expression(beta[1]), expression(x^2))`), rendering superscripts, subscripts and Greek letters in the legend and the number-at-risk table while leaving the palette unchanged (#350). A plain character `legend.labs` behaves exactly as before.
 
+- `ggrmst_difference()` and `ggmilestone()`'s attached `milestone.table` name their
+  group column `strata`, matching `surv_median()`, `surv_summary()` and
+  `surv_median_followup()`. The labels themselves were already the fit's own; only
+  the column name differed.
+
 - `ggcoxnph()`, `ggforest_models()` and `ggforest_subgroup()` name their
   confidence-level argument `conf.level`, and reject a value outside (0, 1).
   Across the package `conf.int` now consistently means "draw the confidence band"
