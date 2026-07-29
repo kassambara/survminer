@@ -136,27 +136,28 @@ test_that("a pspline() term does not mis-key the terms after it", {
   expect_equal(sum(L == "F"), 1L)
 })
 
-test_that("a frailty() term is mapped the same way", {
-  # frailty() mismatches in the other direction -- tidy() adds a row the
-  # coefficient vector does not have -- so the alignment test must catch both.
-  d <- na.omit(survival::lung[, c("time", "status", "age", "inst", "sex")])
-  d$sex <- factor(d$sex, labels = c("M", "F"))
-  m <- survival::coxph(survival::Surv(time, status) ~ frailty(inst) + sex, data = d)
+test_that("a frailty() model keeps the model$assign mapping", {
+  # tidy() adds a frailty row that coef() does not have, so the two counts differ
+  # for EVERY frailty model -- but each term's indices still address its own tidy
+  # row. Rerouting them onto name matching shifted every hazard ratio down one
+  # level and dropped the last one, so the mapping must be left alone.
+  d <- na.omit(survival::lung[, c("time", "status", "age", "ph.ecog",
+                                  "wt.loss", "inst")])
+  d$ecogB <- factor(d$ph.ecog)
+  contrasts(d$ecogB) <- contr.treatment(nlevels(d$ecogB), base = 2)
+  d$ecogBnum <- d$wt.loss          # name prefixed by "ecogB": the collision case
+  m <- survival::coxph(survival::Surv(time, status) ~ frailty(inst) + ecogB +
+                         ecogBnum, data = d)
   expect_true(nrow(broom::tidy(m)) != length(stats::coef(m)))
 
-  labs <- function(p) {
-    gt <- grid::grid.force(ggplot2::ggplotGrob(p)); L <- character()
-    w <- function(g) { if (inherits(g, "gTree") && !is.null(g$children))
-      for (n in names(g$children)) w(g$children[[n]])
-      if (!is.null(g$label)) L <<- c(L, as.character(g$label)) }
-    w(gt); L
-  }
-  L <- labs(ggforest(m, data = d))
-  # sex still gets both levels and keeps its fitted hazard ratio
-  expect_equal(sum(L == "M"), 1L)
-  expect_equal(sum(L == "F"), 1L)
-  ref <- summary(m)$conf.int["sexF", ]
-  expect_true(any(grepl(sprintf("%.1f", ref[["exp(coef)"]]), L, fixed = TRUE)))
+  L <- .forest_labels(m, d)
+  ci <- summary(m)$conf.int
+  # every fitted hazard ratio reaches the plot, on its own row
+  for (r in rownames(ci))
+    expect_true(any(grepl(sprintf("%.2f", ci[r, "exp(coef)"]), L, fixed = TRUE)),
+                info = r)
+  # exactly one reference level for the factor (plus none invented elsewhere)
+  expect_equal(sum(L == "reference"), 2L)
 })
 
 test_that("name matching on the penalised path cannot claim a longer term's coefficients", {
@@ -173,6 +174,10 @@ test_that("name matching on the penalised path cannot claim a longer term's coef
   ml <- survival::coxph(survival::Surv(time, status) ~ pspline(age) + flag + flag2,
                         data = d)
   Ll <- .forest_labels(ml, d)
+  # count DRAWN rows, not labels: a duplicated row has its variable label blanked
+  # by duplicated(), so a label count cannot see it (the point, interval, N and
+  # p-value are still drawn twice).
+  expect_equal(sum(grepl("^\\(N=", Ll)), 4L)   # 2 pspline rows + flag + flag2
   expect_equal(sum(Ll == "flagTRUE"), 1L)
   expect_equal(sum(Ll == "flag2TRUE"), 1L)
 
@@ -182,6 +187,7 @@ test_that("name matching on the penalised path cannot claim a longer term's coef
   expect_true(any(startsWith(broom::tidy(m)$term, "grp")))      # the collision
 
   L <- .forest_labels(m, d)
+  expect_equal(sum(grepl("^\\(N=", L)), 6L)    # 2 pspline + 2 grp + 2 grp2 levels
   # each factor keeps exactly its own two levels, drawn once each
   for (lv in c("a", "b", "x", "y")) expect_equal(sum(L == lv), 1L, info = lv)
   # one reference per factor plus pspline's nonlin row
@@ -191,4 +197,25 @@ test_that("name matching on the penalised path cannot claim a longer term's coef
   for (nm in c("grpb", "grp2y"))
     expect_true(any(grepl(sprintf("%.2f", ci[nm, "exp(coef)"]), L, fixed = TRUE)),
                 info = nm)
+})
+
+test_that("a penalised term alongside an interaction or a namespaced term draws", {
+  d <- na.omit(survival::lung[, c("time", "status", "age", "wt.loss", "sex")])
+  d$grp  <- factor(ifelse(d$sex == 1, "a", "b"))
+  d$grp2 <- factor(ifelse(d$wt.loss > 0, "x", "y"))
+
+  # an interaction label ("grp:grp2") is never a prefix of its coefficient
+  # ("grpb:grp2y"), so the name match finds nothing; that has to degrade to no
+  # rows rather than error out of the data.frame() call
+  mi <- survival::coxph(survival::Surv(time, status) ~ pspline(age) + grp * grp2,
+                        data = d)
+  Li <- .forest_labels(mi, d)
+  expect_equal(sum(grepl("^\\(N=", Li)), 6L)   # 2 pspline + 2 grp + 2 grp2
+
+  # "splines::ns(age, 3)" contains "::" and is not an interaction: treating it as
+  # one processed the term twice and drew every spline row a second time
+  mn <- survival::coxph(survival::Surv(time, status) ~ pspline(wt.loss) +
+                          splines::ns(age, 3), data = d)
+  Ln <- .forest_labels(mn, d)
+  expect_equal(sum(grepl("^\\(N=", Ln)), 5L)   # 2 pspline + 3 spline rows
 })

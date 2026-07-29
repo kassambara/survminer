@@ -168,33 +168,37 @@ ggforest <- function(model, data = NULL,
   # Coefficient rows belonging to a model term.
   #
   # model$assign indexes the design columns of coef(model), and broom::tidy()
-  # normally returns one row per design column, so the two line up. A penalised
-  # term -- pspline(), frailty() -- is collapsed by tidy() into fewer rows than it
-  # has design columns, so those indices run off the end of `coef`: the term picks
-  # up NA rows and every term after it is mis-keyed. A pspline model therefore drew
-  # a block of blank "reference" rows and lost the fitted level of every later
-  # factor. When the two are not aligned, match the coefficient names instead --
-  # with startsWith() rather than a regex, both so a name carrying metacharacters
-  # such as "pspline(age)" is matched as written, and because the prefix collision
-  # of #689 came from the regex quantifier in "^var*." -- "add17TRUE" does not
-  # start with "add11". Aligned models -- every model without a penalised term --
-  # keep the model$assign path exactly as before.
-  .assign.aligned <- nrow(coef) == length(stats::coef(model))
-  .assign.names <- gsub("`", "", names(model$assign))
+  # normally returns one row per design column, so the indices address `coef`
+  # directly. A penalised term -- pspline() -- is collapsed by tidy() into fewer
+  # rows than it has design columns, so from that term onwards the indices run
+  # past the end of `coef`: the term absorbs NA rows and every later term is
+  # mis-keyed. A pspline model therefore drew a block of blank "reference" rows
+  # and lost the fitted level of every factor after it.
+  #
+  # Only the terms whose indices actually overrun are re-keyed, by matching the
+  # coefficient names. Everything else -- including frailty(), whose tidy row sits
+  # at its own design-column index -- keeps model$assign untouched.
+  .assign.bare <- gsub("`", "", names(model$assign))
   .coef.rows <- function(var) {
-    if (.assign.aligned) {
-      idx <- model$assign[[var]]
-      if (is.null(idx)) {
-        # A non-syntactic name (e.g. "risk grp") is stored backtick-quoted in
-        # names(model$assign) but bare in dataClasses / model$contrasts, so the
-        # direct [[var]] lookup misses it; match on the stripped names instead.
-        pos <- which(.assign.names == var)
-        if (length(pos) == 1L) idx <- model$assign[[pos]]
-      }
-      return(idx)
+    idx <- model$assign[[var]]
+    if (is.null(idx)) {
+      # A non-syntactic name (e.g. "risk grp") is backtick-quoted in
+      # names(model$assign) but bare in dataClasses / model$contrasts.
+      pos <- which(.assign.bare == var)
+      if (length(pos) == 1L) idx <- model$assign[[pos]]
     }
-    hit <- which(startsWith(gsub("`", "", coef$term), var))
-    if (length(hit)) hit else NULL
+    # In range means tidy() did not collapse this term: use the indices as before.
+    if (!is.null(idx) && length(idx) && all(idx <= nrow(coef))) return(idx)
+    # Otherwise match by name. startsWith() rather than a regex so a name carrying
+    # metacharacters ("pspline(age)") is matched as written; a longer term name
+    # that also matches is excluded so a shorter variable cannot absorb the
+    # longer one's coefficients, which would draw that coefficient twice (#689).
+    cterm <- gsub("`", "", coef$term)
+    hit <- startsWith(cterm, var)
+    if (!any(hit)) return(NULL)
+    longer <- .assign.bare[.assign.bare != var & startsWith(.assign.bare, var)]
+    for (o in longer) hit <- hit & !startsWith(cterm, o)
+    if (!any(hit)) NULL else which(hit)
   }
 
   .factor_level_keys <- function(var, levs) {
@@ -251,8 +255,8 @@ ggforest <- function(model, data = NULL,
       # e.g. term "add11" matched coefficient "add17TRUE" and vice-versa,
       # producing duplicated/wrong rows for prefix-colliding names (#689).
       idx <- .coef.rows(var)
-      if (is.null(idx)) idx <- which(startsWith(coef$term, var)) # literal fallback
       vars = coef$term[idx]
+      if (length(vars) == 0L) return(NULL)   # nothing matched: drop, do not error
       # key = the coefficient name itself (level is ""), matching the old
       # paste0(var, level) = vars key exactly, so these terms are byte-identical.
       data.frame(var = vars, Var1 = "", Freq = nrow(data),
@@ -266,11 +270,15 @@ ggforest <- function(model, data = NULL,
   # coefficients via model$assign (the same reliable mechanism used for
   # multi-coefficient terms above). Models with no interaction terms are
   # unaffected: .inter.terms is empty, so allTerms is unchanged.
-  .inter.terms <- grep(":", names(model$assign), value = TRUE, fixed = TRUE)
+  # a namespace-qualified term ("splines::ns(age, 3)") is not an interaction, so
+  # strip "::" before looking for the ":" that separates interacting variables.
+  .inter.terms <- names(model$assign)[
+    grepl(":", gsub("::", "", names(model$assign), fixed = TRUE), fixed = TRUE)]
   if (length(.inter.terms) > 0) {
     allTerms <- c(allTerms, lapply(.inter.terms, function(term){
       idx <- .coef.rows(term)
       vars <- coef$term[idx]
+      if (length(vars) == 0L) return(NULL)   # nothing matched: drop, do not error
       data.frame(var = vars, Var1 = "", Freq = nrow(data), pos = seq_along(vars),
                  key = vars)
     }))
