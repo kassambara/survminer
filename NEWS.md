@@ -4,11 +4,6 @@
 
 - `ggsurvplot()` now accepts `plotmath` expressions in `legend.labs` (e.g. `legend.labs = c(expression(beta[1]), expression(x^2))`), rendering superscripts, subscripts and Greek letters in the legend and the number-at-risk table while leaving the palette unchanged (#350). A plain character `legend.labs` behaves exactly as before.
 
-- `ggrmst_difference()` and `ggmilestone()`'s attached `milestone.table` name their
-  group column `strata`, matching `surv_median()`, `surv_summary()` and
-  `surv_median_followup()`. The labels themselves were already the fit's own; only
-  the column name differed.
-
 - `ggcoxnph()`, `ggforest_models()` and `ggforest_subgroup()` name their
   confidence-level argument `conf.level`, and reject a value outside (0, 1).
   Across the package `conf.int` now consistently means "draw the confidence band"
@@ -46,7 +41,8 @@
   comparison, the between-arm difference with confidence interval and p-value
   (three or more arms via `ref.group`). A milestone beyond an arm's follow-up is
   returned as `NA` with a warning rather than silently dropped, and the full
-  milestone table is attached as `attr(x$plot, "milestone.table")`. For two arms the
+  milestone table is attached as `attr(x$plot, "milestone.table")`, keyed by a
+  `strata` column as in `surv_median()` and `surv_summary()`. For two arms the
   difference is the second arm minus the first, matching `ggrmst_difference()`, and
   every difference row is labelled with its contrast. Arms are read from the fit's
   own strata, so the labels and their order match `names(fit$strata)` and the plotted
@@ -145,7 +141,8 @@
   interval and p-value;
   for three or more groups the area under each curve is shaded, per panel.
   `ggrmst_difference()` returns a tidy table of per-group RMST (with SE and CI) and the
-  RMST difference. The estimate is computed internally from the Kaplan-Meier curve and
+  RMST difference, keyed by a `strata` column as in `surv_median()` and
+  `surv_summary()`. The estimate is computed internally from the Kaplan-Meier curve and
   matches `survRM2::rmst2()`; `tau` defaults to the largest time at which every group's
   curve is defined. See Royston & Parmar (2013).
   The confidence level is set by `conf.level`, as in `ggmilestone()`; `ggrmst()`

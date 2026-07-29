@@ -73,8 +73,9 @@ NULL
 #'   \code{"... - ..."} rows carrying \code{rmst} (the difference), \code{se},
 #'   \code{lower}, \code{upper} and \code{p.value}. The \code{strata} column holds
 #'   the fit's own labels, as \code{\link{surv_median}()} and
-#'   \code{\link{surv_summary}()} do; a difference row is labelled with its contrast
-#'   and is the only kind of row with a non-\code{NA} \code{p.value}.
+#'   \code{\link{surv_summary}()} do; a difference row is labelled with its contrast.
+#'   Only a difference row can carry a \code{p.value}, though it is \code{NA} when
+#'   the difference is not estimable (a zero standard error).
 #'   \code{ggrmst()} returns a ggplot.
 #' @references
 #' Royston P, Parmar MKB (2013). Restricted mean survival time: an alternative to

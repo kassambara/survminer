@@ -74,8 +74,9 @@ NULL
 #'   carries the fit's own label -- \code{"All"} for an ungrouped fit, as in
 #'   \code{\link{surv_median}()} and \code{\link{surv_summary}()} -- which is what
 #'   the caption shows unless \code{legend.labs} renames the arms on the plot. A
-#'   between-arm difference row is labelled with its contrast and is the only kind of
-#'   row with a non-\code{NA} \code{p.value}.
+#'   between-arm difference row is labelled with its contrast; only a difference row
+#'   can carry a \code{p.value}, though it is \code{NA} when the difference is not
+#'   estimable (a milestone beyond an arm's follow-up, or a zero standard error).
 #'
 #' @references
 #' Klein JP, Logan B, Harhoff M, Andersen PK (2007). Analyzing survival curves at a

@@ -377,3 +377,36 @@ test_that("the documented band level is true for each function", {
     band(gglandmark(f95, data = survival::lung, landmark.time = 200, conf.int = TRUE)),
     band(gglandmark(f80, data = survival::lung, landmark.time = 200, conf.int = TRUE)))
 })
+
+test_that("each caption line and each point is paired with its own arm", {
+  # Asserting only that the display names APPEAR lets a relabel swap the arms
+  # silently -- the caption can read "Male 53% vs Female 34%" while Female is the
+  # 53% arm. Pin every name to the value that belongs to it.
+  d <- survival::lung
+  fit <- survival::survfit(survival::Surv(time, status) ~ sex, data = d)
+  p <- ggmilestone(fit, data = d, milestone.times = 365,
+                   legend.labs = c("Male", "Female"))
+
+  truth <- summary(fit, times = 365)              # sex=1 then sex=2
+  pct <- round(100 * unname(truth$surv))
+  # legend.labs maps positionally onto the fit's strata order
+  expect_match(p$plot$labels$caption,
+               sprintf("Male %d%%", pct[1]), fixed = TRUE)
+  expect_match(p$plot$labels$caption,
+               sprintf("Female %d%%", pct[2]), fixed = TRUE)
+
+  # and the plotted point for each arm carries that arm's own survival, under the
+  # display label used by the curve it sits on
+  pts <- NULL
+  for (l in p$plot$layers)
+    if (inherits(l$geom, "GeomPoint") && !is.null(l$data) && nrow(l$data)) pts <- l$data
+  expect_false(is.null(pts))
+  # a dropped remap leaves values outside the forced levels, i.e. all NA
+  expect_false(anyNA(pts$strata))
+  expect_equal(levels(pts$strata), levels(p$plot$data$strata))
+  # each point's display label must be the label of the curve carrying that value
+  disp <- levels(p$plot$data$strata)
+  for (i in seq_along(disp))
+    expect_equal(unname(pts$surv[as.character(pts$strata) == disp[i]]),
+                 unname(truth$surv[i]), info = disp[i])
+})
