@@ -63,12 +63,12 @@ test_that("an ungrouped fit gives a single overall 'All' row", {
   expect_true(is.finite(tab$median))
 })
 
-test_that("conf.int overrides the fit's confidence level", {
+test_that("conf.level overrides the fit's confidence level", {
   fit90 <- surv_fit(Surv(time, status) ~ 1, data = lung, conf.int = 0.90)
   # honours the fit's level by default
   d90 <- surv_median_followup(fit90)
   # explicit override to 0.99 widens (or holds) the interval vs 0.90
-  d99 <- surv_median_followup(fit90, conf.int = 0.99)
+  d99 <- surv_median_followup(fit90, conf.level = 0.99)
   expect_equal(d90$median, d99$median)                 # point estimate unchanged
   # a wider confidence level cannot give a tighter lower limit
   expect_lte(d99$lower[1], d90$lower[1])
@@ -106,4 +106,16 @@ test_that("competing-risks / multi-state and left-censored data are refused", {
 test_that("non-survfit input is rejected", {
   expect_error(surv_median_followup(lm(time ~ status, data = lung)),
                "must be a survfit")
+})
+
+test_that("conf.level is validated", {
+  fit <- surv_fit(Surv(time, status) ~ sex, data = lung)
+  expect_error(surv_median_followup(fit, data = lung, conf.level = TRUE),
+               "single number in \\(0, 1\\)")
+  expect_error(surv_median_followup(fit, data = lung, conf.level = 42),
+               "single number in \\(0, 1\\)")
+  expect_error(surv_median_followup(fit, data = lung, conf.level = NA_real_),
+               "single number in \\(0, 1\\)")
+  # NULL is the documented default: inherit the fit's own level
+  expect_silent(surv_median_followup(fit, data = lung, conf.level = NULL))
 })

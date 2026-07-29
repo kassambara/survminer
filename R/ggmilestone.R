@@ -14,8 +14,8 @@ NULL
 #' For each arm and milestone the estimate is the Kaplan-Meier \eqn{S(t)} with its
 #' Greenwood standard error and confidence interval (\code{summary.survfit}; the
 #' interval uses the same \code{conf.type} as \code{fit}). The between-arm difference
-#' is on the risk-difference (identity) scale, \eqn{S_A(t) - S_B(t)}, with
-#' \eqn{se = \sqrt{se_A^2 + se_B^2}} (arms independent), a normal confidence interval
+#' is on the risk-difference (identity) scale -- the second arm minus the first --
+#' with \eqn{se = \sqrt{se_A^2 + se_B^2}} (arms independent), a normal confidence interval
 #' and Wald p-value -- the quantity clinical reports quote. Note (Klein et al., 2007)
 #' that this naive identity-scale inference can have inflated type-I error and poor
 #' coverage when \eqn{S} is close to 0 or 1 or the sample is small; interpret such
@@ -31,18 +31,31 @@ NULL
 #' (otherwise only the per-arm milestone table is produced). For a single arm only
 #' the per-arm milestone survival is shown.
 #'
+#' Arms are taken from the fit's own strata, so the labels and their order match
+#' \code{names(fit$strata)} and the curves drawn by \code{\link{ggsurvplot}()}, and a
+#' transformed right-hand side such as \code{~ (age > 60)} is honoured as written.
+#' (An ungrouped \code{~ 1} fit has no strata and is reported as a single
+#' \code{"All"} arm.) For two arms the difference is the \emph{second} arm minus the first (the first
+#' level is the reference), matching \code{\link{ggrmst_difference}()}; the row is
+#' always labelled with the contrast, so the direction is never left to the reader.
+#' A weighted \code{survfit()} is refused: the confidence-interval convention for
+#' weighted data is ambiguous, so reporting an interval for it would overstate what
+#' the estimate supports.
+#'
 #' @param fit a survfit object (\code{survival::survfit()} or survminer's
 #'   \code{\link{surv_fit}()}).
 #' @param data the data frame used to fit the curves (see \code{\link{ggsurvplot}}).
 #' @param milestone.times numeric vector of the fixed times at which to read
 #'   survival (in the data's time units). Required.
 #' @param conf.int logical; draw the confidence-interval band of the Kaplan-Meier
-#'   curves. Default \code{FALSE} (matching \code{\link{ggsurvplot}()}). The milestone
-#'   confidence level is set by \code{conf.level}.
+#'   curves. Default \code{FALSE} (matching \code{\link{ggsurvplot}()}). The band is
+#'   drawn at the confidence level \code{fit} was built with; \code{conf.level} sets
+#'   the level of the milestone estimates and their difference, not of the band.
 #' @param conf.level confidence level for the milestone survival intervals and the
 #'   between-arm difference. Default 0.95.
 #' @param ref.group for three or more arms, the reference arm the milestone
-#'   differences are taken against (an arm label). Default \code{NULL} reports only
+#'   differences are taken against, given in the fit's own label form (e.g.
+#'   \code{"sex=1"}; the error message lists the valid values). Default \code{NULL} reports only
 #'   the per-arm milestone survival. Ignored for one or two arms.
 #' @param label.milestones logical or \code{NULL}; draw the per-arm \eqn{S(t)}
 #'   value labels on the curves. Default \code{NULL} labels them only when the plot
@@ -57,7 +70,10 @@ NULL
 #'   each milestone, the per-arm \eqn{S(t)} marked, and the milestone survival (and
 #'   between-arm difference) reported in the caption. The full milestone table --
 #'   per-arm \eqn{S(t)}, CI, and any between-arm differences with CI and p-value --
-#'   is attached as \code{attr(x$plot, "milestone.table")}.
+#'   is attached as \code{attr(x$plot, "milestone.table")}. Its \code{group} column
+#'   carries the fit's own strata label -- \code{"All"} for an ungrouped fit, as in
+#'   \code{\link{surv_median}()} -- which is what the caption shows unless
+#'   \code{legend.labs} renames the arms on the plot.
 #'
 #' @references
 #' Klein JP, Logan B, Harhoff M, Andersen PK (2007). Analyzing survival curves at a
@@ -86,16 +102,19 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
   if (missing(milestone.times) || !is.numeric(milestone.times) ||
       !length(milestone.times) || anyNA(milestone.times) || any(milestone.times <= 0))
     stop("`milestone.times` must be a vector of positive numbers.", call. = FALSE)
-  if (!is.numeric(conf.level) || length(conf.level) != 1L ||
+  if (!is.numeric(conf.level) || length(conf.level) != 1L || is.na(conf.level) ||
       conf.level <= 0 || conf.level >= 1)
     stop("`conf.level` must be a single number in (0, 1).", call. = FALSE)
+  # conf.int is the band flag; catch the stale numeric spelling rather than let it
+  # read as TRUE while the milestone interval silently stays at conf.level.
+  if (!is.logical(conf.int) || length(conf.int) != 1L || is.na(conf.int))
+    stop("`conf.int` must be TRUE or FALSE (it draws the confidence band around ",
+         "the curves). Use `conf.level` to set the confidence level of the ",
+         "milestone interval.", call. = FALSE)
   milestone.times <- sort(unique(milestone.times))
 
-  ext <- .km_reorigin_extract(fit, data)
+  ext <- .km_reorigin_extract(fit, data, fn = "ggmilestone")
   glevels <- levels(ext$group)
-  if (any(!nzchar(glevels)))
-    stop("An arm/group label is an empty string; give each group a non-empty ",
-         "label before calling ggmilestone().", call. = FALSE)
   z <- stats::qnorm(1 - (1 - conf.level) / 2)
   ct <- if (!is.null(fit$conf.type)) fit$conf.type else "log"
 
@@ -115,8 +134,11 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
                            row.names = NULL, stringsAsFactors = FALSE)
       if (t <= tmax) {
         sm <- summary(fa, times = t, extend = FALSE)
-        return(data.frame(group = g, time = t, surv = sm$surv, se = sm$std.err,
-                          lower = sm$lower, upper = sm$upper,
+        # A fit stored with conf.type = "none" has no $lower/$upper at all; report
+        # NA limits rather than failing to build the row.
+        or_na <- function(v) if (is.null(v) || !length(v)) NA_real_ else as.numeric(v)
+        return(data.frame(group = g, time = t, surv = sm$surv, se = or_na(sm$std.err),
+                          lower = or_na(sm$lower), upper = or_na(sm$upper),
                           row.names = NULL, stringsAsFactors = FALSE))
       }
       if (isTRUE(s.end == 0)) {   # curve has reached 0: S(t) = 0 for all later t
@@ -141,7 +163,10 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
   # ---- between-arm differences (k = 2 both; k >= 3 vs ref.group) ---------------
   diffs <- NULL
   if (length(glevels) == 2L) {
-    diffs <- list(c(glevels[1], glevels[2]))
+    # Second arm minus the first (the first level is the reference), matching
+    # ggrmst_difference() and survRM2's arm1 - arm0 convention. The row is always
+    # labelled with the contrast, so the direction is never left to the reader.
+    diffs <- list(c(glevels[2], glevels[1]))
   } else if (length(glevels) >= 3L && !is.null(ref.group)) {
     if (!ref.group %in% glevels)
       stop("`ref.group` must be one of the arm labels: ",
@@ -172,6 +197,7 @@ ggmilestone <- function(fit, data = NULL, milestone.times, conf.int = FALSE,
     tab$p.value <- NA_real_
   }
   milestone.table <- if (is.null(diff.tab)) tab else rbind(tab, diff.tab)
+  rownames(milestone.table) <- NULL
 
   # ---- base Kaplan-Meier plot --------------------------------------------------
   dots <- list(...)

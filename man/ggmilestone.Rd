@@ -25,14 +25,16 @@ ggmilestone(
 survival (in the data's time units). Required.}
 
 \item{conf.int}{logical; draw the confidence-interval band of the Kaplan-Meier
-curves. Default \code{FALSE} (matching \code{\link{ggsurvplot}()}). The milestone
-confidence level is set by \code{conf.level}.}
+curves. Default \code{FALSE} (matching \code{\link{ggsurvplot}()}). The band is
+drawn at the confidence level \code{fit} was built with; \code{conf.level} sets
+the level of the milestone estimates and their difference, not of the band.}
 
 \item{conf.level}{confidence level for the milestone survival intervals and the
 between-arm difference. Default 0.95.}
 
 \item{ref.group}{for three or more arms, the reference arm the milestone
-differences are taken against (an arm label). Default \code{NULL} reports only
+differences are taken against, given in the fit's own label form (e.g.
+\code{"sex=1"}; the error message lists the valid values). Default \code{NULL} reports only
 the per-arm milestone survival. Ignored for one or two arms.}
 
 \item{label.milestones}{logical or \code{NULL}; draw the per-arm \eqn{S(t)}
@@ -50,7 +52,10 @@ a \code{ggsurvplot} object: the Kaplan-Meier curves with a dashed line at
   each milestone, the per-arm \eqn{S(t)} marked, and the milestone survival (and
   between-arm difference) reported in the caption. The full milestone table --
   per-arm \eqn{S(t)}, CI, and any between-arm differences with CI and p-value --
-  is attached as \code{attr(x$plot, "milestone.table")}.
+  is attached as \code{attr(x$plot, "milestone.table")}. Its \code{group} column
+  carries the fit's own strata label -- \code{"All"} for an ungrouped fit, as in
+  \code{\link{surv_median}()} -- which is what the caption shows unless
+  \code{legend.labs} renames the arms on the plot.
 }
 \description{
 Annotates Kaplan-Meier curves with \strong{milestone survival}: the survival
@@ -64,8 +69,8 @@ when a single hazard ratio is not enough (e.g. under non-proportional hazards).
 For each arm and milestone the estimate is the Kaplan-Meier \eqn{S(t)} with its
 Greenwood standard error and confidence interval (\code{summary.survfit}; the
 interval uses the same \code{conf.type} as \code{fit}). The between-arm difference
-is on the risk-difference (identity) scale, \eqn{S_A(t) - S_B(t)}, with
-\eqn{se = \sqrt{se_A^2 + se_B^2}} (arms independent), a normal confidence interval
+is on the risk-difference (identity) scale -- the second arm minus the first --
+with \eqn{se = \sqrt{se_A^2 + se_B^2}} (arms independent), a normal confidence interval
 and Wald p-value -- the quantity clinical reports quote. Note (Klein et al., 2007)
 that this naive identity-scale inference can have inflated type-I error and poor
 coverage when \eqn{S} is close to 0 or 1 or the sample is small; interpret such
@@ -80,6 +85,17 @@ The between-arm difference is defined only for two arms; for three or more arms,
 set \code{ref.group} to report each other arm's difference against a reference
 (otherwise only the per-arm milestone table is produced). For a single arm only
 the per-arm milestone survival is shown.
+
+Arms are taken from the fit's own strata, so the labels and their order match
+\code{names(fit$strata)} and the curves drawn by \code{\link{ggsurvplot}()}, and a
+transformed right-hand side such as \code{~ (age > 60)} is honoured as written.
+(An ungrouped \code{~ 1} fit has no strata and is reported as a single
+\code{"All"} arm.) For two arms the difference is the \emph{second} arm minus the first (the first
+level is the reference), matching \code{\link{ggrmst_difference}()}; the row is
+always labelled with the contrast, so the direction is never left to the reader.
+A weighted \code{survfit()} is refused: the confidence-interval convention for
+weighted data is ambiguous, so reporting an interval for it would overstate what
+the estimate supports.
 }
 \examples{
 library(survival)

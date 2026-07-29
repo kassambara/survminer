@@ -37,6 +37,17 @@ NULL
 #' grouping variable reflects a status attained up to \code{L}; for a fixed baseline
 #' covariate there is no immortal time to remove.
 #'
+#' Groups are taken from the fit's own strata, so the labels and their order match
+#' \code{names(fit$strata)}, and a transformed right-hand side such as
+#' \code{~ (age > 60)} is honoured as written (an ungrouped \code{~ 1} fit has no
+#' strata and is treated as a single group). Note that the landmark curves are a
+#' \emph{refit} on the landmark cohort, so a data-dependent grouping term such as
+#' \code{cut(age, 3)} recomputes its breaks on the survivors; bin such a variable
+#' before fitting if the strata must match the original figure exactly.
+#' A weighted \code{survfit()} is
+#' refused, since the landmark cohort would have to be re-fitted and the
+#' confidence-interval convention for weighted data is ambiguous.
+#'
 #' @param fit a survfit object (\code{survival::survfit()} or survminer's
 #'   \code{\link{surv_fit}()}).
 #' @param data the data frame used to fit the curves. Strongly recommended: it is
@@ -45,7 +56,10 @@ NULL
 #' @param landmark.time the landmark time \code{L} (in the data's time units) at
 #'   which the clock is reset. Required.
 #' @param conf.int logical; draw the confidence-interval band of the re-origined
-#'   curves. Default \code{FALSE} (matching \code{\link{ggsurvplot}()}).
+#'   curves. Default \code{FALSE} (matching \code{\link{ggsurvplot}()}). Because the
+#'   curves are re-fitted on the landmark cohort, the band is drawn at
+#'   \code{survfit()}'s default 95\% level rather than the level \code{fit} was
+#'   built with.
 #' @param xlab x-axis label. Default \code{"Time since landmark"} to make the
 #'   re-origining explicit.
 #' @param ... other arguments passed to \code{\link{ggsurvplot}()} (e.g.
@@ -87,6 +101,11 @@ gglandmark <- function(fit, data = NULL, landmark.time, conf.int = FALSE,
   if (missing(landmark.time) || !is.numeric(landmark.time) ||
       length(landmark.time) != 1L || is.na(landmark.time) || landmark.time < 0)
     stop("`landmark.time` must be a single non-negative number.", call. = FALSE)
+  # conf.int is the band flag here, as in every sibling; reject the numeric
+  # spelling rather than let a confidence level read as TRUE.
+  if (!is.logical(conf.int) || length(conf.int) != 1L || is.na(conf.int))
+    stop("`conf.int` must be TRUE or FALSE (it draws the confidence band around ",
+         "the curves), at the confidence level `fit` was built with.", call. = FALSE)
   L <- landmark.time
 
   ext <- .km_reorigin_extract(fit, data)
@@ -111,11 +130,16 @@ gglandmark <- function(fit, data = NULL, landmark.time, conf.int = FALSE,
          call. = FALSE)
 
   d.lm <- data[keep, , drop = FALSE]
-  d.lm[[".landmark_time"]]   <- time[keep] - L
-  d.lm[[".landmark_status"]] <- status[keep]
+  # Re-origined time/status go in columns that cannot clash with a user column of
+  # the same name (backticked in the formula so any generated name stays valid),
+  # mirroring surv_median_followup().
+  uniq <- function(base) { nm <- base; while (nm %in% names(d.lm)) nm <- paste0(nm, "_"); nm }
+  tcol <- uniq(".landmark_time"); scol <- uniq(".landmark_status")
+  d.lm[[tcol]] <- time[keep] - L
+  d.lm[[scol]] <- status[keep]
 
-  form <- stats::reformulate(if (length(ext$rhs)) ext$rhs else "1",
-                             response = "survival::Surv(.landmark_time, .landmark_status)")
+  form <- stats::as.formula(sprintf("survival::Surv(`%s`, `%s`) ~ %s",
+                                    tcol, scol, ext$rhs))
   fit.lm <- surv_fit(form, data = d.lm)
 
   n.risk <- sum(keep)
@@ -150,9 +174,10 @@ gglandmark <- function(fit, data = NULL, landmark.time, conf.int = FALSE,
 # ---- shared internal: raw (time, status, grouping) from a survfit + data -------
 # Mirrors ggrmst's extractor: right-censored Surv only, grouping from the formula
 # RHS, missing rows dropped. Reused by gglandmark() and ggmilestone().
-.km_reorigin_extract <- function(fit, data) {
+.km_reorigin_extract <- function(fit, data, fn = "gglandmark") {
   if (!.is_survfit(fit))
     stop("`fit` must be a survfit object.", call. = FALSE)
+  .stop_if_weighted(fit, fn)
   data <- as.data.frame(.get_data(fit, data))
   f <- stats::formula(fit)
   resp <- eval(f[[2]], envir = data)
@@ -161,12 +186,21 @@ gglandmark <- function(fit, data = NULL, landmark.time, conf.int = FALSE,
     stop("Only right-censored `Surv(time, status)` data are supported.",
          call. = FALSE)
   time <- as.numeric(resp[, 1]); status <- as.numeric(resp[, 2])
-  rhs <- all.vars(f[[3]])
-  if (length(rhs) == 1L && rhs == "1") rhs <- character(0)
-  if (length(rhs))
-    group <- interaction(data[rhs], sep = ", ", drop = TRUE)
-  else
-    group <- factor(rep("All", length(time)))
+  # The right-hand side verbatim (not all.vars(), and not the term labels): a
+  # transformed term such as `~ (age > 60)` must be re-fitted exactly as written.
+  # Term labels drop the parentheses, and reformulate() would paste them with `+`,
+  # so `~ sexf + (age > 60)` would re-parse as `~ (sexf + age) > 60`.
+  # collapse in case deparse returns several lines for a very wide right-hand side
+  rhs <- paste(deparse(f[[3]], width.cutoff = 500L), collapse = "")
+  # Grouping from the fit's own strata convention -- see .strata_group_from_formula().
+  group <- .strata_group_from_formula(f, data)
+  # survfit() stores no strata when the formula collapses to a single group (e.g.
+  # a factor with one used level); the package calls that "All" everywhere else.
+  # Rename the LEVELS only -- replacing the vector would overwrite the NAs that
+  # reproduce survfit()'s na.omit, and the estimates would then be computed on
+  # rows the fit excluded.
+  if (is.null(fit$strata) && nlevels(group) > 0L)
+    levels(group) <- rep("All", nlevels(group))
   ok <- stats::complete.cases(time, status) & !is.na(group)
   list(time = time[ok], status = status[ok], group = droplevels(group[ok]),
        data = data[ok, , drop = FALSE], rhs = rhs, formula = f)

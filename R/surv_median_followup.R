@@ -31,9 +31,12 @@ NULL
 #'   status)} data.
 #' @param data the data frame used to fit the survival curves. If not supplied
 #'   it is extracted from \code{fit}.
-#' @param conf.int the confidence level for the limits. Default \code{NULL} uses
-#'   the confidence level the \code{fit} was built with (95\% by default). The
-#'   fit's confidence-interval type (\code{conf.type}) is honoured as well.
+#' @param conf.level the confidence level for the limits, a single number in
+#'   (0, 1). Default \code{NULL} uses the confidence level the \code{fit} was built
+#'   with (95\% by default). The fit's confidence-interval type (\code{conf.type})
+#'   is honoured as well. Named \code{conf.level} rather than \code{conf.int} so
+#'   that, as everywhere else in survminer, \code{conf.int} means "draw the band"
+#'   and \code{conf.level} means "at what level".
 #' @return A data frame with one row per group and the columns: \itemize{ \item
 #'   strata: group name (\code{"All"} for an ungrouped fit) \item median: median
 #'   follow-up time \item lower: lower confidence limit \item upper: upper
@@ -55,10 +58,16 @@ NULL
 #' fit.null <- surv_fit(Surv(time, status) ~ 1, data = lung)
 #' surv_median_followup(fit.null)
 #' @export
-surv_median_followup <- function(fit, data = NULL, conf.int = NULL) {
+surv_median_followup <- function(fit, data = NULL, conf.level = NULL) {
+
+  if (!is.null(conf.level) &&
+      (!is.numeric(conf.level) || length(conf.level) != 1L || is.na(conf.level) ||
+       conf.level <= 0 || conf.level >= 1))
+    stop("`conf.level` must be a single number in (0, 1).", call. = FALSE)
 
   if (!.is_survfit(fit))
     stop("`fit` must be a survfit object.", call. = FALSE)
+  .stop_if_weighted(fit, "surv_median_followup")
 
   # Extract the data from the fit when not supplied. Quiet by default (complain =
   # FALSE) so a fit-only call matches surv_median()'s silence; .get_data() still
@@ -77,7 +86,7 @@ surv_median_followup <- function(fit, data = NULL, conf.int = NULL) {
   # Confidence limits: honour the original fit's confidence level (unless
   # overridden) and its interval type, so the reported limits are consistent with
   # how the fit was built (e.g. conf.type = "none" -> NA limits).
-  cl <- if (!is.null(conf.int)) conf.int
+  cl <- if (!is.null(conf.level)) conf.level
         else if (!is.null(fit$conf.int)) fit$conf.int
         else 0.95
   ct <- if (!is.null(fit$conf.type)) fit$conf.type else "log"

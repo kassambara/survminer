@@ -9,7 +9,7 @@ ggrmst_difference(
   fit,
   data = NULL,
   tau = NULL,
-  conf.int = 0.95,
+  conf.level = 0.95,
   ref.group = NULL
 )
 
@@ -17,10 +17,11 @@ ggrmst(
   fit,
   data = NULL,
   tau = NULL,
-  conf.int = 0.95,
+  conf.level = 0.95,
   palette = NULL,
   ggtheme = theme_survminer(),
-  ...
+  ...,
+  conf.int = FALSE
 )
 }
 \arguments{
@@ -34,14 +35,23 @@ is extracted from \code{fit}.}
 which all groups' curves are defined (see Details). An out-of-range value is an
 error.}
 
-\item{conf.int}{the confidence level for the intervals. Default 0.95.}
+\item{conf.level}{the confidence level for the RMST intervals, a single number in
+(0, 1). Default 0.95. (\code{ggrmst_difference()} returns a table, so this is
+its only confidence argument.)}
 
 \item{ref.group}{for three or more groups, the reference group the RMST
-differences are taken against (a group label). Default \code{NULL} reports only
+differences are taken against, given in the fit's own label form (e.g.
+\code{"sex=1"}; the error message lists the valid values). Default \code{NULL} reports only
 the per-group RMST (no differences). Ignored for one or two groups.}
 
 \item{palette, ggtheme, ...}{passed to \code{\link{ggsurvplot}()} for the underlying
 curves.}
+
+\item{conf.int}{logical; draw the confidence band around the survival curves,
+as in \code{\link{ggmilestone}()} and \code{\link{gglandmark}()}. Default
+\code{FALSE}. \code{ggrmst()} only. The band is drawn at the confidence level
+\code{fit} was built with; \code{conf.level} sets the level of the RMST
+interval, not of the band.}
 }
 \value{
 \code{ggrmst_difference()} returns a data.frame with one row per group
@@ -83,6 +93,16 @@ estimate is still defined: a group whose last observation is an event places no
 upper limit (its curve is defined to be 0 afterwards), while a group whose last
 observation is censored limits \code{tau} to that time. A \code{tau} beyond that
 admissible range is an error.
+
+Groups are taken from the fit's own strata, so the labels and their order match
+\code{names(fit$strata)} and the curves drawn by \code{\link{ggsurvplot}()}, and a
+transformed right-hand side such as \code{~ (age > 60)} is honoured as written.
+(An ungrouped \code{~ 1} fit has no strata and is reported as a single
+\code{"All"} group. The grouping is rebuilt from \code{data}, so a fit created
+with \code{survfit(..., subset =)} should be passed the same subset of rows.)
+A weighted \code{survfit()} is refused: the confidence-interval convention for
+weighted data is ambiguous, so reporting an interval for it would overstate what
+the estimate supports.
 }
 \section{Functions}{
 \itemize{

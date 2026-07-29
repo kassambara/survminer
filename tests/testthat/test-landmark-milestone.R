@@ -76,9 +76,9 @@ test_that("ggmilestone tabulates per-arm S(t) and the between-arm difference", {
   # difference row = S_A - S_B with additive Greenwood variance
   dr <- tab[grepl(" - ", tab$group) & tab$time == 365, ]
   expect_equal(nrow(dr), 1L)
-  a <- tab[tab$group == "1" & tab$time == 365, ]
-  b <- tab[tab$group == "2" & tab$time == 365, ]
-  expect_equal(dr$surv, a$surv - b$surv)
+  a <- tab[tab$group == "sex=1" & tab$time == 365, ]
+  b <- tab[tab$group == "sex=2" & tab$time == 365, ]
+  expect_equal(dr$surv, b$surv - a$surv)
   expect_equal(dr$se, sqrt(a$se^2 + b$se^2))
   expect_true(dr$p.value > 0 && dr$p.value < 1)
 })
@@ -108,8 +108,8 @@ test_that("ggmilestone needs ref.group for 3+ arms and validates it", {
   p <- ggmilestone(f3, data = d, milestone.times = 365)
   expect_false(any(grepl(" - ", attr(p$plot, "milestone.table")$group)))
   # ref.group -> difference vs the reference
-  pr <- ggmilestone(f3, data = d, milestone.times = 365, ref.group = "0")
-  expect_true(any(grepl(" - 0$", attr(pr$plot, "milestone.table")$group)))
+  pr <- ggmilestone(f3, data = d, milestone.times = 365, ref.group = "g=0")
+  expect_true(any(grepl(" - g=0$", attr(pr$plot, "milestone.table")$group)))
   expect_error(ggmilestone(f3, data = d, milestone.times = 365, ref.group = "z"),
                "ref.group")
 })
@@ -168,15 +168,22 @@ test_that("ggmilestone reports 0 beyond follow-up when the curve has reached 0",
   p <- suppressWarnings(ggmilestone(fit, data = d, milestone.times = 20))
   tab <- attr(p$plot, "milestone.table")
   # allevent's curve reaches 0 -> S(20) = 0 (estimable); censlast -> NA
-  expect_equal(tab$surv[tab$group == "allevent" & tab$time == 20], 0)
-  expect_true(is.na(tab$surv[tab$group == "censlast" & tab$time == 20]))
+  expect_equal(tab$surv[tab$group == "g=allevent" & tab$time == 20], 0)
+  expect_true(is.na(tab$surv[tab$group == "g=censlast" & tab$time == 20]))
 })
 
-test_that("ggmilestone rejects an empty-string arm label", {
+test_that("an empty factor level is labelled like survfit, not refused", {
   d <- survival::lung
   d$arm <- factor(ifelse(seq_len(nrow(d)) <= 100, "", "X"))
   fit <- survival::survfit(survival::Surv(time, status) ~ arm, data = d)
-  expect_error(ggmilestone(fit, data = d, milestone.times = 100), "empty string")
+  p <- ggmilestone(fit, data = d, milestone.times = 100)
+  tab <- attr(p$plot, "milestone.table")
+  # the composed label carries the variable name, so it is never itself empty
+  expect_equal(sort(unique(tab$group[!grepl(" - ", tab$group)])),
+               sort(unname(names(fit$strata))))
+  s <- summary(fit, times = 100)
+  expect_equal(tab$surv[tab$group == "arm="][1],  s$surv[1])
+  expect_equal(tab$surv[tab$group == "arm=X"][1], s$surv[2])
 })
 
 test_that("gglandmark re-origined curve equals an independent manual survfit", {
@@ -198,12 +205,12 @@ test_that("ggmilestone difference equals the independent Greenwood formula", {
   fit <- .fit2()
   tab <- attr(ggmilestone(fit, data = survival::lung,
                           milestone.times = 365)$plot, "milestone.table")
-  a <- tab[tab$group == "1" & tab$time == 365, ]
-  b <- tab[tab$group == "2" & tab$time == 365, ]
+  a <- tab[tab$group == "sex=1" & tab$time == 365, ]
+  b <- tab[tab$group == "sex=2" & tab$time == 365, ]
   dr <- tab[grepl(" - ", tab$group), ]
   # independent recomputation from survival::summary.survfit
   s <- summary(fit, times = 365)
-  d.ref  <- s$surv[1] - s$surv[2]
+  d.ref  <- s$surv[2] - s$surv[1]
   se.ref <- sqrt(s$std.err[1]^2 + s$std.err[2]^2)
   p.ref  <- 2 * stats::pnorm(-abs(d.ref / se.ref))
   expect_equal(dr$surv, d.ref)
@@ -219,4 +226,154 @@ test_that("both functions return a printable ggsurvplot", {
   expect_s3_class(p2, "ggsurvplot")
   expect_s3_class(p1$plot, "ggplot")
   expect_s3_class(p2$plot, "ggplot")
+})
+
+# ---- regression: strata-sourced grouping, weights, conf.type, name clashes ----
+
+test_that("ggmilestone arm labels and values line up with the plotted strata", {
+  d <- survival::lung[!is.na(survival::lung$ph.ecog) &
+                        survival::lung$ph.ecog %in% c(0, 1), ]
+  d$e <- factor(d$ph.ecog)
+  d$s <- factor(d$sex, labels = c("M", "F"))
+  fit <- survival::survfit(survival::Surv(time, status) ~ s + e, data = d)
+  tab <- attr(ggmilestone(fit, data = d, milestone.times = 365)$plot,
+              "milestone.table")
+  per <- tab[!grepl(" - ", tab$group), ]
+  # order AND value must agree with survfit; a positional remap that disagrees
+  # attaches one arm's survival to another arm's label
+  expect_equal(per$group, unname(names(fit$strata)))
+  expect_equal(per$surv, unname(summary(fit, times = 365)$surv))
+})
+
+test_that("a transformed right-hand side groups into its strata", {
+  f <- survival::survfit(survival::Surv(time, status) ~ (age > 60),
+                         data = survival::lung)
+  tab <- attr(ggmilestone(f, data = survival::lung, milestone.times = 365)$plot,
+              "milestone.table")
+  expect_equal(sort(unique(tab$group[!grepl(" - ", tab$group)])),
+               sort(unname(names(f$strata))))
+})
+
+test_that("weighted fits are refused by ggmilestone() and gglandmark()", {
+  d <- survival::lung
+  d$w <- rep(c(1, 6), length.out = nrow(d))
+  fw <- survival::survfit(survival::Surv(time, status) ~ sex, data = d, weights = w)
+  expect_error(ggmilestone(fw, data = d, milestone.times = 365),
+               "does not support a weighted")
+  expect_error(gglandmark(fw, data = d, landmark.time = 200),
+               "does not support a weighted")
+})
+
+test_that("ggmilestone survives a fit stored with conf.type = 'none'", {
+  f <- survival::survfit(survival::Surv(time, status) ~ sex,
+                         data = survival::lung, conf.type = "none")
+  tab <- attr(ggmilestone(f, data = survival::lung, milestone.times = 365)$plot,
+              "milestone.table")
+  per <- tab[!grepl(" - ", tab$group), ]
+  expect_equal(per$surv, unname(summary(f, times = 365)$surv))
+  expect_true(all(is.na(per$lower)))          # no limits were requested
+  expect_true(all(is.na(per$upper)))
+})
+
+test_that("gglandmark does not clobber a user column named .landmark_*", {
+  # the damaging case is a user column that is ALSO the grouping variable:
+  # overwriting it with the re-origined time/status destroys the grouping.
+  d <- survival::lung
+  d$.landmark_status <- factor(ifelse(d$sex == 1, "male", "female"))
+  fit <- survival::survfit(survival::Surv(time, status) ~ .landmark_status, data = d)
+  p <- gglandmark(fit, data = d, landmark.time = 200)
+  info <- attr(p$plot, "landmark")
+  # two strata must survive, with their original labels
+  expect_equal(length(info$fit$strata), 2L)
+  expect_equal(sort(unname(names(info$fit$strata))),
+               sort(c(".landmark_status=female", ".landmark_status=male")))
+})
+
+test_that("surv_median_followup() also refuses a weighted fit", {
+  d <- survival::lung
+  d$w <- rep(c(1, 6), length.out = nrow(d))
+  fw <- survival::survfit(survival::Surv(time, status) ~ sex, data = d, weights = w)
+  expect_error(surv_median_followup(fw, data = d), "does not support a weighted")
+})
+
+test_that("ggmilestone() rejects a missing conf.level with a clear message", {
+  fit <- survival::survfit(survival::Surv(time, status) ~ sex, data = survival::lung)
+  expect_error(ggmilestone(fit, data = survival::lung, milestone.times = 365,
+                           conf.level = NA_real_),
+               "single number in \\(0, 1\\)")
+})
+
+test_that("gglandmark() re-fits a multi-term transformed RHS with the right precedence", {
+  # reformulate() would paste the term labels as `sexf + age > 60`, which R parses
+  # as `(sexf + age) > 60` -- the right-hand side must be kept verbatim.
+  d <- survival::lung
+  d$sexf <- factor(d$sex, labels = c("M", "F"))
+  fit <- survival::survfit(survival::Surv(time, status) ~ sexf + (age > 60), data = d)
+  expect_equal(length(fit$strata), 4L)
+
+  p <- gglandmark(fit, data = d, landmark.time = 200)
+  lm.fit <- attr(p$plot, "landmark")$fit
+  expect_equal(length(lm.fit$strata), 4L)
+  expect_equal(sort(unname(names(lm.fit$strata))), sort(unname(names(fit$strata))))
+})
+
+test_that("ggmilestone() rejects a numeric conf.int instead of silently banding", {
+  fit <- survival::survfit(survival::Surv(time, status) ~ sex, data = survival::lung)
+  expect_error(ggmilestone(fit, data = survival::lung, milestone.times = 365,
+                           conf.int = 0.90), "must be TRUE or FALSE")
+})
+
+test_that("a fit that collapses to one stratum is labelled All, like surv_median()", {
+  # survfit() stores no $strata for a factor with a single used level; the table,
+  # the caption and surv_median() must not disagree about what that group is called
+  d <- survival::lung
+  d$sexf <- factor(d$sex, labels = c("M", "F"))
+  d <- d[d$sexf == "M", ]
+  f <- survival::survfit(survival::Surv(time, status) ~ sexf, data = d)
+  expect_null(f$strata)
+
+  tab <- attr(ggmilestone(f, data = d, milestone.times = 365)$plot, "milestone.table")
+  expect_equal(unique(tab$group), "All")
+  expect_equal(surv_median(f)$strata, "All")
+  expect_equal(ggrmst_difference(f, data = d)$group, "All")
+})
+
+test_that("gglandmark() rejects a numeric conf.int, like its siblings", {
+  fit <- survival::survfit(survival::Surv(time, status) ~ sex, data = survival::lung)
+  expect_error(gglandmark(fit, data = survival::lung, landmark.time = 200,
+                          conf.int = 0.9), "must be TRUE or FALSE")
+})
+
+test_that("the ggmilestone caption follows legend.labs and the table stays tidy", {
+  fit <- survival::survfit(survival::Surv(time, status) ~ sex, data = survival::lung)
+  p <- ggmilestone(fit, data = survival::lung, milestone.times = 365,
+                   legend.labs = c("Male", "Female"))
+  # the caption must name the arms the legend shows, not the raw strata labels
+  expect_match(p$plot$labels$caption, "Female", fixed = TRUE)
+  expect_false(grepl("sex=2", p$plot$labels$caption, fixed = TRUE))
+  # the attached table keeps the fit's own labels, with clean row names
+  tab <- attr(p$plot, "milestone.table")
+  expect_true(any(grepl("sex=", tab$group, fixed = TRUE)))
+  expect_equal(rownames(tab), as.character(seq_len(nrow(tab))))
+})
+
+test_that("the documented band level is true for each function", {
+  f80 <- survival::survfit(survival::Surv(time, status) ~ sex, data = survival::lung,
+                           conf.int = 0.80, conf.type = "plain")
+  f95 <- survival::survfit(survival::Surv(time, status) ~ sex, data = survival::lung)
+  band <- function(p) {
+    g <- if (inherits(p, "ggsurvplot")) p$plot else p
+    d <- ggplot2::ggplot_build(g)$data
+    i <- which(vapply(g$layers, function(l) inherits(l$geom, "GeomConfint"),
+                      logical(1)))[1]
+    d[[i]]$ymin[2:4]
+  }
+  # ggmilestone plots the fit itself, so its band follows the fit's level
+  expect_false(isTRUE(all.equal(
+    band(ggmilestone(f95, data = survival::lung, milestone.times = 365, conf.int = TRUE)),
+    band(ggmilestone(f80, data = survival::lung, milestone.times = 365, conf.int = TRUE)))))
+  # gglandmark re-fits on the landmark cohort, so the band is survfit's default
+  expect_equal(
+    band(gglandmark(f95, data = survival::lung, landmark.time = 200, conf.int = TRUE)),
+    band(gglandmark(f80, data = survival::lung, landmark.time = 200, conf.int = TRUE)))
 })
