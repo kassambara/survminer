@@ -336,6 +336,59 @@ GeomConfint_old <- ggplot2::ggproto('GeomConfint_old', ggplot2::GeomRibbon,
   tl
 }
 
+# Per-subject grouping factor whose LEVELS reproduce names(fit$strata) exactly, in
+# survfit's own order.
+#
+# The effect-measure functions (ggrmst/ggmilestone/gglandmark) used to rebuild the
+# grouping with interaction(data[all.vars(rhs)]), which is wrong twice over:
+#   * interaction() varies the FIRST factor fastest while survfit varies the LAST
+#     fastest, so for a multi-variable right-hand side the levels came out in a
+#     different ORDER than the plotted strata -- and the positional label remap
+#     then attached each arm's statistics to the wrong curve;
+#   * all.vars() discards the expression, so `~ (age > 60)` grouped by `age` and
+#     produced one "group" per distinct age instead of two.
+# Building the factor the way survfit does (survival::strata() over the model
+# frame's term columns) makes the labels and the ordering agree by construction.
+.strata_group_from_formula <- function(f, data){
+  tt <- stats::terms(f)
+  tl <- attr(tt, "term.labels")
+  # survfit() strips a cluster() term before grouping, so it is not a stratum.
+  # Matched on the term label because survfit() keeps whichever spelling the user
+  # wrote, including the namespace-qualified survival::cluster().
+  tl <- tl[!grepl("^(survival::)?cluster\\(", tl)]
+  if(length(tl) == 0)
+    return(factor(rep("All", nrow(data))))
+  # delete.response(): the model frame must not re-evaluate the Surv() response.
+  # model.frame() evaluates it in the formula's own environment, which for a fit
+  # saved and reloaded (or built before survival was detached) can no longer
+  # resolve Surv -- the grouping does not need the response anyway.
+  mf <- stats::model.frame(stats::delete.response(tt), data = data,
+                           na.action = stats::na.pass)
+  # Pass the term columns as a single data frame, exactly as survfit.formula()
+  # does (strata(mf[ll])). Splatting them as named arguments instead would let a
+  # grouping variable called `sep`, `shortlabel` or `na.group` collide with
+  # strata()'s own formals and error.
+  droplevels(survival::strata(mf[tl]))
+}
+
+# Refuse a weighted survfit in the effect-measure functions.
+#
+# These estimators read the risk/event counts off the curve, so a weighted fit
+# would silently mix a weighted point estimate with a variance whose convention
+# (case weights vs sampling/IPTW weights) is not determined by the fit object.
+# Rather than annotate a number we cannot stand behind, we refuse; supporting
+# weights is a purely additive change whenever the convention is settled.
+.stop_if_weighted <- function(fit, fn){
+  if(!is.null(fit$call$weights))
+    stop(fn, "() does not support a weighted survfit(): the confidence interval ",
+         "convention for weighted data (case weights vs sampling/IPTW weights) is ",
+         "ambiguous, and reporting an unweighted estimate next to a weighted curve ",
+         "would be misleading. ggsurvplot() still draws the weighted curves; refit ",
+         "without `weights` to use ", fn, "().",
+         call. = FALSE)
+  invisible(NULL)
+}
+
 # Escape regex metacharacters so a (possibly non-syntactic) variable name can be
 # used literally inside a pattern.
 .escape_regex <- function(x){

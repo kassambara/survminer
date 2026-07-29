@@ -22,14 +22,27 @@
   (guarantee-time) bias when groups are defined by a post-baseline status. A subject
   whose event falls exactly on `L` is excluded so the re-origined curve correctly
   starts at S = 1, and any requested log-rank p-value or risk table is computed on
-  the landmark cohort.
+  the landmark cohort. The landmark fit keeps the grouping term as written, so a
+  transformed right-hand side such as `~ (age > 60)` gives its two strata, and the
+  re-origined time and status are stored in columns that cannot collide with a
+  column of the same name in your data.
 
 - New `ggmilestone()` annotates milestone (fixed-time) survival: `S(t)` at one or
   more clinical timepoints with its confidence interval and, for a two-arm
   comparison, the between-arm difference with confidence interval and p-value
   (three or more arms via `ref.group`). A milestone beyond an arm's follow-up is
   returned as `NA` with a warning rather than silently dropped, and the full
-  milestone table is attached as `attr(x$plot, "milestone.table")`.
+  milestone table is attached as `attr(x$plot, "milestone.table")`. For two arms the
+  difference is the second arm minus the first, matching `ggrmst_difference()`, and
+  every difference row is labelled with its contrast. Arms are read from the fit's
+  own strata, so the labels and their order match `names(fit$strata)` and the plotted
+  curves.
+
+- `ggrmst()`, `ggrmst_difference()`, `ggmilestone()`, `gglandmark()` and
+  `surv_median_followup()` refuse a weighted `survfit()` with a clear message. These
+  summaries read the risk and event counts off the curve, and the confidence-interval
+  convention for weighted data (case weights vs sampling weights) is not determined by
+  the fit, so an interval reported for one could not be relied on.
 
 - New `surv_adtte()` prepares a CDISC ADaM time-to-event dataset (ADTTE) for
   analysis. ADTTE codes the censoring flag `CNSR` as 0 = event and >= 1 = censored
@@ -107,7 +120,8 @@
   reverse Kaplan-Meier method (Schemper & Smith, 1996) -- the roles of the event and
   censoring indicators are swapped and the median of the resulting curve is reported,
   per group. This is the follow-up counterpart of `surv_median()` (median survival),
-  a number routinely reported in clinical publications.
+  a number routinely reported in clinical publications. The confidence level is set
+  by `conf.level`, defaulting to the level the fit was built with.
 - New `ggrmst()` and `ggrmst_difference()` for restricted mean survival time (RMST) --
   the area under the Kaplan-Meier curve up to a truncation time `tau`, an absolute
   measure (in time units) that stays interpretable under non-proportional hazards.
@@ -117,9 +131,14 @@
   interval and p-value;
   for three or more groups the area under each curve is shaded, per panel.
   `ggrmst_difference()` returns a tidy table of per-group RMST (with SE and CI) and the
-  RMST difference. The estimate is computed internally from the Kaplan-Meier curve (no
-  new run-time dependency; matches `survRM2::rmst2()`), and `tau` defaults to the
-  largest time at which every group's curve is defined. See Royston & Parmar (2013).
+  RMST difference. The estimate is computed internally from the Kaplan-Meier curve and
+  matches `survRM2::rmst2()`; `tau` defaults to the largest time at which every group's
+  curve is defined. See Royston & Parmar (2013).
+  The confidence level is set by `conf.level`, as in `ggmilestone()`; `ggrmst()`
+  additionally takes `conf.int` with its package-wide meaning, drawing the
+  confidence band around the curves. Groups are read from the fit's own strata, so
+  the labels and their order match `names(fit$strata)` and the plotted curves, and a
+  transformed right-hand side such as `~ (age > 60)` is honoured as written.
 - `ggsurvplot()` gains an `output` argument. The default `output = "classic"` returns
   the usual compound `ggsurvplot` object (unchanged). `output = "ggplot"` instead
   returns a single survival-curve `ggplot` -- one object that composes normally with

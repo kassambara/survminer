@@ -103,9 +103,11 @@ ggmilestone(fit, data = lung, milestone.times = c(180, 360, 540),
 
 Each dashed line is a milestone; the caption gives, per timepoint, the survival
 in each arm and their difference with a 95% confidence interval and p-value. The
-difference is reported as Male − Female, so the negative values mean women do
-better at every timepoint -- consistent with the positive Female − Male RMST
-above. The full table is also attached to the plot:
+difference is the second arm minus the first -- Female − Male here -- so the
+positive values mean women do better at every timepoint, in the same direction as
+the positive Female − Male RMST above. Every difference row is labelled with its
+contrast, so the direction never has to be inferred. The full table is also
+attached to the plot:
 
 ```{r milestone-table}
 p <- ggmilestone(fit, data = lung, milestone.times = c(180, 360, 540))

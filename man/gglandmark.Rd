@@ -25,7 +25,10 @@ for a fit created in the global environment (see \code{\link{ggsurvplot}}).}
 which the clock is reset. Required.}
 
 \item{conf.int}{logical; draw the confidence-interval band of the re-origined
-curves. Default \code{FALSE} (matching \code{\link{ggsurvplot}()}).}
+curves. Default \code{FALSE} (matching \code{\link{ggsurvplot}()}). Because the
+curves are re-fitted on the landmark cohort, the band is drawn at
+\code{survfit()}'s default 95\% level rather than the level \code{fit} was
+built with.}
 
 \item{xlab}{x-axis label. Default \code{"Time since landmark"} to make the
 re-origining explicit.}
@@ -75,6 +78,17 @@ choice of \code{L}; reporting a sensitivity analysis over several landmarks is
 good practice (Dafni, 2011). The immortal-time-bias correction applies when the
 grouping variable reflects a status attained up to \code{L}; for a fixed baseline
 covariate there is no immortal time to remove.
+
+Groups are taken from the fit's own strata, so the labels and their order match
+\code{names(fit$strata)}, and a transformed right-hand side such as
+\code{~ (age > 60)} is honoured as written (an ungrouped \code{~ 1} fit has no
+strata and is treated as a single group). Note that the landmark curves are a
+\emph{refit} on the landmark cohort, so a data-dependent grouping term such as
+\code{cut(age, 3)} recomputes its breaks on the survivors; bin such a variable
+before fitting if the strata must match the original figure exactly.
+A weighted \code{survfit()} is
+refused, since the landmark cohort would have to be re-fitted and the
+confidence-interval convention for weighted data is ambiguous.
 }
 \examples{
 library(survival)

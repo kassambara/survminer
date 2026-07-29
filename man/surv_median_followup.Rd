@@ -4,7 +4,7 @@
 \alias{surv_median_followup}
 \title{Median Follow-Up Time (Reverse Kaplan-Meier)}
 \usage{
-surv_median_followup(fit, data = NULL, conf.int = NULL)
+surv_median_followup(fit, data = NULL, conf.level = NULL)
 }
 \arguments{
 \item{fit}{a survfit object (\code{survival::survfit()} or survminer's
@@ -14,9 +14,12 @@ status)} data.}
 \item{data}{the data frame used to fit the survival curves. If not supplied
 it is extracted from \code{fit}.}
 
-\item{conf.int}{the confidence level for the limits. Default \code{NULL} uses
-the confidence level the \code{fit} was built with (95\% by default). The
-fit's confidence-interval type (\code{conf.type}) is honoured as well.}
+\item{conf.level}{the confidence level for the limits, a single number in
+(0, 1). Default \code{NULL} uses the confidence level the \code{fit} was built
+with (95\% by default). The fit's confidence-interval type (\code{conf.type})
+is honoured as well. Named \code{conf.level} rather than \code{conf.int} so
+that, as everywhere else in survminer, \code{conf.int} means "draw the band"
+and \code{conf.level} means "at what level".}
 }
 \value{
 A data frame with one row per group and the columns: \itemize{ \item
