@@ -199,7 +199,8 @@ ggforest <- function(model, data = NULL,
     # would quietly absorb its neighbours' rows.
     # The rows-are-its-own test is skipped for an interaction, whose coefficient
     # ("grpb:grp2y") never starts with the term label ("grp:grp2").
-    ok <- !is.null(idx) && length(idx) && all(idx <= nrow(coef))
+    in.range <- !is.null(idx) && length(idx) && all(idx <= nrow(coef))
+    ok <- in.range
     if (ok && !grepl(":", var, fixed = TRUE))
       ok <- all(startsWith(gsub("`", "", coef$term[idx]), var))
     if (ok) return(idx)
@@ -209,7 +210,11 @@ ggforest <- function(model, data = NULL,
     # longer one's coefficients, which would draw that coefficient twice (#689).
     cterm <- gsub("`", "", coef$term)
     hit <- startsWith(cterm, var)
-    if (!any(hit)) return(NULL)
+    # No name match at all means the term simply is not named after its
+    # coefficients -- ridge(age, wt.loss, theta = 1) is summarised as "ridge(age)"
+    # and "ridge(wt.loss)" -- never that it was collapsed, since a collapsed term
+    # always matches its own rows. Keep its indices rather than dropping it.
+    if (!any(hit)) return(if (in.range) idx else NULL)
     # one-directional: this stops a shorter term absorbing a longer term's
     # coefficients, which is the shape #689 took. The reverse (a longer term name
     # matching a shorter factor's level coefficient) needs contrived naming and is

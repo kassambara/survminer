@@ -240,3 +240,22 @@ test_that("a pspline() term is re-keyed even when its indices fit inside the tab
   expect_equal(sum(grepl("^\\(N=", L)), 12L)   # 2 pspline rows + 10 covariates
   for (z in paste0("z", 1:10)) expect_equal(sum(L == z), 1L, info = z)
 })
+
+test_that("a term not named after its coefficients keeps them", {
+  # ridge(age, wt.loss, theta = 1) is summarised as "ridge(age)" / "ridge(wt.loss)",
+  # so the term label matches neither. Inside a frailty() model -- where the summary
+  # and the coefficient vector already disagree -- that must not be read as the term
+  # having been collapsed: matching zero names means "not named after its
+  # coefficients", and dropping the term lost both hazard ratios silently.
+  d <- na.omit(survival::lung[, c("time", "status", "age", "sex", "wt.loss", "inst")])
+  d$sexf <- factor(d$sex, labels = c("M", "F"))
+  m <- survival::coxph(survival::Surv(time, status) ~
+                         ridge(age, wt.loss, theta = 1) + frailty(inst) + sexf,
+                       data = d)
+  L <- .forest_labels(m, d)
+  ci <- summary(m)$conf.int
+  for (r in rownames(ci))
+    expect_true(any(grepl(sprintf("%.2f", ci[r, "exp(coef)"]), L, fixed = TRUE)),
+                info = r)
+  expect_equal(sum(grepl("^\\(N=", L)), 5L)
+})
