@@ -165,17 +165,41 @@ ggforest <- function(model, data = NULL,
   # contr.helmert/contr.sum/contr.poly, for which a per-level reference row is not
   # well defined) or the contrast matrix cannot be reconciled with the fitted
   # coefficients.
+  # Coefficient rows belonging to a model term.
+  #
+  # model$assign indexes the design columns of coef(model), and broom::tidy()
+  # normally returns one row per design column, so the two line up. A penalised
+  # term -- pspline(), frailty() -- is collapsed by tidy() into fewer rows than it
+  # has design columns, so those indices run off the end of `coef`: the term picks
+  # up NA rows and every term after it is mis-keyed. A pspline model therefore drew
+  # a block of blank "reference" rows and lost the fitted level of every later
+  # factor. When the two are not aligned, match the coefficient names instead --
+  # with startsWith() rather than a regex, both so a name carrying metacharacters
+  # such as "pspline(age)" is matched as written, and because the prefix collision
+  # of #689 came from the regex quantifier in "^var*." -- "add17TRUE" does not
+  # start with "add11". Aligned models -- every model without a penalised term --
+  # keep the model$assign path exactly as before.
+  .assign.aligned <- nrow(coef) == length(stats::coef(model))
+  .assign.names <- gsub("`", "", names(model$assign))
+  .coef.rows <- function(var) {
+    if (.assign.aligned) {
+      idx <- model$assign[[var]]
+      if (is.null(idx)) {
+        # A non-syntactic name (e.g. "risk grp") is stored backtick-quoted in
+        # names(model$assign) but bare in dataClasses / model$contrasts, so the
+        # direct [[var]] lookup misses it; match on the stripped names instead.
+        pos <- which(.assign.names == var)
+        if (length(pos) == 1L) idx <- model$assign[[pos]]
+      }
+      return(idx)
+    }
+    hit <- which(startsWith(gsub("`", "", coef$term), var))
+    if (length(hit)) hit else NULL
+  }
+
   .factor_level_keys <- function(var, levs) {
     fallback <- paste0(var, levs)
-    idx <- model$assign[[var]]
-    if (is.null(idx)) {
-      # A non-syntactic factor name (e.g. "risk grp") is stored backtick-quoted in
-      # names(model$assign) but bare in dataClasses / model$contrasts, so the direct
-      # [[var]] lookup misses it. Match on the backtick-stripped names so such a
-      # factor is routed too, instead of dropping to the (mislabelling) fallback.
-      pos <- which(gsub("`", "", names(model$assign)) == var)
-      if (length(pos) == 1L) idx <- model$assign[[pos]]
-    }
+    idx <- .coef.rows(var)
     if (is.null(idx)) return(fallback)
     # coef$term rownames are backtick-stripped below; strip here too so keys match
     cn <- gsub("`", "", coef$term[idx])         # coef names, in contrast-col order
@@ -226,7 +250,7 @@ ggforest <- function(model, data = NULL,
       # "^var*." treated trailing digits of the name as a regex quantifier, so
       # e.g. term "add11" matched coefficient "add17TRUE" and vice-versa,
       # producing duplicated/wrong rows for prefix-colliding names (#689).
-      idx <- model$assign[[var]]
+      idx <- .coef.rows(var)
       if (is.null(idx)) idx <- which(startsWith(coef$term, var)) # literal fallback
       vars = coef$term[idx]
       # key = the coefficient name itself (level is ""), matching the old
@@ -245,7 +269,7 @@ ggforest <- function(model, data = NULL,
   .inter.terms <- grep(":", names(model$assign), value = TRUE, fixed = TRUE)
   if (length(.inter.terms) > 0) {
     allTerms <- c(allTerms, lapply(.inter.terms, function(term){
-      idx <- model$assign[[term]]
+      idx <- .coef.rows(term)
       vars <- coef$term[idx]
       data.frame(var = vars, Var1 = "", Freq = nrow(data), pos = seq_along(vars),
                  key = vars)

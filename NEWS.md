@@ -4,6 +4,12 @@
 
 - `ggsurvplot()` now accepts `plotmath` expressions in `legend.labs` (e.g. `legend.labs = c(expression(beta[1]), expression(x^2))`), rendering superscripts, subscripts and Greek letters in the legend and the number-at-risk table while leaving the palette unchanged (#350). A plain character `legend.labs` behaves exactly as before.
 
+- `ggforest()` draws a Cox model containing a penalised term -- `pspline()` or
+  `frailty()` -- correctly again. Such a term has more model coefficients than the
+  summary has rows, which left the plot with a block of blank "reference" rows and
+  dropped the fitted level of every variable after it, so a factor could show all
+  of its levels as the reference and its hazard ratio under a row of its own.
+
 - `ggcoxnph()`, `ggforest_models()` and `ggforest_subgroup()` name their
   confidence-level argument `conf.level`, and reject a value outside (0, 1).
   Across the package `conf.int` now consistently means "draw the confidence band"

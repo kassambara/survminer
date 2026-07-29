@@ -1,3 +1,12 @@
+.forest_labels <- function(model, data) {
+  p <- ggforest(model, data = data)
+  gt <- grid::grid.force(ggplot2::ggplotGrob(p)); L <- character()
+  w <- function(g) { if (inherits(g, "gTree") && !is.null(g$children))
+    for (n in names(g$children)) w(g$children[[n]])
+    if (!is.null(g$label)) L <<- c(L, as.character(g$label)) }
+  w(gt); L
+}
+
 context("ggforest draws one row per coefficient for multi-coefficient spline terms (#411)")
 
 # #411: with spline terms a coxph produces several coefficients per term
@@ -96,4 +105,90 @@ test_that("no-regression: a plain numeric+factor model still draws one row per l
   walk(gt)
   expect_true(any(grepl("age", seen)))
   expect_true(any(grepl("sex", seen)))
+})
+
+test_that("a pspline() term does not mis-key the terms after it", {
+  # model$assign indexes design columns (12 for pspline(age)) while broom::tidy()
+  # collapses the term to 2 rows, so the old mapping ran off the end of the
+  # coefficient table: pspline picked up NA rows and `sex` lost its fitted level.
+  d <- na.omit(survival::lung[, c("time", "status", "age", "sex")])
+  d$sex <- factor(d$sex, labels = c("M", "F"))
+  m <- survival::coxph(survival::Surv(time, status) ~ pspline(age) + sex, data = d)
+  expect_gt(length(stats::coef(m)), nrow(broom::tidy(m)))   # the mismatch itself
+
+  labs <- function(p) {
+    gt <- grid::grid.force(ggplot2::ggplotGrob(p)); L <- character()
+    w <- function(g) { if (inherits(g, "gTree") && !is.null(g$children))
+      for (n in names(g$children)) w(g$children[[n]])
+      if (!is.null(g$label)) L <<- c(L, as.character(g$label)) }
+    w(gt); L
+  }
+  L <- labs(ggforest(m, data = d))
+
+  # exactly two reference rows: pspline's nonlin, and sex's baseline level
+  expect_equal(sum(L == "reference"), 2L)
+  # the fitted level keeps its hazard ratio, and no stray "sexF" variable row
+  ref <- summary(m)$conf.int["sexF", ]
+  expect_true(any(grepl(sprintf("%.1f", ref[["exp(coef)"]]), L, fixed = TRUE)))
+  expect_false("sexF" %in% L)
+  # both levels of sex are drawn, once each
+  expect_equal(sum(L == "M"), 1L)
+  expect_equal(sum(L == "F"), 1L)
+})
+
+test_that("a frailty() term is mapped the same way", {
+  # frailty() mismatches in the other direction -- tidy() adds a row the
+  # coefficient vector does not have -- so the alignment test must catch both.
+  d <- na.omit(survival::lung[, c("time", "status", "age", "inst", "sex")])
+  d$sex <- factor(d$sex, labels = c("M", "F"))
+  m <- survival::coxph(survival::Surv(time, status) ~ frailty(inst) + sex, data = d)
+  expect_true(nrow(broom::tidy(m)) != length(stats::coef(m)))
+
+  labs <- function(p) {
+    gt <- grid::grid.force(ggplot2::ggplotGrob(p)); L <- character()
+    w <- function(g) { if (inherits(g, "gTree") && !is.null(g$children))
+      for (n in names(g$children)) w(g$children[[n]])
+      if (!is.null(g$label)) L <<- c(L, as.character(g$label)) }
+    w(gt); L
+  }
+  L <- labs(ggforest(m, data = d))
+  # sex still gets both levels and keeps its fitted hazard ratio
+  expect_equal(sum(L == "M"), 1L)
+  expect_equal(sum(L == "F"), 1L)
+  ref <- summary(m)$conf.int["sexF", ]
+  expect_true(any(grepl(sprintf("%.1f", ref[["exp(coef)"]]), L, fixed = TRUE)))
+})
+
+test_that("name matching on the penalised path cannot claim a longer term's coefficients", {
+  # With a penalised term the coefficient rows are matched by name, so a variable
+  # whose name is a prefix of another ("flag" vs "flag2") must not absorb the
+  # other's coefficients -- the collision that made "add11" match "add17TRUE"
+  # (#689). Logical variables are used because they are routed by coefficient name
+  # rather than by contrast matrix, so a wrong match is not caught downstream.
+  d <- na.omit(survival::lung[, c("time", "status", "age", "sex", "wt.loss")])
+  d$flag  <- d$age > 60
+  d$flag2 <- d$wt.loss > 0
+  d$grp  <- factor(ifelse(d$sex == 1, "a", "b"))
+  d$grp2 <- factor(ifelse(d$wt.loss > 0, "x", "y"))
+  ml <- survival::coxph(survival::Surv(time, status) ~ pspline(age) + flag + flag2,
+                        data = d)
+  Ll <- .forest_labels(ml, d)
+  expect_equal(sum(Ll == "flagTRUE"), 1L)
+  expect_equal(sum(Ll == "flag2TRUE"), 1L)
+
+  m <- survival::coxph(survival::Surv(time, status) ~ pspline(age) + grp + grp2,
+                       data = d)
+  expect_true(nrow(broom::tidy(m)) != length(stats::coef(m)))   # penalised path
+  expect_true(any(startsWith(broom::tidy(m)$term, "grp")))      # the collision
+
+  L <- .forest_labels(m, d)
+  # each factor keeps exactly its own two levels, drawn once each
+  for (lv in c("a", "b", "x", "y")) expect_equal(sum(L == lv), 1L, info = lv)
+  # one reference per factor plus pspline's nonlin row
+  expect_equal(sum(L == "reference"), 3L)
+  # and each fitted level keeps its own hazard ratio
+  ci <- summary(m)$conf.int
+  for (nm in c("grpb", "grp2y"))
+    expect_true(any(grepl(sprintf("%.2f", ci[nm, "exp(coef)"]), L, fixed = TRUE)),
+                info = nm)
 })
