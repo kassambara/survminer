@@ -100,6 +100,9 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
                               xlab = NULL, noDigits = 2,
                               ggtheme = theme_survminer()) {
 
+  if (!is.numeric(conf.level) || length(conf.level) != 1L || is.na(conf.level) ||
+      conf.level <= 0 || conf.level >= 1)
+    stop("`conf.level` must be a single number in (0, 1).", call. = FALSE)
   tab <- .subgroup_forest_table(model, data, treatment, subgroups,
                                 conf.level, show.overall)
   if (nrow(tab[tab$type != "header", , drop = FALSE]) == 0L)
@@ -193,7 +196,8 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
   est$hrci <- .fmt_hrci(est, noDigits)
   hrci.panel <- ggplot2::ggplot(est, ggplot2::aes(x = 1, y = y)) +
     ggplot2::geom_text(ggplot2::aes(label = hrci), hjust = 1, size = 3.3) +
-    ggplot2::annotate("text", x = 1, y = head.y, label = "HR (95% CI)",
+    ggplot2::annotate("text", x = 1, y = head.y,
+                    label = sprintf("HR (%g%% CI)", conf.level * 100),
                       hjust = 1, fontface = "bold", size = 3.15) +
     ggplot2::scale_x_continuous(limits = c(0, 1),
                                 expand = ggplot2::expansion(mult = c(0.04, 0.02))) + void

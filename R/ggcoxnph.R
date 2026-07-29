@@ -62,7 +62,8 @@ NULL
 #'  vector).
 #'@param ggtheme a ggplot2 theme. Default \code{\link{theme_survminer}()}.
 #'@param title an overall title used when the panel is printed.
-#'@param ... additional arguments (currently unused).
+#'@param ... additional arguments (currently unused). Passing `conf.int` here
+#'  is an error: use `conf.level`.
 #'
 #'@return an object of class \code{c("ggcoxnph", "ggsurv", "list")}: a named list
 #'  of the drawn ggplots (one per surviving panel). Printing it arranges the
@@ -114,7 +115,13 @@ ggcoxnph <- function(fit, variable = NULL, data = NULL,
     stop("`conf.level` must be a single number in (0, 1).", call. = FALSE)
   # `conf.int` means "draw the confidence band" throughout survminer; it is not a
   # ggcoxnph() argument, and `...` would otherwise swallow the older spelling.
-  if ("conf.int" %in% names(list(...)))
+  # Catch abbreviations too: `conf.i` used to partial-match the old `conf.int`,
+  # but it is not a prefix of `conf.level`, so it would otherwise fall into `...`
+  # and be ignored. ...names() avoids forcing the dots promises.
+  .dots <- if (getRversion() >= "4.1.0") ...names() else names(list(...))
+  if (is.null(.dots)) .dots <- character(0)          # no dots, or none named
+  .dots <- .dots[nzchar(.dots)]
+  if (length(.dots) && any(startsWith("conf.int", .dots)))
     stop("`conf.int` is not a ggcoxnph() argument. Use `conf.level` to set the ",
          "confidence level of the pointwise bands.", call. = FALSE)
   z <- stats::qnorm(1 - (1 - conf.level) / 2)

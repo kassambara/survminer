@@ -157,3 +157,30 @@ test_that("non-coxph input and unknown variables are refused", {
   expect_error(ggforest_subgroup(fit, data = d, treatment = "rx", subgroups = "nope"),
                "Not found")
 })
+
+test_that("conf.level is validated and the CI column header tracks it", {
+  d <- survival::colon[survival::colon$etype == 2 &
+                         survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  d$rx  <- droplevels(d$rx)
+  d$sex <- factor(d$sex, labels = c("F", "M"))
+  fit <- survival::coxph(survival::Surv(time, status) ~ rx, data = d)
+
+  expect_error(ggforest_subgroup(fit, d, "rx", "sex", conf.level = TRUE),
+               "single number in \\(0, 1\\)")
+  expect_error(ggforest_subgroup(fit, d, "rx", "sex", conf.level = 42),
+               "single number in \\(0, 1\\)")
+
+  # the header must state the level actually used, not a hardcoded 95%. The plot
+  # is an assembled multi-panel object, so walk the rendered grob tree for the
+  # text labels (same technique as the ggforest_models() header test).
+  labs <- function(p) {
+    gt <- grid::grid.force(ggplot2::ggplotGrob(p)); L <- character()
+    w <- function(g) { if (inherits(g, "gTree") && !is.null(g$children))
+      for (n in names(g$children)) w(g$children[[n]])
+      if (!is.null(g$label)) L <<- c(L, as.character(g$label)) }
+    w(gt); L
+  }
+  L <- labs(ggforest_subgroup(fit, d, "rx", c(Sex = "sex"), conf.level = 0.80))
+  expect_true(any(grepl("HR (80% CI)", L, fixed = TRUE)))
+  expect_false(any(grepl("HR (95% CI)", L, fixed = TRUE)))
+})

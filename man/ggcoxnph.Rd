@@ -67,7 +67,8 @@ vector).}
 
 \item{title}{an overall title used when the panel is printed.}
 
-\item{...}{additional arguments (currently unused).}
+\item{...}{additional arguments (currently unused). Passing `conf.int` here
+is an error: use `conf.level`.}
 
 \item{x}{a \code{ggcoxnph} object.}
 

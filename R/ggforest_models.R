@@ -77,6 +77,9 @@ ggforest_models <- function(models, term, conf.level = 0.95, model.names = NULL,
     stop("Every element of `models` must be a coxph model; element(s) ",
          paste(bad, collapse = ", "), " are not.", call. = FALSE)
 
+  if (!is.numeric(conf.level) || length(conf.level) != 1L || is.na(conf.level) ||
+      conf.level <= 0 || conf.level >= 1)
+    stop("`conf.level` must be a single number in (0, 1).", call. = FALSE)
   tab <- .models_forest_table(models, term, conf.level, model.names)
   if (!nrow(tab))
     stop("No model contained `", term, "`; nothing to plot.", call. = FALSE)
