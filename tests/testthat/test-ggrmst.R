@@ -280,3 +280,21 @@ test_that("the Surv-type error names the function the user called", {
                "ggrmst_difference\\(\\) supports right-censored")
   expect_error(ggrmst(f, data = d), "ggrmst\\(\\) supports right-censored")
 })
+
+test_that("the documented p.value behaviour is what the code does", {
+  fit <- survival::survfit(survival::Surv(time, status) ~ sex, data = survival::lung)
+  tab <- ggrmst_difference(fit, data = survival::lung)
+  # per-group rows never carry a p-value; only the difference row does
+  expect_true(all(is.na(tab$p.value[seq_len(nrow(tab) - 1L)])))
+  expect_false(is.na(tab$p.value[nrow(tab)]))
+
+  # a zero-variance comparison gives p = 0, not NA: the documentation must not
+  # promise NA, or a user filtering on !is.na() would treat 0 as a real result
+  d <- data.frame(time = c(2, 5, 5), status = c(1, 0, 0),
+                  arm = factor(c("A", "B", "B")))
+  z <- ggrmst_difference(survival::survfit(survival::Surv(time, status) ~ arm,
+                                           data = d), data = d)
+  expect_equal(z$se[nrow(z)], 0)
+  expect_equal(z$p.value[nrow(z)], 0)
+  expect_false(is.na(z$p.value[nrow(z)]))
+})

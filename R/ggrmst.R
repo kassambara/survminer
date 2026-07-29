@@ -74,8 +74,11 @@ NULL
 #'   \code{lower}, \code{upper} and \code{p.value}. The \code{strata} column holds
 #'   the fit's own labels, as \code{\link{surv_median}()} and
 #'   \code{\link{surv_summary}()} do; a difference row is labelled with its contrast.
-#'   Only a difference row can carry a \code{p.value}, though it is \code{NA} when
-#'   the difference is not estimable (a zero standard error).
+#'   Only a difference row carries a \code{p.value}; the per-group rows have
+#'   \code{NA}. A comparison with zero estimated variance -- possible when every
+#'   observation in both groups falls at or beyond \code{tau} -- yields
+#'   \code{p = 0} for a non-zero difference and \code{NaN} for a zero one; treat
+#'   either as uninformative rather than significant.
 #'   \code{ggrmst()} returns a ggplot.
 #' @references
 #' Royston P, Parmar MKB (2013). Restricted mean survival time: an alternative to
