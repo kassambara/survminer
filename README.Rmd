@@ -379,15 +379,15 @@ print(ggsurv)
 
 - M. Kosiński. January 2017. [Weighted Log-rank Tests](https://rpkgs.datanovia.com/survminer/articles/Specifiying_weights_in_log-rank_comparisons.html)
     
-- A. Kassambara. STHDA December 2016. [Survival Analysis Basics: Curves and Logrank Tests](https://www.sthda.com/english/wiki/survival-analysis-basics)
+- A. Kassambara. December 2016. [Survival Analysis Basics: Curves and Logrank Tests](https://www.datanovia.com/learn/biostatistics/survival-analysis/kaplan-meier-estimation)
    
-- A. Kassambara. STHDA December 2016. [Cox Proportional Hazards Model](https://www.sthda.com/english/wiki/cox-proportional-hazards-model)
+- A. Kassambara. December 2016. [Cox Proportional Hazards Model](https://www.datanovia.com/learn/biostatistics/survival-analysis/cox-proportional-hazards)
      
-- A. Kassambara. STHDA December 2016. [Cox Model Assumptions](https://www.sthda.com/english/wiki/cox-model-assumptions)
+- A. Kassambara. December 2016. [Cox Model Assumptions](https://www.datanovia.com/learn/biostatistics/survival-analysis/testing-ph-assumptions)
   
 - M. Kosiński. May 2016. [Survival plots have never been so informative](https://rpkgs.datanovia.com/survminer/articles/Informative_Survival_Plots.html)
 
-- A. Kassambara. STHDA January 2016. [survminer R package: Survival Data Analysis and Visualization](https://www.sthda.com/english/wiki/survminer-r-package-survival-data-analysis-and-visualization).
+- A. Kassambara. January 2016. [survminer R package: Survival Data Analysis and Visualization](https://www.datanovia.com/learn/biostatistics/survival-analysis/publication-ready-survival-curves).
    
     
     
