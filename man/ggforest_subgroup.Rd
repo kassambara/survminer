@@ -105,6 +105,15 @@ fit on the observations complete for both. As with any subgroup analysis the
 interaction test is the inference; the individual per-level hazard ratios are
 descriptive and subject to multiplicity (see Wang et al., 2007).
 
+The refits reproduce the fit the user supplied: the case weights and the tie
+handling of \code{model} are carried into every subset fit, so a subgroup
+hazard ratio is the weighted one whenever the model is weighted. The two
+models compared by the interaction test are fit without a robust variance,
+which \code{\link[survival]{coxph}()} otherwise attaches to a weighted fit:
+the likelihood-ratio test compares log-likelihoods, which the variance
+estimator does not change, and \code{\link[stats]{anova}()} declines a fit
+that carries one.
+
 The plot is composed of three aligned panels (labels, forest, statistics), so
 the text columns keep a fixed width and do not collide with the forest at any
 figure size.

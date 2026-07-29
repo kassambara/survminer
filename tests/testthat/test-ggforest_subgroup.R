@@ -184,3 +184,121 @@ test_that("conf.level is validated and the CI column header tracks it", {
   expect_true(any(grepl("HR (80% CI)", L, fixed = TRUE)))
   expect_false(any(grepl("HR (95% CI)", L, fixed = TRUE)))
 })
+
+test_that("subgroup hazard ratios come from the model the user fitted", {
+  # every row is a refit on a subset; dropping the model's weights reported an
+  # unweighted hazard ratio under a weighted model, wrong by 15% here and in
+  # opposite directions for the two subgroups
+  cc <- survival::colon[survival::colon$etype == 2 &
+                          survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx  <- droplevels(cc$rx)
+  cc$sex <- factor(cc$sex, labels = c("Female", "Male"))
+  set.seed(9)
+  cc$w <- runif(nrow(cc), 0.2, 3)
+  m <- survival::coxph(survival::Surv(time, status) ~ rx, data = cc, weights = w)
+
+  tab <- survminer:::.subgroup_forest_table(m, cc, "rx", c(Sex = "sex"),
+                                            conf.level = 0.95, show.overall = TRUE)
+  est <- tab[tab$type != "header", ]
+  expect_gt(nrow(est), 0)
+
+  for (i in seq_len(nrow(est))) {
+    lab <- est$label[i]
+    ref <- if (lab == "Overall") {
+      exp(stats::coef(m))[[1]]
+    } else {
+      sub <- cc[cc$sex == lab, ]
+      exp(stats::coef(survival::coxph(survival::Surv(time, status) ~ rx,
+                                      data = sub, weights = w)))[[1]]
+    }
+    expect_equal(est$hr[i], ref, tolerance = 1e-8, info = lab)
+  }
+})
+
+test_that("the tie handling of the fit is carried into the refits too", {
+  cc <- survival::colon[survival::colon$etype == 2 &
+                          survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx  <- droplevels(cc$rx)
+  cc$sex <- factor(cc$sex, labels = c("Female", "Male"))
+  m <- survival::coxph(survival::Surv(time, status) ~ rx, data = cc,
+                       ties = "breslow")
+  tab <- survminer:::.subgroup_forest_table(m, cc, "rx", c(Sex = "sex"),
+                                            conf.level = 0.95, show.overall = TRUE)
+  ov <- tab$hr[tab$label == "Overall"]
+  expect_equal(ov, exp(stats::coef(m))[[1]], tolerance = 1e-8)
+  # and it is genuinely breslow, not efron
+  expect_false(isTRUE(all.equal(
+    ov, exp(stats::coef(survival::coxph(survival::Surv(time, status) ~ rx,
+                                        data = cc, ties = "efron")))[[1]])))
+})
+
+test_that("an unweighted model is unaffected", {
+  cc <- survival::colon[survival::colon$etype == 2 &
+                          survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx  <- droplevels(cc$rx)
+  cc$sex <- factor(cc$sex, labels = c("Female", "Male"))
+  m <- survival::coxph(survival::Surv(time, status) ~ rx, data = cc)
+  tab <- survminer:::.subgroup_forest_table(m, cc, "rx", c(Sex = "sex"),
+                                            conf.level = 0.95, show.overall = TRUE)
+  expect_equal(tab$hr[tab$label == "Overall"], exp(stats::coef(m))[[1]],
+               tolerance = 1e-8)
+})
+
+test_that("a model covariate named like the carried weights is not clobbered", {
+  skip_if_not_installed("survival")
+  cc <- survival::colon[survival::colon$etype == 2 &
+                        survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx <- droplevels(cc$rx)
+  cc$sex <- factor(cc$sex, labels = c("F", "M"))
+  set.seed(9)
+  cc$w <- stats::runif(nrow(cc), 0.2, 3)
+  cc$.ggf_weights <- cc$age          # a real covariate carrying the internal name
+  m <- survival::coxph(
+    survival::Surv(time, status) ~ rx + .ggf_weights, data = cc, weights = w
+  )
+  tab <- .subgroup_forest_table(m, cc, "rx", c(Sex = "sex"),
+                                conf.level = 0.95, show.overall = TRUE)
+
+  got <- tab$hr[tab$label == "Overall"]
+  expect_length(got, 1L)
+  expect_equal(got, unname(exp(stats::coef(m))[["rxLev+5FU"]]), tolerance = 1e-10)
+
+  # each subgroup must still refit on age, not on the weights
+  for (lv in c("F", "M")) {
+    sub <- cc[cc$sex == lv, ]
+    ref <- survival::coxph(
+      survival::Surv(time, status) ~ rx + .ggf_weights, data = sub, weights = w
+    )
+    shown <- tab$hr[tab$label == lv]
+    expect_length(shown, 1L)
+    expect_equal(shown, unname(exp(stats::coef(ref))[["rxLev+5FU"]]), tolerance = 1e-10)
+  }
+})
+
+test_that("the interaction p-value is computed on the weighted fit too", {
+  cc <- survival::colon[survival::colon$etype == 2 &
+                          survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx  <- droplevels(cc$rx)
+  cc$sex <- factor(cc$sex, labels = c("Female", "Male"))
+  set.seed(9)
+  cc$w <- runif(nrow(cc), 0.2, 3)
+  m <- survival::coxph(survival::Surv(time, status) ~ rx, data = cc, weights = w)
+  tab <- survminer:::.subgroup_forest_table(m, cc, "rx", c(Sex = "sex"),
+                                            conf.level = 0.95, show.overall = TRUE)
+  got <- tab$pint[tab$type == "header" & !is.na(tab$pint)][1]
+
+  # the likelihood-ratio test does not use the variance estimator, so the
+  # comparison fits are made without the robust variance coxph() adds to a
+  # weighted fit (which anova() refuses outright)
+  a <- survival::coxph(survival::Surv(time, status) ~ rx + sex, data = cc,
+                       weights = w, robust = FALSE)
+  i <- survival::coxph(survival::Surv(time, status) ~ rx + sex + rx:sex, data = cc,
+                       weights = w, robust = FALSE)
+  ref <- stats::anova(a, i)[["Pr(>|Chi|)"]][2]
+  expect_false(is.na(got))
+  expect_equal(got, ref, tolerance = 1e-8)
+  # and it is not the unweighted value
+  au <- survival::coxph(survival::Surv(time, status) ~ rx + sex, data = cc)
+  iu <- survival::coxph(survival::Surv(time, status) ~ rx + sex + rx:sex, data = cc)
+  expect_false(isTRUE(all.equal(got, stats::anova(au, iu)[["Pr(>|Chi|)"]][2])))
+})
