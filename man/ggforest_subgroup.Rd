@@ -9,7 +9,7 @@ ggforest_subgroup(
   data = NULL,
   treatment,
   subgroups,
-  conf.int = 0.95,
+  conf.level = 0.95,
   show.overall = TRUE,
   show.pinteraction = TRUE,
   show.n = TRUE,
@@ -38,7 +38,8 @@ May be named, in which case the names are used as the display labels, e.g.
 \code{c(Sex = "sex", "Age group" = "age.grp")}. Continuous variables must be
 binned first.}
 
-\item{conf.int}{the confidence level for the intervals. Default 0.95.}
+\item{conf.level}{the confidence level for the intervals, a single number in
+(0, 1). Default 0.95.}
 
 \item{show.overall}{logical; add an overall (all-subjects) treatment hazard
 ratio row at the top. Default \code{TRUE}.}

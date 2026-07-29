@@ -13,7 +13,7 @@ ggcoxnph(
   panels = c("cloglog", "schoenfeld", "hr", "rmst"),
   transform = "km",
   tau = NULL,
-  conf.int = 0.95,
+  conf.level = 0.95,
   df = 4,
   numeric.split = FALSE,
   palette = NULL,
@@ -49,7 +49,8 @@ fit and can change the drawn shape.}
 \item{tau}{maximum horizon for the \code{rmst} panel. \code{NULL} (default)
 uses the largest admissible time.}
 
-\item{conf.int}{confidence level for the pointwise bands. Default \code{0.95}.}
+\item{conf.level}{confidence level for the pointwise bands, a single number in
+(0, 1). Default \code{0.95}.}
 
 \item{df}{degrees of freedom of the natural-spline smooth of the Schoenfeld
 residuals. Default \code{4}; \code{df = 2} gives an almost-linear fit.}
@@ -66,7 +67,8 @@ vector).}
 
 \item{title}{an overall title used when the panel is printed.}
 
-\item{...}{additional arguments (currently unused).}
+\item{...}{additional arguments (currently unused). Passing `conf.int` here
+is an error: use `conf.level`.}
 
 \item{x}{a \code{ggcoxnph} object.}
 

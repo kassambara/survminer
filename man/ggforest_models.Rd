@@ -7,7 +7,7 @@
 ggforest_models(
   models,
   term,
-  conf.int = 0.95,
+  conf.level = 0.95,
   model.names = NULL,
   show.p = TRUE,
   show.n = TRUE,
@@ -27,7 +27,8 @@ names are used as the row labels (falling back to \code{model.names}, then
 \item{term}{the model variable (or a single coefficient name) whose hazard ratio
 is compared across the models.}
 
-\item{conf.int}{the confidence level for the intervals. Default 0.95.}
+\item{conf.level}{the confidence level for the intervals, a single number in
+(0, 1). Default 0.95.}
 
 \item{model.names}{optional character vector of row labels, used when the
 \code{models} list is unnamed.}

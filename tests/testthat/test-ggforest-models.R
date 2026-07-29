@@ -33,7 +33,7 @@ test_that("the HR / CI / p per model match a direct coxph extraction (and broom)
   }
 })
 
-test_that("conf.int controls the interval width", {
+test_that("conf.level controls the interval width", {
   models <- .mm()
   t95 <- survminer:::.models_forest_table(models, "age", 0.95, NULL)
   t90 <- survminer:::.models_forest_table(models, "age", 0.90, NULL)
@@ -105,7 +105,7 @@ test_that("a partially named models list keeps the provided names", {
   expect_equal(tab$model, c("Named", "Model 2"))
 })
 
-test_that("the CI-column header tracks conf.int (no hardcoded 95%)", {
+test_that("the CI-column header tracks conf.level (no hardcoded 95%)", {
   library(survival)
   m <- coxph(Surv(time, status) ~ age, data = lung)
   labs <- function(p) {
@@ -116,5 +116,21 @@ test_that("the CI-column header tracks conf.int (no hardcoded 95%)", {
     w(gt); L
   }
   expect_true(any(grepl("HR (80% CI)", labs(
-    ggforest_models(list(A = m, B = m), term = "age", conf.int = 0.8)), fixed = TRUE)))
+    ggforest_models(list(A = m, B = m), term = "age", conf.level = 0.8)), fixed = TRUE)))
+})
+
+test_that("conf.level is validated and names the confidence level", {
+  m <- survival::coxph(survival::Surv(time, status) ~ age + sex, data = survival::lung)
+  # a narrower level must give a strictly narrower interval
+  w95 <- survminer:::.models_forest_table(list(A = m), "age", 0.95, NULL)
+  w80 <- survminer:::.models_forest_table(list(A = m), "age", 0.80, NULL)
+  expect_true(all(w80$upper - w80$lower < w95$upper - w95$lower))
+  # the stale spelling has no `...` to hide in, so it fails loudly
+  # match the argument name, not R's "unused argument" wording, which is translated
+  expect_error(ggforest_models(list(A = m), term = "age", conf.int = 0.9),
+               "conf\\.int")
+  expect_error(ggforest_models(list(A = m, B = m), term = "age", conf.level = TRUE),
+               "single number in \\(0, 1\\)")
+  expect_error(ggforest_models(list(A = m, B = m), term = "age", conf.level = 42),
+               "single number in \\(0, 1\\)")
 })
