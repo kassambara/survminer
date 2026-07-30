@@ -23,7 +23,10 @@ ggforest_subgroup(
 }
 \arguments{
 \item{model}{a \code{coxph} object whose terms include \code{treatment}. It may
-be crude (\code{~ treatment}) or adjusted (\code{~ treatment + covariates}).}
+be crude (\code{~ treatment}) or adjusted (\code{~ treatment + covariates}).
+A weighted or clustered model must have been fitted with the default
+\code{y = TRUE}, since its stored response is what \code{data} is checked
+against.}
 
 \item{data}{the data frame used to fit \code{model}. If not supplied it is
 extracted from \code{model}.}
@@ -51,7 +54,8 @@ Default \code{TRUE}.}
 subjects in each subgroup level (and their percentage of the total). Default
 \code{TRUE}. This count is the subgroup size; when the model has adjusting
 covariates with missing values it can exceed the complete-case sample the
-hazard ratio is actually fit on.}
+hazard ratio is actually fit on. It counts subjects, so for a weighted model
+it does not equal the sum of the weights the hazard ratio is estimated from.}
 
 \item{favours}{optional length-2 character vector
 \code{c("Favours treatment", "Favours control")} drawn under the axis on the
@@ -104,6 +108,59 @@ with the interaction model (additionally the treatment-by-subgroup term),
 fit on the observations complete for both. As with any subgroup analysis the
 interaction test is the inference; the individual per-level hazard ratios are
 descriptive and subject to multiplicity (see Wang et al., 2007).
+
+The subset fits carry four things over from \code{model}: its case weights, its
+tie handling, its \code{robust} setting, and its clustering -- whether written
+as \code{cluster()} in the formula or passed as \code{cluster} or \code{id}.
+So a weighted model reports weighted subgroup estimates and a clustered model
+cluster-robust intervals. Anything written into the formula --
+\code{\link[survival]{strata}()}, \code{\link[survival]{frailty}()},
+\code{ridge()}, \code{pspline()} -- travels with it. Arguments outside the
+formula do not: a \code{subset}, an \code{offset()} term, \code{control}
+settings and \code{tt()} transforms are all lost, so pass the rows you want as
+\code{data} rather than relying on \code{subset}. As a backstop the whole-data
+refit is compared with \code{model} itself, and a disagreement in the treatment
+coefficient is reported rather than plotted.
+
+The weights are read from the fitted object. Survival keeps no copy of the
+cluster vector, so that one is re-evaluated from the call. Either way they are
+matched to the rows of \code{data}, and a \code{data} whose response disagrees
+with the one the fit stored -- reordered, or simply not the frame the model was
+fitted on -- is an error rather than a quietly mis-weighted plot. Because the
+check compares responses, it cannot see a reordering confined to rows that share
+the same time and status.
+
+Which interaction test is used follows the variance the fit carries. With the
+ordinary model-based variance it is the likelihood-ratio test described above.
+When the fit carries a robust variance -- \code{\link[survival]{coxph}()}
+attaches one to any clustered, \code{robust = TRUE} or non-integer weighted
+fit -- differences in the log-partial-likelihood no longer have a chi-square
+distribution, and \code{\link[survival]{anova.coxph}} declines to compare
+them for that reason; the interaction is then tested by a Wald chi-square on
+the treatment-by-subgroup coefficients, taken from that robust variance.
+Any weighted model is tested this way, including one whose weights are whole
+numbers. \code{\link[survival]{coxph}()} decides whether to attach a robust
+variance from whether the weights are integral, which cannot distinguish a
+frequency count from a sampling weight that happens to be a whole number, and a
+likelihood-ratio test is only valid for counts; a Wald test on a robust variance
+is valid for either, so one is requested when the fit does not already carry it.
+
+A robust Wald test is anticonservative when there are few clusters, and the
+cluster-robust intervals are then too narrow as well; the function warns below
+fifty clusters, and both should be read as approximate there.
+
+The per-level hazard ratio is estimated by refitting on that level alone, so
+each level carries its own baseline hazard and, in an adjusted model, its own
+covariate coefficients. Rows the model itself dropped for missing covariates
+stay out of the subset fits even where the covariate that excluded them is no
+longer in the formula, so a weighted fit can rest on fewer rows than the count
+column shows. It is the estimate a reader reproduces by running
+\code{\link[survival]{coxph}()} on that subset by hand, with the same weights
+and tie handling. Some tools instead
+read the within-level effects off a single treatment-by-subgroup interaction
+model fitted to everyone, which pools the baseline hazard across levels; the
+two agree closely in large balanced strata and can differ appreciably in small
+or heterogeneous ones.
 
 The plot is composed of three aligned panels (labels, forest, statistics), so
 the text columns keep a fixed width and do not collide with the forest at any
