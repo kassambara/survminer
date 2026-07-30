@@ -106,13 +106,22 @@ fit on the observations complete for both. As with any subgroup analysis the
 interaction test is the inference; the individual per-level hazard ratios are
 descriptive and subject to multiplicity (see Wang et al., 2007).
 
-The subset fits are made the way \code{model} itself was: its case weights,
-tie handling and clustering are carried over, so a weighted model reports
-weighted subgroup estimates and a clustered model cluster-robust intervals.
-The weights and the clustering are read from the fitted object and matched to
-the rows of \code{data}; if they cannot be matched -- \code{data} reordered,
-or not the frame the model was fitted on -- that is an error rather than a
-quietly unweighted plot.
+The subset fits carry four things over from \code{model}: its case weights, its
+tie handling, its \code{robust} setting, and its clustering -- whether written
+as \code{cluster()} in the formula or passed as \code{cluster} or \code{id}.
+So a weighted model reports weighted subgroup estimates and a clustered model
+cluster-robust intervals. Nothing else is carried: a \code{subset} argument, an
+\code{offset()} term, \code{control} settings and \code{tt()} transforms are
+not, so pass the data the model was fitted on rather than relying on
+\code{subset}.
+
+The weights are read from the fitted object. Survival keeps no copy of the
+cluster vector, so that one is re-evaluated from the call. Either way they are
+matched to the rows of \code{data}, and a \code{data} whose response disagrees
+with the one the fit stored -- reordered, or simply not the frame the model was
+fitted on -- is an error rather than a quietly mis-weighted plot. Because the
+check compares responses, it cannot see a reordering confined to rows that share
+the same time and status.
 
 Which interaction test is used follows the variance the fit carries. With the
 ordinary model-based variance it is the likelihood-ratio test described above.
@@ -122,13 +131,19 @@ fit -- differences in the log-partial-likelihood no longer have a chi-square
 distribution, and \code{\link[survival]{anova.coxph}} declines to compare
 them for that reason; the interaction is then tested by a Wald chi-square on
 the treatment-by-subgroup coefficients, taken from that robust variance.
-Integer (frequency) weights leave the variance model-based, so they keep the
-likelihood-ratio test.
+Whether \code{\link[survival]{coxph}()} attaches a robust variance turns on
+whether the weights are integral, not on what they mean, so integer-valued
+weights take the likelihood-ratio branch. That suits frequency weights, which is
+what whole-numbered weights usually are; sampling weights that happen to be
+integral would be tested as though they were counts, so pass those unrounded.
+A robust Wald test is also anticonservative when there are few clusters -- treat
+an interaction p-value from a fit with only a handful of them as approximate.
 
 The per-level hazard ratio is estimated by refitting on that level alone, so
 each level carries its own baseline hazard and, in an adjusted model, its own
 covariate coefficients. It is the estimate a reader reproduces by running
-\code{\link[survival]{coxph}()} on that subset by hand. Some tools instead
+\code{\link[survival]{coxph}()} on that subset by hand, with the same weights
+and tie handling. Some tools instead
 read the within-level effects off a single treatment-by-subgroup interaction
 model fitted to everyone, which pools the baseline hazard across levels; the
 two agree closely in large balanced strata and can differ appreciably in small

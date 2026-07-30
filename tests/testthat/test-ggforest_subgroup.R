@@ -435,20 +435,27 @@ test_that("the tie handling carried is the model's own, not a same-named object 
   cc$rx <- droplevels(cc$rx)
   cc$sex <- factor(cc$sex, labels = c("F", "M"))
 
-  # `tie.method` exists only inside the wrapper: master looked it up in the
-  # calling frame and errored; it must resolve from the model's own environment
-  wrapper <- function(d, tie.method = "breslow") {
-    m <- survival::coxph(survival::Surv(time, status) ~ rx + sex, data = d,
-                         ties = tie.method)
-    survminer:::.subgroup_forest_table(m, d, "rx", c(Sex = "sex"),
-                                       conf.level = 0.95, show.overall = TRUE)
+  # the model is built inside a wrapper, so `tie.method` exists only in that
+  # wrapper's frame; the plot is then requested from HERE, where it does not.
+  # Resolving `ties` from the caller's frame would fail or find something else --
+  # it has to come from the model's own environment.
+  mk <- function(d, tie.method = "breslow") {
+    survival::coxph(survival::Surv(time, status) ~ rx + sex, data = d, ties = tie.method)
   }
-  tab <- wrapper(cc)
-  ref <- survival::coxph(survival::Surv(time, status) ~ rx + sex, data = cc,
-                         ties = "breslow")
+  m <- mk(cc)
+  tie.method <- "efron"          # a decoy visible from this frame
+  tab <- survminer:::.subgroup_forest_table(m, cc, "rx", c(Sex = "sex"),
+                                            conf.level = 0.95, show.overall = TRUE)
   got <- tab$hr[tab$label == "Overall"]
   expect_length(got, 1L)
-  expect_equal(got, unname(exp(stats::coef(ref))[["rxLev+5FU"]]), tolerance = 1e-10)
+
+  br <- unname(exp(stats::coef(survival::coxph(
+    survival::Surv(time, status) ~ rx + sex, data = cc, ties = "breslow")))[["rxLev+5FU"]])
+  ef <- unname(exp(stats::coef(survival::coxph(
+    survival::Surv(time, status) ~ rx + sex, data = cc, ties = "efron")))[["rxLev+5FU"]])
+  expect_false(isTRUE(all.equal(br, ef, tolerance = 1e-9)))   # the two must differ
+  expect_equal(got, br, tolerance = 1e-10)
+  expect_false(isTRUE(all.equal(got, ef, tolerance = 1e-9)))
 })
 
 test_that("integer weights reproduce the same fit as replicating each row", {
@@ -479,4 +486,176 @@ test_that("integer weights reproduce the same fit as replicating each row", {
     expect_length(got, 1L)
     expect_equal(got, unname(exp(stats::coef(ref))[["rxLev+5FU"]]), tolerance = 1e-7)
   }
+})
+
+test_that("the Wald interaction test uses the right degrees of freedom", {
+  skip_if_not_installed("survival")
+  cc <- survival::colon[survival::colon$etype == 2 &
+                        survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx <- droplevels(cc$rx)
+  cc <- cc[!is.na(cc$differ), ]
+  cc$differ3 <- factor(cc$differ, labels = c("well", "mod", "poor"))
+  set.seed(9)
+  cc$w <- stats::runif(nrow(cc), 0.2, 3)          # non-integer -> robust variance
+
+  m <- survival::coxph(survival::Surv(time, status) ~ rx, data = cc, weights = w)
+  tab <- survminer:::.subgroup_forest_table(m, cc, "rx", c(Diff = "differ3"),
+                                            conf.level = 0.95, show.overall = FALSE)
+  got <- tab$pint[tab$type == "header"]
+  got <- got[!is.na(got)]
+  expect_length(got, 1L)
+
+  i <- survival::coxph(survival::Surv(time, status) ~ rx + differ3 + rx:differ3,
+                       data = cc, weights = w)
+  k <- grep(":", names(stats::coef(i)), fixed = TRUE)
+  expect_equal(length(k), 2L)                     # a 3-level subgroup gives 2 df
+  b <- stats::coef(i)[k]
+  V <- stats::vcov(i)[k, k, drop = FALSE]
+  chi <- drop(t(b) %*% solve(V, b))
+  expect_equal(got, stats::pchisq(chi, df = 2, lower.tail = FALSE), tolerance = 1e-10)
+  # a df of 1 would be a different, smaller p-value
+  expect_false(isTRUE(all.equal(got, stats::pchisq(chi, df = 1, lower.tail = FALSE),
+                                tolerance = 1e-6)))
+})
+
+test_that("an unestimable interaction coefficient does not discard the whole test", {
+  skip_if_not_installed("survival")
+  cc <- survival::colon[survival::colon$etype == 2 &
+                        survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx <- droplevels(cc$rx)
+  cc <- cc[!is.na(cc$differ), ]
+  set.seed(9)
+  cc$w <- stats::runif(nrow(cc), 0.2, 3)
+  # a declared level with no rows leaves an aliased interaction coefficient
+  cc$dif4 <- factor(c("well", "mod", "poor")[cc$differ],
+                    levels = c("well", "mod", "poor", "EMPTY"))
+  cc$dif3 <- droplevels(cc$dif4)
+
+  m <- survival::coxph(survival::Surv(time, status) ~ rx, data = cc, weights = w)
+  t4 <- suppressWarnings(
+    survminer:::.subgroup_forest_table(m, cc, "rx", c(Diff = "dif4"),
+                                       conf.level = 0.95, show.overall = FALSE))
+  t3 <- survminer:::.subgroup_forest_table(m, cc, "rx", c(Diff = "dif3"),
+                                           conf.level = 0.95, show.overall = FALSE)
+  g4 <- t4$pint[t4$type == "header"]; g4 <- g4[!is.na(g4)]
+  g3 <- t3$pint[t3$type == "header"]; g3 <- g3[!is.na(g3)]
+  expect_length(g4, 1L)                       # not NA, so the column survives
+  expect_length(g3, 1L)
+  expect_equal(g4, g3, tolerance = 1e-10)     # and equals the droplevels answer
+})
+
+test_that("weights survive rows the model dropped for missing covariates", {
+  skip_if_not_installed("survival")
+  cc <- survival::colon[survival::colon$etype == 2 &
+                        survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx <- droplevels(cc$rx)
+  cc$sex <- factor(cc$sex, labels = c("F", "M"))
+  set.seed(9)
+  cc$w <- stats::runif(nrow(cc), 0.2, 3)
+  cc$nodes[1:12] <- NA                     # coxph drops these 12 rows
+  m <- survival::coxph(survival::Surv(time, status) ~ rx + nodes, data = cc, weights = w)
+  expect_lt(m$n, nrow(cc))                 # the fit really is short
+
+  # the weights must be put back on the right rows of the full frame
+  tab <- survminer:::.subgroup_forest_table(m, cc, "rx", c(Sex = "sex"),
+                                            conf.level = 0.95, show.overall = TRUE)
+  got <- tab$hr[tab$label == "Overall"]
+  expect_length(got, 1L)
+  expect_equal(got, unname(exp(stats::coef(m))[["rxLev+5FU"]]), tolerance = 1e-10)
+})
+
+test_that("clustering that cannot be matched to data is an error", {
+  skip_if_not_installed("survival")
+  cc <- survival::colon[survival::colon$etype == 2 &
+                        survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx <- droplevels(cc$rx)
+  cc$sex <- factor(cc$sex, labels = c("F", "M"))
+  m <- survival::coxph(survival::Surv(time, status) ~ rx + sex + cluster(id), data = cc)
+  expect_error(
+    survminer:::.subgroup_forest_table(m, cc[1:600, ], "rx", c(Sex = "sex"),
+                                       conf.level = 0.95, show.overall = TRUE),
+    "cluster"
+  )
+})
+
+test_that("an id-clustered model gets id-clustered intervals", {
+  skip_if_not_installed("survival")
+  set.seed(3)
+  ng <- 150
+  d <- data.frame(id = rep(seq_len(ng), each = 3))
+  d$rx  <- factor(rep(stats::rbinom(ng, 1, 0.5), each = 3), labels = c("Obs", "Trt"))
+  d$sex <- factor(rep(stats::rbinom(ng, 1, 0.5), each = 3), labels = c("F", "M"))
+  u <- rep(stats::rnorm(ng, 0, 0.8), each = 3)
+  d$t1 <- rep(c(0, 5, 10), ng)
+  d$t2 <- d$t1 + stats::rexp(nrow(d), exp(0.4 * (d$rx == "Trt") + u))
+  d$status <- 1L
+  m <- survival::coxph(survival::Surv(t1, t2, status) ~ rx + sex, data = d, id = id)
+
+  tab <- survminer:::.subgroup_forest_table(m, d, "rx", c(Sex = "sex"),
+                                            conf.level = 0.95, show.overall = TRUE)
+  ov <- tab[tab$label == "Overall", ]
+  expect_equal(nrow(ov), 1L)
+  expect_false(is.na(ov$hr))                       # rows must be estimable at all
+  ci <- exp(stats::confint(m))["rxTrt", ]
+  expect_equal(ov$lower, unname(ci[1]), tolerance = 1e-10)
+  expect_equal(ov$upper, unname(ci[2]), tolerance = 1e-10)
+  # and not the naive interval
+  naive <- exp(stats::coef(m)[["rxTrt"]] +
+               c(-1, 1) * stats::qnorm(0.975) * sqrt(diag(m$naive.var))[1])
+  expect_false(isTRUE(all.equal(ov$lower, naive[1], tolerance = 1e-8)))
+})
+
+test_that("a data frame reordered only within tied responses is caught by row count", {
+  skip_if_not_installed("survival")
+  # documented limit: the guard compares responses, so a swap between rows with
+  # identical time and status cannot be seen. This locks the documented scope.
+  cc <- survival::colon[survival::colon$etype == 2 &
+                        survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx <- droplevels(cc$rx)
+  cc$sex <- factor(cc$sex, labels = c("F", "M"))
+  set.seed(9)
+  cc$w <- stats::runif(nrow(cc), 0.2, 3)
+  m <- survival::coxph(survival::Surv(time, status) ~ rx, data = cc, weights = w)
+  # a wholesale reorder IS caught
+  set.seed(1)
+  expect_error(
+    survminer:::.subgroup_forest_table(m, cc[sample(nrow(cc)), ], "rx", c(Sex = "sex"),
+                                       conf.level = 0.95, show.overall = TRUE),
+    "case weights"
+  )
+  # near-tied times must not trigger a false alarm (coxph's timefix snaps them)
+  d <- cc
+  d$time[2] <- d$time[1] + 1e-9
+  m2 <- survival::coxph(survival::Surv(time, status) ~ rx, data = d, weights = w)
+  expect_silent(
+    survminer:::.subgroup_forest_table(m2, d, "rx", c(Sex = "sex"),
+                                       conf.level = 0.95, show.overall = TRUE)
+  )
+})
+
+test_that("a model with no stored response cannot smuggle mismatched weights through", {
+  skip_if_not_installed("survival")
+  # y = FALSE means there is no response to check `data` against, so the weights
+  # cannot be shown to belong to these rows. That must be refused, not assumed.
+  cc <- survival::colon[survival::colon$etype == 2 &
+                        survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx <- droplevels(cc$rx)
+  cc$sex <- factor(cc$sex, labels = c("F", "M"))
+  set.seed(9)
+  cc$w <- stats::runif(nrow(cc), 0.2, 3)
+  m <- survival::coxph(survival::Surv(time, status) ~ rx, data = cc,
+                       weights = w, y = FALSE)
+  expect_null(m$y)
+  set.seed(3)
+  expect_error(
+    survminer:::.subgroup_forest_table(m, cc[sample(nrow(cc)), ], "rx", c(Sex = "sex"),
+                                       conf.level = 0.95, show.overall = TRUE),
+    "case weights"
+  )
+  # and the in-order frame is refused too, since it still cannot be verified
+  expect_error(
+    survminer:::.subgroup_forest_table(m, cc, "rx", c(Sex = "sex"),
+                                       conf.level = 0.95, show.overall = TRUE),
+    "case weights"
+  )
 })
