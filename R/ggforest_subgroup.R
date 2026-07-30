@@ -35,10 +35,14 @@ NULL
 #' tie handling, its \code{robust} setting, and its clustering -- whether written
 #' as \code{cluster()} in the formula or passed as \code{cluster} or \code{id}.
 #' So a weighted model reports weighted subgroup estimates and a clustered model
-#' cluster-robust intervals. Nothing else is carried: a \code{subset} argument, an
-#' \code{offset()} term, \code{control} settings and \code{tt()} transforms are
-#' not, so pass the data the model was fitted on rather than relying on
-#' \code{subset}.
+#' cluster-robust intervals. Anything written into the formula --
+#' \code{\link[survival]{strata}()}, \code{\link[survival]{frailty}()},
+#' \code{ridge()}, \code{pspline()} -- travels with it. Arguments outside the
+#' formula do not: a \code{subset}, an \code{offset()} term, \code{control}
+#' settings and \code{tt()} transforms are all lost, so pass the rows you want as
+#' \code{data} rather than relying on \code{subset}. As a backstop the whole-data
+#' refit is compared with \code{model} itself, and a disagreement in the treatment
+#' coefficient is reported rather than plotted.
 #'
 #' The weights are read from the fitted object. Survival keeps no copy of the
 #' cluster vector, so that one is re-evaluated from the call. Either way they are
@@ -56,17 +60,23 @@ NULL
 #' distribution, and \code{\link[survival]{anova.coxph}} declines to compare
 #' them for that reason; the interaction is then tested by a Wald chi-square on
 #' the treatment-by-subgroup coefficients, taken from that robust variance.
-#' Whether \code{\link[survival]{coxph}()} attaches a robust variance turns on
-#' whether the weights are integral, not on what they mean, so integer-valued
-#' weights take the likelihood-ratio branch. That suits frequency weights, which is
-#' what whole-numbered weights usually are; sampling weights that happen to be
-#' integral would be tested as though they were counts, so pass those unrounded.
-#' A robust Wald test is also anticonservative when there are few clusters -- treat
-#' an interaction p-value from a fit with only a handful of them as approximate.
+#' Any weighted model is tested this way, including one whose weights are whole
+#' numbers. \code{\link[survival]{coxph}()} decides whether to attach a robust
+#' variance from whether the weights are integral, which cannot distinguish a
+#' frequency count from a sampling weight that happens to be a whole number, and a
+#' likelihood-ratio test is only valid for counts; a Wald test on a robust variance
+#' is valid for either, so one is requested when the fit does not already carry it.
+#'
+#' A robust Wald test is anticonservative when there are few clusters, and the
+#' cluster-robust intervals are then too narrow as well; the function warns below
+#' fifty clusters, and both should be read as approximate there.
 #'
 #' The per-level hazard ratio is estimated by refitting on that level alone, so
 #' each level carries its own baseline hazard and, in an adjusted model, its own
-#' covariate coefficients. It is the estimate a reader reproduces by running
+#' covariate coefficients. Rows the model itself dropped for missing covariates
+#' stay out of the subset fits even where the covariate that excluded them is no
+#' longer in the formula, so a weighted fit can rest on fewer rows than the count
+#' column shows. It is the estimate a reader reproduces by running
 #' \code{\link[survival]{coxph}()} on that subset by hand, with the same weights
 #' and tie handling. Some tools instead
 #' read the within-level effects off a single treatment-by-subgroup interaction
@@ -80,6 +90,9 @@ NULL
 #'
 #' @param model a \code{coxph} object whose terms include \code{treatment}. It may
 #'   be crude (\code{~ treatment}) or adjusted (\code{~ treatment + covariates}).
+#'   A weighted or clustered model must have been fitted with the default
+#'   \code{y = TRUE}, since its stored response is what \code{data} is checked
+#'   against.
 #' @param data the data frame used to fit \code{model}. If not supplied it is
 #'   extracted from \code{model}.
 #' @param treatment the name of the treatment variable (a term of \code{model}).
@@ -325,9 +338,7 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
     w.all <- .fit_vector(model$weights, model, data)
     if (is.null(w.all) || !isTRUE(aligned))
       stop("ggforest_subgroup() cannot match the case weights of `model` to the rows ",
-           "of `data`. Supply the data frame `model` was fitted on, fitted with the ",
-           "default `y = TRUE` so the two can be checked against each other.",
-           call. = FALSE)
+           "of `data`. ", .why_unmatched(model), call. = FALSE)
     wcol <- ".ggf_weights"
     while (wcol %in% names(data)) wcol <- paste0(wcol, "_")
     data[[wcol]] <- w.all
@@ -341,24 +352,54 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
     v <- .model_call_vector(q, data, menv)
     if (is.null(v) || !isTRUE(aligned))
       stop("ggforest_subgroup() cannot match the `", nm, "` of `model` to the rows of ",
-           "`data`. Supply the data frame `model` was fitted on.", call. = FALSE)
+           "`data`. ", .why_unmatched(model), call. = FALSE)
     col <- paste0(".ggf_", nm)
     while (col %in% names(data)) col <- paste0(col, "_")
     data[[col]] <- v
     if (nm == "cluster") ccol <- col else icol <- col
   }
   fit.args <- list()
-  if (!is.null(model$call$ties))
-    fit.args$ties <- tryCatch(eval(model$call$ties, envir = menv), error = function(e) NULL)
+  # coxph resolves `ties` / its `method` alias and stores the answer, so take it
+  # from the fit -- reading the call would miss the `method =` spelling entirely
+  if (!is.null(model$method)) fit.args$ties <- model$method
   if (!is.null(model$call$robust))
     fit.args$robust <- tryCatch(eval(model$call$robust, envir = menv), error = function(e) NULL)
   fit.args <- fit.args[!vapply(fit.args, is.null, logical(1))]
-  .coxph_like <- function(fo, dsub) {
+  if (!is.null(ccol) || !is.null(icol)) {
+    nclus <- length(unique(data[[if (!is.null(ccol)) ccol else icol]]))
+    if (nclus < 50L)
+      warning("ggforest_subgroup(): `model` has only ", nclus, " clusters. The ",
+              "cluster-robust intervals are too narrow and the interaction test ",
+              "rejects too often at this many clusters; read both as approximate.",
+              call. = FALSE)
+  }
+  .coxph_like <- function(fo, dsub, robust = NULL) {
     a <- c(list(formula = fo, data = dsub), fit.args)
     if (!is.null(wcol)) a$weights <- dsub[[wcol]]
     if (!is.null(ccol)) a$cluster <- dsub[[ccol]]
     if (!is.null(icol)) a$id <- dsub[[icol]]
+    if (!is.null(robust)) a$robust <- robust
     do.call(survival::coxph, a)
+  }
+
+  # A reconstruction that has quietly lost something -- a fit setting we do not
+  # know to carry, a `subset`, a cluster vector overwritten since the fit -- shows
+  # up as the whole-data refit disagreeing with the model it came from. Cheaper to
+  # check once than to let a wrong number onto the plot.
+  chk <- tryCatch(.coxph_like(.drop_constant_terms(stats::formula(model), data,
+                                                   keep = treatment), data),
+                  error = function(e) NULL, warning = function(w) NULL)
+  if (!is.null(chk) && tkey$coef %in% names(stats::coef(chk)) &&
+      tkey$coef %in% names(stats::coef(model))) {
+    b0 <- stats::coef(model)[[tkey$coef]]; b1 <- stats::coef(chk)[[tkey$coef]]
+    if (is.finite(b0) && is.finite(b1) &&
+        !isTRUE(all.equal(b0, b1, tolerance = 1e-6)))
+      warning("ggforest_subgroup(): refitting `model` on all of `data` gives a ",
+              "treatment coefficient of ", format(b1, digits = 6), " where `model` ",
+              "itself has ", format(b0, digits = 6), ". The subgroup estimates do ",
+              "not come from the model as fitted -- check for a `subset`, an ",
+              "`offset()` or `control` settings, which are not carried over.",
+              call. = FALSE)
   }
 
   # per-subset treatment HR/CI/precision from a refit of the model formula
@@ -462,7 +503,8 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
 # Wald chi-square built on the robust variance itself. Returns NA if the fits or
 # the test fail.
 .interaction_p <- function(model, data, treatment, v,
-                           fitter = function(fo, dd) survival::coxph(fo, data = dd)) {
+                           fitter = function(fo, dd, robust = NULL)
+                             survival::coxph(fo, data = dd)) {
   bt  <- function(x) paste0("`", gsub("`", "", x), "`")
   rhs <- attr(stats::terms(model), "term.labels")
   resp <- deparse(stats::formula(model)[[2]])
@@ -474,6 +516,15 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
     vars <- unique(c(all.vars(add_f), v))
     dd <- data[stats::complete.cases(data[, intersect(vars, colnames(data)), drop = FALSE]), ]
     i <- fitter(int_f, dd)
+    if (is.null(i$naive.var) && !is.null(model$weights)) {
+      # coxph leaves the variance model-based when the weights are integral, but
+      # it cannot tell a frequency count from a sampling weight that happens to be
+      # whole, and the likelihood-ratio test is only valid for counts. A Wald test
+      # on a robust variance is valid either way, so ask for one.
+      i2 <- tryCatch(fitter(int_f, dd, robust = TRUE), error = function(e) NULL,
+                     warning = function(w) NULL)
+      if (!is.null(i2) && !is.null(i2$naive.var)) i <- i2
+    }
     if (is.null(i$naive.var)) {                      # model-based variance
       a <- fitter(add_f, dd)
       return(stats::anova(a, i)[["Pr(>|Chi|)"]][2])
@@ -524,11 +575,31 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
   om <- model$na.action
   if (!is.null(om) && NROW(yd) == NROW(y) + length(om))
     yd <- yd[-as.integer(om), , drop = FALSE]
-  if (NROW(yd) != NROW(y)) return(FALSE)
-  # default tolerance, not 0: coxph's timefix snaps near-tied times, so the
-  # stored response is not bit-identical to one rebuilt from the same frame.
-  # This is looking for rows in a different order, not for float noise.
-  isTRUE(all.equal(unclass(yd), unclass(y), check.attributes = FALSE))
+  yy <- unclass(y); yd <- unclass(yd)
+  if (!identical(dim(yy), dim(yd))) return(FALSE)
+  # coxph's timefix snaps near-tied times by up to sqrt(eps) times the time
+  # range -- an absolute budget -- so the stored response is not bit-identical to
+  # one rebuilt from the same frame, and a relative tolerance is the wrong ruler
+  # for wide time scales. Compare the times on their own scale and the status
+  # exactly. Rows in a different order differ by far more than this.
+  tc <- seq_len(ncol(yy) - 1L)
+  sc <- suppressWarnings(diff(range(yy[, tc], na.rm = TRUE)))
+  if (!is.finite(sc) || sc <= 0) sc <- 1
+  isTRUE(all.equal(yy[, tc], yd[, tc], check.attributes = FALSE, scale = sc)) &&
+    isTRUE(all.equal(yy[, ncol(yy)], yd[, ncol(yy)], check.attributes = FALSE))
+}
+
+# Why `data` could not be lined up with the fit, as advice the user can act on.
+.why_unmatched <- function(model) {
+  if (!is.null(model$call$subset))
+    return(paste0("`model` was fitted with `subset = ",
+                  paste(deparse(model$call$subset), collapse = ""),
+                  "`, which is not carried into the subgroup fits: pass the rows it ",
+                  "selected as `data` instead."))
+  if (is.null(model$y))
+    return(paste0("`model` was fitted with `y = FALSE`, so it kept no response to ",
+                  "check `data` against: refit with the default `y = TRUE`."))
+  "Supply the data frame `model` was fitted on, in its original row order."
 }
 
 # A vector the model call refers to (weights, cluster), aligned to the rows of

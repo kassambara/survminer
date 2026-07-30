@@ -148,8 +148,8 @@
   clustered one cluster-robust intervals. Each subgroup variable gets one
   interaction p-value (the test of effect modification, as opposed to the per-level
   estimates): a likelihood-ratio test, or a Wald chi-square on the
-  treatment-by-subgroup coefficients when the refit carries a robust variance,
-  where a likelihood comparison would not be valid. Unstratifiable
+  treatment-by-subgroup coefficients for any weighted or clustered fit, where a
+  likelihood comparison would not be valid. Unstratifiable
   levels are dropped with a warning. Returns a themeable ggplot with an optional
   overall row, a "No. of patients (\%)" column, precision-weighted boxes and a
   "favours" annotation. Complements `ggforest()` (see #271 and #366).
