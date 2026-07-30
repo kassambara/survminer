@@ -297,15 +297,13 @@ ggforest_subgroup <- function(model, data = NULL, treatment,
   # Every subgroup hazard ratio comes from refitting the model on that subset, so
   # the refit has to be the user's model: dropping the weights or the tie handling
   # reported a different estimate than the one the model carries, with nothing on
-  # the plot to say so. The weights ride along as a data column, so subsetting the
-  # data subsets them too.
+  # the plot to say so. Weights and clustering ride along as data columns, so
+  # subsetting the data subsets them too, and both are taken from the fitted
+  # object where survival stores them rather than re-evaluated from the call --
+  # re-evaluating resolves the name wherever this function happens to be standing
+  # and can pick up an unrelated object of the same name.
   menv <- environment(stats::formula(model))
   if (is.null(menv)) menv <- parent.frame()
-  # Weights and clustering ride along as data columns, so subsetting the data
-  # subsets them too. Both are taken from the fitted object where survival stores
-  # them, never re-evaluated from the call: re-evaluating would resolve the name
-  # wherever this function happens to be standing and can pick up an unrelated
-  # object of the same name.
   wcol <- ccol <- NULL
   if (!is.null(model$weights)) {
     w.all <- .fit_vector(model$weights, model, data)

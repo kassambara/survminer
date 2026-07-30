@@ -450,3 +450,33 @@ test_that("the tie handling carried is the model's own, not a same-named object 
   expect_length(got, 1L)
   expect_equal(got, unname(exp(stats::coef(ref))[["rxLev+5FU"]]), tolerance = 1e-10)
 })
+
+test_that("integer weights reproduce the same fit as replicating each row", {
+  skip_if_not_installed("survival")
+  # A frequency weight of w is, by definition, w copies of that row. This checks
+  # the weighted subgroup estimates against replication, which needs no second
+  # implementation to be believed.
+  cc <- survival::colon[survival::colon$etype == 2 &
+                        survival::colon$rx %in% c("Obs", "Lev+5FU"), ]
+  cc$rx <- droplevels(cc$rx)
+  cc$sex <- factor(cc$sex, labels = c("F", "M"))
+  set.seed(9)
+  cc$iw <- sample(1:3, nrow(cc), replace = TRUE)
+
+  # breslow: replication manufactures tied event times, which efron handles
+  # differently from a weight (a known coxph difference, not one of ours)
+  m <- survival::coxph(survival::Surv(time, status) ~ rx + age, data = cc,
+                       weights = iw, ties = "breslow")
+  tab <- survminer:::.subgroup_forest_table(m, cc, "rx", c(Sex = "sex"),
+                                            conf.level = 0.95, show.overall = TRUE)
+
+  for (lv in c("Overall", "F", "M")) {
+    d  <- if (lv == "Overall") cc else cc[cc$sex == lv, ]
+    ex <- d[rep(seq_len(nrow(d)), d$iw), ]
+    ref <- survival::coxph(survival::Surv(time, status) ~ rx + age, data = ex,
+                           ties = "breslow")
+    got <- tab$hr[tab$label == lv]
+    expect_length(got, 1L)
+    expect_equal(got, unname(exp(stats::coef(ref))[["rxLev+5FU"]]), tolerance = 1e-7)
+  }
+})
