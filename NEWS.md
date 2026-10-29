@@ -307,6 +307,12 @@
 
 ## Bug fixes
 
+- The number-at-risk, cumulative events and cumulative censoring tables no
+  longer title a colour legend when their text colour is fixed (the default
+  `risk.table.col = "black"`). With ggplot2 >= 4.0 this printed
+  "Ignoring unknown labels: colour" every time a `ggsurvplot(risk.table = TRUE)`
+  was drawn. Tables coloured by strata keep their legend title.
+
 - The log-scale time axes (`ggsurvplot(fun = "cloglog")`, log-x risk/event tables
   and the number-at-risk censor plot) no longer use the ggplot2 `trans` scale
   argument that ggplot2 3.5.0 renamed to `transform`; the axis is unchanged.

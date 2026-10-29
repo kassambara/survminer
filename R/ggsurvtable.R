@@ -408,7 +408,12 @@ ggsurvtable <- function (fit, data = NULL, survtable = c("cumevents",  "cumcenso
     ggtheme +
     scale_y_discrete(breaks = as.character(levels(survsummary$strata)),labels = yticklabs ) +
     coord_cartesian(xlim = xlim) +
-    labs(title = title, x = xlab, y = ylab, color = legend.title, shape = legend.title)
+    labs(title = title, x = xlab, y = ylab, shape = legend.title)
+  # Only title the colour legend when colour is mapped to a column (e.g. "strata").
+  # A fixed colour, such as the default "black", has no colour scale, and
+  # ggplot2 >= 4.0 then reports "Ignoring unknown labels: colour".
+  if (!is.null(color) && color[1] %in% colnames(survsummary))
+    p <- p + labs(color = legend.title)
 
   if (survtable == "risk.table")
     p <- .set_risktable_gpar(p, ...) # For backward compatibility
